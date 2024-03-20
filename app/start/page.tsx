@@ -1,8 +1,5 @@
-
 const Start = () => {
-  return (
-    <div>Start</div>
-  )
-}
+  return <div>Starting</div>;
+};
 
-export default Start
+export default Start;
