@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { FormProps, FormData } from "./types";
@@ -19,14 +20,14 @@ const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
     },
   });
 
-  const onSubmitHandler = (data: FormData) => {
-    onSubmit();
-  };
-
+  const handleFormSubmit = handleSubmit((data: FormData) => {
+    console.log(data);
+    // onSubmit(data);
+  });
   return (
-    <form onSubmit={handleSubmit(onSubmitHandler)}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+    <form onSubmit={handleFormSubmit}>
+      <Grid container spacing={2} sx={{ m: "0 auto" }}>
+        <Grid item xs={8}>
           <TextField
             fullWidth
             label="Your Name"
@@ -34,24 +35,24 @@ const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
             required
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <TextField fullWidth label="Your Address" {...register("address")} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <TextField
             fullWidth
             label="Date this credential expires"
             {...register("expirationDate")}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <TextField
             fullWidth
             label="Date Awarded"
             {...register("awardedDate")}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <TextField
             fullWidth
             label="Skill Name"
@@ -59,7 +60,7 @@ const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
             required
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <TextField
             fullWidth
             label="Skill Criteria"
@@ -68,7 +69,7 @@ const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
             rows={4}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <TextField
             fullWidth
             label="Skill Description"
@@ -77,17 +78,17 @@ const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
             rows={4}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <TextField
             fullWidth
             label="Badge Image URL"
             {...register("badgeImage")}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <TextField fullWidth label="Evidence URL" {...register("evidence")} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <TextField
             fullWidth
             label="DID Key Seed"
@@ -96,7 +97,12 @@ const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
           />
         </Grid>
       </Grid>
-      <Button type="submit" variant="contained" color="primary">
+      <Button
+        sx={{ mt: "10px" }}
+        type="submit"
+        variant="contained"
+        color="primary"
+      >
         Sign Credential
       </Button>
     </form>
