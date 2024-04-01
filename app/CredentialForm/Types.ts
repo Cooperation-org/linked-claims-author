@@ -13,7 +13,7 @@ export interface Achievement {
   criteria: { narrative: string };
   description: string;
   name: string;
-  image: { id: string; type: string };
+  imageURl: string ;
 }
 
 export interface CredentialSubject {
