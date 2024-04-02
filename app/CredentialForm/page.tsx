@@ -1,10 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormProps, FormData } from "./types";
 import { TextField, Grid, Button } from "@mui/material";
 
 const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
+  const [formData, setFormData] = useState<FormData>();
   const { register, handleSubmit } = useForm<FormData>({
     defaultValues: {
       name: "",
@@ -22,8 +23,21 @@ const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     console.log(data);
+    setFormData(data);
     // onSubmit(data);
+
+    const codeToCopy = JSON.stringify(data, null, 2);
+
+    navigator.clipboard
+      .writeText(codeToCopy)
+      .then(() => {
+        alert("Form values copied to clipboard");
+      })
+      .catch((err) => {
+        console.error("Unable to copy form values to clipboard: ", err);
+      });
   });
+
   return (
     <form onSubmit={handleFormSubmit}>
       <Grid container spacing={2} sx={{ m: "0 auto" }}>
@@ -95,6 +109,11 @@ const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
             {...register("didKeySeed")}
             required
           />
+          <pre>
+            <code style={{ color: "black" }}>
+              {JSON.stringify(formData, null, 2)}
+            </code>
+          </pre>
         </Grid>
       </Grid>
       <Button
