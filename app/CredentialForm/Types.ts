@@ -58,7 +58,7 @@ export interface FormData {
 export interface FormProps {
   formData: FormData;
   // onChange: (data: Partial<FormData>) => void;
-  onSubmit: (data: FormData) => void;
+  // onSubmit: (data: FormData) => void;
 }
 
 // Component Props for the credential display

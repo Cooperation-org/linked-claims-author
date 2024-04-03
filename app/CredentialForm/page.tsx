@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 import { FormProps, FormData } from "./types";
 import { TextField, Grid, Button } from "@mui/material";
 
-const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
+const FormComponent: React.FC<FormProps> = () => {
   const [formData, setFormData] = useState<FormData>();
-  const { register, handleSubmit } = useForm<FormData>({
+  const { register, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
       name: "",
       address: "",
@@ -24,14 +24,13 @@ const FormComponent: React.FC<FormProps> = ({ onSubmit }) => {
   const handleFormSubmit = handleSubmit((data: FormData) => {
     console.log(data);
     setFormData(data);
-    // onSubmit(data);
-
     const codeToCopy = JSON.stringify(data, null, 2);
 
     navigator.clipboard
       .writeText(codeToCopy)
       .then(() => {
-        alert("Form values copied to clipboard");
+        console.log("Form values copied to clipboard");
+        reset();
       })
       .catch((err) => {
         console.error("Unable to copy form values to clipboard: ", err);
