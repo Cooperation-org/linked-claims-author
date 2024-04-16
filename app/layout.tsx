@@ -2,7 +2,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/NavBar";
-import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { CssBaseline, ThemeProvider, createTheme, Box } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,7 +37,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <NavBar />
-          {children}
+          <Box sx={{ height: `calc(100vh - 26px)` }}>{children}</Box>
         </body>
       </html>
     </ThemeProvider>
