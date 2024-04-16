@@ -1,10 +1,12 @@
-import { Link } from "@mui/material";
+import { Box } from "@mui/material";
+import React from "react";
 
-export default function Home() {
+const page = () => {
   return (
     <>
-      <div>hi</div>
-      <Link href="/CredentialForm"> go to login page </Link>
+      <Box sx={{ color: "black" }}>Landing page</Box>
     </>
   );
-}
+};
+
+export default page;
