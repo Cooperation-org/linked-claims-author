@@ -5,11 +5,11 @@ import Image from "next/image";
 import chat from "./Assets/Ghost Copy Blocks.png";
 import checkMark from "./Assets/Checkmark for 2nd Phone.png";
 import SVGDesign, {
-  SVGLogo,
   SVGBadgeCheck,
   SVGMobile,
   SVGInMobile,
   SVGCheckMark,
+  SVGCheckMarks,
 } from "./Assets/SVGs";
 const page = () => {
   return (
@@ -89,8 +89,8 @@ const page = () => {
           <Box
             sx={{
               position: "absolute",
-              right: "272px",
-              bottom: "-68px",
+              right: "80%",
+              bottom: "-18%",
               zIndex: 1111111,
             }}
           >
@@ -268,6 +268,122 @@ const page = () => {
               <SVGInMobile />
             </Box>
             <SVGMobile />
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "inline-flex",
+            flexDirection: "column",
+            gap: "15px",
+            alignItems: "center",
+            width: { xs: "92%" },
+          }}
+        >
+          <Box
+            sx={{ display: "flex", gap: "15px", width: "300px", mr: "20px" }}
+          >
+            <SVGCheckMarks />
+            <Typography
+              sx={{
+                color: "#202E5B",
+                fontFamily: "Lato",
+                fontSize: "18px",
+                fontStyle: "normal",
+                fontWeight: "400",
+                lineHeight: "normal",
+              }}
+            >
+              Personalized AI skill descriptions
+            </Typography>
+          </Box>
+          <Box
+            sx={{ display: "flex", gap: "15px", width: "300px", mr: "20px" }}
+          >
+            <SVGCheckMarks />
+            <Typography
+              sx={{
+                color: "#202E5B",
+                fontFamily: "Lato",
+                fontSize: "18px",
+                fontStyle: "normal",
+                fontWeight: "400",
+                lineHeight: "normal",
+              }}
+            >
+              Instant insight into your strengths
+            </Typography>
+          </Box>
+          <Box
+            sx={{ display: "flex", gap: "15px", width: "300px", mr: "20px" }}
+          >
+            <SVGCheckMarks />
+            <Typography
+              sx={{
+                color: "#202E5B",
+                fontFamily: "Lato",
+                fontSize: "18px",
+                fontStyle: "normal",
+                fontWeight: "400",
+                lineHeight: "normal",
+              }}
+            >
+              Increased employer visibility
+            </Typography>
+          </Box>
+          <Box
+            sx={{ display: "flex", gap: "15px", width: "300px", mr: "20px" }}
+          >
+            <SVGCheckMarks />
+            <Typography
+              sx={{
+                color: "#202E5B",
+                fontFamily: "Lato",
+                fontSize: "18px",
+                fontStyle: "normal",
+                fontWeight: "400",
+                lineHeight: "normal",
+              }}
+            >
+              Personalized resumes for each job
+            </Typography>
+          </Box>
+          <Box
+            sx={{ display: "flex", gap: "15px", width: "300px", mr: "20px" }}
+          >
+            <SVGCheckMarks />
+            <Typography
+              sx={{
+                color: "#202E5B",
+                fontFamily: "Lato",
+                fontSize: "18px",
+                fontStyle: "normal",
+                fontWeight: "400",
+                lineHeight: "normal",
+              }}
+            >
+              Faster background checks
+            </Typography>
+          </Box>
+        </Box>
+        <Box sx={{ width: "100%", height: "350px", background: "#F6F6F6" }}>
+          <Typography
+            sx={{
+              color: "#242F56",
+              fontFamily: "Poppins",
+              fontSize: 24,
+              fontStyle: "normal",
+              fontWeight: 600,
+              lineHeight: "125%",
+              width:'calc(100%- 30px)',
+              display:'flex',
+              justifyContent: 'flex-start',
+              m:'53px 0 33px'
+            }}
+          >
+            Your data. Your stories.
+          </Typography>
+          <Box sx={{display:'flex',OverflowY:'auto'}}>
+            <Box sx={{width:'328px',height:'192px',borderRadius:'10px',opacity:0.9,bgcolor:'#FFCB25',}}></Box>
           </Box>
         </Box>
       </Box>
