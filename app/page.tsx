@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import image from "./Assets/Small Main Photo.png";
 import Image from "next/image";
 import chat from "./Assets/Ghost Copy Blocks.png";
@@ -11,15 +11,16 @@ import SVGDesign, {
   SVGCheckMark,
   SVGCheckMarks,
 } from "./Assets/SVGs";
+import img from "./Assets/Annika Rangarajan.png";
 const page = () => {
   return (
     <>
       <Box
         sx={{
-          ml: "17px",
           display: "flex",
           flexDirection: "column",
           gap: "37px",
+          alignItems: "center",
         }}
       >
         <Box
@@ -89,7 +90,7 @@ const page = () => {
           <Box
             sx={{
               position: "absolute",
-              right: "80%",
+              right: "78%",
               bottom: "-18%",
               zIndex: 1111111,
             }}
@@ -374,17 +375,123 @@ const page = () => {
               fontStyle: "normal",
               fontWeight: 600,
               lineHeight: "125%",
-              width:'calc(100%- 30px)',
-              display:'flex',
-              justifyContent: 'flex-start',
-              m:'53px 0 33px'
+              width: "calc(100%- 30px)",
+              display: "flex",
+              justifyContent: "flex-start",
+              m: "53px 17px 33px ",
             }}
           >
             Your data. Your stories.
           </Typography>
-          <Box sx={{display:'flex',OverflowY:'auto'}}>
-            <Box sx={{width:'328px',height:'192px',borderRadius:'10px',opacity:0.9,bgcolor:'#FFCB25',}}></Box>
-          </Box>
+          <Stack
+            direction="row"
+            sx={{ display: "flex", overflowY: "auto", gap: "10px", pl: "16px" }}
+          >
+            <Box
+              sx={{
+                minWidth: "328px",
+                height: "192px",
+                borderRadius: "10px",
+                opacity: 0.9,
+                bgcolor: "#FFCB25",
+                display: "flex",
+                p:'27px',
+                gap:'15px'
+              }}
+            >
+              <Image
+                style={{
+                  height: "57px",
+                  width: "57px",
+                }}
+                src={img}
+                alt="logo"
+              />
+              <Box>
+                <Typography
+                  sx={{
+                    width: "212px",
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "13px",
+                    fontStyle: "normal",
+                    fontWeight: "700",
+                    lineHeight: "normal",
+                    mb:'15px'
+                  }}
+                >
+                  Dheepthi Ravikumar
+                </Typography>
+                <Typography
+                  sx={{
+                    width: "212px",
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "16px",
+                    fontStyle: "normal",
+                    fontWeight: "400",
+                    lineHeight: "normal",
+                  }}
+                >
+                  “LinkedClaims helped me see that I had way more skills than I
+                  realized. It gave me the confidence I needed to apply for a
+                  job I never would have applied for otherwise.”
+                </Typography>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                minWidth: "328px",
+                height: "192px",
+                borderRadius: "10px",
+                opacity: 0.9,
+                bgcolor: "#FFCB25",
+                display: "flex",
+                p:'27px',
+                gap:'15px'
+              }}
+            >
+              <Image
+                style={{
+                  height: "57px",
+                  width: "57px",
+                }}
+                src={img}
+                alt="logo"
+              />
+              <Box>
+                <Typography
+                  sx={{
+                    width: "212px",
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "13px",
+                    fontStyle: "normal",
+                    fontWeight: "700",
+                    lineHeight: "normal",
+                    mb:'15px'
+                  }}
+                >
+                  Dheepthi Ravikumar
+                </Typography>
+                <Typography
+                  sx={{
+                    width: "212px",
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "16px",
+                    fontStyle: "normal",
+                    fontWeight: "400",
+                    lineHeight: "normal",
+                  }}
+                >
+                  “LinkedClaims helped me see that I had way more skills than I
+                  realized. It gave me the confidence I needed to apply for a
+                  job I never would have applied for otherwise.”
+                </Typography>
+              </Box>
+            </Box>
+          </Stack>
         </Box>
       </Box>
     </>
