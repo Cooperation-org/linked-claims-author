@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/NavBar";
 import { CssBaseline, ThemeProvider, createTheme, Box } from "@mui/material";
-import Footer from './components/Footer'
+import Footer from "./components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,11 +36,11 @@ export default function RootLayout({
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <html lang="en">
-        <body className={inter.className}>
+        <Box sx={{ height: "100vh" }}>
           <NavBar />
-          <Box>{children}</Box>
-          <Footer/>
-        </body>
+          <Box sx={{minHeight: "calc(100% - 153px)", position: "relative" }}>{children}</Box>
+          <Footer />
+        </Box>
       </html>
     </ThemeProvider>
   );
