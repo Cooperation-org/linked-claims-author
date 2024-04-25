@@ -8,19 +8,27 @@ import vector from ".././Assets/Vector 145.png";
 
 const FormComponent = () => {
   return (
-    <Box >
-      <Box sx={{ paddingTop: "38px" }}>
-        <Image
-          style={{ width: "100%", height: "100px" }}
-          src={img}
-          alt="logo"
-        />
+    <Box
+      sx={{
+        minHeight: "calc(100vh - 153px)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <Box>
+        <Box sx={{ paddingTop: "38px" }}>
+          <Image
+            style={{ width: "100%", height: "100px" }}
+            src={img}
+            alt="logo"
+          />
+        </Box>
+        <Form />
       </Box>
-      <Form />
       <Box
         sx={{
-          position: "absolute",
-          bottom: "0",
+          mt: "30px",
           width: "100%",
           height: "114px",
           bgcolor: "#D1E4FF",
@@ -33,7 +41,7 @@ const FormComponent = () => {
         <Box>
           <Image src={fram} alt="fram" />
         </Box>
-        <Box sx={{ display: "flex" }}>
+        <Box>
           <Typography
             sx={{
               width: "200px",

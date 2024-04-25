@@ -1,7 +1,12 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormProps, FormData } from "./types";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import { TextField, Box, Button, Typography } from "@mui/material";
 
 const textGuid = [
@@ -18,8 +23,9 @@ const textGuid = [
 const note =
   "Please note, all fields marked with an asterisk are required and must be completed.";
 
-const CredentialForm: React.FC<FormProps> = () => {
+const Form: React.FC<FormProps> = () => {
   const [formData, setFormData] = useState<FormData>();
+  const [value, setValue] = React.useState("Save to My Device");
   const { register, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
       name: "",
@@ -34,6 +40,11 @@ const CredentialForm: React.FC<FormProps> = () => {
       didKeySeed: "",
     },
   });
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+    console.log(event.target.value);
+  };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     console.log(data);
@@ -77,32 +88,95 @@ const CredentialForm: React.FC<FormProps> = () => {
         Hi, I’m Tessa! Where do you want to save your LinkedClaims?
         <span style={{ color: "red" }}> *</span>
       </Typography>
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
-        }}
-      >
-        <Box>
-          <TextField
-            fullWidth
-            label="Your Name"
-            {...register("name")}
-            required
-          />
-        </Box>
-        <Box>
-          <TextField fullWidth label="Your Address" {...register("address")} />
-        </Box>
-        <Box>
-          <TextField
-            fullWidth
-            label="Date this credential expires"
-            {...register("expirationDate")}
-          />
-        </Box>
+      <Box sx={{pl:'15px'}}>
+        <FormControl sx={{ width: "100%" }}>
+          <RadioGroup
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "15px",
+              m: "0 auto",
+            }}
+            aria-labelledby="demo-controlled-radio-buttons-group"
+            name="controlled-radio-buttons-group"
+            value={value}
+            onChange={handleChange}
+          >
+            <FormControlLabel
+              sx={{
+                bgcolor: "#FFF",
+                borderRadius: "8px",
+                border: "1px solid #E5E7EB",
+              }}
+              value="Device"
+              control={
+                <Radio
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "#2563EB",
+                    },
+                  }}
+                />
+              }
+              label="Save to My Device"
+            />
+            <FormControlLabel
+              sx={{
+                bgcolor: "#FFF",
+                borderRadius: "8px",
+                border: "1px solid #E5E7EB",
+              }}
+              value="Google Drive"
+              control={
+                <Radio
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "#2563EB",
+                    },
+                  }}
+                />
+              }
+              label="Google Drive"
+            />
+            <FormControlLabel
+              sx={{
+                bgcolor: "#FFF",
+                borderRadius: "8px",
+                border: "1px solid #E5E7EB",
+                pr: "5px",
+              }}
+              value="Digital Wallet"
+              control={
+                <Radio
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "#2563EB",
+                    },
+                  }}
+                />
+              }
+              label="Your Digital Wallet (e.g. Corner Pocket)"
+            />
+            <FormControlLabel
+              sx={{
+                bgcolor: "#FFF",
+                borderRadius: "8px",
+                border: "1px solid #E5E7EB",
+              }}
+              value="Dropbox"
+              control={
+                <Radio
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "#2563EB",
+                    },
+                  }}
+                />
+              }
+              label="Dropbox"
+            />
+          </RadioGroup>
+        </FormControl>
       </Box>
       <Button
         variant="contained"
@@ -124,4 +198,4 @@ const CredentialForm: React.FC<FormProps> = () => {
   );
 };
 
-export default CredentialForm;
+export default Form;

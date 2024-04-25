@@ -36,11 +36,11 @@ export default function RootLayout({
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <html lang="en">
-        <Box sx={{ height: "100vh" }}>
+        <body style={{ minHeight: "100vh" }}>
           <NavBar />
-          <Box sx={{minHeight: "calc(100% - 153px)", position: "relative" }}>{children}</Box>
+          <Box sx={{ minHeight: "calc(100vh - 153px)" }}>{children}</Box>
           <Footer />
-        </Box>
+        </body>
       </html>
     </ThemeProvider>
   );
