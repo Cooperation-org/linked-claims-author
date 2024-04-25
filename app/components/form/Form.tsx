@@ -10,7 +10,7 @@ import FormLabel from "@mui/material/FormLabel";
 import { TextField, Box, Button, Typography } from "@mui/material";
 
 const textGuid = [
-  "Hi, I’m Tessa! Where do you want to save your LinkedClaims? *",
+  "Hi, I’m Tessa! Where do you want to save your LinkedClaims? ",
   "Let’s get started with your name and address.",
   "Thanks, Alice!  Now let’s learn more about the skills you have.",
   "Now describe what you can demonstrate using this skill.",
@@ -25,7 +25,9 @@ const note =
 
 const Form: React.FC<FormProps> = () => {
   const [formData, setFormData] = useState<FormData>();
-  const [value, setValue] = React.useState("Save to My Device");
+  const [value, setValue] = useState("Device");
+  const [activeStep, setActiveStep] = useState(0);
+  const maxSteps = textGuid.length;
   const { register, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
       name: "",
@@ -40,6 +42,14 @@ const Form: React.FC<FormProps> = () => {
       didKeySeed: "",
     },
   });
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
@@ -85,11 +95,26 @@ const Form: React.FC<FormProps> = () => {
           p: "0 30px",
         }}
       >
-        Hi, I’m Tessa! Where do you want to save your LinkedClaims?
-        <span style={{ color: "red" }}> *</span>
+        {textGuid[activeStep]}
+        {activeStep === 0 && <span style={{ color: "red" }}> *</span>}
       </Typography>
-      <Box sx={{pl:'15px'}}>
+      <Box sx={{ pl: "15px" }}>
         <FormControl sx={{ width: "100%" }}>
+          <FormLabel
+            sx={{
+              color: "var(--T3-Body-Text, #202E5B)",
+              fontFamily: "Lato",
+              fontSize: "16px",
+              fontStyle: "normal",
+              fontWeight: 600,
+              lineHeight: "normal",
+              letterSpacing: "0.08px",
+              mb: "7px",
+            }}
+            id="demo-controlled-radio-buttons-group"
+          >
+            Is this for a individual or a business?
+          </FormLabel>
           <RadioGroup
             sx={{
               display: "flex",
@@ -102,84 +127,134 @@ const Form: React.FC<FormProps> = () => {
             value={value}
             onChange={handleChange}
           >
-            <FormControlLabel
-              sx={{
-                bgcolor: "#FFF",
-                borderRadius: "8px",
-                border: "1px solid #E5E7EB",
-              }}
-              value="Device"
-              control={
-                <Radio
-                  sx={{
-                    "&.Mui-checked": {
-                      color: "#2563EB",
-                    },
-                  }}
-                />
-              }
-              label="Save to My Device"
-            />
-            <FormControlLabel
-              sx={{
-                bgcolor: "#FFF",
-                borderRadius: "8px",
-                border: "1px solid #E5E7EB",
-              }}
-              value="Google Drive"
-              control={
-                <Radio
-                  sx={{
-                    "&.Mui-checked": {
-                      color: "#2563EB",
-                    },
-                  }}
-                />
-              }
-              label="Google Drive"
-            />
-            <FormControlLabel
-              sx={{
-                bgcolor: "#FFF",
-                borderRadius: "8px",
-                border: "1px solid #E5E7EB",
-                pr: "5px",
-              }}
-              value="Digital Wallet"
-              control={
-                <Radio
-                  sx={{
-                    "&.Mui-checked": {
-                      color: "#2563EB",
-                    },
-                  }}
-                />
-              }
-              label="Your Digital Wallet (e.g. Corner Pocket)"
-            />
-            <FormControlLabel
-              sx={{
-                bgcolor: "#FFF",
-                borderRadius: "8px",
-                border: "1px solid #E5E7EB",
-              }}
-              value="Dropbox"
-              control={
-                <Radio
-                  sx={{
-                    "&.Mui-checked": {
-                      color: "#2563EB",
-                    },
-                  }}
-                />
-              }
-              label="Dropbox"
-            />
+            {activeStep === 0 && (
+              <FormControlLabel
+                sx={{
+                  bgcolor: "#FFF",
+                  borderRadius: "8px",
+                  border: "1px solid #E5E7EB",
+                }}
+                value="Device"
+                control={
+                  <Radio
+                    sx={{
+                      "&.Mui-checked": {
+                        color: "#2563EB",
+                      },
+                    }}
+                  />
+                }
+                label="Save to My Device"
+              />
+            )}
+            {activeStep === 0 && (
+              <FormControlLabel
+                sx={{
+                  bgcolor: "#FFF",
+                  borderRadius: "8px",
+                  border: "1px solid #E5E7EB",
+                }}
+                value="Google Drive"
+                control={
+                  <Radio
+                    sx={{
+                      "&.Mui-checked": {
+                        color: "#2563EB",
+                      },
+                    }}
+                  />
+                }
+                label="Google Drive"
+              />
+            )}
+            {activeStep === 0 && (
+              <FormControlLabel
+                sx={{
+                  bgcolor: "#FFF",
+                  borderRadius: "8px",
+                  border: "1px solid #E5E7EB",
+                  pr: "5px",
+                }}
+                value="Digital Wallet"
+                control={
+                  <Radio
+                    sx={{
+                      "&.Mui-checked": {
+                        color: "#2563EB",
+                      },
+                    }}
+                  />
+                }
+                label="Your Digital Wallet (e.g. Corner Pocket)"
+              />
+            )}
+            {activeStep === 0 && (
+              <FormControlLabel
+                sx={{
+                  bgcolor: "#FFF",
+                  borderRadius: "8px",
+                  border: "1px solid #E5E7EB",
+                }}
+                value="Dropbox"
+                control={
+                  <Radio
+                    sx={{
+                      "&.Mui-checked": {
+                        color: "#2563EB",
+                      },
+                    }}
+                  />
+                }
+                label="Dropbox"
+              />
+            )}
+            {activeStep === 1 && (
+              <FormControlLabel
+                sx={{
+                  bgcolor: "#FFF",
+                  borderRadius: "8px",
+                  border: "1px solid #E5E7EB",
+                  pr: "5px",
+                }}
+                value="Digital Wallet"
+                control={
+                  <Radio
+                    sx={{
+                      "&.Mui-checked": {
+                        color: "#2563EB",
+                      },
+                    }}
+                  />
+                }
+                label="Your Digital Wallet (e.g. Corner Pocket)"
+              />
+            )}
+            {activeStep === 1 && (
+              <FormControlLabel
+                sx={{
+                  bgcolor: "#FFF",
+                  borderRadius: "8px",
+                  border: "1px solid #E5E7EB",
+                }}
+                value="Dropbox"
+                control={
+                  <Radio
+                    sx={{
+                      "&.Mui-checked": {
+                        color: "#2563EB",
+                      },
+                    }}
+                  />
+                }
+                label="Dropbox"
+              />
+            )}
           </RadioGroup>
         </FormControl>
       </Box>
       <Button
         variant="contained"
+        onClick={handleNext}
         sx={{
           display: "flex",
           padding: "10px 24px",
