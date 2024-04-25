@@ -92,12 +92,26 @@ const Form: React.FC<FormProps> = () => {
           fontStyle: "normal",
           fontWeight: 400,
           lineHeight: "normal",
-          p: "0 30px",
         }}
       >
         {textGuid[activeStep]}
         {activeStep === 0 && <span style={{ color: "red" }}> *</span>}
       </Typography>
+      {activeStep !== 0 && (
+        <Typography
+        sx={{
+          color: '#202E5B',
+          textAlign: 'center',
+          fontFamily: 'Lato',
+          fontSize: '16px',
+          fontStyle: 'italic',
+          fontWeight: 400,
+          lineHeight: 'normal'
+        }}
+        >
+          {note}
+        </Typography>
+      )}
       <Box sx={{ pl: "15px" }}>
         <FormControl sx={{ width: "100%" }}>
           <FormLabel
