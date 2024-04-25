@@ -53,7 +53,6 @@ const Form: React.FC<FormProps> = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
-    console.log(event.target.value);
   };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
@@ -99,15 +98,15 @@ const Form: React.FC<FormProps> = () => {
       </Typography>
       {activeStep !== 0 && (
         <Typography
-        sx={{
-          color: '#202E5B',
-          textAlign: 'center',
-          fontFamily: 'Lato',
-          fontSize: '16px',
-          fontStyle: 'italic',
-          fontWeight: 400,
-          lineHeight: 'normal'
-        }}
+          sx={{
+            color: "#202E5B",
+            textAlign: "center",
+            fontFamily: "Lato",
+            fontSize: "16px",
+            fontStyle: "italic",
+            fontWeight: 400,
+            lineHeight: "normal",
+          }}
         >
           {note}
         </Typography>
@@ -266,23 +265,87 @@ const Form: React.FC<FormProps> = () => {
           </RadioGroup>
         </FormControl>
       </Box>
-      <Button
-        variant="contained"
-        onClick={handleNext}
+      <Box
         sx={{
+          height: "40px",
           display: "flex",
-          padding: "10px 24px",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "8px",
-          borderRadius: "100px",
-          bgcolor: "#003FE0",
-          width: "20px",
-          textTransform: "capitalize",
+          gap: "15px",
+          justifyContent: activeStep !== 0 ? "space-between" : "center",
         }}
       >
-        Next
-      </Button>
+        {activeStep !== 0 && (
+          <Button
+            variant="contained"
+            onClick={handleBack}
+            sx={{
+              display: "flex",
+              padding: "0 24px",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "100px",
+              bgcolor: "#FFF",
+              textTransform: "capitalize",
+              color: "#4E4E4E",
+              textAlign: "center",
+              fontFamily: "Roboto",
+              fontSize: "14px",
+              fontStyle: "normal",
+              fontWeight: 500,
+              lineHeight: "20px",
+            }}
+          >
+            back
+          </Button>
+        )}
+        {activeStep !== 0 && (
+          <Button
+            variant="contained"
+            onClick={() => {}}
+            sx={{
+              display: "flex",
+              padding: "10px 24px",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "8px",
+              borderRadius: "100px",
+              bgcolor: "#FFF",
+              textTransform: "capitalize",
+              color: "#4E4E4E",
+              textAlign: "center",
+              fontFamily: "Roboto",
+              fontSize: "14px",
+              fontStyle: "normal",
+              fontWeight: 500,
+              lineHeight: "20px",
+            }}
+          >
+            save & Exit
+          </Button>
+        )}
+        <Button
+          variant="contained"
+          onClick={handleNext}
+          sx={{
+            display: "flex",
+            padding: "10px 24px",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "8px",
+            borderRadius: "100px",
+            bgcolor: "#003FE0",
+            width: "20px",
+            textTransform: "capitalize",
+            textAlign: "center",
+            fontFamily: "Roboto",
+            fontSize: "14px",
+            fontStyle: "normal",
+            fontWeight: 500,
+            lineHeight: "20px",
+          }}
+        >
+          Next
+        </Button>
+      </Box>
     </form>
   );
 };
