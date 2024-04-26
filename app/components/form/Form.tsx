@@ -23,7 +23,7 @@ const textGuid = [
 const note =
   "Please note, all fields marked with an asterisk are required and must be completed.";
 
-const Form: React.FC<FormProps> = () => {
+const Form = () => {
   const [formData, setFormData] = useState<FormData>();
   const [value, setValue] = useState("Device");
   const [activeStep, setActiveStep] = useState(0);
