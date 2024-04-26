@@ -111,9 +111,9 @@ const Form = () => {
           {note}
         </Typography>
       )}
-      <Box sx={{ pl: "15px" }}>
+      <Box sx={{ pl: "15px",width:'100%' }}>
         <FormControl sx={{ width: "100%" }}>
-          <FormLabel
+          { activeStep === 1 &&<FormLabel
             sx={{
               color: "var(--T3-Body-Text, #202E5B)",
               fontFamily: "Lato",
@@ -127,13 +127,14 @@ const Form = () => {
             id="demo-controlled-radio-buttons-group"
           >
             Is this for a individual or a business?
-          </FormLabel>
+          </FormLabel>}
           <RadioGroup
             sx={{
               display: "flex",
               flexDirection: "column",
               gap: "15px",
               m: "0 auto",
+              width: "100%",
             }}
             aria-labelledby="demo-controlled-radio-buttons-group"
             name="controlled-radio-buttons-group"
@@ -229,7 +230,7 @@ const Form = () => {
                   border: "1px solid #E5E7EB",
                   pr: "5px",
                 }}
-                value="Digital Wallet"
+                value="Individual"
                 control={
                   <Radio
                     sx={{
@@ -239,7 +240,7 @@ const Form = () => {
                     }}
                   />
                 }
-                label="Your Digital Wallet (e.g. Corner Pocket)"
+                label="Individual"
               />
             )}
             {activeStep === 1 && (
@@ -249,7 +250,7 @@ const Form = () => {
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
                 }}
-                value="Dropbox"
+                value="Business"
                 control={
                   <Radio
                     sx={{
@@ -259,7 +260,7 @@ const Form = () => {
                     }}
                   />
                 }
-                label="Dropbox"
+                label="Business"
               />
             )}
           </RadioGroup>
@@ -325,6 +326,7 @@ const Form = () => {
         <Button
           variant="contained"
           onClick={handleNext}
+          disabled={activeStep === maxSteps - 1}
           sx={{
             display: "flex",
             padding: "10px 24px",
