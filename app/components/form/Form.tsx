@@ -8,6 +8,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { TextField, Box, Button, Typography } from "@mui/material";
+import TextEditor from "../Texteditor";
 
 const textGuid = [
   "Hi, I’m Tessa! Where do you want to save your LinkedClaims? ",
@@ -124,9 +125,9 @@ const Form = () => {
                 lineHeight: "normal",
                 letterSpacing: "0.08px",
                 mb: "7px",
-                '&.Mui-focused': {
+                "&.Mui-focused": {
                   color: "#000",
-                }
+                },
               }}
               id="form-type-label"
             >
@@ -270,16 +271,16 @@ const Form = () => {
             )}
           </RadioGroup>
           {activeStep === 1 && (
-            <Box sx={{ ml: "-10px", mt: "20px", }}>
+            <Box sx={{ ml: "-10px", mt: "20px" }}>
               <FormLabel
                 sx={{
                   color: "#202E5B",
                   fontFamily: "Lato",
                   fontSize: "16px",
                   fontWeight: 600,
-                  '&.Mui-focused': {
+                  "&.Mui-focused": {
                     color: "#000",
-                  }
+                  },
                 }}
                 id="name-label"
               >
@@ -291,12 +292,11 @@ const Form = () => {
                 variant="outlined"
                 sx={{
                   bgcolor: "#FFF",
-                  borderRadius: "800px",
                   width: "100%",
-                  mt:'3px',
-                  '& .MuiOutlinedInput-root': {  
-                    borderRadius: '8px',
-                  }
+                  mt: "3px",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                  },
                 }}
                 aria-labelledby="name-label"
                 inputProps={{
@@ -310,6 +310,93 @@ const Form = () => {
                   },
                 }}
               />
+            </Box>
+          )}
+          {activeStep === 2 && (
+            <Box>
+              <Box sx={{ ml: "-10px" }}>
+                <FormLabel
+                  sx={{
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    "&.Mui-focused": {
+                      color: "#000",
+                    },
+                  }}
+                  id="name-label"
+                >
+                  Credential Name
+                  <span style={{ color: "red" }}> *</span>
+                </FormLabel>
+                <TextField
+                  placeholder="e.g., Community Gardening Coordinator"
+                  variant="outlined"
+                  sx={{
+                    bgcolor: "#FFF",
+                    borderRadius: "800px",
+                    width: "100%",
+                    mt: "3px",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                    },
+                  }}
+                  aria-labelledby="name-label"
+                  inputProps={{
+                    "aria-label": "weight",
+                    style: {
+                      color: "black",
+                      fontSize: "15px",
+                      fontStyle: "italic",
+                      fontWeight: 700,
+                      letterSpacing: "0.075px",
+                    },
+                  }}
+                />
+              </Box>
+              <TextEditor/>
+              <Box sx={{ ml: "-10px" }}>
+                <FormLabel
+                  sx={{
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    "&.Mui-focused": {
+                      color: "#000",
+                    },
+                  }}
+                  id="name-label"
+                >
+                  Duration
+                  <span style={{ color: "red" }}> *</span>
+                </FormLabel>
+                <TextField
+                  placeholder="1 Day"
+                  variant="outlined"
+                  sx={{
+                    bgcolor: "#FFF",
+                    borderRadius: "800px",
+                    width: "100%",
+                    mt: "3px",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                    },
+                  }}
+                  aria-labelledby="name-label"
+                  inputProps={{
+                    "aria-label": "weight",
+                    style: {
+                      color: "black",
+                      fontSize: "15px",
+                      fontStyle: "italic",
+                      fontWeight: 700,
+                      letterSpacing: "0.075px",
+                    },
+                  }}
+                />
+              </Box>
             </Box>
           )}
         </FormControl>
@@ -333,7 +420,7 @@ const Form = () => {
               textTransform: "capitalize",
               color: "#4E4E4E",
               fontFamily: "Roboto",
-              '&:hover': {
+              "&:hover": {
                 bgcolor: "#FFF",
               },
             }}
@@ -354,7 +441,7 @@ const Form = () => {
               color: "#4E4E4E",
               fontFamily: "Roboto",
               lineHeight: "20px",
-              '&:hover': {
+              "&:hover": {
                 bgcolor: "#FFF",
               },
             }}
@@ -374,7 +461,7 @@ const Form = () => {
             textTransform: "capitalize",
             fontFamily: "Roboto",
             lineHeight: "20px",
-            '&:hover': {
+            "&:hover": {
               bgcolor: "#003FE0",
             },
           }}
