@@ -111,23 +111,28 @@ const Form = () => {
           {note}
         </Typography>
       )}
-      <Box sx={{ pl: "15px",width:'100%' }}>
+      <Box sx={{ pl: "15px", width: "100%" }}>
         <FormControl sx={{ width: "100%" }}>
-          { activeStep === 1 &&<FormLabel
-            sx={{
-              color: "var(--T3-Body-Text, #202E5B)",
-              fontFamily: "Lato",
-              fontSize: "16px",
-              fontStyle: "normal",
-              fontWeight: 600,
-              lineHeight: "normal",
-              letterSpacing: "0.08px",
-              mb: "7px",
-            }}
-            id="demo-controlled-radio-buttons-group"
-          >
-            Is this for a individual or a business?
-          </FormLabel>}
+          {activeStep === 1 && (
+            <FormLabel
+              sx={{
+                color: "var(--T3-Body-Text, #202E5B)",
+                fontFamily: "Lato",
+                fontSize: "16px",
+                fontStyle: "normal",
+                fontWeight: 600,
+                lineHeight: "normal",
+                letterSpacing: "0.08px",
+                mb: "7px",
+                '&.Mui-focused': {
+                  color: "#000",
+                }
+              }}
+              id="form-type-label"
+            >
+              Is this for a individual or a business?
+            </FormLabel>
+          )}
           <RadioGroup
             sx={{
               display: "flex",
@@ -136,7 +141,7 @@ const Form = () => {
               m: "0 auto",
               width: "100%",
             }}
-            aria-labelledby="demo-controlled-radio-buttons-group"
+            aria-labelledby="form-type-label"
             name="controlled-radio-buttons-group"
             value={value}
             onChange={handleChange}
@@ -264,6 +269,49 @@ const Form = () => {
               />
             )}
           </RadioGroup>
+          {activeStep === 1 && (
+            <Box sx={{ ml: "-10px", mt: "20px", }}>
+              <FormLabel
+                sx={{
+                  color: "#202E5B",
+                  fontFamily: "Lato",
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  '&.Mui-focused': {
+                    color: "#000",
+                  }
+                }}
+                id="name-label"
+              >
+                Full Name or Business Name
+                <span style={{ color: "red" }}> *</span>
+              </FormLabel>
+              <TextField
+                placeholder="e.g., Maria Fernández or Kumar Enterprises"
+                variant="outlined"
+                sx={{
+                  bgcolor: "#FFF",
+                  borderRadius: "800px",
+                  width: "100%",
+                  mt:'3px',
+                  '& .MuiOutlinedInput-root': {  
+                    borderRadius: '8px',
+                  }
+                }}
+                aria-labelledby="name-label"
+                inputProps={{
+                  "aria-label": "weight",
+                  style: {
+                    color: "black",
+                    fontSize: "15px",
+                    fontStyle: "italic",
+                    fontWeight: 700,
+                    letterSpacing: "0.075px",
+                  },
+                }}
+              />
+            </Box>
+          )}
         </FormControl>
       </Box>
       <Box
@@ -279,20 +327,15 @@ const Form = () => {
             variant="contained"
             onClick={handleBack}
             sx={{
-              display: "flex",
               padding: "0 24px",
-              justifyContent: "center",
-              alignItems: "center",
               borderRadius: "100px",
               bgcolor: "#FFF",
               textTransform: "capitalize",
               color: "#4E4E4E",
-              textAlign: "center",
               fontFamily: "Roboto",
-              fontSize: "14px",
-              fontStyle: "normal",
-              fontWeight: 500,
-              lineHeight: "20px",
+              '&:hover': {
+                bgcolor: "#FFF",
+              },
             }}
           >
             back
@@ -303,21 +346,17 @@ const Form = () => {
             variant="contained"
             onClick={() => {}}
             sx={{
-              display: "flex",
               padding: "10px 24px",
-              justifyContent: "center",
-              alignItems: "center",
               gap: "8px",
               borderRadius: "100px",
               bgcolor: "#FFF",
               textTransform: "capitalize",
               color: "#4E4E4E",
-              textAlign: "center",
               fontFamily: "Roboto",
-              fontSize: "14px",
-              fontStyle: "normal",
-              fontWeight: 500,
               lineHeight: "20px",
+              '&:hover': {
+                bgcolor: "#FFF",
+              },
             }}
           >
             save & Exit
@@ -328,21 +367,16 @@ const Form = () => {
           onClick={handleNext}
           disabled={activeStep === maxSteps - 1}
           sx={{
-            display: "flex",
             padding: "10px 24px",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "8px",
             borderRadius: "100px",
             bgcolor: "#003FE0",
             width: "20px",
             textTransform: "capitalize",
-            textAlign: "center",
             fontFamily: "Roboto",
-            fontSize: "14px",
-            fontStyle: "normal",
-            fontWeight: 500,
             lineHeight: "20px",
+            '&:hover': {
+              bgcolor: "#003FE0",
+            },
           }}
         >
           Next
