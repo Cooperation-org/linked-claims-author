@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { Box} from '@mui/material';
+import { Box, FormLabel} from '@mui/material';
 
 function TextEditor() {
     const [text, setText] = useState('');
@@ -19,8 +19,23 @@ function TextEditor() {
     };
 
     return (
-        <Box sx={{ m: 'auto',width:'100%',borderRadius: "8px", }}>
-            <ReactQuill theme="snow" value={text} onChange={handleChange} onBlur={handleBlur} />
+        <Box sx={{ m: 'auto',width:'100%',borderRadius: "8px", ml: "-10px"}}>
+            <FormLabel
+                  sx={{
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    "&.Mui-focused": {
+                      color: "#000",
+                    },
+                  }}
+                  id="name-label"
+                >
+                  Credential Name
+                  <span style={{ color: "red" }}> *</span>
+                </FormLabel>
+            <ReactQuill style={{marginTop:'5px'}} theme="snow" value={text} onChange={handleChange} onBlur={handleBlur} />
         </Box>
     );
 }

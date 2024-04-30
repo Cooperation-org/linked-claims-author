@@ -313,7 +313,7 @@ const Form = () => {
             </Box>
           )}
           {activeStep === 2 && (
-            <Box>
+            <Box sx={{display:'flex',flexDirection:'column', gap:'30px'}}>
               <Box sx={{ ml: "-10px" }}>
                 <FormLabel
                   sx={{
