@@ -77,29 +77,24 @@ const Form = () => {
     setValue(event.target.value);
   };
 
-  const handleInputChange = (
-    index: number,
-    p0: string,
-    value: string,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
+  };
+
+  const handlePortfolioChange = (index: number, field: string, value: string) => {
+    const updatedPortfolios = portfolios.map((portfolio, idx) => {
+      if (idx === index) {
+        return { ...portfolio, [field]: value };
+      }
+      return portfolio;
+    });
+    setPortfolios(updatedPortfolios);
   };
 
   const handleAddPortfolio = () => {
     if (portfolios.length < 5) {
       setPortfolios([...portfolios, { name: "", url: "" }]);
     }
-  };
-
-  const handleprofiletChange = (index: number, type: any, value: any) => {
-    const newPortfolios = portfolios.map((item, i) => {
-      if (i === index) {
-        return { ...item, [type]: value };
-      }
-      return item;
-    });
-    setPortfolios(newPortfolios);
   };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
@@ -503,7 +498,7 @@ const Form = () => {
             <Box sx={{ ml: "-10px" }}>
               {portfolios.map((portfolio, index) => (
                 <>
-                  <Box sx={{mb:'15px'}} key={index}>
+                  <Box sx={{ mb: "15px" }} key={index}>
                     <FormLabel
                       sx={{
                         color: "#202E5B",
@@ -520,9 +515,7 @@ const Form = () => {
                     </FormLabel>
                     <TextField
                       value={portfolio.name}
-                      onChange={(e) =>
-                        handleInputChange(index, "name", e.target.value)
-                      }
+                      onChange={(e) => handlePortfolioChange(index, "name", e.target.value)}
                       placeholder="Picture of the Community Garden"
                       variant="outlined"
                       sx={{
@@ -563,10 +556,9 @@ const Form = () => {
                       URL
                     </FormLabel>
                     <TextField
-                      value={portfolio.name}
-                      onChange={(e) =>
-                        handleInputChange(index, "name", e.target.value)
-                      }
+                      value={portfolio.url}
+                      onChange={(e) => handlePortfolioChange(index, "url", e.target.value)}
+
                       placeholder="https://www.pics.com"
                       variant="outlined"
                       sx={{
@@ -594,7 +586,13 @@ const Form = () => {
                 </>
               ))}
               {portfolios.length < 5 && (
-                <Box sx={{ width: "100%",justifyContent:'flex-end',display:'flex' }}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    justifyContent: "flex-end",
+                    display: "flex",
+                  }}
+                >
                   <button
                     onClick={handleAddPortfolio}
                     style={{
@@ -609,7 +607,7 @@ const Form = () => {
                       letterSpacing: "0.075px",
                       textAlign: "right",
                       lineHeight: "16px",
-                      marginTop:'7px'
+                      marginTop: "7px",
                     }}
                   >
                     Add another
