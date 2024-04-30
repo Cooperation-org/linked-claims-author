@@ -47,6 +47,7 @@ const Form = () => {
   const [value, setValue] = useState("Device");
   const [activeStep, setActiveStep] = useState(0);
   const [inputValue, setInputValue] = useState("");
+  const [portfolios, setPortfolios] = useState([{ name: "", url: "" }]);
   const characterLimit = 294;
   const maxSteps = textGuid.length;
   const { register, handleSubmit, reset } = useForm<FormData>({
@@ -76,8 +77,29 @@ const Form = () => {
     setValue(event.target.value);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    index: number,
+    p0: string,
+    value: string,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setInputValue(event.target.value);
+  };
+
+  const handleAddPortfolio = () => {
+    if (portfolios.length < 5) {
+      setPortfolios([...portfolios, { name: "", url: "" }]);
+    }
+  };
+
+  const handleprofiletChange = (index: number, type: any, value: any) => {
+    const newPortfolios = portfolios.map((item, i) => {
+      if (i === index) {
+        return { ...item, [type]: value };
+      }
+      return item;
+    });
+    setPortfolios(newPortfolios);
   };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
@@ -455,7 +477,7 @@ const Form = () => {
                   maxLength: characterLimit,
                 }}
               />
-              <Box sx={{display:'flex',gap:'5px'}}>
+              <Box sx={{ display: "flex", gap: "5px" }}>
                 <SVGSparkles />
                 <FormLabel
                   sx={{
@@ -475,6 +497,125 @@ const Form = () => {
                   Use AI to generate a description.
                 </FormLabel>
               </Box>
+            </Box>
+          )}
+          {activeStep === 4 && (
+            <Box sx={{ ml: "-10px" }}>
+              {portfolios.map((portfolio, index) => (
+                <>
+                  <Box key={index}>
+                    <FormLabel
+                      sx={{
+                        color: "#202E5B",
+                        fontFamily: "Lato",
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        "&.Mui-focused": {
+                          color: "#000",
+                        },
+                      }}
+                      id="name-label"
+                    >
+                      Name
+                    </FormLabel>
+                    <TextField
+                      value={portfolio.name}
+                      onChange={(e) =>
+                        handleInputChange(index, "name", e.target.value)
+                      }
+                      placeholder="Picture of the Community Garden"
+                      variant="outlined"
+                      sx={{
+                        bgcolor: "#FFF",
+                        borderRadius: "800px",
+                        width: "100%",
+                        mt: "3px",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "8px",
+                        },
+                      }}
+                      aria-labelledby="name-label"
+                      inputProps={{
+                        "aria-label": "weight",
+                        style: {
+                          color: "black",
+                          fontSize: "15px",
+                          fontStyle: "italic",
+                          fontWeight: 700,
+                          letterSpacing: "0.075px",
+                        },
+                      }}
+                    />
+                  </Box>
+                  <Box key={index}>
+                    <FormLabel
+                      sx={{
+                        color: "#202E5B",
+                        fontFamily: "Lato",
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        "&.Mui-focused": {
+                          color: "#000",
+                        },
+                      }}
+                      id="name-label"
+                    >
+                      URL
+                    </FormLabel>
+                    <TextField
+                      value={portfolio.name}
+                      onChange={(e) =>
+                        handleInputChange(index, "name", e.target.value)
+                      }
+                      placeholder="https://www.pics.com"
+                      variant="outlined"
+                      sx={{
+                        bgcolor: "#FFF",
+                        borderRadius: "800px",
+                        width: "100%",
+                        mt: "3px",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "8px",
+                        },
+                      }}
+                      aria-labelledby="name-label"
+                      inputProps={{
+                        "aria-label": "weight",
+                        style: {
+                          color: "black",
+                          fontSize: "15px",
+                          fontStyle: "italic",
+                          fontWeight: 700,
+                          letterSpacing: "0.075px",
+                        },
+                      }}
+                    />
+                  </Box>
+                </>
+              ))}
+              {portfolios.length < 5 && (
+                <Box sx={{ width: "100%",justifyContent:'flex-end',display:'flex' }}>
+                  <button
+                    onClick={handleAddPortfolio}
+                    style={{
+                      background: "none",
+                      color: "#003FE0",
+                      border: "none",
+                      padding: 0,
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                      letterSpacing: "0.075px",
+                      textAlign: "right",
+                      lineHeight: "16px",
+                      marginTop:'7px'
+                    }}
+                  >
+                    Add another
+                  </button>
+                </Box>
+              )}
             </Box>
           )}
         </FormControl>
