@@ -8,6 +8,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { TextField, Box, Button, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { SVGSparkles } from "../../Assets/SVGs";
 import TextEditor from "../Texteditor";
 
 const textGuid = [
@@ -24,10 +26,28 @@ const textGuid = [
 const note =
   "Please note, all fields marked with an asterisk are required and must be completed.";
 
+const CustomTextField = styled(TextField)({
+  "& .MuiInputBase-root": {
+    position: "relative",
+    paddingRight: "50px",
+    width: "100%",
+    height: "275px",
+    marginTop: "3px",
+  },
+  "& .MuiFormHelperText-root": {
+    position: "absolute",
+    bottom: 8,
+    right: 16,
+    fontSize: "0.75rem",
+    borderRadios: "28px",
+  },
+});
 const Form = () => {
   const [formData, setFormData] = useState<FormData>();
   const [value, setValue] = useState("Device");
   const [activeStep, setActiveStep] = useState(0);
+  const [inputValue, setInputValue] = useState("");
+  const characterLimit = 294;
   const maxSteps = textGuid.length;
   const { register, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
@@ -54,6 +74,10 @@ const Form = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
   };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
@@ -313,7 +337,7 @@ const Form = () => {
             </Box>
           )}
           {activeStep === 2 && (
-            <Box sx={{display:'flex',flexDirection:'column', gap:'30px'}}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
               <Box sx={{ ml: "-10px" }}>
                 <FormLabel
                   sx={{
@@ -355,7 +379,7 @@ const Form = () => {
                   }}
                 />
               </Box>
-              <TextEditor/>
+              <TextEditor />
               <Box sx={{ ml: "-10px" }}>
                 <FormLabel
                   sx={{
@@ -396,6 +420,60 @@ const Form = () => {
                     },
                   }}
                 />
+              </Box>
+            </Box>
+          )}
+          {activeStep === 3 && (
+            <Box sx={{ ml: "-10px" }} position="relative" width="100%">
+              <FormLabel
+                sx={{
+                  color: "#202E5B",
+                  fontFamily: "Lato",
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  "&.Mui-focused": {
+                    color: "#000",
+                  },
+                }}
+                id="name-label"
+              >
+                Description (publicly visible)
+                <span style={{ color: "red" }}> *</span>
+              </FormLabel>
+              <CustomTextField
+                style={{ width: "100%", marginBottom: "3px" }}
+                multiline
+                rows={11}
+                variant="outlined"
+                value={inputValue}
+                onChange={handleInputChange}
+                helperText={`${inputValue.length}/${characterLimit} characters`}
+                FormHelperTextProps={{
+                  className: "MuiFormHelperText-root",
+                }}
+                inputProps={{
+                  maxLength: characterLimit,
+                }}
+              />
+              <Box sx={{display:'flex',gap:'5px'}}>
+                <SVGSparkles />
+                <FormLabel
+                  sx={{
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "13px",
+                    textDecorationLine: "underline",
+                    lineHeight: "24px",
+                    letterSpacing: "0.065px",
+                    fontWeight: 400,
+                    "&.Mui-focused": {
+                      color: "#000",
+                    },
+                  }}
+                  id="name-label"
+                >
+                  Use AI to generate a description.
+                </FormLabel>
               </Box>
             </Box>
           )}
