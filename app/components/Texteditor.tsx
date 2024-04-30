@@ -49,8 +49,8 @@ function TextEditor() {
     "code-block",
     "bullet",
     "link",
-    'ordered',
-    'check',
+    "ordered",
+    "check",
   ];
 
   return (
@@ -70,16 +70,18 @@ function TextEditor() {
         Earning Criteria
         <span style={{ color: "red" }}> *</span>
       </FormLabel>
-      <ReactQuill
-        theme="snow"
-        value={text}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        modules={modules}
-        formats={formats}
-        style={{ marginTop: "4px" }}
-        placeholder="e.g., Managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative"
-      />
+      <Box className="text-editor-container" sx={{ borderRadius: "8px" }}>
+        <ReactQuill
+          theme="snow"
+          value={text}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          modules={modules}
+          formats={formats}
+          style={{ marginTop: "4px", borderRadius: "8px" }}
+          placeholder="e.g., Managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative"
+        />
+      </Box>
     </Box>
   );
 }

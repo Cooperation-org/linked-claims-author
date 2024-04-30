@@ -503,7 +503,7 @@ const Form = () => {
             <Box sx={{ ml: "-10px" }}>
               {portfolios.map((portfolio, index) => (
                 <>
-                  <Box key={index}>
+                  <Box sx={{mb:'15px'}} key={index}>
                     <FormLabel
                       sx={{
                         color: "#202E5B",
