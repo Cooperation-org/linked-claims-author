@@ -54,7 +54,6 @@ const CustomTextField = styled(TextField)({
 });
 const Form = () => {
   const [formData, setFormData] = useState<FormData>();
-  const [value, setOptionValue] = useState("Device");
   const [activeStep, setActiveStep] = useState(0);
   const [inputValue, setInputValue] = useState("");
   const [portfolios, setPortfolios] = useState([{ name: "", url: "" }]);
@@ -69,15 +68,16 @@ const Form = () => {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      storageOption: "Device",
+      storageOption: 'Device',
       fullName: "",
-      businessName: "",
+      persons: '',
       credentialName: "",
       credentialDuration: "",
       credentialDescription: "",
       portfolio: [{ name: "", url: "" }],
       imageLink: "",
       description: "",
+      url: "",
     },
   });
 
@@ -87,10 +87,6 @@ const Form = () => {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOptionValue(event.target.value);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,7 +119,7 @@ const Form = () => {
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     console.log(data);
-    setFormData(data);
+    
     const codeToCopy = JSON.stringify(data, null, 2);
 
     navigator.clipboard
@@ -136,6 +132,7 @@ const Form = () => {
         console.error("Unable to copy form values to clipboard: ", err);
       });
   });
+
   return (
     <form
       style={{
@@ -222,11 +219,10 @@ const Form = () => {
               m: "0 auto",
               width: "100%",
             }}
-            {...register("storageOption")}
             aria-labelledby="form-type-label"
             name="controlled-radio-buttons-group"
-            value={value}
-            onChange={handleChange}
+            value={watch("storageOption")}
+            onChange={(e) => setValue("storageOption", e.target.value)}
           >
             {activeStep === 0 && (
               <FormControlLabel
@@ -309,7 +305,21 @@ const Form = () => {
                 label="Dropbox"
               />
             )}
-            {activeStep === 1 && (
+          </RadioGroup>
+          {activeStep === 1 && (
+            <RadioGroup
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "15px",
+                m: "0 auto",
+                width: "100%",
+              }}
+              aria-labelledby="form-type-label"
+              name="controlled-radio-buttons-group"
+              value={watch("persons")}
+              onChange={(e) => setValue("persons", e.target.value)}
+            >
               <FormControlLabel
                 sx={{
                   bgcolor: "#FFF",
@@ -329,28 +339,28 @@ const Form = () => {
                 }
                 label="Individual"
               />
-            )}
-            {activeStep === 1 && (
-              <FormControlLabel
-                sx={{
-                  bgcolor: "#FFF",
-                  borderRadius: "8px",
-                  border: "1px solid #E5E7EB",
-                }}
-                value="Business"
-                control={
-                  <Radio
-                    sx={{
-                      "&.Mui-checked": {
-                        color: "#2563EB",
-                      },
-                    }}
-                  />
-                }
-                label="Business"
-              />
-            )}
-          </RadioGroup>
+              {activeStep === 1 && (
+                <FormControlLabel
+                  sx={{
+                    bgcolor: "#FFF",
+                    borderRadius: "8px",
+                    border: "1px solid #E5E7EB",
+                  }}
+                  value="Business"
+                  control={
+                    <Radio
+                      sx={{
+                        "&.Mui-checked": {
+                          color: "#2563EB",
+                        },
+                      }}
+                    />
+                  }
+                  label="Business"
+                />
+              )}
+            </RadioGroup>
+          )}
           {activeStep === 1 && (
             <Box sx={{ ml: "-10px", mt: "20px" }}>
               <FormLabel
@@ -612,7 +622,7 @@ const Form = () => {
                       URL
                     </FormLabel>
                     <TextField
-                      {...register("imageLink")}
+                      {...register("url")}
                       value={portfolio.url}
                       onChange={(e) =>
                         handlePortfolioChange(index, "url", e.target.value)
@@ -714,6 +724,7 @@ const Form = () => {
                 URL of an image you have permission to use (optional)
               </FormLabel>
               <TextField
+                {...register("imageLink")}
                 placeholder="https://"
                 variant="outlined"
                 sx={{
