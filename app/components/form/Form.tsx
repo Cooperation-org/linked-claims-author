@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { FormData, FormProps } from "./Types";
 import Radio from "@mui/material/Radio";
@@ -11,6 +12,13 @@ import { TextField, Box, Button, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { SVGSparkles } from "../../Assets/SVGs";
 import TextEditor from "../Texteditor";
+import image from "../../Assets/nathan-dumlao-zUNs99PGDg0-unsplash 1.png";
+import { SVGGroup, SVGDate, SVGTime } from "../../Assets/SVGs";
+import twitter from "../../Assets/twitter.png";
+import instagram from "../../Assets/instagram.png";
+import linkedin from "../../Assets/linkedin.png";
+import mail from "../../Assets/mail.png";
+import messageCircle from "../../Assets/message-circle.png";
 
 const textGuid = [
   "Hi, I’m Tessa! Where do you want to save your LinkedClaims? ",
@@ -711,76 +719,265 @@ const Form = () => {
               </Box>
             </Box>
           )}
+          {activeStep === 7 && (
+            <Box
+              sx={{
+                ml: "-10px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "30px",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "100px",
+                  display: "flex",
+                  gap: "15px",
+                  bgcolor: "#E5E7EB",
+                  borderRadius: "20px",
+                }}
+              >
+                <Image
+                  style={{ width: "100px", height: "100px" }}
+                  src={image}
+                  alt="logo"
+                />
+                <Box sx={{ width: "100%" }}>
+                  <Box sx={{ textAlign: "right", pr: "15px", mt: "5px" }}>
+                    <SVGGroup />
+                  </Box>
+                  <Typography
+                    sx={{
+                      color: "#202E5B",
+                      textAlign: "left",
+                      fontFamily: "Inter",
+                      fontSize: "15px",
+                      fontWeight: 700,
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    Basic Barista Training
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      width: "100%",
+                      gap: "15px",
+                      mt: "5px",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", gap: "3px" }}>
+                      <SVGDate />
+                      <Typography
+                        sx={{
+                          color: "#4E4E4E",
+                          textAlign: "center",
+                          fontFamily: "Poppins",
+                          fontSize: "13px",
+                          fontWeight: 400,
+                          lineHeight: "150%",
+                        }}
+                      >
+                        2 days
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", gap: "3px" }}>
+                      <SVGTime />
+                      <Typography
+                        sx={{
+                          color: "#4E4E4E",
+                          textAlign: "center",
+                          fontFamily: "Poppins",
+                          fontSize: "13px",
+                          fontWeight: 400,
+                          lineHeight: "150%",
+                        }}
+                      >
+                        3 min
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "9px",
+                }}
+              >
+                <Box sx={{ display: "flex" }}>
+                  <Box
+                    sx={{
+                      bgcolor: "#E5E7EB",
+                      borderRadius: "20px",
+                      height: "40px",
+                      width: "40px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Image src={twitter} alt="TwitterImage" />
+                  </Box>
+                </Box>
+                <Box
+                  sx={{
+                    bgcolor: "#E5E7EB",
+                    borderRadius: "20px",
+                    height: "40px",
+                    width: "40px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image src={linkedin} alt="LinkedinImage" />
+                </Box>
+                <Box
+                  sx={{
+                    bgcolor: "#E5E7EB",
+                    borderRadius: "20px",
+                    height: "40px",
+                    width: "40px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image src={instagram} alt="InstagramImage" />
+                </Box>
+                <Box
+                  sx={{
+                    bgcolor: "#E5E7EB",
+                    borderRadius: "20px",
+                    height: "40px",
+                    width: "40px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image src={mail} alt="mailImage" />
+                </Box>
+                <Box
+                  sx={{
+                    bgcolor: "#E5E7EB",
+                    borderRadius: "20px",
+                    height: "40px",
+                    width: "40px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image src={messageCircle} alt="messageCircleImage" />
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  justifyContent: "center",
+                  display: "flex",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={() => setActiveStep(0)}
+                  sx={{
+                    padding: "10px 24px",
+                    borderRadius: "100px",
+                    bgcolor: "#003FE0",
+                    textTransform: "capitalize",
+                    fontFamily: "Roboto",
+                    lineHeight: "20px",
+                    "&:hover": {
+                      bgcolor: "#003FE0",
+                    },
+                  }}
+                >
+                  Add Another
+                </Button>
+              </Box>
+            </Box>
+          )}
         </FormControl>
       </Box>
-      <Box
-        sx={{
-          height: "40px",
-          display: "flex",
-          gap: "15px",
-          justifyContent: activeStep !== 0 ? "space-between" : "center",
-        }}
-      >
-        {activeStep !== 0 && (
-          <Button
-            variant="contained"
-            onClick={handleBack}
-            sx={{
-              padding: "0 24px",
-              borderRadius: "100px",
-              bgcolor: "#FFF",
-              textTransform: "capitalize",
-              color: "#4E4E4E",
-              fontFamily: "Roboto",
-              "&:hover": {
+      {activeStep !== 7 && (
+        <Box
+          sx={{
+            height: "40px",
+            display: "flex",
+            gap: "15px",
+            justifyContent: activeStep !== 0 ? "space-between" : "center",
+          }}
+        >
+          {activeStep !== 0 && (
+            <Button
+              variant="contained"
+              onClick={handleBack}
+              sx={{
+                padding: "0 24px",
+                borderRadius: "100px",
                 bgcolor: "#FFF",
-              },
-            }}
-          >
-            back
-          </Button>
-        )}
-        {activeStep !== 0 && (
+                textTransform: "capitalize",
+                color: "#4E4E4E",
+                fontFamily: "Roboto",
+                "&:hover": {
+                  bgcolor: "#FFF",
+                },
+              }}
+            >
+              back
+            </Button>
+          )}
+          {activeStep !== 0 && (
+            <Button
+              variant="contained"
+              onClick={() => {}}
+              sx={{
+                padding: "10px 24px",
+                gap: "8px",
+                borderRadius: "100px",
+                bgcolor: "#FFF",
+                textTransform: "capitalize",
+                color: "#4E4E4E",
+                fontFamily: "Roboto",
+                lineHeight: "20px",
+                "&:hover": {
+                  bgcolor: "#FFF",
+                },
+              }}
+            >
+              save & Exit
+            </Button>
+          )}
           <Button
             variant="contained"
-            onClick={() => {}}
+            onClick={handleNext}
+            disabled={activeStep === maxSteps - 1}
             sx={{
               padding: "10px 24px",
-              gap: "8px",
               borderRadius: "100px",
-              bgcolor: "#FFF",
+              bgcolor: "#003FE0",
+              width: "20px",
               textTransform: "capitalize",
-              color: "#4E4E4E",
               fontFamily: "Roboto",
               lineHeight: "20px",
               "&:hover": {
-                bgcolor: "#FFF",
+                bgcolor: "#003FE0",
               },
             }}
           >
-            save & Exit
+            Next
           </Button>
-        )}
-        <Button
-          variant="contained"
-          onClick={handleNext}
-          disabled={activeStep === maxSteps - 1}
-          sx={{
-            padding: "10px 24px",
-            borderRadius: "100px",
-            bgcolor: "#003FE0",
-            width: "20px",
-            textTransform: "capitalize",
-            fontFamily: "Roboto",
-            lineHeight: "20px",
-            "&:hover": {
-              bgcolor: "#003FE0",
-            },
-          }}
-        >
-          Next
-        </Button>
-      </Box>
+        </Box>
+      )}
     </form>
   );
 };

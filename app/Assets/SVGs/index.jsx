@@ -224,3 +224,93 @@ export const SVGSparkles = () => {
     </div>
   );
 };
+export const SVGGroup = () => {
+  return (
+    <div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="4"
+        height="15"
+        viewBox="0 0 4 15"
+        fill="none"
+      >
+        <path
+          d="M2 9.43276C3.10457 9.43276 4 8.60704 4 7.58845C4 6.56987 3.10457 5.74414 2 5.74414C0.89543 5.74414 0 6.56987 0 7.58845C0 8.60704 0.89543 9.43276 2 9.43276Z"
+          fill="#B8B8B8"
+        />
+        <path
+          d="M2 3.89956C3.10457 3.89956 4 3.07383 4 2.05525C4 1.03666 3.10457 0.210938 2 0.210938C0.89543 0.210938 0 1.03666 0 2.05525C0 3.07383 0.89543 3.89956 2 3.89956Z"
+          fill="#B8B8B8"
+        />
+        <path
+          d="M2 14.964C3.10457 14.964 4 14.1383 4 13.1197C4 12.1011 3.10457 11.2754 2 11.2754C0.89543 11.2754 0 12.1011 0 13.1197C0 14.1383 0.89543 14.964 2 14.964Z"
+          fill="#B8B8B8"
+        />
+      </svg>
+    </div>
+  );
+};
+export const SVGDate = () => {
+  return (
+    <div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <path
+          d="M12.375 3H3.625C2.93464 3 2.375 3.55964 2.375 4.25V13C2.375 13.6904 2.93464 14.25 3.625 14.25H12.375C13.0654 14.25 13.625 13.6904 13.625 13V4.25C13.625 3.55964 13.0654 3 12.375 3Z"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M10.5 1.75V4.25"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5.5 1.75V4.25"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M2.375 6.75H13.625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  );
+};
+export const SVGTime = () => {
+  return (
+    <div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <path
+          d="M8 14.25C11.4518 14.25 14.25 11.4518 14.25 8C14.25 4.54822 11.4518 1.75 8 1.75C4.54822 1.75 1.75 4.54822 1.75 8C1.75 11.4518 4.54822 14.25 8 14.25Z"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M8 4.25V8L10.5 6.75"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  );
+};
