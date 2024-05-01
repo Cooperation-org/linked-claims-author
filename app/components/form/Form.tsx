@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { FormData, FormProps } from "./Types";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -56,7 +56,7 @@ const Form = () => {
   const [formData, setFormData] = useState<FormData>();
   const [activeStep, setActiveStep] = useState(0);
   const [inputValue, setInputValue] = useState("");
-  const [portfolios, setPortfolios] = useState([{ name: "", url: "" }]);
+
   const characterLimit = 294;
   const maxSteps = textGuid.length;
   const {
@@ -65,20 +65,26 @@ const Form = () => {
     watch,
     reset,
     setValue,
+    control,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      storageOption: 'Device',
+      storageOption: "Device",
       fullName: "",
-      persons: '',
+      persons: "",
       credentialName: "",
       credentialDuration: "",
       credentialDescription: "",
       portfolio: [{ name: "", url: "" }],
       imageLink: "",
       description: "",
-      url: "",
     },
+  });
+
+  // I will set the remove to use it in the future
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "portfolio",
   });
 
   const handleNext = () => {
@@ -93,33 +99,15 @@ const Form = () => {
     setInputValue(event.target.value);
   };
 
-  const handleAddPortfolio = () => {
-    if (portfolios.length < 5) {
-      setPortfolios([...portfolios, { name: "", url: "" }]);
-    }
-  };
-
   const handleTextEditorChange = (value: string | undefined) => {
-    setValue("credentialDescription", value);
-  };
-
-  const handlePortfolioChange = (
-    index: number,
-    field: string,
-    value: string
-  ) => {
-    const updatedPortfolios = portfolios.map((portfolio, idx) => {
-      if (idx === index) {
-        return { ...portfolio, [field]: value };
-      }
-      return portfolio;
-    });
-    setPortfolios(updatedPortfolios);
+    // Only call setValue if value is not undefined, otherwise set an empty string
+    setValue("credentialDescription", value ?? "");
   };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     console.log(data);
-    
+    reset();
+
     const codeToCopy = JSON.stringify(data, null, 2);
 
     navigator.clipboard
@@ -559,9 +547,9 @@ const Form = () => {
           )}
           {activeStep === 4 && (
             <Box sx={{ ml: "-10px" }}>
-              {portfolios.map((portfolio, index) => (
-                <>
-                  <Box sx={{ mb: "15px" }} key={index}>
+              {fields.map((field, index) => (
+                <React.Fragment key={field.id}>
+                  <Box sx={{ mb: "15px" }}>
                     <FormLabel
                       sx={{
                         color: "#202E5B",
@@ -572,16 +560,15 @@ const Form = () => {
                           color: "#000",
                         },
                       }}
-                      id="name-label"
+                      id={`name-label-${index}`}
                     >
                       Name
                     </FormLabel>
                     <TextField
-                      {...register("portfolio")}
-                      value={portfolio.name}
-                      onChange={(e) =>
-                        handlePortfolioChange(index, "name", e.target.value)
-                      }
+                      {...register(`portfolio.${index}.name`, {
+                        required: "Name is required",
+                      })}
+                      defaultValue={field.name}
                       placeholder="Picture of the Community Garden"
                       variant="outlined"
                       sx={{
@@ -593,20 +580,10 @@ const Form = () => {
                           borderRadius: "8px",
                         },
                       }}
-                      aria-labelledby="name-label"
-                      inputProps={{
-                        "aria-label": "weight",
-                        style: {
-                          color: "black",
-                          fontSize: "15px",
-                          fontStyle: "italic",
-                          fontWeight: 600,
-                          letterSpacing: "0.075px",
-                        },
-                      }}
+                      aria-labelledby={`name-label-${index}`}
                     />
                   </Box>
-                  <Box key={index}>
+                  <Box>
                     <FormLabel
                       sx={{
                         color: "#202E5B",
@@ -617,17 +594,16 @@ const Form = () => {
                           color: "#000",
                         },
                       }}
-                      id="name-label"
+                      id={`url-label-${index}`}
                     >
                       URL
                     </FormLabel>
                     <TextField
-                      {...register("url")}
-                      value={portfolio.url}
-                      onChange={(e) =>
-                        handlePortfolioChange(index, "url", e.target.value)
-                      }
-                      placeholder="https://www.pics.com"
+                      {...register(`portfolio.${index}.url`, {
+                        required: "URL is required",
+                      })}
+                      defaultValue={field.url}
+                      placeholder="https://www.example.com"
                       variant="outlined"
                       sx={{
                         bgcolor: "#FFF",
@@ -638,22 +614,12 @@ const Form = () => {
                           borderRadius: "8px",
                         },
                       }}
-                      aria-labelledby="name-label"
-                      inputProps={{
-                        "aria-label": "weight",
-                        style: {
-                          color: "black",
-                          fontSize: "15px",
-                          fontStyle: "italic",
-                          fontWeight: 600,
-                          letterSpacing: "0.075px",
-                        },
-                      }}
+                      aria-labelledby={`url-label-${index}`}
                     />
                   </Box>
-                </>
+                </React.Fragment>
               ))}
-              {portfolios.length < 5 && (
+              {fields.length < 5 && (
                 <Box
                   sx={{
                     width: "100%",
@@ -662,7 +628,7 @@ const Form = () => {
                   }}
                 >
                   <button
-                    onClick={handleAddPortfolio}
+                    onClick={() => append({ name: "", url: "" })}
                     style={{
                       background: "none",
                       color: "#003FE0",
