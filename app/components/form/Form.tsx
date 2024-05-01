@@ -54,24 +54,30 @@ const CustomTextField = styled(TextField)({
 });
 const Form = () => {
   const [formData, setFormData] = useState<FormData>();
-  const [value, setValue] = useState("Device");
+  const [value, setOptionValue] = useState("Device");
   const [activeStep, setActiveStep] = useState(0);
   const [inputValue, setInputValue] = useState("");
   const [portfolios, setPortfolios] = useState([{ name: "", url: "" }]);
   const characterLimit = 294;
   const maxSteps = textGuid.length;
-  const { register, handleSubmit, reset } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
-      name: "",
-      address: "",
-      expirationDate: "",
-      awardedDate: "",
-      skillName: "",
-      skillCriteria: "",
-      skillDescription: "",
-      badgeImage: "",
-      evidence: "",
-      didKeySeed: "",
+      storageOption: "Device",
+      fullName: "",
+      businessName: "",
+      credentialName: "",
+      credentialDuration: "",
+      credentialDescription: "",
+      portfolio: [{ name: "", url: "" }],
+      imageLink: "",
+      description: "",
     },
   });
 
@@ -84,11 +90,21 @@ const Form = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
+    setOptionValue(event.target.value);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
+  };
+
+  const handleAddPortfolio = () => {
+    if (portfolios.length < 5) {
+      setPortfolios([...portfolios, { name: "", url: "" }]);
+    }
+  };
+
+  const handleTextEditorChange = (value: string | undefined) => {
+    setValue("credentialDescription", value);
   };
 
   const handlePortfolioChange = (
@@ -103,12 +119,6 @@ const Form = () => {
       return portfolio;
     });
     setPortfolios(updatedPortfolios);
-  };
-
-  const handleAddPortfolio = () => {
-    if (portfolios.length < 5) {
-      setPortfolios([...portfolios, { name: "", url: "" }]);
-    }
   };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
@@ -212,6 +222,7 @@ const Form = () => {
               m: "0 auto",
               width: "100%",
             }}
+            {...register("storageOption")}
             aria-labelledby="form-type-label"
             name="controlled-radio-buttons-group"
             value={value}
@@ -219,12 +230,12 @@ const Form = () => {
           >
             {activeStep === 0 && (
               <FormControlLabel
+                value="Device"
                 sx={{
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
                 }}
-                value="Device"
                 control={
                   <Radio
                     sx={{
@@ -239,12 +250,12 @@ const Form = () => {
             )}
             {activeStep === 0 && (
               <FormControlLabel
+                value="Google Drive"
                 sx={{
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
                 }}
-                value="Google Drive"
                 control={
                   <Radio
                     sx={{
@@ -259,13 +270,13 @@ const Form = () => {
             )}
             {activeStep === 0 && (
               <FormControlLabel
+                value="Digital Wallet"
                 sx={{
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
                   pr: "5px",
                 }}
-                value="Digital Wallet"
                 control={
                   <Radio
                     sx={{
@@ -280,12 +291,12 @@ const Form = () => {
             )}
             {activeStep === 0 && (
               <FormControlLabel
+                value="Dropbox"
                 sx={{
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
                 }}
-                value="Dropbox"
                 control={
                   <Radio
                     sx={{
@@ -358,6 +369,7 @@ const Form = () => {
                 <span style={{ color: "red" }}> *</span>
               </FormLabel>
               <TextField
+                {...register("fullName", { required: "Full name is required" })}
                 placeholder="e.g., Maria Fernández or Kumar Enterprises"
                 variant="outlined"
                 sx={{
@@ -401,6 +413,9 @@ const Form = () => {
                   <span style={{ color: "red" }}> *</span>
                 </FormLabel>
                 <TextField
+                  {...register("credentialName", {
+                    required: "Credential name is required",
+                  })}
                   placeholder="e.g., Community Gardening Coordinator"
                   variant="outlined"
                   sx={{
@@ -425,7 +440,10 @@ const Form = () => {
                   }}
                 />
               </Box>
-              <TextEditor />
+              <TextEditor
+                value={watch("credentialDescription")}
+                onChange={handleTextEditorChange}
+              />
               <Box sx={{ ml: "-10px" }}>
                 <FormLabel
                   sx={{
@@ -443,6 +461,9 @@ const Form = () => {
                   <span style={{ color: "red" }}> *</span>
                 </FormLabel>
                 <TextField
+                  {...register("credentialDuration", {
+                    required: "Duration is required",
+                  })}
                   placeholder="1 Day"
                   variant="outlined"
                   sx={{
@@ -487,6 +508,9 @@ const Form = () => {
                 <span style={{ color: "red" }}> *</span>
               </FormLabel>
               <CustomTextField
+                {...register("description", {
+                  required: "Description is required",
+                })}
                 style={{ width: "100%", marginBottom: "3px" }}
                 multiline
                 rows={11}
@@ -543,6 +567,7 @@ const Form = () => {
                       Name
                     </FormLabel>
                     <TextField
+                      {...register("portfolio")}
                       value={portfolio.name}
                       onChange={(e) =>
                         handlePortfolioChange(index, "name", e.target.value)
@@ -587,6 +612,7 @@ const Form = () => {
                       URL
                     </FormLabel>
                     <TextField
+                      {...register("imageLink")}
                       value={portfolio.url}
                       onChange={(e) =>
                         handlePortfolioChange(index, "url", e.target.value)
@@ -955,6 +981,7 @@ const Form = () => {
           )}
           {activeStep !== 0 && (
             <Button
+              type="submit"
               variant="contained"
               onClick={() => {}}
               sx={{

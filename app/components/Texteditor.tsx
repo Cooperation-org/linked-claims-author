@@ -1,27 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Box, FormLabel } from "@mui/material";
 import "./TextEditor.css";
 
-function TextEditor() {
-  const [text, setText] = useState("");
+interface TextEditorProps {
+  value: any;
+  onChange: (value: any) => void;
+}
 
+function TextEditor({ value, onChange }: TextEditorProps) {
   const handleChange = (
-    content: any,
+    content: string,
     delta: any,
-    source: any,
-    editor: { getHTML: () => React.SetStateAction<string> }
+    source: string,
+    editor: { getHTML: () => string }
   ) => {
-    setText(editor.getHTML());
-  };
-
-  const handleSave = () => {
-    console.log("Saving data:", text);
+    if (source === "user") {
+      onChange(editor.getHTML());
+    }
   };
 
   const handleBlur = () => {
-    handleSave();
+    console.log("Saving data:", value);
   };
 
   const modules = {
@@ -61,19 +62,16 @@ function TextEditor() {
           fontFamily: "Lato",
           fontSize: "16px",
           fontWeight: 600,
-          "&.Mui-focused": {
-            color: "#000",
-          },
+          "&.Mui-focused": { color: "#000" },
         }}
-        id="name-label"
+        id="editor-label"
       >
-        Earning Criteria
-        <span style={{ color: "red" }}> *</span>
+        Earning Criteria<span style={{ color: "red" }}> *</span>
       </FormLabel>
       <Box className="text-editor-container" sx={{ borderRadius: "8px" }}>
         <ReactQuill
           theme="snow"
-          value={text}
+          value={value}
           onChange={handleChange}
           onBlur={handleBlur}
           modules={modules}
