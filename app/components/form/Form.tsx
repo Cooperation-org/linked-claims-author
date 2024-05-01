@@ -33,6 +33,8 @@ const textGuid = [
 
 const note =
   "Please note, all fields marked with an asterisk are required and must be completed.";
+const successNote =
+  "Congratulations on your achievement. Tell the world what you’ve accomplished!";
 
 const CustomTextField = styled(TextField)({
   "& .MuiInputBase-root": {
@@ -150,7 +152,7 @@ const Form = () => {
         {textGuid[activeStep]}
         {activeStep === 0 && <span style={{ color: "red" }}> *</span>}
       </Typography>
-      {activeStep !== 0 && (
+      {activeStep !== 1 && activeStep !== 7 && (
         <Typography
           sx={{
             color: "#202E5B",
@@ -163,6 +165,21 @@ const Form = () => {
           }}
         >
           {note}
+        </Typography>
+      )}
+      {activeStep === 7 && (
+        <Typography
+          sx={{
+            color: "#202E5B",
+            textAlign: "center",
+            fontFamily: "Lato",
+            fontSize: "16px",
+            fontStyle: "italic",
+            fontWeight: 500,
+            lineHeight: "normal",
+          }}
+        >
+          {successNote}
         </Typography>
       )}
       <Box sx={{ pl: "15px", width: "100%" }}>
