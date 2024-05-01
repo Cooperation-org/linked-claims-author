@@ -81,7 +81,7 @@ const Form = () => {
     },
   });
 
-  // I will set the remove to use it in the future
+  // I will set the remove here to use it in the future
   const { fields, append, remove } = useFieldArray({
     control,
     name: "portfolio",
@@ -99,8 +99,15 @@ const Form = () => {
     setInputValue(event.target.value);
   };
 
+  const handlePreview = () => {
+    const allFormData = watch();
+    console.log("allFormData", allFormData)
+
+    setFormData(allFormData) 
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
   const handleTextEditorChange = (value: string | undefined) => {
-    // Only call setValue if value is not undefined, otherwise set an empty string
     setValue("credentialDescription", value ?? "");
   };
 
@@ -978,25 +985,47 @@ const Form = () => {
               save & Exit
             </Button>
           )}
-          <Button
-            variant="contained"
-            onClick={handleNext}
-            disabled={activeStep === maxSteps - 1}
-            sx={{
-              padding: "10px 24px",
-              borderRadius: "100px",
-              bgcolor: "#003FE0",
-              width: "20px",
-              textTransform: "capitalize",
-              fontFamily: "Roboto",
-              lineHeight: "20px",
-              "&:hover": {
+          {activeStep !== 5 && (
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              disabled={activeStep === maxSteps - 1}
+              sx={{
+                padding: "10px 24px",
+                borderRadius: "100px",
                 bgcolor: "#003FE0",
-              },
-            }}
-          >
-            Next
-          </Button>
+                width: "20px",
+                textTransform: "capitalize",
+                fontFamily: "Roboto",
+                lineHeight: "20px",
+                "&:hover": {
+                  bgcolor: "#003FE0",
+                },
+              }}
+            >
+              Next
+            </Button>
+          )}
+          {activeStep === 5 && (
+            <Button
+              variant="contained"
+              onClick={handlePreview}
+              disabled={activeStep === maxSteps - 1}
+              sx={{
+                padding: "10px 24px",
+                borderRadius: "100px",
+                bgcolor: "#003FE0",
+                textTransform: "capitalize",
+                fontFamily: "Roboto",
+                lineHeight: "20px",
+                "&:hover": {
+                  bgcolor: "#003FE0",
+                },
+              }}
+            >
+              Preview
+            </Button>
+          )}
         </Box>
       )}
     </form>
