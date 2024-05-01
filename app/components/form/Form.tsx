@@ -81,7 +81,11 @@ const Form = () => {
     setInputValue(event.target.value);
   };
 
-  const handlePortfolioChange = (index: number, field: string, value: string) => {
+  const handlePortfolioChange = (
+    index: number,
+    field: string,
+    value: string
+  ) => {
     const updatedPortfolios = portfolios.map((portfolio, idx) => {
       if (idx === index) {
         return { ...portfolio, [field]: value };
@@ -346,7 +350,7 @@ const Form = () => {
                     color: "black",
                     fontSize: "15px",
                     fontStyle: "italic",
-                    fontWeight: 700,
+                    fontWeight: 600,
                     letterSpacing: "0.075px",
                   },
                 }}
@@ -390,7 +394,7 @@ const Form = () => {
                       color: "black",
                       fontSize: "15px",
                       fontStyle: "italic",
-                      fontWeight: 700,
+                      fontWeight: 600,
                       letterSpacing: "0.075px",
                     },
                   }}
@@ -432,7 +436,7 @@ const Form = () => {
                       color: "black",
                       fontSize: "15px",
                       fontStyle: "italic",
-                      fontWeight: 700,
+                      fontWeight: 600,
                       letterSpacing: "0.075px",
                     },
                   }}
@@ -515,7 +519,9 @@ const Form = () => {
                     </FormLabel>
                     <TextField
                       value={portfolio.name}
-                      onChange={(e) => handlePortfolioChange(index, "name", e.target.value)}
+                      onChange={(e) =>
+                        handlePortfolioChange(index, "name", e.target.value)
+                      }
                       placeholder="Picture of the Community Garden"
                       variant="outlined"
                       sx={{
@@ -534,7 +540,7 @@ const Form = () => {
                           color: "black",
                           fontSize: "15px",
                           fontStyle: "italic",
-                          fontWeight: 700,
+                          fontWeight: 600,
                           letterSpacing: "0.075px",
                         },
                       }}
@@ -557,8 +563,9 @@ const Form = () => {
                     </FormLabel>
                     <TextField
                       value={portfolio.url}
-                      onChange={(e) => handlePortfolioChange(index, "url", e.target.value)}
-
+                      onChange={(e) =>
+                        handlePortfolioChange(index, "url", e.target.value)
+                      }
                       placeholder="https://www.pics.com"
                       variant="outlined"
                       sx={{
@@ -577,7 +584,7 @@ const Form = () => {
                           color: "black",
                           fontSize: "15px",
                           fontStyle: "italic",
-                          fontWeight: 700,
+                          fontWeight: 600,
                           letterSpacing: "0.075px",
                         },
                       }}
@@ -614,6 +621,94 @@ const Form = () => {
                   </button>
                 </Box>
               )}
+              <Box
+                sx={{
+                  width: "100%",
+                  justifyContent: "center",
+                  display: "flex",
+                  marginTop: "40px",
+                }}
+              >
+                <button
+                  onClick={handleNext}
+                  style={{
+                    background: "none",
+                    color: "#6750A4",
+                    border: "none",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: 400,
+                  }}
+                >
+                  Skip
+                </button>
+              </Box>
+            </Box>
+          )}
+          {activeStep === 5 && (
+            <Box sx={{ ml: "-10px" }}>
+              <FormLabel
+                sx={{
+                  color: "#202E5B",
+                  fontFamily: "Lato",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  "&.Mui-focused": {
+                    color: "#000",
+                  },
+                }}
+                id="name-label"
+              >
+                URL of an image you have permission to use (optional)
+              </FormLabel>
+              <TextField
+                placeholder="https://"
+                variant="outlined"
+                sx={{
+                  bgcolor: "#FFF",
+                  borderRadius: "800px",
+                  width: "100%",
+                  mt: "3px",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                  },
+                }}
+                aria-labelledby="name-label"
+                inputProps={{
+                  "aria-label": "weight",
+                  style: {
+                    color: "black",
+                    fontSize: "15px",
+                    fontStyle: "italic",
+                    fontWeight: 600,
+                    letterSpacing: "0.075px",
+                  },
+                }}
+              />
+              <Box
+                sx={{
+                  width: "100%",
+                  justifyContent: "center",
+                  display: "flex",
+                  marginTop: "40px",
+                }}
+              >
+                <button
+                  onClick={handleNext}
+                  style={{
+                    background: "none",
+                    color: "#6750A4",
+                    border: "none",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: 400,
+                  }}
+                >
+                  Skip
+                </button>
+              </Box>
             </Box>
           )}
         </FormControl>
