@@ -17,7 +17,11 @@ function TextEditor({ value, onChange }: TextEditorProps) {
     editor: { getHTML: () => string }
   ) => {
     if (source === "user") {
-      onChange(editor.getHTML());
+      const htmlContent = editor.getHTML();
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = htmlContent;
+      const plainText = tempDiv.innerText.trim();
+      onChange(plainText);
     }
   };
 
@@ -55,7 +59,7 @@ function TextEditor({ value, onChange }: TextEditorProps) {
   ];
 
   return (
-    <Box sx={{ width: "103%", borderRadius: "8px", ml: "-10px" }}>
+    <Box sx={{ width: "103%", borderRadius: "8px" }}>
       <FormLabel
         sx={{
           color: "#202E5B",

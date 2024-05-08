@@ -19,6 +19,7 @@ import instagram from "../../Assets/instagram.png";
 import linkedin from "../../Assets/linkedin.png";
 import mail from "../../Assets/mail.png";
 import messageCircle from "../../Assets/message-circle.png";
+import DataComponent from "../dataPreview";
 
 const textGuid = [
   "Hi, I’m Tessa! Where do you want to save your LinkedClaims? ",
@@ -101,9 +102,8 @@ const Form = () => {
 
   const handlePreview = () => {
     const allFormData = watch();
-    console.log("allFormData", allFormData)
-
-    setFormData(allFormData) 
+    
+    setFormData(allFormData);
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -154,7 +154,7 @@ const Form = () => {
         {textGuid[activeStep]}
         {activeStep === 0 && <span style={{ color: "red" }}> *</span>}
       </Typography>
-      {activeStep !== 1 && activeStep !== 7 && (
+      {activeStep !== 1 && activeStep !== 7 && activeStep !== 6 && (
         <Typography
           sx={{
             color: "#202E5B",
@@ -184,7 +184,7 @@ const Form = () => {
           {successNote}
         </Typography>
       )}
-      <Box sx={{ pl: "15px", width: "100%" }}>
+      <Box sx={{ width: "100%" }}>
         <FormControl sx={{ width: "100%" }}>
           {activeStep === 1 && (
             <FormLabel
@@ -213,6 +213,7 @@ const Form = () => {
               gap: "15px",
               m: "0 auto",
               width: "100%",
+              ml: "10px",
             }}
             aria-labelledby="form-type-label"
             name="controlled-radio-buttons-group"
@@ -309,6 +310,7 @@ const Form = () => {
                 gap: "15px",
                 m: "0 auto",
                 width: "100%",
+                ml: "10px",
               }}
               aria-labelledby="form-type-label"
               name="controlled-radio-buttons-group"
@@ -357,7 +359,7 @@ const Form = () => {
             </RadioGroup>
           )}
           {activeStep === 1 && (
-            <Box sx={{ ml: "-10px", mt: "20px" }}>
+            <Box sx={{ mt: "20px" }}>
               <FormLabel
                 sx={{
                   color: "#202E5B",
@@ -401,7 +403,7 @@ const Form = () => {
           )}
           {activeStep === 2 && (
             <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-              <Box sx={{ ml: "-10px" }}>
+              <Box>
                 <FormLabel
                   sx={{
                     color: "#202E5B",
@@ -449,7 +451,7 @@ const Form = () => {
                 value={watch("credentialDescription")}
                 onChange={handleTextEditorChange}
               />
-              <Box sx={{ ml: "-10px" }}>
+              <Box>
                 <FormLabel
                   sx={{
                     color: "#202E5B",
@@ -496,7 +498,7 @@ const Form = () => {
             </Box>
           )}
           {activeStep === 3 && (
-            <Box sx={{ ml: "-10px" }} position="relative" width="100%">
+            <Box position="relative" width="100%">
               <FormLabel
                 sx={{
                   color: "#202E5B",
@@ -553,7 +555,7 @@ const Form = () => {
             </Box>
           )}
           {activeStep === 4 && (
-            <Box sx={{ ml: "-10px" }}>
+            <Box>
               {fields.map((field, index) => (
                 <React.Fragment key={field.id}>
                   <Box sx={{ mb: "15px" }}>
@@ -681,7 +683,7 @@ const Form = () => {
             </Box>
           )}
           {activeStep === 5 && (
-            <Box sx={{ ml: "-10px" }}>
+            <Box>
               <FormLabel
                 sx={{
                   color: "#202E5B",
@@ -746,10 +748,10 @@ const Form = () => {
               </Box>
             </Box>
           )}
+          {activeStep === 6 && <DataComponent formData={formData} />}
           {activeStep === 7 && (
             <Box
               sx={{
-                ml: "-10px",
                 display: "flex",
                 flexDirection: "column",
                 gap: "30px",

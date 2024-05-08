@@ -314,3 +314,83 @@ export const SVGTime = () => {
     </div>
   );
 };
+export const SVGBuilding = () => {
+  return (
+    <div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="15"
+        height="16"
+        viewBox="0 0 15 16"
+        fill="none"
+      >
+        <path
+          d="M11.25 1.75H3.75C3.05964 1.75 2.5 2.30964 2.5 3V13C2.5 13.6904 3.05964 14.25 3.75 14.25H11.25C11.9404 14.25 12.5 13.6904 12.5 13V3C12.5 2.30964 11.9404 1.75 11.25 1.75Z"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5.625 14.25V11.75H9.375V14.25"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5 4.25H5.00625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M10 4.25H10.0063"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M7.5 4.25H7.50625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M7.5 6.75H7.50625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M7.5 9.25H7.50625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M10 6.75H10.0063"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M10 9.25H10.0063"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5 6.75H5.00625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5 9.25H5.00625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  );
+};
