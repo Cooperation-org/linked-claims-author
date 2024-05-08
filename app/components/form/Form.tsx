@@ -102,7 +102,7 @@ const Form = () => {
 
   const handlePreview = () => {
     const allFormData = watch();
-    
+
     setFormData(allFormData);
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -154,6 +154,19 @@ const Form = () => {
         {textGuid[activeStep]}
         {activeStep === 0 && <span style={{ color: "red" }}> *</span>}
       </Typography>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          gap: "5px",
+          justifyContent: "center",
+        }}
+      >
+        { activeStep !== 0 && <Box sx={{width:"7px", height:'5px',bgcolor:'#202E5B',borderRadius:'3px'}}></Box>}
+        <Box sx={{ width: (activeStep === 0 || activeStep === 1 || activeStep === 2) ? '22px':'7px', height: '5px',bgcolor:'#202E5B',borderRadius:'3px' }}></Box>
+        <Box sx={{ width: (activeStep === 3 || activeStep === 4 || activeStep === 5) ? '22px':'7px', height:'5px',bgcolor:'#202E5B',borderRadius:'3px'}}></Box>
+        <Box sx={{ width: (activeStep === 6) ? '22px':'7px', height:'5px',bgcolor:'#202E5B',borderRadius:'3px'}}></Box>
+      </Box>
       {activeStep !== 1 && activeStep !== 7 && activeStep !== 6 && (
         <Typography
           sx={{
