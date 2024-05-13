@@ -2,11 +2,15 @@ import React from "react";
 import Image from "next/image";
 import { Box, Typography } from "@mui/material";
 import { SVGBuilding, SVGDate } from "../Assets/SVGs";
-import { FormData, FormProps } from "../components/form/Types";
+import { FormData } from "../components/form/Types";
 import test from "../Assets//test.png";
 
-const dataPreview = (formData: FormData) => {
-  console.log(":  dataPreview  formData", formData)
+const dataPreview = ({ formData }: { formData: FormData }) => {
+  console.log(":  dataPreview  formData", formData);
+
+  const handleNavigate = (url: string) => {
+    window.location.href = url;
+  };
   return (
     <Box
       sx={{
@@ -46,7 +50,7 @@ const dataPreview = (formData: FormData) => {
             fontWeight: 800,
           }}
         >
-          Basic Barista Training
+          {formData.credentialName}
         </Typography>
         <Box sx={{ width: "100%", display: "flex", gap: "10px" }}>
           <Box
@@ -70,10 +74,10 @@ const dataPreview = (formData: FormData) => {
                 fontWeight: 400,
               }}
             >
-              Aug 8, 2022
+              {formData.credentialDuration}
             </Typography>
           </Box>
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               alignItems: "center",
@@ -96,7 +100,7 @@ const dataPreview = (formData: FormData) => {
             >
               Not Verified
             </Typography>
-          </Box>
+          </Box> */}
         </Box>
       </Box>
       <Typography
@@ -107,9 +111,7 @@ const dataPreview = (formData: FormData) => {
           fontWeight: 400,
         }}
       >
-        This credential certifies that I am able to demonstrate advanced skills
-        in coffee preparation, customer service, and knowledge of coffee origins
-        and brewing techniques.
+        {formData.description}
       </Typography>
       <Typography
         sx={{
@@ -119,12 +121,13 @@ const dataPreview = (formData: FormData) => {
           fontWeight: 400,
         }}
       >
-        Earning criteria:
-        <ul style={{ marginLeft: "25px" }}>
+        <span style={{ display: "block" }}>Earning criteria:</span>
+        {/* <ul style={{ marginLeft: "25px" }}>
           <li>Took 12 hours of barista classes</li>
           <li>Got anonymous customer feedback</li>
           <li>Got teacher feedback</li>
-        </ul>
+        </ul> */}
+        {formData.credentialDescription}
       </Typography>
       <Typography
         sx={{
@@ -142,7 +145,11 @@ const dataPreview = (formData: FormData) => {
             color: "#003FE0",
           }}
         >
-          <li> Video of the perfect shot of espresso</li>
+          {formData?.portfolio?.map((porto) => (
+            <li key={porto.url} onClick={() => handleNavigate(porto.url)}>
+              {porto.name}
+            </li>
+          ))}
         </ul>
       </Typography>
     </Box>

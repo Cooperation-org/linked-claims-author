@@ -92,19 +92,21 @@ const Form = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
+  const handlePreview = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleSign = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    reset()
+  };
+
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-  };
-
-  const handlePreview = () => {
-    const allFormData = watch();
-
-    setFormData(allFormData);
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleTextEditorChange = (value: string | undefined) => {
@@ -154,19 +156,57 @@ const Form = () => {
         {textGuid[activeStep]}
         {activeStep === 0 && <span style={{ color: "red" }}> *</span>}
       </Typography>
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          gap: "5px",
-          justifyContent: "center",
-        }}
-      >
-        { activeStep !== 0 && <Box sx={{width:"7px", height:'5px',bgcolor:'#202E5B',borderRadius:'3px'}}></Box>}
-        <Box sx={{ width: (activeStep === 0 || activeStep === 1 || activeStep === 2) ? '22px':'7px', height: '5px',bgcolor:'#202E5B',borderRadius:'3px' }}></Box>
-        <Box sx={{ width: (activeStep === 3 || activeStep === 4 || activeStep === 5) ? '22px':'7px', height:'5px',bgcolor:'#202E5B',borderRadius:'3px'}}></Box>
-        <Box sx={{ width: (activeStep === 6) ? '22px':'7px', height:'5px',bgcolor:'#202E5B',borderRadius:'3px'}}></Box>
-      </Box>
+      {activeStep !== 7 && (
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            gap: "5px",
+            justifyContent: "center",
+          }}
+        >
+          {activeStep !== 0 && (
+            <Box
+              sx={{
+                width: "7px",
+                height: "5px",
+                bgcolor: "#202E5B",
+                borderRadius: "3px",
+              }}
+            ></Box>
+          )}
+          <Box
+            sx={{
+              width:
+                activeStep === 0 || activeStep === 1 || activeStep === 2
+                  ? "22px"
+                  : "7px",
+              height: "5px",
+              bgcolor: "#202E5B",
+              borderRadius: "3px",
+            }}
+          ></Box>
+          <Box
+            sx={{
+              width:
+                activeStep === 3 || activeStep === 4 || activeStep === 5
+                  ? "22px"
+                  : "7px",
+              height: "5px",
+              bgcolor: "#202E5B",
+              borderRadius: "3px",
+            }}
+          ></Box>
+          <Box
+            sx={{
+              width: activeStep === 6 ? "22px" : "7px",
+              height: "5px",
+              bgcolor: "#202E5B",
+              borderRadius: "3px",
+            }}
+          ></Box>
+        </Box>
+      )}
       {activeStep !== 1 && activeStep !== 7 && activeStep !== 6 && (
         <Typography
           sx={{
@@ -761,7 +801,7 @@ const Form = () => {
               </Box>
             </Box>
           )}
-          {activeStep === 6 && <DataComponent formData={formData} />}
+          {activeStep === 6 && <DataComponent formData={watch()} />}
           {activeStep === 7 && (
             <Box
               sx={{
@@ -1000,7 +1040,7 @@ const Form = () => {
               save & Exit
             </Button>
           )}
-          {activeStep !== 5 && (
+          {activeStep !== 5 && activeStep !== 6 && (
             <Button
               variant="contained"
               onClick={handleNext}
@@ -1019,6 +1059,26 @@ const Form = () => {
               }}
             >
               Next
+            </Button>
+          )}
+          {activeStep === 6 && (
+            <Button
+              variant="contained"
+              onClick={handleSign}
+              sx={{
+                padding: "10px 24px",
+                borderRadius: "100px",
+                bgcolor: "#003FE0",
+                width: "20px",
+                textTransform: "capitalize",
+                fontFamily: "Roboto",
+                lineHeight: "20px",
+                "&:hover": {
+                  bgcolor: "#003FE0",
+                },
+              }}
+            >
+              Sign
             </Button>
           )}
           {activeStep === 5 && (
