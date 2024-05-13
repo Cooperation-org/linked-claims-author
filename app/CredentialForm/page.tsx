@@ -44,7 +44,9 @@ const FormComponent = () => {
             }}
           >
             Learn how this data is used & protected.
-            {<Image style={{ marginLeft: "10px" }} src={vector} alt="logo" />}
+            {typeof window !== "undefined" && (
+              <Image style={{ marginLeft: "10px" }} src={vector} alt="logo" />
+            )}
           </Typography>
         </Box>
       </Box>

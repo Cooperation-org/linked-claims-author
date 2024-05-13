@@ -144,7 +144,7 @@ const Form = () => {
       }}
       onSubmit={handleFormSubmit}
     >
-      <Box sx={{ paddingTop: "38px", width: "110%" }}>
+      <Box sx={{  width: "110%" }}>
         <Image
           style={{ width: "100%", height: "100%" }}
           src={activeStep === 0 ? img : img2}
