@@ -75,7 +75,7 @@ const Form = () => {
     reset,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormData>({
     defaultValues: {
       storageOption: "Device",
@@ -121,8 +121,10 @@ const Form = () => {
   };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    console.log(data);
+    const credentioalData = watch();
+    localStorage.setItem("personalCredential", JSON.stringify(credentioalData));
     reset();
+    setActiveStep(0);
 
     const codeToCopy = JSON.stringify(data, null, 2);
 
@@ -445,6 +447,8 @@ const Form = () => {
                 {...register("fullName", { required: "Full name is required" })}
                 placeholder="e.g., Maria Fernández or Kumar Enterprises"
                 variant="outlined"
+                error={!!errors.fullName}
+                helperText={errors.fullName?.message}
                 sx={{
                   bgcolor: "#FFF",
                   width: "100%",
@@ -491,6 +495,8 @@ const Form = () => {
                   })}
                   placeholder="e.g., Community Gardening Coordinator"
                   variant="outlined"
+                  error={!!errors.credentialName}
+                  helperText={errors.credentialName?.message}
                   sx={{
                     bgcolor: "#FFF",
                     width: "100%",
@@ -538,6 +544,8 @@ const Form = () => {
                   })}
                   placeholder="1 Day"
                   variant="outlined"
+                  error={!!errors.credentialDuration}
+                  helperText={errors.credentialDuration?.message}
                   sx={{
                     bgcolor: "#FFF",
                     width: "100%",
@@ -589,6 +597,7 @@ const Form = () => {
                 value={inputValue}
                 onChange={handleInputChange}
                 helperText={`${inputValue.length}/${characterLimit} characters`}
+                error={!!errors.description}
                 FormHelperTextProps={{
                   className: "MuiFormHelperText-root",
                 }}
@@ -677,6 +686,8 @@ const Form = () => {
                       defaultValue={field.url}
                       placeholder="https://www.example.com"
                       variant="outlined"
+                      error={!!errors?.portfolio?.[index]?.name}
+                      helperText={errors?.portfolio?.[index]?.name?.message}
                       sx={{
                         bgcolor: "#FFF",
                         width: "100%",
@@ -1055,7 +1066,7 @@ const Form = () => {
             <Button
               variant="contained"
               onClick={handleNext}
-              disabled={activeStep === maxSteps - 1}
+              disabled={!isValid || activeStep === maxSteps - 1}
               sx={{
                 padding: "10px 24px",
                 borderRadius: "100px",
