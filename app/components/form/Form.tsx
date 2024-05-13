@@ -13,6 +13,8 @@ import { styled } from "@mui/material/styles";
 import { SVGSparkles } from "../../Assets/SVGs";
 import TextEditor from "../Texteditor";
 import image from "../../Assets/nathan-dumlao-zUNs99PGDg0-unsplash 1.png";
+import img from "../../Assets/Size=Large.png";
+import img2 from "../../Assets/Tessa Persona.png";
 import { SVGGroup, SVGDate, SVGTime } from "../../Assets/SVGs";
 import twitter from "../../Assets/twitter.png";
 import instagram from "../../Assets/instagram.png";
@@ -98,7 +100,7 @@ const Form = () => {
 
   const handleSign = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    reset()
+    reset();
   };
 
   const handleBack = () => {
@@ -142,6 +144,13 @@ const Form = () => {
       }}
       onSubmit={handleFormSubmit}
     >
+      <Box sx={{ paddingTop: "38px", width: "110%" }}>
+        <Image
+          style={{ width: "100%", height: "100%" }}
+          src={activeStep === 0 ? img : img2}
+          alt="logo"
+        />
+      </Box>
       <Typography
         sx={{
           color: "#202E5B",
@@ -151,6 +160,7 @@ const Form = () => {
           fontStyle: "normal",
           fontWeight: 400,
           lineHeight: "normal",
+          p: "0 50px",
         }}
       >
         {textGuid[activeStep]}
