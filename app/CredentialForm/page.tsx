@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { Box, Typography } from "@mui/material";
 import img from "../Assets/Size=Large.png";
+import img2 from "../Assets/Tessa Persona.png";
 import Form from "../components/form/Form";
 import fram from ".././Assets/Frame 35278.png";
 import vector from ".././Assets/Vector 145.png";
@@ -16,16 +17,7 @@ const FormComponent = () => {
         justifyContent: "space-between",
       }}
     >
-      <Box>
-        <Box sx={{ paddingTop: "38px" }}>
-          <Image
-            style={{ width: "100%", height: "100px" }}
-            src={img}
-            alt="logo"
-          />
-        </Box>
-        <Form />
-      </Box>
+      <Form />
       <Box
         sx={{
           mt: "30px",

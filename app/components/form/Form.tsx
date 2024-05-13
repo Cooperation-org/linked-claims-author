@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import Image from "next/image";
+import { useForm, useFieldArray } from "react-hook-form";
 import { FormData, FormProps } from "./Types";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -8,6 +9,19 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { TextField, Box, Button, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { SVGSparkles } from "../../Assets/SVGs";
+import TextEditor from "../Texteditor";
+import image from "../../Assets/nathan-dumlao-zUNs99PGDg0-unsplash 1.png";
+import img from "../../Assets/Size=Large.png";
+import img2 from "../../Assets/Tessa Persona.png";
+import { SVGGroup, SVGDate, SVGTime } from "../../Assets/SVGs";
+import twitter from "../../Assets/twitter.png";
+import instagram from "../../Assets/instagram.png";
+import linkedin from "../../Assets/linkedin.png";
+import mail from "../../Assets/mail.png";
+import messageCircle from "../../Assets/message-circle.png";
+import DataComponent from "../dataPreview";
 
 const textGuid = [
   "Hi, I’m Tessa! Where do you want to save your LinkedClaims? ",
@@ -22,42 +36,89 @@ const textGuid = [
 
 const note =
   "Please note, all fields marked with an asterisk are required and must be completed.";
+const successNote =
+  "Congratulations on your achievement. Tell the world what you’ve accomplished!";
 
+const CustomTextField = styled(TextField)({
+  "& .MuiInputBase-root": {
+    position: "relative",
+    paddingRight: "50px",
+    width: "100%",
+    height: "275px",
+    marginTop: "3px",
+  },
+  "& .MuiFormHelperText-root": {
+    position: "absolute",
+    bottom: 8,
+    right: 16,
+    fontSize: "0.75rem",
+    borderRadios: "28px",
+  },
+});
 const Form = () => {
   const [formData, setFormData] = useState<FormData>();
-  const [value, setValue] = useState("Device");
   const [activeStep, setActiveStep] = useState(0);
+  const [inputValue, setInputValue] = useState("");
+
+  const characterLimit = 294;
   const maxSteps = textGuid.length;
-  const { register, handleSubmit, reset } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    control,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: {
-      name: "",
-      address: "",
-      expirationDate: "",
-      awardedDate: "",
-      skillName: "",
-      skillCriteria: "",
-      skillDescription: "",
-      badgeImage: "",
-      evidence: "",
-      didKeySeed: "",
+      storageOption: "Device",
+      fullName: "",
+      persons: "",
+      credentialName: "",
+      credentialDuration: "",
+      credentialDescription: "",
+      portfolio: [{ name: "", url: "" }],
+      imageLink: "",
+      description: "",
     },
+  });
+
+  // I will set the remove here to use it in the future
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "portfolio",
   });
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
+  const handlePreview = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleSign = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    reset();
+  };
+
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleTextEditorChange = (value: string | undefined) => {
+    setValue("credentialDescription", value ?? "");
   };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     console.log(data);
-    setFormData(data);
+    reset();
+
     const codeToCopy = JSON.stringify(data, null, 2);
 
     navigator.clipboard
@@ -70,6 +131,7 @@ const Form = () => {
         console.error("Unable to copy form values to clipboard: ", err);
       });
   });
+
   return (
     <form
       style={{
@@ -82,6 +144,13 @@ const Form = () => {
       }}
       onSubmit={handleFormSubmit}
     >
+      <Box sx={{ paddingTop: "38px", width: "110%" }}>
+        <Image
+          style={{ width: "100%", height: "100%" }}
+          src={activeStep === 0 ? img : img2}
+          alt="logo"
+        />
+      </Box>
       <Typography
         sx={{
           color: "#202E5B",
@@ -91,12 +160,64 @@ const Form = () => {
           fontStyle: "normal",
           fontWeight: 400,
           lineHeight: "normal",
+          p: "0 50px",
         }}
       >
         {textGuid[activeStep]}
         {activeStep === 0 && <span style={{ color: "red" }}> *</span>}
       </Typography>
-      {activeStep !== 0 && (
+      {activeStep !== 7 && (
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            gap: "5px",
+            justifyContent: "center",
+          }}
+        >
+          {activeStep !== 0 && (
+            <Box
+              sx={{
+                width: "7px",
+                height: "5px",
+                bgcolor: "#202E5B",
+                borderRadius: "3px",
+              }}
+            ></Box>
+          )}
+          <Box
+            sx={{
+              width:
+                activeStep === 0 || activeStep === 1 || activeStep === 2
+                  ? "22px"
+                  : "7px",
+              height: "5px",
+              bgcolor: "#202E5B",
+              borderRadius: "3px",
+            }}
+          ></Box>
+          <Box
+            sx={{
+              width:
+                activeStep === 3 || activeStep === 4 || activeStep === 5
+                  ? "22px"
+                  : "7px",
+              height: "5px",
+              bgcolor: "#202E5B",
+              borderRadius: "3px",
+            }}
+          ></Box>
+          <Box
+            sx={{
+              width: activeStep === 6 ? "22px" : "7px",
+              height: "5px",
+              bgcolor: "#202E5B",
+              borderRadius: "3px",
+            }}
+          ></Box>
+        </Box>
+      )}
+      {activeStep !== 1 && activeStep !== 7 && activeStep !== 6 && (
         <Typography
           sx={{
             color: "#202E5B",
@@ -111,23 +232,43 @@ const Form = () => {
           {note}
         </Typography>
       )}
-      <Box sx={{ pl: "15px",width:'100%' }}>
+      {activeStep === 7 && (
+        <Typography
+          sx={{
+            color: "#202E5B",
+            textAlign: "center",
+            fontFamily: "Lato",
+            fontSize: "16px",
+            fontStyle: "italic",
+            fontWeight: 500,
+            lineHeight: "normal",
+          }}
+        >
+          {successNote}
+        </Typography>
+      )}
+      <Box sx={{ width: "100%" }}>
         <FormControl sx={{ width: "100%" }}>
-          { activeStep === 1 &&<FormLabel
-            sx={{
-              color: "var(--T3-Body-Text, #202E5B)",
-              fontFamily: "Lato",
-              fontSize: "16px",
-              fontStyle: "normal",
-              fontWeight: 600,
-              lineHeight: "normal",
-              letterSpacing: "0.08px",
-              mb: "7px",
-            }}
-            id="demo-controlled-radio-buttons-group"
-          >
-            Is this for a individual or a business?
-          </FormLabel>}
+          {activeStep === 1 && (
+            <FormLabel
+              sx={{
+                color: "var(--T3-Body-Text, #202E5B)",
+                fontFamily: "Lato",
+                fontSize: "16px",
+                fontStyle: "normal",
+                fontWeight: 600,
+                lineHeight: "normal",
+                letterSpacing: "0.08px",
+                mb: "7px",
+                "&.Mui-focused": {
+                  color: "#000",
+                },
+              }}
+              id="form-type-label"
+            >
+              Is this for a individual or a business?
+            </FormLabel>
+          )}
           <RadioGroup
             sx={{
               display: "flex",
@@ -135,20 +276,21 @@ const Form = () => {
               gap: "15px",
               m: "0 auto",
               width: "100%",
+              ml: "10px",
             }}
-            aria-labelledby="demo-controlled-radio-buttons-group"
+            aria-labelledby="form-type-label"
             name="controlled-radio-buttons-group"
-            value={value}
-            onChange={handleChange}
+            value={watch("storageOption")}
+            onChange={(e) => setValue("storageOption", e.target.value)}
           >
             {activeStep === 0 && (
               <FormControlLabel
+                value="Device"
                 sx={{
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
                 }}
-                value="Device"
                 control={
                   <Radio
                     sx={{
@@ -163,12 +305,12 @@ const Form = () => {
             )}
             {activeStep === 0 && (
               <FormControlLabel
+                value="Google Drive"
                 sx={{
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
                 }}
-                value="Google Drive"
                 control={
                   <Radio
                     sx={{
@@ -183,13 +325,13 @@ const Form = () => {
             )}
             {activeStep === 0 && (
               <FormControlLabel
+                value="Digital Wallet"
                 sx={{
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
                   pr: "5px",
                 }}
-                value="Digital Wallet"
                 control={
                   <Radio
                     sx={{
@@ -204,12 +346,12 @@ const Form = () => {
             )}
             {activeStep === 0 && (
               <FormControlLabel
+                value="Dropbox"
                 sx={{
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
                 }}
-                value="Dropbox"
                 control={
                   <Radio
                     sx={{
@@ -222,7 +364,22 @@ const Form = () => {
                 label="Dropbox"
               />
             )}
-            {activeStep === 1 && (
+          </RadioGroup>
+          {activeStep === 1 && (
+            <RadioGroup
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "15px",
+                m: "0 auto",
+                width: "100%",
+                ml: "10px",
+              }}
+              aria-labelledby="form-type-label"
+              name="controlled-radio-buttons-group"
+              value={watch("persons")}
+              onChange={(e) => setValue("persons", e.target.value)}
+            >
               <FormControlLabel
                 sx={{
                   bgcolor: "#FFF",
@@ -242,112 +399,720 @@ const Form = () => {
                 }
                 label="Individual"
               />
-            )}
-            {activeStep === 1 && (
-              <FormControlLabel
+              {activeStep === 1 && (
+                <FormControlLabel
+                  sx={{
+                    bgcolor: "#FFF",
+                    borderRadius: "8px",
+                    border: "1px solid #E5E7EB",
+                  }}
+                  value="Business"
+                  control={
+                    <Radio
+                      sx={{
+                        "&.Mui-checked": {
+                          color: "#2563EB",
+                        },
+                      }}
+                    />
+                  }
+                  label="Business"
+                />
+              )}
+            </RadioGroup>
+          )}
+          {activeStep === 1 && (
+            <Box sx={{ mt: "20px" }}>
+              <FormLabel
+                sx={{
+                  color: "#202E5B",
+                  fontFamily: "Lato",
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  "&.Mui-focused": {
+                    color: "#000",
+                  },
+                }}
+                id="name-label"
+              >
+                Full Name or Business Name
+                <span style={{ color: "red" }}> *</span>
+              </FormLabel>
+              <TextField
+                {...register("fullName", { required: "Full name is required" })}
+                placeholder="e.g., Maria Fernández or Kumar Enterprises"
+                variant="outlined"
                 sx={{
                   bgcolor: "#FFF",
-                  borderRadius: "8px",
-                  border: "1px solid #E5E7EB",
+                  width: "100%",
+                  mt: "3px",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                  },
                 }}
-                value="Business"
-                control={
-                  <Radio
-                    sx={{
-                      "&.Mui-checked": {
-                        color: "#2563EB",
-                      },
-                    }}
-                  />
-                }
-                label="Business"
+                aria-labelledby="name-label"
+                inputProps={{
+                  "aria-label": "weight",
+                  style: {
+                    color: "black",
+                    fontSize: "15px",
+                    fontStyle: "italic",
+                    fontWeight: 600,
+                    letterSpacing: "0.075px",
+                  },
+                }}
               />
-            )}
-          </RadioGroup>
+            </Box>
+          )}
+          {activeStep === 2 && (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+              <Box>
+                <FormLabel
+                  sx={{
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    "&.Mui-focused": {
+                      color: "#000",
+                    },
+                  }}
+                  id="name-label"
+                >
+                  Credential Name
+                  <span style={{ color: "red" }}> *</span>
+                </FormLabel>
+                <TextField
+                  {...register("credentialName", {
+                    required: "Credential name is required",
+                  })}
+                  placeholder="e.g., Community Gardening Coordinator"
+                  variant="outlined"
+                  sx={{
+                    bgcolor: "#FFF",
+                    borderRadius: "800px",
+                    width: "100%",
+                    mt: "3px",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                    },
+                  }}
+                  aria-labelledby="name-label"
+                  inputProps={{
+                    "aria-label": "weight",
+                    style: {
+                      color: "black",
+                      fontSize: "15px",
+                      fontStyle: "italic",
+                      fontWeight: 600,
+                      letterSpacing: "0.075px",
+                    },
+                  }}
+                />
+              </Box>
+              <TextEditor
+                value={watch("credentialDescription")}
+                onChange={handleTextEditorChange}
+              />
+              <Box>
+                <FormLabel
+                  sx={{
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    "&.Mui-focused": {
+                      color: "#000",
+                    },
+                  }}
+                  id="name-label"
+                >
+                  Duration
+                  <span style={{ color: "red" }}> *</span>
+                </FormLabel>
+                <TextField
+                  {...register("credentialDuration", {
+                    required: "Duration is required",
+                  })}
+                  placeholder="1 Day"
+                  variant="outlined"
+                  sx={{
+                    bgcolor: "#FFF",
+                    borderRadius: "800px",
+                    width: "100%",
+                    mt: "3px",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                    },
+                  }}
+                  aria-labelledby="name-label"
+                  inputProps={{
+                    "aria-label": "weight",
+                    style: {
+                      color: "black",
+                      fontSize: "15px",
+                      fontStyle: "italic",
+                      fontWeight: 600,
+                      letterSpacing: "0.075px",
+                    },
+                  }}
+                />
+              </Box>
+            </Box>
+          )}
+          {activeStep === 3 && (
+            <Box position="relative" width="100%">
+              <FormLabel
+                sx={{
+                  color: "#202E5B",
+                  fontFamily: "Lato",
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  "&.Mui-focused": {
+                    color: "#000",
+                  },
+                }}
+                id="name-label"
+              >
+                Description (publicly visible)
+                <span style={{ color: "red" }}> *</span>
+              </FormLabel>
+              <CustomTextField
+                {...register("description", {
+                  required: "Description is required",
+                })}
+                style={{ width: "100%", marginBottom: "3px" }}
+                multiline
+                rows={11}
+                variant="outlined"
+                value={inputValue}
+                onChange={handleInputChange}
+                helperText={`${inputValue.length}/${characterLimit} characters`}
+                FormHelperTextProps={{
+                  className: "MuiFormHelperText-root",
+                }}
+                inputProps={{
+                  maxLength: characterLimit,
+                }}
+              />
+              <Box sx={{ display: "flex", gap: "5px" }}>
+                <SVGSparkles />
+                <FormLabel
+                  sx={{
+                    color: "#202E5B",
+                    fontFamily: "Lato",
+                    fontSize: "13px",
+                    textDecorationLine: "underline",
+                    lineHeight: "24px",
+                    letterSpacing: "0.065px",
+                    fontWeight: 400,
+                    "&.Mui-focused": {
+                      color: "#000",
+                    },
+                  }}
+                  id="name-label"
+                >
+                  Use AI to generate a description.
+                </FormLabel>
+              </Box>
+            </Box>
+          )}
+          {activeStep === 4 && (
+            <Box>
+              {fields.map((field, index) => (
+                <React.Fragment key={field.id}>
+                  <Box sx={{ mb: "15px" }}>
+                    <FormLabel
+                      sx={{
+                        color: "#202E5B",
+                        fontFamily: "Lato",
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        "&.Mui-focused": {
+                          color: "#000",
+                        },
+                      }}
+                      id={`name-label-${index}`}
+                    >
+                      Name
+                    </FormLabel>
+                    <TextField
+                      {...register(`portfolio.${index}.name`, {
+                        required: "Name is required",
+                      })}
+                      defaultValue={field.name}
+                      placeholder="Picture of the Community Garden"
+                      variant="outlined"
+                      sx={{
+                        bgcolor: "#FFF",
+                        borderRadius: "800px",
+                        width: "100%",
+                        mt: "3px",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "8px",
+                        },
+                      }}
+                      aria-labelledby={`name-label-${index}`}
+                    />
+                  </Box>
+                  <Box>
+                    <FormLabel
+                      sx={{
+                        color: "#202E5B",
+                        fontFamily: "Lato",
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        "&.Mui-focused": {
+                          color: "#000",
+                        },
+                      }}
+                      id={`url-label-${index}`}
+                    >
+                      URL
+                    </FormLabel>
+                    <TextField
+                      {...register(`portfolio.${index}.url`, {
+                        required: "URL is required",
+                      })}
+                      defaultValue={field.url}
+                      placeholder="https://www.example.com"
+                      variant="outlined"
+                      sx={{
+                        bgcolor: "#FFF",
+                        borderRadius: "800px",
+                        width: "100%",
+                        mt: "3px",
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "8px",
+                        },
+                      }}
+                      aria-labelledby={`url-label-${index}`}
+                    />
+                  </Box>
+                </React.Fragment>
+              ))}
+              {fields.length < 5 && (
+                <Box
+                  sx={{
+                    width: "100%",
+                    justifyContent: "flex-end",
+                    display: "flex",
+                  }}
+                >
+                  <button
+                    onClick={() => append({ name: "", url: "" })}
+                    style={{
+                      background: "none",
+                      color: "#003FE0",
+                      border: "none",
+                      padding: 0,
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                      letterSpacing: "0.075px",
+                      textAlign: "right",
+                      lineHeight: "16px",
+                      marginTop: "7px",
+                    }}
+                  >
+                    Add another
+                  </button>
+                </Box>
+              )}
+              <Box
+                sx={{
+                  width: "100%",
+                  justifyContent: "center",
+                  display: "flex",
+                  marginTop: "40px",
+                }}
+              >
+                <button
+                  onClick={handleNext}
+                  style={{
+                    background: "none",
+                    color: "#6750A4",
+                    border: "none",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: 400,
+                  }}
+                >
+                  Skip
+                </button>
+              </Box>
+            </Box>
+          )}
+          {activeStep === 5 && (
+            <Box>
+              <FormLabel
+                sx={{
+                  color: "#202E5B",
+                  fontFamily: "Lato",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  "&.Mui-focused": {
+                    color: "#000",
+                  },
+                }}
+                id="name-label"
+              >
+                URL of an image you have permission to use (optional)
+              </FormLabel>
+              <TextField
+                {...register("imageLink")}
+                placeholder="https://"
+                variant="outlined"
+                sx={{
+                  bgcolor: "#FFF",
+                  borderRadius: "800px",
+                  width: "100%",
+                  mt: "3px",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                  },
+                }}
+                aria-labelledby="name-label"
+                inputProps={{
+                  "aria-label": "weight",
+                  style: {
+                    color: "black",
+                    fontSize: "15px",
+                    fontStyle: "italic",
+                    fontWeight: 600,
+                    letterSpacing: "0.075px",
+                  },
+                }}
+              />
+              <Box
+                sx={{
+                  width: "100%",
+                  justifyContent: "center",
+                  display: "flex",
+                  marginTop: "40px",
+                }}
+              >
+                <button
+                  onClick={handleNext}
+                  style={{
+                    background: "none",
+                    color: "#6750A4",
+                    border: "none",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: 400,
+                  }}
+                >
+                  Skip
+                </button>
+              </Box>
+            </Box>
+          )}
+          {activeStep === 6 && <DataComponent formData={watch()} />}
+          {activeStep === 7 && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "30px",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "100px",
+                  display: "flex",
+                  gap: "15px",
+                  bgcolor: "#E5E7EB",
+                  borderRadius: "20px",
+                }}
+              >
+                <Image
+                  style={{ width: "100px", height: "100px" }}
+                  src={image}
+                  alt="logo"
+                />
+                <Box sx={{ width: "100%" }}>
+                  <Box sx={{ textAlign: "right", pr: "15px", mt: "5px" }}>
+                    <SVGGroup />
+                  </Box>
+                  <Typography
+                    sx={{
+                      color: "#202E5B",
+                      textAlign: "left",
+                      fontFamily: "Inter",
+                      fontSize: "15px",
+                      fontWeight: 700,
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    Basic Barista Training
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      width: "100%",
+                      gap: "15px",
+                      mt: "5px",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", gap: "3px" }}>
+                      <SVGDate />
+                      <Typography
+                        sx={{
+                          color: "#4E4E4E",
+                          textAlign: "center",
+                          fontFamily: "Poppins",
+                          fontSize: "13px",
+                          fontWeight: 400,
+                          lineHeight: "150%",
+                        }}
+                      >
+                        2 days
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", gap: "3px" }}>
+                      <SVGTime />
+                      <Typography
+                        sx={{
+                          color: "#4E4E4E",
+                          textAlign: "center",
+                          fontFamily: "Poppins",
+                          fontSize: "13px",
+                          fontWeight: 400,
+                          lineHeight: "150%",
+                        }}
+                      >
+                        3 min
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "9px",
+                }}
+              >
+                <Box sx={{ display: "flex" }}>
+                  <Box
+                    sx={{
+                      bgcolor: "#E5E7EB",
+                      borderRadius: "20px",
+                      height: "40px",
+                      width: "40px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Image src={twitter} alt="TwitterImage" />
+                  </Box>
+                </Box>
+                <Box
+                  sx={{
+                    bgcolor: "#E5E7EB",
+                    borderRadius: "20px",
+                    height: "40px",
+                    width: "40px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image src={linkedin} alt="LinkedinImage" />
+                </Box>
+                <Box
+                  sx={{
+                    bgcolor: "#E5E7EB",
+                    borderRadius: "20px",
+                    height: "40px",
+                    width: "40px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image src={instagram} alt="InstagramImage" />
+                </Box>
+                <Box
+                  sx={{
+                    bgcolor: "#E5E7EB",
+                    borderRadius: "20px",
+                    height: "40px",
+                    width: "40px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image src={mail} alt="mailImage" />
+                </Box>
+                <Box
+                  sx={{
+                    bgcolor: "#E5E7EB",
+                    borderRadius: "20px",
+                    height: "40px",
+                    width: "40px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image src={messageCircle} alt="messageCircleImage" />
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  justifyContent: "center",
+                  display: "flex",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={() => setActiveStep(0)}
+                  sx={{
+                    padding: "10px 24px",
+                    borderRadius: "100px",
+                    bgcolor: "#003FE0",
+                    textTransform: "capitalize",
+                    fontFamily: "Roboto",
+                    lineHeight: "20px",
+                    "&:hover": {
+                      bgcolor: "#003FE0",
+                    },
+                  }}
+                >
+                  Add Another
+                </Button>
+              </Box>
+            </Box>
+          )}
         </FormControl>
       </Box>
-      <Box
-        sx={{
-          height: "40px",
-          display: "flex",
-          gap: "15px",
-          justifyContent: activeStep !== 0 ? "space-between" : "center",
-        }}
-      >
-        {activeStep !== 0 && (
-          <Button
-            variant="contained"
-            onClick={handleBack}
-            sx={{
-              display: "flex",
-              padding: "0 24px",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: "100px",
-              bgcolor: "#FFF",
-              textTransform: "capitalize",
-              color: "#4E4E4E",
-              textAlign: "center",
-              fontFamily: "Roboto",
-              fontSize: "14px",
-              fontStyle: "normal",
-              fontWeight: 500,
-              lineHeight: "20px",
-            }}
-          >
-            back
-          </Button>
-        )}
-        {activeStep !== 0 && (
-          <Button
-            variant="contained"
-            onClick={() => {}}
-            sx={{
-              display: "flex",
-              padding: "10px 24px",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "8px",
-              borderRadius: "100px",
-              bgcolor: "#FFF",
-              textTransform: "capitalize",
-              color: "#4E4E4E",
-              textAlign: "center",
-              fontFamily: "Roboto",
-              fontSize: "14px",
-              fontStyle: "normal",
-              fontWeight: 500,
-              lineHeight: "20px",
-            }}
-          >
-            save & Exit
-          </Button>
-        )}
-        <Button
-          variant="contained"
-          onClick={handleNext}
-          disabled={activeStep === maxSteps - 1}
+      {activeStep !== 7 && (
+        <Box
           sx={{
+            height: "40px",
             display: "flex",
-            padding: "10px 24px",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "8px",
-            borderRadius: "100px",
-            bgcolor: "#003FE0",
-            width: "20px",
-            textTransform: "capitalize",
-            textAlign: "center",
-            fontFamily: "Roboto",
-            fontSize: "14px",
-            fontStyle: "normal",
-            fontWeight: 500,
-            lineHeight: "20px",
+            gap: "15px",
+            justifyContent: activeStep !== 0 ? "space-between" : "center",
           }}
         >
-          Next
-        </Button>
-      </Box>
+          {activeStep !== 0 && (
+            <Button
+              variant="contained"
+              onClick={handleBack}
+              sx={{
+                padding: "0 24px",
+                borderRadius: "100px",
+                bgcolor: "#FFF",
+                textTransform: "capitalize",
+                color: "#4E4E4E",
+                fontFamily: "Roboto",
+                "&:hover": {
+                  bgcolor: "#FFF",
+                },
+              }}
+            >
+              back
+            </Button>
+          )}
+          {activeStep !== 0 && (
+            <Button
+              type="submit"
+              variant="contained"
+              onClick={() => {}}
+              sx={{
+                padding: "10px 24px",
+                gap: "8px",
+                borderRadius: "100px",
+                bgcolor: "#FFF",
+                textTransform: "capitalize",
+                color: "#4E4E4E",
+                fontFamily: "Roboto",
+                lineHeight: "20px",
+                "&:hover": {
+                  bgcolor: "#FFF",
+                },
+              }}
+            >
+              save & Exit
+            </Button>
+          )}
+          {activeStep !== 5 && activeStep !== 6 && (
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              disabled={activeStep === maxSteps - 1}
+              sx={{
+                padding: "10px 24px",
+                borderRadius: "100px",
+                bgcolor: "#003FE0",
+                width: "20px",
+                textTransform: "capitalize",
+                fontFamily: "Roboto",
+                lineHeight: "20px",
+                "&:hover": {
+                  bgcolor: "#003FE0",
+                },
+              }}
+            >
+              Next
+            </Button>
+          )}
+          {activeStep === 6 && (
+            <Button
+              variant="contained"
+              onClick={handleSign}
+              sx={{
+                padding: "10px 24px",
+                borderRadius: "100px",
+                bgcolor: "#003FE0",
+                width: "20px",
+                textTransform: "capitalize",
+                fontFamily: "Roboto",
+                lineHeight: "20px",
+                "&:hover": {
+                  bgcolor: "#003FE0",
+                },
+              }}
+            >
+              Sign
+            </Button>
+          )}
+          {activeStep === 5 && (
+            <Button
+              variant="contained"
+              onClick={handlePreview}
+              disabled={activeStep === maxSteps - 1}
+              sx={{
+                padding: "10px 24px",
+                borderRadius: "100px",
+                bgcolor: "#003FE0",
+                textTransform: "capitalize",
+                fontFamily: "Roboto",
+                lineHeight: "20px",
+                "&:hover": {
+                  bgcolor: "#003FE0",
+                },
+              }}
+            >
+              Preview
+            </Button>
+          )}
+        </Box>
+      )}
     </form>
   );
 };

@@ -13,7 +13,7 @@ export interface Achievement {
   criteria: { narrative: string };
   description: string;
   name: string;
-  imageURl: string ;
+  imageUrl: string;
 }
 
 export interface CredentialSubject {
@@ -39,19 +39,24 @@ export interface Credential {
   credentialSubject: CredentialSubject;
 }
 
+interface Portfolio {
+  name: string;
+  url: string;
+}
+
 // Interfaces for the form fields
 export interface FormData {
-  name: string;
-  address?: string;
-  expirationDate?: string;
-  awardedDate?: string;
-  skillName: string;
-  skillCriteria: string;
-  skillDescription?: string;
-  badgeImage?: string;
-  evidence?: string;
-  didKeySeed: string;
-  [key: string]: string | undefined; // I will keel it here for the future fields
+  storageOption: string;
+  fullName: string;
+  persons: string;
+  credentialName: string;
+  credentialDuration: string;
+  credentialDescription: string;
+  portfolio: Portfolio[];
+  imageLink: string;
+  description: string;
+  url: string;
+  [key: string]: string | undefined | Portfolio[]; 
 }
 
 // Component Props for the form

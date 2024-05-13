@@ -180,3 +180,217 @@ export const SVGCheckMarks = () => {
     </div>
   );
 };
+export const SVGSparkles = () => {
+  return (
+    <div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <path
+          d="M12 3L10.088 8.813C9.99015 9.11051 9.82379 9.38088 9.60234 9.60234C9.38088 9.82379 9.11051 9.99015 8.813 10.088L3 12L8.813 13.912C9.11051 14.0099 9.38088 14.1762 9.60234 14.3977C9.82379 14.6191 9.99015 14.8895 10.088 15.187L12 21L13.912 15.187C14.0099 14.8895 14.1762 14.6191 14.3977 14.3977C14.6191 14.1762 14.8895 14.0099 15.187 13.912L21 12L15.187 10.088C14.8895 9.99015 14.6191 9.82379 14.3977 9.60234C14.1762 9.38088 14.0099 9.11051 13.912 8.813L12 3Z"
+          stroke="black"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5 3V7"
+          stroke="black"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M19 17V21"
+          stroke="black"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M3 5H7"
+          stroke="black"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M17 19H21"
+          stroke="black"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  );
+};
+export const SVGGroup = () => {
+  return (
+    <div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="4"
+        height="15"
+        viewBox="0 0 4 15"
+        fill="none"
+      >
+        <path
+          d="M2 9.43276C3.10457 9.43276 4 8.60704 4 7.58845C4 6.56987 3.10457 5.74414 2 5.74414C0.89543 5.74414 0 6.56987 0 7.58845C0 8.60704 0.89543 9.43276 2 9.43276Z"
+          fill="#B8B8B8"
+        />
+        <path
+          d="M2 3.89956C3.10457 3.89956 4 3.07383 4 2.05525C4 1.03666 3.10457 0.210938 2 0.210938C0.89543 0.210938 0 1.03666 0 2.05525C0 3.07383 0.89543 3.89956 2 3.89956Z"
+          fill="#B8B8B8"
+        />
+        <path
+          d="M2 14.964C3.10457 14.964 4 14.1383 4 13.1197C4 12.1011 3.10457 11.2754 2 11.2754C0.89543 11.2754 0 12.1011 0 13.1197C0 14.1383 0.89543 14.964 2 14.964Z"
+          fill="#B8B8B8"
+        />
+      </svg>
+    </div>
+  );
+};
+export const SVGDate = () => {
+  return (
+    <div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <path
+          d="M12.375 3H3.625C2.93464 3 2.375 3.55964 2.375 4.25V13C2.375 13.6904 2.93464 14.25 3.625 14.25H12.375C13.0654 14.25 13.625 13.6904 13.625 13V4.25C13.625 3.55964 13.0654 3 12.375 3Z"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M10.5 1.75V4.25"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5.5 1.75V4.25"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M2.375 6.75H13.625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  );
+};
+export const SVGTime = () => {
+  return (
+    <div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <path
+          d="M8 14.25C11.4518 14.25 14.25 11.4518 14.25 8C14.25 4.54822 11.4518 1.75 8 1.75C4.54822 1.75 1.75 4.54822 1.75 8C1.75 11.4518 4.54822 14.25 8 14.25Z"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M8 4.25V8L10.5 6.75"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  );
+};
+export const SVGBuilding = () => {
+  return (
+    <div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="15"
+        height="16"
+        viewBox="0 0 15 16"
+        fill="none"
+      >
+        <path
+          d="M11.25 1.75H3.75C3.05964 1.75 2.5 2.30964 2.5 3V13C2.5 13.6904 3.05964 14.25 3.75 14.25H11.25C11.9404 14.25 12.5 13.6904 12.5 13V3C12.5 2.30964 11.9404 1.75 11.25 1.75Z"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5.625 14.25V11.75H9.375V14.25"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5 4.25H5.00625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M10 4.25H10.0063"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M7.5 4.25H7.50625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M7.5 6.75H7.50625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M7.5 9.25H7.50625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M10 6.75H10.0063"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M10 9.25H10.0063"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5 6.75H5.00625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M5 9.25H5.00625"
+          stroke="#4E4E4E"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  );
+};
