@@ -2,14 +2,19 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useForm, useFieldArray } from "react-hook-form";
-import { FormData, FormProps } from "./Types";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import { TextField, Box, Button, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { FormData } from "./Types";
+import {
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  TextField,
+  Box,
+  Button,
+  Typography,
+  styled,
+} from "@mui/material";
 import { SVGSparkles } from "../../Assets/SVGs";
 import TextEditor from "../Texteditor";
 import image from "../../Assets/nathan-dumlao-zUNs99PGDg0-unsplash 1.png";
@@ -52,9 +57,10 @@ const CustomTextField = styled(TextField)({
     bottom: 8,
     right: 16,
     fontSize: "0.75rem",
-    borderRadios: "28px",
+    borderRadius: "28px",
   },
 });
+
 const Form = () => {
   const [formData, setFormData] = useState<FormData>();
   const [activeStep, setActiveStep] = useState(0);
@@ -84,7 +90,6 @@ const Form = () => {
     },
   });
 
-  // I will set the remove here to use it in the future
   const { fields, append, remove } = useFieldArray({
     control,
     name: "portfolio",
@@ -144,7 +149,7 @@ const Form = () => {
       }}
       onSubmit={handleFormSubmit}
     >
-      <Box sx={{  width: "110%" }}>
+      <Box sx={{ width: "110%" }}>
         <Image
           style={{ width: "100%", height: "100%" }}
           src={activeStep === 0 ? img : img2}
@@ -266,7 +271,7 @@ const Form = () => {
               }}
               id="form-type-label"
             >
-              Is this for a individual or a business?
+              Is this for an individual or a business?
             </FormLabel>
           )}
           <RadioGroup
@@ -399,26 +404,24 @@ const Form = () => {
                 }
                 label="Individual"
               />
-              {activeStep === 1 && (
-                <FormControlLabel
-                  sx={{
-                    bgcolor: "#FFF",
-                    borderRadius: "8px",
-                    border: "1px solid #E5E7EB",
-                  }}
-                  value="Business"
-                  control={
-                    <Radio
-                      sx={{
-                        "&.Mui-checked": {
-                          color: "#2563EB",
-                        },
-                      }}
-                    />
-                  }
-                  label="Business"
-                />
-              )}
+              <FormControlLabel
+                sx={{
+                  bgcolor: "#FFF",
+                  borderRadius: "8px",
+                  border: "1px solid #E5E7EB",
+                }}
+                value="Business"
+                control={
+                  <Radio
+                    sx={{
+                      "&.Mui-checked": {
+                        color: "#2563EB",
+                      },
+                    }}
+                  />
+                }
+                label="Business"
+              />
             </RadioGroup>
           )}
           {activeStep === 1 && (
@@ -490,7 +493,6 @@ const Form = () => {
                   variant="outlined"
                   sx={{
                     bgcolor: "#FFF",
-                    borderRadius: "800px",
                     width: "100%",
                     mt: "3px",
                     "& .MuiOutlinedInput-root": {
@@ -538,7 +540,6 @@ const Form = () => {
                   variant="outlined"
                   sx={{
                     bgcolor: "#FFF",
-                    borderRadius: "800px",
                     width: "100%",
                     mt: "3px",
                     "& .MuiOutlinedInput-root": {
@@ -645,7 +646,6 @@ const Form = () => {
                       variant="outlined"
                       sx={{
                         bgcolor: "#FFF",
-                        borderRadius: "800px",
                         width: "100%",
                         mt: "3px",
                         "& .MuiOutlinedInput-root": {
@@ -679,7 +679,6 @@ const Form = () => {
                       variant="outlined"
                       sx={{
                         bgcolor: "#FFF",
-                        borderRadius: "800px",
                         width: "100%",
                         mt: "3px",
                         "& .MuiOutlinedInput-root": {
@@ -700,6 +699,7 @@ const Form = () => {
                   }}
                 >
                   <button
+                    type="button"
                     onClick={() => append({ name: "", url: "" })}
                     style={{
                       background: "none",
@@ -729,6 +729,7 @@ const Form = () => {
                 }}
               >
                 <button
+                  type="button"
                   onClick={handleNext}
                   style={{
                     background: "none",
@@ -767,7 +768,6 @@ const Form = () => {
                 variant="outlined"
                 sx={{
                   bgcolor: "#FFF",
-                  borderRadius: "800px",
                   width: "100%",
                   mt: "3px",
                   "& .MuiOutlinedInput-root": {
@@ -795,6 +795,7 @@ const Form = () => {
                 }}
               >
                 <button
+                  type="button"
                   onClick={handleNext}
                   style={{
                     background: "none",
