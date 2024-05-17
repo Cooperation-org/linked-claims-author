@@ -14,12 +14,13 @@ import {
   Button,
   Typography,
   styled,
+  useMediaQuery,
+  Theme
 } from "@mui/material";
+import { useTheme } from '@mui/system';
 import { SVGSparkles } from "../../Assets/SVGs";
 import TextEditor from "../Texteditor";
 import image from "../../Assets/nathan-dumlao-zUNs99PGDg0-unsplash 1.png";
-import img from "../../Assets/Size=Large.png";
-import img2 from "../../Assets/Tessa Persona.png";
 import { SVGGroup, SVGDate, SVGTime } from "../../Assets/SVGs";
 import twitter from "../../Assets/twitter.png";
 import instagram from "../../Assets/instagram.png";
@@ -29,7 +30,7 @@ import messageCircle from "../../Assets/message-circle.png";
 import DataComponent from "../dataPreview";
 
 const textGuid = [
-  "Hi, I’m Tessa! Where do you want to save your LinkedClaims? ",
+  "",
   "Let’s get started with your name and address.",
   "Thanks, Alice!  Now let’s learn more about the skills you have.",
   "Now describe what you can demonstrate using this skill.",
@@ -63,9 +64,10 @@ const CustomTextField = styled(TextField)({
 
 const Form = () => {
   const [formData, setFormData] = useState<FormData>();
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(6);
   const [inputValue, setInputValue] = useState("");
-
+  const theme: Theme = useTheme();
+  const isLargeScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up("sm"));
   const characterLimit = 294;
   const maxSteps = textGuid.length;
   const {
@@ -151,13 +153,6 @@ const Form = () => {
       }}
       onSubmit={handleFormSubmit}
     >
-      <Box sx={{ width: "110%" }}>
-        <Image
-          style={{ width: "100%", height: "100%" }}
-          src={activeStep === 0 ? img : img2}
-          alt="logo"
-        />
-      </Box>
       <Typography
         sx={{
           color: "#202E5B",
@@ -170,10 +165,16 @@ const Form = () => {
           p: "0 50px",
         }}
       >
+        {activeStep === 0 && (
+          <>
+            <span style={{ display: "block" }}>Hi, I’m Tessa!</span>
+            <span>Where do you want to save your LinkedClaims?</span>
+          </>
+        )}
         {textGuid[activeStep]}
         {activeStep === 0 && <span style={{ color: "red" }}> *</span>}
       </Typography>
-      {activeStep !== 7 && (
+      {!isLargeScreen && activeStep !== 7 && (
         <Box
           sx={{
             width: "100%",
@@ -224,7 +225,7 @@ const Form = () => {
           ></Box>
         </Box>
       )}
-      {activeStep !== 1 && activeStep !== 7 && activeStep !== 6 && (
+      {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && (
         <Typography
           sx={{
             color: "#202E5B",
@@ -254,7 +255,7 @@ const Form = () => {
           {successNote}
         </Typography>
       )}
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: { xs: "100%", md: "55%" } }}>
         <FormControl sx={{ width: "100%" }}>
           {activeStep === 1 && (
             <FormLabel
@@ -282,8 +283,8 @@ const Form = () => {
               flexDirection: "column",
               gap: "15px",
               m: "0 auto",
-              width: "100%",
-              ml: "10px",
+              width: { xs: "100%", md: "50%" },
+              ml: { xs: "10px", md: "25%" },
             }}
             aria-labelledby="form-type-label"
             name="controlled-radio-buttons-group"
@@ -376,7 +377,7 @@ const Form = () => {
             <RadioGroup
               sx={{
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: { xs: "column", md: "row" },
                 gap: "15px",
                 m: "0 auto",
                 width: "100%",
@@ -392,7 +393,7 @@ const Form = () => {
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
-                  pr: "5px",
+                  width: "calc(50% - 15px)",
                 }}
                 value="Individual"
                 control={
@@ -411,6 +412,7 @@ const Form = () => {
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
+                  width: "calc(50% - 15px)",
                 }}
                 value="Business"
                 control={
@@ -1066,7 +1068,6 @@ const Form = () => {
             <Button
               variant="contained"
               onClick={handleNext}
-              disabled={!isValid || activeStep === maxSteps - 1}
               sx={{
                 padding: "10px 24px",
                 borderRadius: "100px",
