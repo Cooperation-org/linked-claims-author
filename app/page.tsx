@@ -17,14 +17,6 @@ import img from './Assets/Annika Rangarajan.png'
 const page = () => {
   return (
     <>
-      {/*<Box*/}
-      {/*  sx={{*/}
-      {/*    display: "flex",*/}
-      {/*    flexDirection: "column",*/}
-      {/*    gap: "37px",*/}
-      {/*    alignItems: "center",*/}
-      {/*  }}*/}
-      {/*>*/}
       <Box
         sx={{
           display: 'flex',
@@ -61,7 +53,6 @@ const page = () => {
             fontWeight: '400',
             lineHeight: 'normal',
             paddingInline: '1rem',
-            //
           }}
         >
           Sign up in seconds. Let your true skills shine. Stand out from the
@@ -102,6 +93,7 @@ const page = () => {
           <SVGDesign />
         </Box>
       </Box>
+
       <Box
         sx={{
           display: 'inline-flex',
@@ -113,7 +105,6 @@ const page = () => {
           flexShrink: 0,
           width: '100%',
           mb: '1rem',
-          //
         }}
       >
         <Typography
@@ -241,9 +232,10 @@ const page = () => {
                 left: '35px',
                 bgcolor: '#003FE0',
                 borderRadius: '5px',
+                textTransform: 'lowercase',
               }}
             >
-              <span style={{ textTransform: 'lowercase' }}>Share</span>
+              Share
             </Box>
             <SVGMobile />
           </Box>
@@ -298,7 +290,6 @@ const page = () => {
             flexDirection: 'column',
             gap: '15px',
             alignItems: 'center',
-            //
           }}
         >
           <Box
@@ -620,7 +611,6 @@ const page = () => {
           </Box>
         </Stack>
       </Box>
-      {/*</Box>*/}
     </>
   )
 }
