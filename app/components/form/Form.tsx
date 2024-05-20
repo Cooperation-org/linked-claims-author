@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import Image from "next/image";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -14,13 +15,14 @@ import {
   Button,
   Typography,
   styled,
+  useMediaQuery,
+  Theme,
+  ButtonProps,
 } from "@mui/material";
-import { SVGSparkles } from "../../Assets/SVGs";
+import { useTheme } from "@mui/system";
+import { SVGSparkles, SVGGroup, SVGDate, SVGTime } from "../../Assets/SVGs";
 import TextEditor from "../Texteditor";
 import image from "../../Assets/nathan-dumlao-zUNs99PGDg0-unsplash 1.png";
-import img from "../../Assets/Size=Large.png";
-import img2 from "../../Assets/Tessa Persona.png";
-import { SVGGroup, SVGDate, SVGTime } from "../../Assets/SVGs";
 import twitter from "../../Assets/twitter.png";
 import instagram from "../../Assets/instagram.png";
 import linkedin from "../../Assets/linkedin.png";
@@ -29,7 +31,7 @@ import messageCircle from "../../Assets/message-circle.png";
 import DataComponent from "../dataPreview";
 
 const textGuid = [
-  "Hi, I’m Tessa! Where do you want to save your LinkedClaims? ",
+  "",
   "Let’s get started with your name and address.",
   "Thanks, Alice!  Now let’s learn more about the skills you have.",
   "Now describe what you can demonstrate using this skill.",
@@ -43,6 +45,19 @@ const note =
   "Please note, all fields marked with an asterisk are required and must be completed.";
 const successNote =
   "Congratulations on your achievement. Tell the world what you’ve accomplished!";
+
+const StyledButton = styled(Button)<ButtonProps>(({ theme, color }) => ({
+  padding: "10px 24px",
+  borderRadius: "100px",
+  textTransform: "capitalize",
+  fontFamily: "Roboto",
+  lineHeight: "20px",
+  backgroundColor: color === "primary" ? "#003FE0" : "#FFF",
+  color: color === "primary" ? "#FFF" : "#4E4E4E",
+  "&:hover": {
+    backgroundColor: color === "primary" ? "#003FE0" : "#FFF",
+  },
+}));
 
 const CustomTextField = styled(TextField)({
   "& .MuiInputBase-root": {
@@ -63,9 +78,10 @@ const CustomTextField = styled(TextField)({
 
 const Form = () => {
   const [formData, setFormData] = useState<FormData>();
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(6);
   const [inputValue, setInputValue] = useState("");
-
+  const theme = useTheme<Theme>();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const characterLimit = 294;
   const maxSteps = textGuid.length;
   const {
@@ -75,7 +91,7 @@ const Form = () => {
     reset,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormData>({
     defaultValues: {
       storageOption: "Device",
@@ -95,34 +111,25 @@ const Form = () => {
     name: "portfolio",
   });
 
-  const handleNext = () => {
+  const handleNext = () =>
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handlePreview = () => {
+  const handlePreview = () =>
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
   const handleSign = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     reset();
   };
-
-  const handleBack = () => {
+  const handleBack = () =>
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setInputValue(event.target.value);
-  };
-
-  const handleTextEditorChange = (value: string | undefined) => {
+  const handleTextEditorChange = (value: string | undefined) =>
     setValue("credentialDescription", value ?? "");
-  };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    console.log(data);
+    localStorage.setItem("personalCredential", JSON.stringify(data));
     reset();
+    setActiveStep(0);
 
     const codeToCopy = JSON.stringify(data, null, 2);
 
@@ -149,13 +156,6 @@ const Form = () => {
       }}
       onSubmit={handleFormSubmit}
     >
-      <Box sx={{ width: "110%" }}>
-        <Image
-          style={{ width: "100%", height: "100%" }}
-          src={activeStep === 0 ? img : img2}
-          alt="logo"
-        />
-      </Box>
       <Typography
         sx={{
           color: "#202E5B",
@@ -168,10 +168,16 @@ const Form = () => {
           p: "0 50px",
         }}
       >
+        {activeStep === 0 && (
+          <>
+            <span style={{ display: "block" }}>Hi, I’m Tessa!</span>
+            <span>Where do you want to save your LinkedClaims?</span>
+          </>
+        )}
         {textGuid[activeStep]}
         {activeStep === 0 && <span style={{ color: "red" }}> *</span>}
       </Typography>
-      {activeStep !== 7 && (
+      {!isLargeScreen && activeStep !== 7 && (
         <Box
           sx={{
             width: "100%",
@@ -222,7 +228,7 @@ const Form = () => {
           ></Box>
         </Box>
       )}
-      {activeStep !== 1 && activeStep !== 7 && activeStep !== 6 && (
+      {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && (
         <Typography
           sx={{
             color: "#202E5B",
@@ -252,7 +258,7 @@ const Form = () => {
           {successNote}
         </Typography>
       )}
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: { xs: "100%", md: "55%" } }}>
         <FormControl sx={{ width: "100%" }}>
           {activeStep === 1 && (
             <FormLabel
@@ -280,8 +286,8 @@ const Form = () => {
               flexDirection: "column",
               gap: "15px",
               m: "0 auto",
-              width: "100%",
-              ml: "10px",
+              width: { xs: "100%", md: "50%" },
+              ml: { xs: "10px", md: "25%" },
             }}
             aria-labelledby="form-type-label"
             name="controlled-radio-buttons-group"
@@ -374,7 +380,7 @@ const Form = () => {
             <RadioGroup
               sx={{
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: { xs: "column", md: "row" },
                 gap: "15px",
                 m: "0 auto",
                 width: "100%",
@@ -390,7 +396,7 @@ const Form = () => {
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
-                  pr: "5px",
+                  width: "calc(50% - 15px)",
                 }}
                 value="Individual"
                 control={
@@ -409,6 +415,7 @@ const Form = () => {
                   bgcolor: "#FFF",
                   borderRadius: "8px",
                   border: "1px solid #E5E7EB",
+                  width: "calc(50% - 15px)",
                 }}
                 value="Business"
                 control={
@@ -445,6 +452,8 @@ const Form = () => {
                 {...register("fullName", { required: "Full name is required" })}
                 placeholder="e.g., Maria Fernández or Kumar Enterprises"
                 variant="outlined"
+                error={!!errors.fullName}
+                helperText={errors.fullName?.message}
                 sx={{
                   bgcolor: "#FFF",
                   width: "100%",
@@ -491,6 +500,8 @@ const Form = () => {
                   })}
                   placeholder="e.g., Community Gardening Coordinator"
                   variant="outlined"
+                  error={!!errors.credentialName}
+                  helperText={errors.credentialName?.message}
                   sx={{
                     bgcolor: "#FFF",
                     width: "100%",
@@ -538,6 +549,8 @@ const Form = () => {
                   })}
                   placeholder="1 Day"
                   variant="outlined"
+                  error={!!errors.credentialDuration}
+                  helperText={errors.credentialDuration?.message}
                   sx={{
                     bgcolor: "#FFF",
                     width: "100%",
@@ -589,6 +602,7 @@ const Form = () => {
                 value={inputValue}
                 onChange={handleInputChange}
                 helperText={`${inputValue.length}/${characterLimit} characters`}
+                error={!!errors.description}
                 FormHelperTextProps={{
                   className: "MuiFormHelperText-root",
                 }}
@@ -677,6 +691,8 @@ const Form = () => {
                       defaultValue={field.url}
                       placeholder="https://www.example.com"
                       variant="outlined"
+                      error={!!errors?.portfolio?.[index]?.name}
+                      helperText={errors?.portfolio?.[index]?.name?.message}
                       sx={{
                         bgcolor: "#FFF",
                         width: "100%",
@@ -904,73 +920,24 @@ const Form = () => {
                   gap: "9px",
                 }}
               >
-                <Box sx={{ display: "flex" }}>
-                  <Box
-                    sx={{
-                      bgcolor: "#E5E7EB",
-                      borderRadius: "20px",
-                      height: "40px",
-                      width: "40px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Image src={twitter} alt="TwitterImage" />
-                  </Box>
-                </Box>
-                <Box
-                  sx={{
-                    bgcolor: "#E5E7EB",
-                    borderRadius: "20px",
-                    height: "40px",
-                    width: "40px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image src={linkedin} alt="LinkedinImage" />
-                </Box>
-                <Box
-                  sx={{
-                    bgcolor: "#E5E7EB",
-                    borderRadius: "20px",
-                    height: "40px",
-                    width: "40px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image src={instagram} alt="InstagramImage" />
-                </Box>
-                <Box
-                  sx={{
-                    bgcolor: "#E5E7EB",
-                    borderRadius: "20px",
-                    height: "40px",
-                    width: "40px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image src={mail} alt="mailImage" />
-                </Box>
-                <Box
-                  sx={{
-                    bgcolor: "#E5E7EB",
-                    borderRadius: "20px",
-                    height: "40px",
-                    width: "40px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image src={messageCircle} alt="messageCircleImage" />
-                </Box>
+                {[twitter, linkedin, instagram, mail, messageCircle].map(
+                  (icon, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        bgcolor: "#E5E7EB",
+                        borderRadius: "20px",
+                        height: "40px",
+                        width: "40px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image src={icon} alt={`${icon}Icon`} />
+                    </Box>
+                  )
+                )}
               </Box>
               <Box
                 sx={{
@@ -1011,106 +978,33 @@ const Form = () => {
           }}
         >
           {activeStep !== 0 && (
-            <Button
-              variant="contained"
-              onClick={handleBack}
-              sx={{
-                padding: "0 24px",
-                borderRadius: "100px",
-                bgcolor: "#FFF",
-                textTransform: "capitalize",
-                color: "#4E4E4E",
-                fontFamily: "Roboto",
-                "&:hover": {
-                  bgcolor: "#FFF",
-                },
-              }}
-            >
+            <StyledButton onClick={handleBack} color="secondary">
               back
-            </Button>
+            </StyledButton>
           )}
           {activeStep !== 0 && (
-            <Button
-              type="submit"
-              variant="contained"
-              onClick={() => {}}
-              sx={{
-                padding: "10px 24px",
-                gap: "8px",
-                borderRadius: "100px",
-                bgcolor: "#FFF",
-                textTransform: "capitalize",
-                color: "#4E4E4E",
-                fontFamily: "Roboto",
-                lineHeight: "20px",
-                "&:hover": {
-                  bgcolor: "#FFF",
-                },
-              }}
-            >
+            <StyledButton type="submit" color="secondary">
               save & Exit
-            </Button>
+            </StyledButton>
           )}
           {activeStep !== 5 && activeStep !== 6 && (
-            <Button
-              variant="contained"
-              onClick={handleNext}
-              disabled={activeStep === maxSteps - 1}
-              sx={{
-                padding: "10px 24px",
-                borderRadius: "100px",
-                bgcolor: "#003FE0",
-                width: "20px",
-                textTransform: "capitalize",
-                fontFamily: "Roboto",
-                lineHeight: "20px",
-                "&:hover": {
-                  bgcolor: "#003FE0",
-                },
-              }}
-            >
+            <StyledButton onClick={handleNext} color="primary">
               Next
-            </Button>
+            </StyledButton>
           )}
           {activeStep === 6 && (
-            <Button
-              variant="contained"
-              onClick={handleSign}
-              sx={{
-                padding: "10px 24px",
-                borderRadius: "100px",
-                bgcolor: "#003FE0",
-                width: "20px",
-                textTransform: "capitalize",
-                fontFamily: "Roboto",
-                lineHeight: "20px",
-                "&:hover": {
-                  bgcolor: "#003FE0",
-                },
-              }}
-            >
+            <StyledButton onClick={handleSign} color="primary">
               Sign
-            </Button>
+            </StyledButton>
           )}
           {activeStep === 5 && (
-            <Button
-              variant="contained"
+            <StyledButton
               onClick={handlePreview}
               disabled={activeStep === maxSteps - 1}
-              sx={{
-                padding: "10px 24px",
-                borderRadius: "100px",
-                bgcolor: "#003FE0",
-                textTransform: "capitalize",
-                fontFamily: "Roboto",
-                lineHeight: "20px",
-                "&:hover": {
-                  bgcolor: "#003FE0",
-                },
-              }}
+              color="primary"
             >
               Preview
-            </Button>
+            </StyledButton>
           )}
         </Box>
       )}

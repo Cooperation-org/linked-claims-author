@@ -6,7 +6,17 @@ import TwitterImage from "../Assets/twitter.png";
 import InstagramImage from "../Assets/instagram.png";
 const Footer = () => {
   return (
-    <Box sx={{ width: "100%", height: "129px", bgcolor: "#202E5B", p: "25px" }}>
+    <Box
+      sx={{
+        width: "100%",
+        height: "129px",
+        // height: { xs: "129px", md: "295px" },
+        bgcolor: "#202E5B",
+        p: "25px",
+        display: "flex",
+        alignContent: "flex-end",
+      }}
+    >
       <Box
         sx={{
           width: "347px",
