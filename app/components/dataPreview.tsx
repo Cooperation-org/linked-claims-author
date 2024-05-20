@@ -17,6 +17,7 @@ const DataPreview = ({ formData }: { formData: FormData }) => {
   const handleNavigate = (url: string) => {
     window.location.href = url;
   };
+
   return (
     <Box
       sx={{
@@ -34,7 +35,7 @@ const DataPreview = ({ formData }: { formData: FormData }) => {
         sx={{
           display: "flex",
           flexDirection: isLargeScreen ? "row" : "column",
-          gap: !isLargeScreen ? "10px": '20px',
+          gap: !isLargeScreen ? "10px" : "20px",
         }}
       >
         <Box
@@ -51,20 +52,20 @@ const DataPreview = ({ formData }: { formData: FormData }) => {
         <Box
           sx={{
             display: "flex",
-            flexDirection:  "column",
-            gap:'10px' ,
-            justifyContent: "center"
+            flexDirection: "column",
+            gap: "10px",
+            justifyContent: "center",
           }}
         >
           <Typography
             sx={{
               color: "#202E5B",
               fontFamily: "Inter",
-              Fontsize: "18px",
+              fontSize: "18px",
               fontWeight: 800,
             }}
           >
-          {formData.credentialName}
+            {formData.credentialName}
           </Typography>
           <Box
             sx={{
@@ -84,7 +85,7 @@ const DataPreview = ({ formData }: { formData: FormData }) => {
               sx={{
                 color: "#4E4E4E",
                 fontFamily: "Poppins",
-                Fontsize: "13px",
+                fontSize: "13px",
                 fontWeight: 400,
               }}
             >
@@ -97,37 +98,32 @@ const DataPreview = ({ formData }: { formData: FormData }) => {
         sx={{
           color: "#202E5B",
           fontFamily: "Inter",
-          Fontsize: "15px",
+          fontSize: "15px",
           fontWeight: 400,
         }}
       >
         {formData.description}
       </Typography>
-      <Typography
+      <Box
         sx={{
           color: "#202E5B",
           fontFamily: "Inter",
-          Fontsize: "15px",
+          fontSize: "15px",
           fontWeight: 400,
         }}
       >
         <span style={{ display: "block" }}>Earning criteria:</span>
-        {/* <ul style={{ marginLeft: "25px" }}>
-          <li>Took 12 hours of barista classes</li>
-          <li>Got anonymous customer feedback</li>
-          <li>Got teacher feedback</li>
-        </ul> */}
         {formData.credentialDescription}
-      </Typography>
-      <Typography
+      </Box>
+      <Box
         sx={{
           color: "#202E5B",
           fontFamily: "Inter",
-          Fontsize: "15px",
+          fontSize: "15px",
           fontWeight: 400,
         }}
       >
-        Portoflio:
+        Portfolio:
         <ul
           style={{
             marginLeft: "25px",
@@ -141,7 +137,7 @@ const DataPreview = ({ formData }: { formData: FormData }) => {
             </li>
           ))}
         </ul>
-      </Typography>
+      </Box>
     </Box>
   );
 };

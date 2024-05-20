@@ -26,7 +26,7 @@ const page = () => {
         <Box
           sx={{
             display: "flex",
-            width: { xs: "92%" },
+            width: { xs: "100%" },
             flexDirection: "column",
             alignItems: "center",
             gap: "37px",
@@ -64,7 +64,7 @@ const page = () => {
           </Typography>
           <Box sx={{ width: "120%", height: "110px" }}>
             <Image
-              style={{ width: "100%", height: "110px" }}
+              style={{ width: "100%", height: "100px" }}
               src={image}
               alt="logo"
             />
