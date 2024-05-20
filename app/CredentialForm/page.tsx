@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { Box, Typography, useMediaQuery, Theme } from "@mui/material";
 import { useTheme } from "@mui/system"
-import Form from "../components/form/Form"
 import fram from "../Assets/Frame 35278.png";
 import vector from "../Assets/Vector 145.png";
 import img3 from "../Assets/Tessa Persona large sceens.png";
@@ -12,6 +12,11 @@ import { SVGLargeScreen } from "../Assets/SVGs";
 const FormComponent = () => {
   const theme = useTheme<Theme>();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
+
+  const DynamicComponentWithNoSSR = dynamic(
+    () => import("../components/form/Form"),
+    { ssr: false }
+  );
 
   return (
     <Box
@@ -55,7 +60,7 @@ const FormComponent = () => {
           </Box>
         </Box>
       </Box>
-      <Form />
+      <DynamicComponentWithNoSSR />
       {!isLargeScreen && (
         <Box
           sx={{
