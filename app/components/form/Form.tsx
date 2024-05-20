@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -51,7 +50,9 @@ const StyledButton = styled(Button)<ButtonProps>(({ theme, color }) => ({
   borderRadius: "100px",
   textTransform: "capitalize",
   fontFamily: "Roboto",
+  fontWeight: "600",
   lineHeight: "20px",
+  border: "1px solid  #4E4E4E",
   backgroundColor: color === "primary" ? "#003FE0" : "#FFF",
   color: color === "primary" ? "#FFF" : "#4E4E4E",
   "&:hover": {
@@ -72,7 +73,7 @@ const CustomTextField = styled(TextField)({
     bottom: 8,
     right: 16,
     fontSize: "0.75rem",
-    borderRadius: "28px",
+    borderRadius: "28px",   
   },
 });
 
@@ -118,25 +119,69 @@ const Form = () => {
     name: "portfolio",
   });
 
-  const handleNext = () =>
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  const handlePreview = () =>
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  useEffect(() => {
+    const handleHashChange = () => {
+      const stepFromHash = parseInt(
+        window.location.hash.replace("#step-", ""),
+        10
+      );
+      if (
+        !isNaN(stepFromHash) &&
+        stepFromHash >= 0 &&
+        stepFromHash < maxSteps
+      ) {
+        setActiveStep(stepFromHash);
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+
+    handleHashChange();
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, [maxSteps]);
+  // will update the max steps lates when needed **Amr
+
+  useEffect(() => {
+    setActiveStep(0);
+    window.location.hash = `step-0`;
+  }, []);
+
+  const handleStepChange = (step: number) => {
+    setActiveStep(step);
+    window.location.hash = `step-${step}`;
+  };
+
+  const handleNext = () => {
+    handleStepChange(activeStep + 1);
+  };
+
+  const handlePreview = () => {
+    handleStepChange(activeStep + 1);
+  };
+
   const handleSign = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    handleStepChange(activeStep + 1);
     reset();
   };
-  const handleBack = () =>
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+
+  const handleBack = () => {
+    handleStepChange(activeStep - 1);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-  const handleTextEditorChange = (value: string | undefined) =>
+  };
+
+  const handleTextEditorChange = (value: string | undefined) => {
     setValue("credentialDescription", value ?? "");
+  };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    localStorage.setItem("personalCredential", JSON.stringify(data));
+    console.log(data);
     reset();
-    setActiveStep(0);
 
     const codeToCopy = JSON.stringify(data, null, 2);
 
