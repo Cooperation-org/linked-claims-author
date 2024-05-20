@@ -6,7 +6,7 @@ import { SVGBuilding, SVGDate } from "../Assets/SVGs";
 import { FormData } from "../components/form/Types";
 import test from "../Assets//test.png";
 
-const dataPreview = ({ formData }: { formData: FormData }) => {
+const DataPreview = ({ formData }: { formData: FormData }) => {
   const theme: Theme = useTheme();
   const isLargeScreen = useMediaQuery((theme: Theme) =>
     theme.breakpoints.up("sm")
@@ -146,4 +146,4 @@ const dataPreview = ({ formData }: { formData: FormData }) => {
   );
 };
 
-export default dataPreview;
+export default DataPreview;

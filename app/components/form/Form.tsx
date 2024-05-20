@@ -127,8 +127,7 @@ const Form = () => {
     setValue("credentialDescription", value ?? "");
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    const credentioalData = watch();
-    localStorage.setItem("personalCredential", JSON.stringify(credentioalData));
+    localStorage.setItem("personalCredential", JSON.stringify(data));
     reset();
     setActiveStep(0);
 
