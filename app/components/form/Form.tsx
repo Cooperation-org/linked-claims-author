@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import Image from "next/image";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -15,13 +16,12 @@ import {
   Typography,
   styled,
   useMediaQuery,
-  Theme
+  Theme,
 } from "@mui/material";
-import { useTheme } from '@mui/system';
-import { SVGSparkles } from "../../Assets/SVGs";
+import { useTheme } from "@mui/system";
+import { SVGSparkles, SVGGroup, SVGDate, SVGTime } from "../../Assets/SVGs";
 import TextEditor from "../Texteditor";
 import image from "../../Assets/nathan-dumlao-zUNs99PGDg0-unsplash 1.png";
-import { SVGGroup, SVGDate, SVGTime } from "../../Assets/SVGs";
 import twitter from "../../Assets/twitter.png";
 import instagram from "../../Assets/instagram.png";
 import linkedin from "../../Assets/linkedin.png";
@@ -66,8 +66,8 @@ const Form = () => {
   const [formData, setFormData] = useState<FormData>();
   const [activeStep, setActiveStep] = useState(6);
   const [inputValue, setInputValue] = useState("");
-  const theme: Theme = useTheme();
-  const isLargeScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up("sm"));
+  const theme = useTheme<Theme>();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const characterLimit = 294;
   const maxSteps = textGuid.length;
   const {
@@ -97,30 +97,20 @@ const Form = () => {
     name: "portfolio",
   });
 
-  const handleNext = () => {
+  const handleNext = () =>
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handlePreview = () => {
+  const handlePreview = () =>
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
   const handleSign = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     reset();
   };
-
-  const handleBack = () => {
+  const handleBack = () =>
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setInputValue(event.target.value);
-  };
-
-  const handleTextEditorChange = (value: string | undefined) => {
+  const handleTextEditorChange = (value: string | undefined) =>
     setValue("credentialDescription", value ?? "");
-  };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     const credentioalData = watch();
@@ -917,73 +907,24 @@ const Form = () => {
                   gap: "9px",
                 }}
               >
-                <Box sx={{ display: "flex" }}>
-                  <Box
-                    sx={{
-                      bgcolor: "#E5E7EB",
-                      borderRadius: "20px",
-                      height: "40px",
-                      width: "40px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Image src={twitter} alt="TwitterImage" />
-                  </Box>
-                </Box>
-                <Box
-                  sx={{
-                    bgcolor: "#E5E7EB",
-                    borderRadius: "20px",
-                    height: "40px",
-                    width: "40px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image src={linkedin} alt="LinkedinImage" />
-                </Box>
-                <Box
-                  sx={{
-                    bgcolor: "#E5E7EB",
-                    borderRadius: "20px",
-                    height: "40px",
-                    width: "40px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image src={instagram} alt="InstagramImage" />
-                </Box>
-                <Box
-                  sx={{
-                    bgcolor: "#E5E7EB",
-                    borderRadius: "20px",
-                    height: "40px",
-                    width: "40px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image src={mail} alt="mailImage" />
-                </Box>
-                <Box
-                  sx={{
-                    bgcolor: "#E5E7EB",
-                    borderRadius: "20px",
-                    height: "40px",
-                    width: "40px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image src={messageCircle} alt="messageCircleImage" />
-                </Box>
+                {[twitter, linkedin, instagram, mail, messageCircle].map(
+                  (icon, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        bgcolor: "#E5E7EB",
+                        borderRadius: "20px",
+                        height: "40px",
+                        width: "40px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image src={icon} alt={`${icon}Icon`} />
+                    </Box>
+                  )
+                )}
               </Box>
               <Box
                 sx={{
