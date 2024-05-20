@@ -1,24 +1,17 @@
 "use client";
-import React, { useEffect } from "react";
-import dynamic from "next/dynamic";
+import React from "react";
 import Image from "next/image";
 import { Box, Typography, useMediaQuery, Theme } from "@mui/material";
-import { useTheme } from "@mui/system";
-import fram from ".././Assets/Frame 35278.png";
-import vector from ".././Assets/Vector 145.png";
-import img3 from ".././Assets/Tessa Persona large sceens.png";
+import { useTheme } from "@mui/system"
+import Form from "../components/form/Form"
+import fram from "../Assets/Frame 35278.png";
+import vector from "../Assets/Vector 145.png";
+import img3 from "../Assets/Tessa Persona large sceens.png";
 import { SVGLargeScreen } from "../Assets/SVGs";
 
 const FormComponent = () => {
-  const theme: Theme = useTheme();
-  const isLargeScreen = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.up("sm")
-  );
-
-  const DynamicComponentWithNoSSR = dynamic(
-    () => import('../components/form/Form'),
-    { ssr: false }
-  )
+  const theme = useTheme<Theme>();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
 
   return (
     <Box
@@ -62,7 +55,7 @@ const FormComponent = () => {
           </Box>
         </Box>
       </Box>
-      <DynamicComponentWithNoSSR />
+      <Form />
       {!isLargeScreen && (
         <Box
           sx={{
@@ -92,9 +85,7 @@ const FormComponent = () => {
               }}
             >
               Learn how this data is used & protected.
-              {typeof window !== "undefined" && (
-                <Image style={{ marginLeft: "10px" }} src={vector} alt="logo" />
-              )}
+              <Image style={{ marginLeft: "10px" }} src={vector} alt="logo" />
             </Typography>
           </Box>
         </Box>

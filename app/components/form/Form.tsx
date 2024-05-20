@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm, useFieldArray } from "react-hook-form";
 import { FormData } from "./Types";
@@ -33,7 +33,7 @@ import DataComponent from "../dataPreview";
 const textGuid = [
   "",
   "Let’s get started with your name and address.",
-  "Thanks, Alice!  Now let’s learn more about the skills you have.",
+  "Thanks, Alice! Now let’s learn more about the skills you have.",
   "Now describe what you can demonstrate using this skill.",
   "Do you have any portfolio pieces you want to add?",
   "Would you like to add an image to your credential?",
@@ -76,9 +76,16 @@ const CustomTextField = styled(TextField)({
   },
 });
 
+const boxStyles = {
+  width: "100%",
+  bgcolor: "#FFF",
+  borderRadius: "8px",
+  border: "1px solid #E5E7EB",
+};
+
 const Form = () => {
   const [formData, setFormData] = useState<FormData>();
-  const [activeStep, setActiveStep] = useState(6);
+  const [activeStep, setActiveStep] = useState(0);
   const [inputValue, setInputValue] = useState("");
   const theme = useTheme<Theme>();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
@@ -287,7 +294,9 @@ const Form = () => {
               gap: "15px",
               m: "0 auto",
               width: { xs: "100%", md: "50%" },
-              ml: { xs: "10px", md: "25%" },
+              pl: "10px",
+              minWidth: "355px",
+              alignItems: "center",
             }}
             aria-labelledby="form-type-label"
             name="controlled-radio-buttons-group"
@@ -297,11 +306,7 @@ const Form = () => {
             {activeStep === 0 && (
               <FormControlLabel
                 value="Device"
-                sx={{
-                  bgcolor: "#FFF",
-                  borderRadius: "8px",
-                  border: "1px solid #E5E7EB",
-                }}
+                sx={boxStyles}
                 control={
                   <Radio
                     sx={{
@@ -317,11 +322,7 @@ const Form = () => {
             {activeStep === 0 && (
               <FormControlLabel
                 value="Google Drive"
-                sx={{
-                  bgcolor: "#FFF",
-                  borderRadius: "8px",
-                  border: "1px solid #E5E7EB",
-                }}
+                sx={boxStyles}
                 control={
                   <Radio
                     sx={{
@@ -337,12 +338,7 @@ const Form = () => {
             {activeStep === 0 && (
               <FormControlLabel
                 value="Digital Wallet"
-                sx={{
-                  bgcolor: "#FFF",
-                  borderRadius: "8px",
-                  border: "1px solid #E5E7EB",
-                  pr: "5px",
-                }}
+                sx={boxStyles}
                 control={
                   <Radio
                     sx={{
@@ -358,11 +354,7 @@ const Form = () => {
             {activeStep === 0 && (
               <FormControlLabel
                 value="Dropbox"
-                sx={{
-                  bgcolor: "#FFF",
-                  borderRadius: "8px",
-                  border: "1px solid #E5E7EB",
-                }}
+                sx={boxStyles}
                 control={
                   <Radio
                     sx={{
@@ -380,7 +372,7 @@ const Form = () => {
             <RadioGroup
               sx={{
                 display: "flex",
-                flexDirection: { xs: "column", md: "row" },
+                flexDirection: { xs: "column", sm: "row", md: "row" },
                 gap: "15px",
                 m: "0 auto",
                 width: "100%",
@@ -393,10 +385,8 @@ const Form = () => {
             >
               <FormControlLabel
                 sx={{
-                  bgcolor: "#FFF",
-                  borderRadius: "8px",
-                  border: "1px solid #E5E7EB",
-                  width: "calc(50% - 15px)",
+                  ...boxStyles,
+                  width: { md: "calc(50% - 15px)", xs: "100%" },
                 }}
                 value="Individual"
                 control={
@@ -412,10 +402,8 @@ const Form = () => {
               />
               <FormControlLabel
                 sx={{
-                  bgcolor: "#FFF",
-                  borderRadius: "8px",
-                  border: "1px solid #E5E7EB",
-                  width: "calc(50% - 15px)",
+                  ...boxStyles,
+                  width: { md: "calc(50% - 15px)", xs: "100%" },
                 }}
                 value="Business"
                 control={
