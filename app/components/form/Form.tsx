@@ -17,6 +17,7 @@ import {
   styled,
   useMediaQuery,
   Theme,
+  ButtonProps,
 } from "@mui/material";
 import { useTheme } from "@mui/system";
 import { SVGSparkles, SVGGroup, SVGDate, SVGTime } from "../../Assets/SVGs";
@@ -44,6 +45,19 @@ const note =
   "Please note, all fields marked with an asterisk are required and must be completed.";
 const successNote =
   "Congratulations on your achievement. Tell the world what you’ve accomplished!";
+
+const StyledButton = styled(Button)<ButtonProps>(({ theme, color }) => ({
+  padding: "10px 24px",
+  borderRadius: "100px",
+  textTransform: "capitalize",
+  fontFamily: "Roboto",
+  lineHeight: "20px",
+  backgroundColor: color === "primary" ? "#003FE0" : "#FFF",
+  color: color === "primary" ? "#FFF" : "#4E4E4E",
+  "&:hover": {
+    backgroundColor: color === "primary" ? "#003FE0" : "#FFF",
+  },
+}));
 
 const CustomTextField = styled(TextField)({
   "& .MuiInputBase-root": {
@@ -965,105 +979,33 @@ const Form = () => {
           }}
         >
           {activeStep !== 0 && (
-            <Button
-              variant="contained"
-              onClick={handleBack}
-              sx={{
-                padding: "0 24px",
-                borderRadius: "100px",
-                bgcolor: "#FFF",
-                textTransform: "capitalize",
-                color: "#4E4E4E",
-                fontFamily: "Roboto",
-                "&:hover": {
-                  bgcolor: "#FFF",
-                },
-              }}
-            >
+            <StyledButton onClick={handleBack} color="secondary">
               back
-            </Button>
+            </StyledButton>
           )}
           {activeStep !== 0 && (
-            <Button
-              type="submit"
-              variant="contained"
-              onClick={() => {}}
-              sx={{
-                padding: "10px 24px",
-                gap: "8px",
-                borderRadius: "100px",
-                bgcolor: "#FFF",
-                textTransform: "capitalize",
-                color: "#4E4E4E",
-                fontFamily: "Roboto",
-                lineHeight: "20px",
-                "&:hover": {
-                  bgcolor: "#FFF",
-                },
-              }}
-            >
+            <StyledButton type="submit" color="secondary">
               save & Exit
-            </Button>
+            </StyledButton>
           )}
           {activeStep !== 5 && activeStep !== 6 && (
-            <Button
-              variant="contained"
-              onClick={handleNext}
-              sx={{
-                padding: "10px 24px",
-                borderRadius: "100px",
-                bgcolor: "#003FE0",
-                width: "20px",
-                textTransform: "capitalize",
-                fontFamily: "Roboto",
-                lineHeight: "20px",
-                "&:hover": {
-                  bgcolor: "#003FE0",
-                },
-              }}
-            >
+            <StyledButton onClick={handleNext} color="primary">
               Next
-            </Button>
+            </StyledButton>
           )}
           {activeStep === 6 && (
-            <Button
-              variant="contained"
-              onClick={handleSign}
-              sx={{
-                padding: "10px 24px",
-                borderRadius: "100px",
-                bgcolor: "#003FE0",
-                width: "20px",
-                textTransform: "capitalize",
-                fontFamily: "Roboto",
-                lineHeight: "20px",
-                "&:hover": {
-                  bgcolor: "#003FE0",
-                },
-              }}
-            >
+            <StyledButton onClick={handleSign} color="primary">
               Sign
-            </Button>
+            </StyledButton>
           )}
           {activeStep === 5 && (
-            <Button
-              variant="contained"
+            <StyledButton
               onClick={handlePreview}
               disabled={activeStep === maxSteps - 1}
-              sx={{
-                padding: "10px 24px",
-                borderRadius: "100px",
-                bgcolor: "#003FE0",
-                textTransform: "capitalize",
-                fontFamily: "Roboto",
-                lineHeight: "20px",
-                "&:hover": {
-                  bgcolor: "#003FE0",
-                },
-              }}
+              color="primary"
             >
               Preview
-            </Button>
+            </StyledButton>
           )}
         </Box>
       )}
