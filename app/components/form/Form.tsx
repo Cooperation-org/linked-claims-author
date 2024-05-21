@@ -28,6 +28,7 @@ import linkedin from "../../Assets/linkedin.png";
 import mail from "../../Assets/mail.png";
 import messageCircle from "../../Assets/message-circle.png";
 import DataComponent from "../dataPreview";
+import GoogleDriveStorage from "trust-storage";
 
 const textGuid = [
   "",
@@ -73,7 +74,7 @@ const CustomTextField = styled(TextField)({
     bottom: 8,
     right: 16,
     fontSize: "0.75rem",
-    borderRadius: "28px",   
+    borderRadius: "28px",
   },
 });
 
@@ -180,8 +181,14 @@ const Form = () => {
   };
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    console.log(data);
+    if (data.storageOption === "Google Drive") {
+      createFolderAndUploadFile(data);
+    } else {
+      localStorage.setItem("personalCredential", JSON.stringify(data));
+    }
+
     reset();
+    setActiveStep(0)
 
     const codeToCopy = JSON.stringify(data, null, 2);
 
@@ -195,6 +202,28 @@ const Form = () => {
         console.error("Unable to copy form values to clipboard: ", err);
       });
   });
+
+  async function createFolderAndUploadFile(data: FormData) {
+    try {
+      const storage = new GoogleDriveStorage(
+        "ya29.a0AXooCgtr98BzDdaKVCEjt_iKv1qYXN1K82qkUDdBe5Gbk4Dt7UuiXDAhRUJhdYYsDBoYqLqLONWWPcG6SC9JUOIVodhxazXgMeHR5oZaVMeitHZK6FwhPoWOmkC8X0UOfw3thCGaOIVAivkc7RT159cPRvUvNjfAhQ72aCgYKAYUSARASFQHGX2Mial7SSpMkWhSj0iF-_-1taA0171"
+      );
+      const folderName = "USER_UN(IQUE_KEY";
+      const folderId = await storage.createFolder(folderName);
+
+      const fileData = {
+        fileName: "test.json",
+        mimeType: "application/json",
+        body: new Blob([JSON.stringify(data)], {
+          type: "application/json",
+        }),
+      };
+      const fileId = await storage.save(fileData, folderId);
+      console.log("File uploaded successfully with ID:", fileId);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
 
   return (
     <form
