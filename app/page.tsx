@@ -34,11 +34,15 @@ const page = () => {
             color: '#242F56',
             textAlign: 'center',
             fontFamily: 'Poppins',
-            fontSize: '30px',
+            fontSize: {
+              xs: '24px',
+              md: '50px',
+            },
             fontStyle: 'normal',
             fontWeight: '600',
             lineHeight: '125%',
             paddingInline: '1rem',
+            maxWidth: '450px',
           }}
         >
           Verified Skills For Your Resume
@@ -48,11 +52,12 @@ const page = () => {
             color: '#242F56',
             textAlign: 'center',
             fontFamily: 'Lato',
-            fontSize: '18px',
+            fontSize: '16px',
             fontStyle: 'normal',
             fontWeight: '400',
             lineHeight: 'normal',
             paddingInline: '1rem',
+            width: '325px',
           }}
         >
           Sign up in seconds. Let your true skills shine. Stand out from the
@@ -60,7 +65,7 @@ const page = () => {
         </Typography>
         <Box sx={{ width: '100%', height: '100%' }}>
           <Image
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '100%', height: '100%', marginBottom: '1.5rem' }}
             src={image}
             alt="logo"
           />
@@ -85,9 +90,9 @@ const page = () => {
         <Box
           sx={{
             position: 'absolute',
-            right: '78%',
-            bottom: '-18%',
-            zIndex: 1111111,
+            right: '60%',
+            bottom: '-13%',
+            zIndex: -1,
           }}
         >
           <SVGDesign />
@@ -98,13 +103,13 @@ const page = () => {
         sx={{
           display: 'inline-flex',
           height: '148px',
+          width: '100%',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'space-evenly',
           gap: '15px',
           flexShrink: 0,
-          width: '100%',
-          mb: '1rem',
+          mb: '1.5rem',
         }}
       >
         <Typography
@@ -112,6 +117,7 @@ const page = () => {
             color: '#242F56',
             textAlign: 'center',
             fontFamily: 'Poppins',
+            width: '330px',
             fontSize: '24px',
             fontStyle: 'normal',
             fontWeight: '600',
@@ -126,7 +132,8 @@ const page = () => {
             color: '#202E5B',
             textAlign: 'center',
             fontFamily: 'Lato',
-            fontSize: '18px',
+            fontSize: '13px',
+            width: '330px',
             fontStyle: 'normal',
             fontWeight: '400',
             lineHeight: 'normal',
@@ -391,7 +398,7 @@ const page = () => {
             lineHeight: '125%',
             width: 'calc(100%- 30px)',
             display: 'flex',
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
             m: '53px 17px 33px ',
           }}
         >
