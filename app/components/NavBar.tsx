@@ -5,13 +5,15 @@ const NavBar = () => {
   return (
     <Box
       sx={{
-        width: '92.308%',
+        width: '100%',
         height: { xs: '24px', md: '29px' },
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         mt: { xs: '24px', md: '29px' },
-        ml: { xs: '14px', md: '52px' }
+        ml: { xs: '14px', md: '52px' },
+        paddingRight: { xs: '15px', md: '52px' },
+        paddingLeft: { xs: '15px', md: '0px' }
       }}
     >
       <Box
@@ -48,6 +50,7 @@ const NavBar = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: { xs: 'center', md: 'flex-start' },
+          paddingRight: { xs: '40px', md: '0px' },
           flex: 1
         }}
       >
