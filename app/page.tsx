@@ -352,6 +352,8 @@ const Page = () => {
             sx={{
               lineHeight: '125%',
               fontWeight: 600,
+              mt: { xs: '53px', md: '40px' },
+              mb: { xs: '33px', md: '88px' },
               display: 'flex',
               flexDirection: 'column',
               flexShrink: 0,
@@ -387,6 +389,7 @@ const Page = () => {
               sx={{
                 flex: '0 0 auto',
                 width: '328px',
+                height: '192px',
                 backgroundColor: '#FFCB25',
                 borderRadius: '10px',
                 opacity: 0.9,
@@ -396,9 +399,8 @@ const Page = () => {
                 justifyContent: 'flex-start',
                 padding: '25px 17px',
                 gap: '16px',
-                mb: '10px',
-                mt: '33px',
-                position: 'relative'
+                position: 'relative',
+                mb: { xs: '0px', md: '98px' }
               }}
             >
               {testimonial.id === 1 && (
@@ -465,3 +467,4 @@ const Page = () => {
 }
 
 export default Page
+vvvvvvvv
