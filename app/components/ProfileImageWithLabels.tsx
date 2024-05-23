@@ -7,9 +7,10 @@ import styled from '@emotion/styled'
 
 const ProfileContainer = styled(Box)`
   position: relative;
-  width: fit-content;
+  width: 100vw;
   margin: auto;
   gap: 37px;
+  overflow-hidden
 `
 
 const Label = styled(Box)`
@@ -19,6 +20,14 @@ const Label = styled(Box)`
   padding: 2px 5px;
   text-align: center;
 `
+const SvgContainer = styled(Box)`
+  width: 100vw;
+  overflow: hidden;
+  svg {
+    width: 100%;
+    height: 100px;
+  }
+`
 
 const ProfileImageWithLabels = () => {
   const theme = useTheme()
@@ -26,20 +35,16 @@ const ProfileImageWithLabels = () => {
 
   return (
     <ProfileContainer>
-      <svg
-        xmlns='http://www.w3.org/2000/svg'
-        width='100%'
-        height='100px'
-        viewBox='0 0 1440 33'
-        fill='none'
-      >
-        <path
-          d='M0.0756446 3.49914C7.11886 4.7249 82.6781 7.3487 96.7554 7.88507C213.731 12.3421 349.779 17.3509 466.184 19.3624C534.993 20.5514 596.649 20.6103 655.577 20.6927C745.689 20.8188 831.768 20.5617 923.992 20.8853C1019.01 21.2186 1118.52 22.1691 1228.31 24.4183C1298.75 25.8614 1368.37 27.8896 1439.94 29.9001'
-          stroke='#FFCB25'
-          strokeWidth='6'
-          strokeLinecap='round'
-        />
-      </svg>
+      <SvgContainer>
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 33' fill='none'>
+          <path
+            d='M0.0756446 3.49914C7.11886 4.7249 82.6781 7.3487 96.7554 7.88507C213.731 12.3421 349.779 17.3509 466.184 19.3624C534.993 20.5514 596.649 20.6103 655.577 20.6927C745.689 20.8188 831.768 20.5617 923.992 20.8853C1019.01 21.2186 1118.52 22.1691 1228.31 24.4183C1298.75 25.8614 1368.37 27.8896 1439.94 29.9001'
+            stroke='#FFCB25'
+            strokeWidth='6'
+            strokeLinecap='round'
+          />
+        </svg>
+      </SvgContainer>
       <Box
         sx={{
           position: 'absolute',
