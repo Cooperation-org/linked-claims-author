@@ -4,92 +4,21 @@ import { Box, Typography, useTheme, useMediaQuery, Avatar } from '@mui/material'
 import ProfileImageWithLabels from './components/ProfileImageWithLabels'
 import SVGDesign, { SVGCheckMarks } from './Assets/SVGs'
 import Image from 'next/image'
-import img from './Assets/Annika Rangarajan.svg'
 import AddIcon from './Assets/Add_icon.png'
 import TwoPhonesM from './Assets/TwoPhonesMobile.svg'
 import TwoPhonesT from './Assets/TwoPhonesTablet.svg'
 import TwoPhonesD from './Assets/TwoPhonesDesktop.svg'
-
-// Testimonials
-const testimonials = [
-  {
-    id: 1,
-    name: 'Dheepthi Ravikumar',
-    text: '“LinkedClaims helped me see that I had way more skills than I realized. It gave me the confidence I needed to apply for a job I never would have applied for otherwise.”',
-    image: img
-  },
-  {
-    id: 2,
-    name: 'Emily Johnson',
-    text: '“With LinkedClaims, I discovered strengths I didn’t know I had. It pushed me to aim higher and apply for positions I previously thought were out of reach.”',
-    image: img
-  },
-  {
-    id: 3,
-    name: 'Sophia Martinez',
-    text: '“Thanks to LinkedClaims, I could see a clear picture of my skills and how they match job requirements. It was a game-changer for my job search.”',
-    image: img
-  },
-  {
-    id: 4,
-    name: 'Olivia Brown',
-    text: '“LinkedClaims made it so easy to highlight my skills effectively. I feel much more confident in my job applications now.”',
-    image: img
-  },
-  {
-    id: 5,
-    name: 'Dheepthi Ravikumar',
-    text: '“LinkedClaims helped me see that I had way more skills than I realized. It gave me the confidence I needed to apply for a job I never would have applied for otherwise.”',
-    image: img
-  },
-  {
-    id: 6,
-    name: 'Emily Johnson',
-    text: '“With LinkedClaims, I discovered strengths I didn’t know I had. It pushed me to aim higher and apply for positions I previously thought were out of reach.”',
-    image: img
-  },
-  {
-    id: 7,
-    name: 'Sophia Martinez',
-    text: '“Thanks to LinkedClaims, I could see a clear picture of my skills and how they match job requirements. It was a game-changer for my job search.”',
-    image: img
-  },
-  {
-    id: 8,
-    name: 'Olivia Brown',
-    text: '“LinkedClaims made it so easy to highlight my skills effectively. I feel much more confident in my job applications now.”',
-    image: img
-  },
-  {
-    id: 9,
-    name: 'Ava Wilson',
-    text: '“I was able to apply for jobs with a tailored resume, thanks to LinkedClaims. It really showcased my strengths to potential employers.”',
-    image: img
-  }
-]
+import {
+  testimonials,
+  featuresSmallScreen,
+  featuresLargeScreen
+} from './components/landingPageVariables'
 
 const Page = () => {
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
-
-  const featuresSmallScreen = [
-    { id: 1, name: 'Personalized AI skill descriptions' },
-    { id: 2, name: 'Instant insight into your strengths' },
-    { id: 3, name: 'Increased employer visibility' },
-    { id: 4, name: 'Personalized resumes for each job' },
-    { id: 5, name: 'Faster background checks' }
-  ]
-
-  const featuresLargeScreen = [
-    { id: 1, name: 'AI-generated skill descriptions' },
-    { id: 2, name: 'Instant insight into your strengths' },
-    { id: 3, name: 'Build your network' },
-    { id: 4, name: 'Increase employer visibility' },
-    { id: 5, name: 'Dynamically build a resume' },
-    { id: 6, name: 'Faster background checks' }
-  ]
 
   const features = isSmallScreen ? featuresSmallScreen : featuresLargeScreen
 
@@ -353,7 +282,6 @@ const Page = () => {
               lineHeight: '125%',
               fontWeight: 600,
               mt: { xs: '53px', md: '40px' },
-              mb: { xs: '33px', md: '88px' },
               display: 'flex',
               flexDirection: 'column',
               flexShrink: 0,
@@ -373,7 +301,9 @@ const Page = () => {
             justifyContent: 'flex-start',
             gap: '30px',
             overflowX: 'auto',
-            padding: '0 2%',
+            paddingLeft: '40px',
+            paddingTop: { xs: '33px', md: '44px' },
+            paddingBottom: { xs: '38px', md: '44px' },
             '&::-webkit-scrollbar': {
               height: '8px'
             },
