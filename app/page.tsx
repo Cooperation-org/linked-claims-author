@@ -401,20 +401,22 @@ const Page = () => {
                 position: 'relative'
               }}
             >
-              <Image
-                priority
-                src={AddIcon.src}
-                width={40}
-                height={40}
-                alt='Add Icon'
-                style={{
-                  width: '40px',
-                  display: 'block',
-                  position: 'absolute',
-                  top: '-30px',
-                  left: 'calc(50% - 194px)'
-                }}
-              />
+              {testimonial.id === 1 && (
+                <Image
+                  priority
+                  src={AddIcon.src}
+                  width={40}
+                  height={40}
+                  alt='Add Icon'
+                  style={{
+                    width: '40px',
+                    display: 'block',
+                    position: 'absolute',
+                    top: '-30px',
+                    left: 'calc(50% - 194px)'
+                  }}
+                />
+              )}
               <Avatar
                 alt={testimonial.name}
                 src={testimonial.image.src}
