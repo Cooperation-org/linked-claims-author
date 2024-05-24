@@ -1,5 +1,6 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
+import Link from 'next/link'
 
 const NavBar = () => {
   return (
@@ -9,18 +10,17 @@ const NavBar = () => {
         height: { xs: '24px', md: '29px' },
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        mt: { xs: '24px', md: '29px' },
-        ml: { xs: '14px', md: '52px' },
-        paddingRight: { xs: '15px', md: '52px' },
-        paddingLeft: { xs: '15px', md: '0px' }
+        mt: { xs: '37px', md: '57px' }
       }}
     >
       <Box
         sx={{
           cursor: 'pointer',
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
+          position: 'absolute',
+          right: { xs: '18px', md: 'auto' },
+          left: { xs: 'auto', md: '52px' }
         }}
       >
         <svg
@@ -49,22 +49,26 @@ const NavBar = () => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: { xs: 'center', md: 'flex-start' },
-          paddingRight: { xs: '40px', md: '0px' },
-          flex: 1
+          justifyContent: { xs: 'flex-start', md: 'flex-start' },
+          paddingRight: { xs: '15px', md: '0px' },
+          marginLeft: { xs: '15px', md: '166px' },
+          marginRight: { xs: 'auto', md: 'auto' },
+          textDecoration: 'none',
+          cursor: 'pointer'
         }}
       >
-        <Typography
-          sx={{
-            fontWeight: '700',
-            fontSize: { xs: '18px', md: '24px' },
-            color: '#242F56',
-            textAlign: { xs: 'center', md: 'left' },
-            marginLeft: { md: '52px' }
-          }}
-        >
-          LinkedClaims
-        </Typography>
+        <Link href='/'>
+          <Typography
+            sx={{
+              fontWeight: '700',
+              fontSize: { xs: '18px', md: '24px' },
+              color: '#242F56',
+              textAlign: { xs: 'center', md: 'left' }
+            }}
+          >
+            LinkedClaims
+          </Typography>
+        </Link>
       </Box>
     </Box>
   )
