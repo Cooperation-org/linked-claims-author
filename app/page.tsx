@@ -1,6 +1,7 @@
 'use client'
+import { useTheme } from '@mui/material/styles'
 import React from 'react'
-import { Box, Typography, useTheme, useMediaQuery, Avatar, Button } from '@mui/material'
+import { Box, Typography, useMediaQuery, Avatar, Button } from '@mui/material'
 import ProfileImageWithLabels from './components/ProfileImageWithLabels'
 import SVGDesign, { SVGCheckMarks } from './Assets/SVGs'
 import Image from 'next/image'
@@ -17,6 +18,7 @@ import Link from 'next/link'
 
 const Page = () => {
   const theme = useTheme()
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
@@ -75,7 +77,7 @@ const Page = () => {
           >
             <Typography
               sx={{
-                color: '#242f56',
+                color: theme.palette.t3DarkSlateBlue,
                 fontFamily: 'Poppins',
                 fontSize: { xs: '30px', md: '70px' },
                 fontWeight: 600,
@@ -98,7 +100,7 @@ const Page = () => {
           >
             <Typography
               sx={{
-                color: '#242f56',
+                color: theme.palette.t3DarkSlateBlue,
                 fontFamily: 'Lato',
                 fontSize: { xs: '16px', md: '18px' },
                 fontWeight: 400,
@@ -135,7 +137,7 @@ const Page = () => {
                 fontWeight: 500,
                 lineHeight: '20px',
                 borderRadius: '100px',
-                backgroundColor: '#003fe0',
+                backgroundColor: theme.palette.t3ButtonBlue,
                 color: 'white',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -145,7 +147,7 @@ const Page = () => {
                 border: 'none',
                 cursor: 'pointer',
                 '&:hover': {
-                  backgroundColor: '#003fe080'
+                  backgroundColor: theme.palette.t3BackgroundDarkBlue
                 }
               }}
             >
@@ -182,7 +184,7 @@ const Page = () => {
         </Box>
         <Typography
           sx={{
-            color: '#242f56',
+            color: theme.palette.t3DarkSlateBlue,
             fontFamily: 'Poppins',
             fontWeight: 600,
             lineHeight: '125%',
@@ -194,7 +196,7 @@ const Page = () => {
         </Typography>
         <Typography
           sx={{
-            color: '#202e5b',
+            color: theme.palette.t3BodyText,
             fontFamily: 'Lato',
             fontWeight: 400,
             lineHeight: 'normal',
@@ -251,7 +253,7 @@ const Page = () => {
               <SVGCheckMarks />
               <Typography
                 sx={{
-                  color: '#202E5B',
+                  color: theme.palette.t3BodyText,
                   flexShrink: 0,
                   fontFamily: 'Lato',
                   fontSize: '18px',
@@ -271,14 +273,14 @@ const Page = () => {
         sx={{
           position: 'relative',
           width: '100%',
-          backgroundColor: '#F6F6F6',
+          backgroundColor: theme.palette.t3Whitesmoke,
           textAlign: 'left'
         }}
       >
         <Box
           sx={{
             width: '100%',
-            backgroundColor: '#F6F6F6',
+            backgroundColor: theme.palette.t3Whitesmoke,
             textAlign: 'center',
             mb: { xs: '0px', md: '55px' }
           }}
@@ -314,7 +316,7 @@ const Page = () => {
               height: '8px'
             },
             '&::-webkit-scrollbar-thumb': {
-              backgroundColor: '#FFCB25',
+              backgroundColor: theme.palette.t3YellowAccent,
               borderRadius: '10px'
             }
           }}
@@ -326,7 +328,7 @@ const Page = () => {
                 flex: '0 0 auto',
                 width: '328px',
                 height: '192px',
-                backgroundColor: '#FFCB25',
+                backgroundColor: theme.palette.t3YellowAccent,
                 borderRadius: '10px',
                 opacity: 0.9,
                 display: 'flex',
@@ -371,7 +373,7 @@ const Page = () => {
                 <Typography
                   sx={{
                     width: '212px',
-                    color: '#202E5B',
+                    color: theme.palette.t3BodyText,
                     fontFamily: 'Lato',
                     fontSize: '13px',
                     fontWeight: '700',
@@ -384,7 +386,7 @@ const Page = () => {
                 <Typography
                   sx={{
                     width: '212px',
-                    color: '#202E5B',
+                    color: theme.palette.t3BodyText,
                     fontFamily: 'Lato',
                     fontSize: '16px',
                     fontWeight: '400',

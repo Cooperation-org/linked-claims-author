@@ -1,73 +1,73 @@
 // Interfaces for the credential data
 export interface Address {
-  addressCountry: string;
-  addressRegion: string;
-  addressLocality: string;
-  streetAddress: string;
-  postalCode: string;
+  addressCountry: string
+  addressRegion: string
+  addressLocality: string
+  streetAddress: string
+  postalCode: string
 }
 
 export interface Achievement {
-  id: string;
-  type: string[];
-  criteria: { narrative: string };
-  description: string;
-  name: string;
-  imageUrl: string;
+  id: string
+  type: string[]
+  criteria: { narrative: string }
+  description: string
+  name: string
+  imageUrl: string
 }
 
 export interface CredentialSubject {
-  type: string[];
-  name: string;
-  address?: Address;
-  achievement: Achievement[];
+  type: string[]
+  name: string
+  address?: Address
+  achievement: Achievement[]
 }
 
 export interface Issuer {
-  id: string;
-  type: string[];
+  id: string
+  type: string[]
 }
 
 export interface Credential {
-  "@context": string[];
-  type: string[];
-  issuer: Issuer;
-  issuanceDate: string;
-  expirationDate?: string;
-  awardedDate?: string;
-  name: string;
-  credentialSubject: CredentialSubject;
+  '@context': string[]
+  type: string[]
+  issuer: Issuer
+  issuanceDate: string
+  expirationDate?: string
+  awardedDate?: string
+  name: string
+  credentialSubject: CredentialSubject
 }
 
 interface Portfolio {
-  name: string;
-  url: string;
+  name: string
+  url: string
 }
 
 // Interfaces for the form fields
 export interface FormData {
-  storageOption: string;
-  fullName: string;
-  persons: string;
-  credentialName: string;
-  credentialDuration: string;
-  credentialDescription: string;
-  portfolio: Portfolio[];
-  imageLink: string;
-  description: string;
-  url: string;
-  [key: string]: string | undefined | Portfolio[]; 
+  storageOption: string
+  fullName: string
+  persons: string
+  credentialName: string
+  credentialDuration: string
+  credentialDescription: string
+  portfolio: Portfolio[]
+  imageLink: string
+  description: string
+  url: string
+  [key: string]: string | undefined | Portfolio[]
 }
 
 // Component Props for the form
 export interface FormProps {
-  formData: FormData;
+  formData: FormData
   // onChange: (data: Partial<FormData>) => void;
   // onSubmit: (data: FormData) => void;
 }
 
 // Component Props for the credential display
 export interface CredentialDisplayProps {
-  credential: Credential;
-  onCopy: () => void;
+  credential: Credential
+  onCopy: () => void
 }

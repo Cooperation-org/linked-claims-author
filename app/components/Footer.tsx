@@ -1,17 +1,21 @@
+import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import Image from 'next/image'
 import LinkedinImage from '../Assets/linkedin.svg'
 import TwitterImage from '../Assets/twitter.svg'
 import InstagramImage from '../Assets/instagram.svg'
+
 const Footer = () => {
+  const theme = useTheme()
+
   return (
     <Box
       sx={{
         width: '100%',
         height: { xs: '129px', md: '295px' },
         minHeight: { xs: '129px', md: '129px' },
-        bgcolor: '#202E5B',
+        bgcolor: theme.palette.t3BodyText,
         display: 'flex',
         alignItems: 'flex-end',
         alignContent: 'flex-end'
@@ -34,7 +38,7 @@ const Footer = () => {
         <Box sx={{ display: 'flex', gap: '9px' }}>
           <Box
             sx={{
-              bgcolor: '#E5E7EB',
+              bgcolor: theme.palette.t3LightGray,
               borderRadius: '20px',
               height: '40px',
               width: '40px',
@@ -47,7 +51,7 @@ const Footer = () => {
           </Box>
           <Box
             sx={{
-              bgcolor: '#E5E7EB',
+              bgcolor: theme.palette.t3LightGray,
               borderRadius: '20px',
               height: '40px',
               width: '40px',
@@ -60,7 +64,7 @@ const Footer = () => {
           </Box>
           <Box
             sx={{
-              bgcolor: '#E5E7EB',
+              bgcolor: theme.palette.t3LightGray,
               borderRadius: '20px',
               height: '40px',
               width: '40px',
@@ -75,7 +79,7 @@ const Footer = () => {
         <Box sx={{ display: 'flex', gap: '28px' }}>
           <Typography
             sx={{
-              color: '#E5E7EB',
+              color: theme.palette.t3LightGray,
               fontFamily: 'Lato',
               fontSize: '14px',
               fontStyle: 'normal',
@@ -88,7 +92,7 @@ const Footer = () => {
           </Typography>
           <Typography
             sx={{
-              color: 'var(--T3-Lt-Gray, #E5E7EB)',
+              color: theme.palette.t3LightGray,
               fontFamily: 'Lato',
               fontSize: '14px',
               fontStyle: 'normal',

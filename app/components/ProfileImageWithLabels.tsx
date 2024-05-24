@@ -1,6 +1,7 @@
 'use client'
+import { useTheme } from '@mui/material/styles'
 import React from 'react'
-import { Box, Typography, useTheme, useMediaQuery } from '@mui/material'
+import { Box, Typography, useMediaQuery } from '@mui/material'
 import Image from 'next/image'
 import profileImage from '../Assets/Tessa.png'
 import styled from '@emotion/styled'
@@ -31,6 +32,7 @@ const SvgContainer = styled(Box)`
 
 const ProfileImageWithLabels = () => {
   const theme = useTheme()
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (

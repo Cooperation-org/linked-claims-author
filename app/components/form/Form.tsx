@@ -1,4 +1,5 @@
 'use client'
+import { useTheme } from '@mui/material/styles'
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useForm, useFieldArray } from 'react-hook-form'
@@ -18,7 +19,6 @@ import {
   Theme,
   ButtonProps
 } from '@mui/material'
-import { useTheme } from '@mui/system'
 import { SVGSparkles, SVGGroup, SVGDate, SVGTime } from '../../Assets/SVGs'
 import TextEditor from '../Texteditor'
 import image from '../../Assets/nathan-dumlao-zUNs99PGDg0-unsplash 1.png'
@@ -53,10 +53,10 @@ const StyledButton = styled(Button)<ButtonProps>(({ theme, color }) => ({
   fontWeight: '600',
   lineHeight: '20px',
   border: '1px solid  #4E4E4E',
-  backgroundColor: color === 'primary' ? '#003FE0' : '#FFF',
-  color: color === 'primary' ? '#FFF' : '#4E4E4E',
+  backgroundColor: color === 'primary' ? theme.palette.t3ButtonBlue : '#FFF',
+  color: color === 'primary' ? '#FFF' : theme.palette.t3PlaceholderText,
   '&:hover': {
-    backgroundColor: color === 'primary' ? '#003FE0' : '#FFF'
+    backgroundColor: color === 'primary' ? theme.palette.t3ButtonBlue : '#FFF'
   }
 }))
 
@@ -203,7 +203,7 @@ const Form = () => {
     >
       <Typography
         sx={{
-          color: '#202E5B',
+          color: theme.palette.t3BodyText,
           textAlign: 'center',
           fontFamily: 'Lato',
           fontSize: '24px',
@@ -236,7 +236,7 @@ const Form = () => {
               sx={{
                 width: '7px',
                 height: '5px',
-                bgcolor: '#202E5B',
+                bgcolor: theme.palette.t3BodyText,
                 borderRadius: '3px'
               }}
             ></Box>
@@ -246,7 +246,7 @@ const Form = () => {
               width:
                 activeStep === 0 || activeStep === 1 || activeStep === 2 ? '22px' : '7px',
               height: '5px',
-              bgcolor: '#202E5B',
+              bgcolor: theme.palette.t3BodyText,
               borderRadius: '3px'
             }}
           ></Box>
@@ -255,7 +255,7 @@ const Form = () => {
               width:
                 activeStep === 3 || activeStep === 4 || activeStep === 5 ? '22px' : '7px',
               height: '5px',
-              bgcolor: '#202E5B',
+              bgcolor: theme.palette.t3BodyText,
               borderRadius: '3px'
             }}
           ></Box>
@@ -263,7 +263,7 @@ const Form = () => {
             sx={{
               width: activeStep === 6 ? '22px' : '7px',
               height: '5px',
-              bgcolor: '#202E5B',
+              bgcolor: theme.palette.t3BodyText,
               borderRadius: '3px'
             }}
           ></Box>
@@ -272,7 +272,7 @@ const Form = () => {
       {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && (
         <Typography
           sx={{
-            color: '#202E5B',
+            color: theme.palette.t3BodyText,
             textAlign: 'center',
             fontFamily: 'Lato',
             fontSize: '16px',
@@ -287,7 +287,7 @@ const Form = () => {
       {activeStep === 7 && (
         <Typography
           sx={{
-            color: '#202E5B',
+            color: theme.palette.t3BodyText,
             textAlign: 'center',
             fontFamily: 'Lato',
             fontSize: '16px',
@@ -345,7 +345,7 @@ const Form = () => {
                   <Radio
                     sx={{
                       '&.Mui-checked': {
-                        color: '#2563EB'
+                        color: theme.palette.t3CheckboxBorderActive
                       }
                     }}
                   />
@@ -361,7 +361,7 @@ const Form = () => {
                   <Radio
                     sx={{
                       '&.Mui-checked': {
-                        color: '#2563EB'
+                        color: theme.palette.t3CheckboxBorderActive
                       }
                     }}
                   />
@@ -377,7 +377,7 @@ const Form = () => {
                   <Radio
                     sx={{
                       '&.Mui-checked': {
-                        color: '#2563EB'
+                        color: theme.palette.t3CheckboxBorderActive
                       }
                     }}
                   />
@@ -393,7 +393,7 @@ const Form = () => {
                   <Radio
                     sx={{
                       '&.Mui-checked': {
-                        color: '#2563EB'
+                        color: theme.palette.t3CheckboxBorderActive
                       }
                     }}
                   />
@@ -427,7 +427,7 @@ const Form = () => {
                   <Radio
                     sx={{
                       '&.Mui-checked': {
-                        color: '#2563EB'
+                        color: theme.palette.t3CheckboxBorderActive
                       }
                     }}
                   />
@@ -444,7 +444,7 @@ const Form = () => {
                   <Radio
                     sx={{
                       '&.Mui-checked': {
-                        color: '#2563EB'
+                        color: theme.palette.t3CheckboxBorderActive
                       }
                     }}
                   />
@@ -457,7 +457,7 @@ const Form = () => {
             <Box sx={{ mt: '20px' }}>
               <FormLabel
                 sx={{
-                  color: '#202E5B',
+                  color: theme.palette.t3BodyText,
                   fontFamily: 'Lato',
                   fontSize: '16px',
                   fontWeight: 600,
@@ -467,8 +467,7 @@ const Form = () => {
                 }}
                 id='name-label'
               >
-                Full Name or Business Name
-                <span style={{ color: 'red' }}> *</span>
+                Full Name or Business Name <span style={{ color: 'red' }}> *</span>
               </FormLabel>
               <TextField
                 {...register('fullName', { required: 'Full name is required' })}
@@ -503,7 +502,7 @@ const Form = () => {
               <Box>
                 <FormLabel
                   sx={{
-                    color: '#202E5B',
+                    color: theme.palette.t3BodyText,
                     fontFamily: 'Lato',
                     fontSize: '16px',
                     fontWeight: 600,
@@ -513,8 +512,7 @@ const Form = () => {
                   }}
                   id='name-label'
                 >
-                  Credential Name
-                  <span style={{ color: 'red' }}> *</span>
+                  Credential Name <span style={{ color: 'red' }}> *</span>
                 </FormLabel>
                 <TextField
                   {...register('credentialName', {
@@ -552,7 +550,7 @@ const Form = () => {
               <Box>
                 <FormLabel
                   sx={{
-                    color: '#202E5B',
+                    color: theme.palette.t3BodyText,
                     fontFamily: 'Lato',
                     fontSize: '16px',
                     fontWeight: 600,
@@ -562,8 +560,7 @@ const Form = () => {
                   }}
                   id='name-label'
                 >
-                  Duration
-                  <span style={{ color: 'red' }}> *</span>
+                  Duration <span style={{ color: 'red' }}> *</span>
                 </FormLabel>
                 <TextField
                   {...register('credentialDuration', {
@@ -600,7 +597,7 @@ const Form = () => {
             <Box position='relative' width='100%'>
               <FormLabel
                 sx={{
-                  color: '#202E5B',
+                  color: theme.palette.t3BodyText,
                   fontFamily: 'Lato',
                   fontSize: '16px',
                   fontWeight: 600,
@@ -610,8 +607,7 @@ const Form = () => {
                 }}
                 id='name-label'
               >
-                Description (publicly visible)
-                <span style={{ color: 'red' }}> *</span>
+                Description (publicly visible) <span style={{ color: 'red' }}> *</span>
               </FormLabel>
               <CustomTextField
                 {...register('description', {
@@ -636,7 +632,7 @@ const Form = () => {
                 <SVGSparkles />
                 <FormLabel
                   sx={{
-                    color: '#202E5B',
+                    color: theme.palette.t3BodyText,
                     fontFamily: 'Lato',
                     fontSize: '13px',
                     textDecorationLine: 'underline',
@@ -661,7 +657,7 @@ const Form = () => {
                   <Box sx={{ mb: '15px' }}>
                     <FormLabel
                       sx={{
-                        color: '#202E5B',
+                        color: theme.palette.t3BodyText,
                         fontFamily: 'Lato',
                         fontSize: '16px',
                         fontWeight: 600,
@@ -694,7 +690,7 @@ const Form = () => {
                   <Box>
                     <FormLabel
                       sx={{
-                        color: '#202E5B',
+                        color: theme.palette.t3BodyText,
                         fontFamily: 'Lato',
                         fontSize: '16px',
                         fontWeight: 600,
@@ -741,7 +737,7 @@ const Form = () => {
                     onClick={() => append({ name: '', url: '' })}
                     style={{
                       background: 'none',
-                      color: '#003FE0',
+                      color: theme.palette.t3ButtonBlue,
                       border: 'none',
                       padding: 0,
                       textDecoration: 'underline',
@@ -771,7 +767,7 @@ const Form = () => {
                   onClick={handleNext}
                   style={{
                     background: 'none',
-                    color: '#6750A4',
+                    color: theme.palette.t3Purple,
                     border: 'none',
                     textDecoration: 'underline',
                     cursor: 'pointer',
@@ -788,7 +784,7 @@ const Form = () => {
             <Box>
               <FormLabel
                 sx={{
-                  color: '#202E5B',
+                  color: theme.palette.t3BodyText,
                   fontFamily: 'Lato',
                   fontSize: '13px',
                   fontWeight: 600,
@@ -837,7 +833,7 @@ const Form = () => {
                   onClick={handleNext}
                   style={{
                     background: 'none',
-                    color: '#6750A4',
+                    color: theme.palette.t3Purple,
                     border: 'none',
                     textDecoration: 'underline',
                     cursor: 'pointer',
@@ -867,7 +863,7 @@ const Form = () => {
                   height: '100px',
                   display: 'flex',
                   gap: '15px',
-                  bgcolor: '#E5E7EB',
+                  bgcolor: theme.palette.t3LightGray,
                   borderRadius: '20px'
                 }}
               >
@@ -882,7 +878,7 @@ const Form = () => {
                   </Box>
                   <Typography
                     sx={{
-                      color: '#202E5B',
+                      color: theme.palette.t3BodyText,
                       textAlign: 'left',
                       fontFamily: 'Inter',
                       fontSize: '15px',
@@ -904,7 +900,7 @@ const Form = () => {
                       <SVGDate />
                       <Typography
                         sx={{
-                          color: '#4E4E4E',
+                          color: theme.palette.t3PlaceholderText,
                           textAlign: 'center',
                           fontFamily: 'Poppins',
                           fontSize: '13px',
@@ -919,7 +915,7 @@ const Form = () => {
                       <SVGTime />
                       <Typography
                         sx={{
-                          color: '#4E4E4E',
+                          color: theme.palette.t3PlaceholderText,
                           textAlign: 'center',
                           fontFamily: 'Poppins',
                           fontSize: '13px',
@@ -947,7 +943,7 @@ const Form = () => {
                     <Box
                       key={index}
                       sx={{
-                        bgcolor: '#E5E7EB',
+                        bgcolor: theme.palette.t3LightGray,
                         borderRadius: '20px',
                         height: '40px',
                         width: '40px',
@@ -974,12 +970,12 @@ const Form = () => {
                   sx={{
                     padding: '10px 24px',
                     borderRadius: '100px',
-                    bgcolor: '#003FE0',
+                    bgcolor: theme.palette.t3ButtonBlue,
                     textTransform: 'capitalize',
                     fontFamily: 'Roboto',
                     lineHeight: '20px',
                     '&:hover': {
-                      bgcolor: '#003FE0'
+                      bgcolor: theme.palette.t3ButtonBlue
                     }
                   }}
                 >

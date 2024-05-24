@@ -1,8 +1,11 @@
+import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import Link from 'next/link'
 
 const NavBar = () => {
+  const theme = useTheme()
+
   return (
     <Box
       sx={{
@@ -63,7 +66,7 @@ const NavBar = () => {
             sx={{
               fontWeight: '700',
               fontSize: { xs: '18px', md: '24px' },
-              color: '#242F56',
+              color: theme.palette.t3DarkSlateBlue,
               textAlign: { xs: 'center', md: 'left' }
             }}
           >
