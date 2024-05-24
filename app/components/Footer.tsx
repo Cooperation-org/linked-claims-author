@@ -10,8 +10,8 @@ const Footer = () => {
       sx={{
         width: '100%',
         height: { xs: '129px', md: '295px' },
+        minHeight: { xs: '129px', md: '129px' },
         bgcolor: '#202E5B',
-        p: '25px',
         display: 'flex',
         alignItems: 'flex-end',
         alignContent: 'flex-end'
@@ -26,8 +26,9 @@ const Footer = () => {
           alignContent: 'flex-end',
           gap: '19px',
           flexWrap: 'wrap',
-          ml: { xs: '0px', md: '52px' },
-          mb: { xs: '0px', md: '24px' }
+          ml: { xs: '22px', md: '52px' },
+          mt: { xs: '29px', md: 'auto' },
+          mb: { xs: '24px', md: '24px' }
         }}
       >
         <Box sx={{ display: 'flex', gap: '9px' }}>

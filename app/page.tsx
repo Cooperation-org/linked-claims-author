@@ -330,7 +330,7 @@ const Page = () => {
                 padding: '25px 17px',
                 gap: '16px',
                 position: 'relative',
-                mb: { xs: '0px', md: '98px' }
+                mb: { xs: '0px', md: '54px' }
               }}
             >
               {testimonial.id === 1 && (
