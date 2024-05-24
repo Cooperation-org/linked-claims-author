@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { Box, Typography, useTheme, useMediaQuery, Avatar } from '@mui/material'
+import { Box, Typography, useTheme, useMediaQuery, Avatar, Button } from '@mui/material'
 import ProfileImageWithLabels from './components/ProfileImageWithLabels'
 import SVGDesign, { SVGCheckMarks } from './Assets/SVGs'
 import Image from 'next/image'
@@ -13,6 +13,7 @@ import {
   featuresSmallScreen,
   featuresLargeScreen
 } from './components/landingPageVariables'
+import Link from 'next/link'
 
 const Page = () => {
   const theme = useTheme()
@@ -109,7 +110,11 @@ const Page = () => {
             </Typography>
           </Box>
         </Box>
-        <Box sx={{ marginTop: { xs: '37px', md: '45px' } }}>
+        <Box
+          sx={{
+            marginTop: { xs: '37px', md: '45px' }
+          }}
+        >
           <ProfileImageWithLabels />
         </Box>
         <Box
@@ -120,32 +125,33 @@ const Page = () => {
             mt: { xs: '37px', md: '26px' }
           }}
         >
-          <Box
-            component='button'
-            sx={{
-              width: '176px',
-              height: '40px',
-              fontFamily: 'Lato',
-              fontSize: '14px',
-              fontWeight: 500,
-              lineHeight: '20px',
-              borderRadius: '100px',
-              backgroundColor: '#003fe0',
-              color: 'white',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              textTransform: 'lowercase',
-              border: 'none',
-              cursor: 'pointer',
-              '&:hover': {
-                backgroundColor: '#003fe080'
-              }
-            }}
-          >
-            Get started for FREE
-          </Box>
+          <Link href='/CredentialForm'>
+            <Button
+              sx={{
+                width: '176px',
+                height: '40px',
+                fontFamily: 'Lato',
+                fontSize: '14px',
+                fontWeight: 500,
+                lineHeight: '20px',
+                borderRadius: '100px',
+                backgroundColor: '#003fe0',
+                color: 'white',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                textTransform: 'lowercase',
+                border: 'none',
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: '#003fe080'
+                }
+              }}
+            >
+              Get started for FREE
+            </Button>
+          </Link>
         </Box>
       </Box>
 

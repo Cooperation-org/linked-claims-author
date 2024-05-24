@@ -15,7 +15,7 @@ const NavBar = () => {
         px: { xs: '18px', md: '52px' }
       }}
     >
-      {/* SVG for large screens */}
+      {/* menu for large screens */}
       <Box
         sx={{
           cursor: 'pointer',
@@ -72,7 +72,7 @@ const NavBar = () => {
         </Link>
       </Box>
 
-      {/* SVG for small screens */}
+      {/* menu for small screens */}
       <Box
         sx={{
           cursor: 'pointer',
