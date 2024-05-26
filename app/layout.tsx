@@ -1,106 +1,38 @@
-"use client";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import NavBar from "./components/NavBar";
-import { CssBaseline, ThemeProvider, createTheme, Box } from "@mui/material";
-import Footer from "./components/Footer";
+'use client'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import NavBar from './components/NavBar'
+import Footer from './components/Footer'
+import { CssBaseline, ThemeProvider, Box } from '@mui/material'
+import Theme from './theme'
 
-const inter = Inter({ subsets: ["latin"] });
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#2563EB",
-    },
-    secondary: {
-      main: "#FFFFFF",
-    },
-  },
-  // typography: {
-  //   fontFamily: "Lato, Roboto, Inter, Poppins",
-  // },
-  // components: {
-  //   MuiTypography: {
-  //     styleOverrides: {
-  //       root: {
-  //         color: "#202E5B",
-  //       },
-  //     },
-  //   },
-  //   MuiButton: {
-  //     styleOverrides: {
-  //       root: {
-  //         textTransform: "capitalize",
-  //         borderRadius: "100px",
-  //         fontFamily: "Roboto",
-  //         lineHeight: "20px",
-  //         padding: "10px 24px",
-  //       },
-  //       containedPrimary: {
-  //         backgroundColor: "#003FE0",
-  //         color: "#FFF",
-  //         "&:hover": {
-  //           backgroundColor: "#003FE0",
-  //         },
-  //       },
-  //       containedSecondary: {
-  //         backgroundColor: "#FFF",
-  //         color: "#4E4E4E",
-  //         "&:hover": {
-  //           backgroundColor: "#FFF",
-  //         },
-  //       },
-  //     },
-  //   },
-  //   MuiFormLabel: {
-  //     styleOverrides: {
-  //       root: {
-  //         color: "var(--T3-Body-Text, #202E5B)",
-  //         fontSize: "16px",
-  //         fontWeight: 600,
-  //         "&.Mui-focused": {
-  //           color: "#000",
-  //         },
-  //       },
-  //     },
-  //   },
-  //   MuiTextField: {
-  //     styleOverrides: {
-  //       root: {
-  //         backgroundColor: "#FFF",
-  //         "& .MuiOutlinedInput-root": {
-  //           borderRadius: "8px",
-  //         },
-  //       },
-  //     },
-  //   },
-  // },
-  // breakpoints: {
-  //   values: {
-  //     xs: 0,
-  //     sm: 600,
-  //     md: 800,
-  //     lg: 1280,
-  //     xl: 1920,
-  //   },
-  // },
-});
+const inter = Inter({ subsets: ['latin'] })
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={Theme}>
       <CssBaseline />
-      <html lang="en">
-        <body style={{ minHeight: "100vh" }}>
+      <html lang='en'>
+        <body
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            margin: 0,
+            maxHeight: '100vh'
+          }}
+        >
           <NavBar />
-          <Box sx={{ minHeight: "calc(100vh - 153px)" }}>{children}</Box>
+          <Box component='main' sx={{ flex: '1 0 auto' }}>
+            {children}
+          </Box>
           <Footer />
         </body>
       </html>
     </ThemeProvider>
-  );
+  )
 }
