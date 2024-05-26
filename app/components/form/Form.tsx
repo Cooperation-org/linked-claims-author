@@ -137,7 +137,7 @@ const Form = () => {
     >
       <FormTextSteps
         activeStep={activeStep}
-        _activeStep={textGuid[activeStep]}
+        activeText={textGuid[activeStep]}
         t3BodyText={theme.palette.t3BodyText}
       />
       {!isLargeScreen && activeStep !== 7 && (

@@ -4,13 +4,13 @@ import React from 'react'
 import { Typography } from '@mui/material'
 
 export const textGuid = [
-  '',
+  <> Hi, I’m Tessa! <br /> Where do you want to save your LinkedClaims?</>,
   'Let’s get started with your name and address.',
-  <>Thanks, Alice!<br/> Now let’s learn more about the skills you have.</>,
+  <>Thanks, Alice! <br/> Now let’s learn more about the skills you have.</>,
   'Now describe what you can demonstrate using this skill.',
   'Do you have any portfolio pieces you want to add?',
   'Would you like to add an image to your credential?',
-  <>Well done!<br/> Here’s what you’ve created:</>,
+  <>Well done! <br/> Here’s what you’ve created:</>,
   'Success!'
 ]
 
@@ -22,13 +22,13 @@ export const successNote =
 interface FormTextStepsProps {
   t3BodyText: string
   activeStep: number
-  _activeStep: any
+  activeText: any
 }
 
 export function FormTextSteps({
   t3BodyText,
   activeStep,
-  _activeStep
+  activeText
 }: FormTextStepsProps) {
   return (
     <Typography
@@ -43,13 +43,7 @@ export function FormTextSteps({
         p: '0 50px'
       }}
     >
-      {activeStep === 0 && (
-        <>
-          Hi, I’m Tessa!
-          <br /> Where do you want to save your LinkedClaims?
-        </>
-      )}
-      {_activeStep}
+      {activeText}
       {activeStep === 0 && (
         <span
           style={{
