@@ -67,6 +67,26 @@ declare module '@mui/material/styles' {
     t3Lavender?: string
     t3Red?: string
   }
+
+  interface TypographyVariants {
+    formTextStep: React.CSSProperties
+    successText: React.CSSProperties
+    noteText: React.CSSProperties
+  }
+
+  interface TypographyVariantsOptions {
+    formTextStep?: React.CSSProperties
+    successText?: React.CSSProperties
+    noteText?: React.CSSProperties
+  }
+}
+
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    formTextStep: true
+    successText: true
+    noteText: true
+  }
 }
 
 const Theme = createTheme({
@@ -109,9 +129,37 @@ const Theme = createTheme({
     t3Lavender: '#d1e3ff',
     t3Red: '#f81414'
   },
-  typography: {
-    fontFamily: 'Lato, Roboto, Inter, Poppins'
-  },
+  typography: palette => ({
+    fontFamily: 'Lato, Roboto, Inter, Poppins',
+    formTextStep: {
+      color: palette.t3BodyText,
+      textAlign: 'center',
+      fontFamily: 'Lato',
+      fontSize: '24px',
+      fontStyle: 'normal',
+      fontWeight: 400,
+      lineHeight: 'normal',
+      padding: '0 50px'
+    },
+    successText: {
+      color: palette.t3BodyText,
+      textAlign: 'center',
+      fontFamily: 'Lato',
+      fontSize: '16px',
+      fontStyle: 'italic',
+      fontWeight: 500,
+      lineHeight: 'normal'
+    },
+    noteText: {
+      color: palette.t3BodyText,
+      textAlign: 'center',
+      fontFamily: 'Lato',
+      fontSize: '16px',
+      fontStyle: 'italic',
+      fontWeight: 400,
+      lineHeight: 'normal'
+    },
+  }),
   components: {
     MuiTypography: {
       styleOverrides: {

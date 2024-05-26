@@ -135,18 +135,12 @@ const Form = () => {
       }}
       onSubmit={handleFormSubmit}
     >
-      <FormTextSteps
-        activeStep={activeStep}
-        activeText={textGuid[activeStep]}
-        t3BodyText={theme.palette.t3BodyText}
-      />
+      <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
       {!isLargeScreen && activeStep !== 7 && (
         <StepTrackShape activeStep={activeStep} palette={theme.palette} />
       )}
-      {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && (
-        <NoteText t3BodyText={theme.palette.t3BodyText} />
-      )}
-      {activeStep === 7 && <SuccessText t3BodyText={theme.palette.t3BodyText} />}
+      {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && <NoteText />}
+      {activeStep === 7 && <SuccessText />}
       <Box sx={{ width: { xs: '100%', md: '55%' } }}>
         <FormControl sx={{ width: '100%' }}>
           {activeStep === 0 && (

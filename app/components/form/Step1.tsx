@@ -34,12 +34,8 @@ export function Step1({ t3BodyText, register, watch, setValue, palette }: Step1P
     <>
       <FormLabel
         sx={{
-          color: 'var(--T3-Body-Text, #202E5B)',
+          color: '#202E5B',
           fontFamily: 'Lato',
-          fontSize: '16px',
-          fontStyle: 'normal',
-          fontWeight: 600,
-          lineHeight: 'normal',
           letterSpacing: '0.08px',
           mb: '7px',
           '&.Mui-focused': {
