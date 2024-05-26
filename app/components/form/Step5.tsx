@@ -1,4 +1,5 @@
 'use client'
+
 import React from 'react'
 import {
   FormLabel,
@@ -10,21 +11,23 @@ import {
   TextFieldVariants
 } from '@mui/material'
 
-export function Step5(props: {
-  palette: { t3BodyText: any; t3Purple: any }
+interface Step5Props {
+  palette: { t3BodyText: string; t3Purple: string }
   register: (
-    arg0: string
+    arg: string
   ) => React.JSX.IntrinsicAttributes & { variant?: TextFieldVariants | undefined } & Omit<
       FilledTextFieldProps | OutlinedTextFieldProps | StandardTextFieldProps,
       'variant'
     >
   handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
-}) {
+}
+
+export function Step5({ palette, register, handleNext }: Step5Props) {
   return (
     <Box>
       <FormLabel
         sx={{
-          color: props.palette.t3BodyText,
+          color: palette.t3BodyText,
           fontFamily: 'Lato',
           fontSize: '13px',
           fontWeight: 600,
@@ -32,12 +35,12 @@ export function Step5(props: {
             color: '#000'
           }
         }}
-        id='name-label'
+        id='image-url-label'
       >
         URL of an image you have permission to use (optional)
       </FormLabel>
       <TextField
-        {...props.register('imageLink')}
+        {...register('imageLink')}
         placeholder='https://'
         variant='outlined'
         sx={{
@@ -48,7 +51,7 @@ export function Step5(props: {
             borderRadius: '8px'
           }
         }}
-        aria-labelledby='name-label'
+        aria-labelledby='image-url-label'
         inputProps={{
           'aria-label': 'weight',
           style: {
@@ -70,10 +73,10 @@ export function Step5(props: {
       >
         <button
           type='button'
-          onClick={props.handleNext}
+          onClick={handleNext}
           style={{
             background: 'none',
-            color: props.palette.t3Purple,
+            color: palette.t3Purple,
             border: 'none',
             textDecoration: 'underline',
             cursor: 'pointer',

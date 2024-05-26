@@ -1,4 +1,5 @@
 'use client'
+
 import React from 'react'
 import {
   FormLabel,
@@ -11,18 +12,20 @@ import {
 } from '@mui/material'
 import TextEditor from '../Texteditor'
 
-export function Step2(props: {
-  palette: { t3BodyText: any }
+interface Step2Props {
+  palette: { t3BodyText: string }
   register: (
-    arg0: string,
+    arg: string,
     arg1: { required: string }
   ) => React.JSX.IntrinsicAttributes & { variant?: TextFieldVariants | undefined } & Omit<
       OutlinedTextFieldProps | StandardTextFieldProps | FilledTextFieldProps,
       'variant'
     >
-  watch: (arg0: string) => any
+  watch: (arg: string) => any
   handleTextEditorChange: (value: any) => void
-}) {
+}
+
+export function Step2({ palette, register, watch, handleTextEditorChange }: Step2Props) {
   return (
     <Box
       sx={{
@@ -34,7 +37,7 @@ export function Step2(props: {
       <Box>
         <FormLabel
           sx={{
-            color: props.palette.t3BodyText,
+            color: palette.t3BodyText,
             fontFamily: 'Lato',
             fontSize: '16px',
             fontWeight: 600,
@@ -50,12 +53,11 @@ export function Step2(props: {
               color: 'red'
             }}
           >
-            {' '}
             *
           </span>
         </FormLabel>
         <TextField
-          {...props.register('credentialName', {
+          {...register('credentialName', {
             required: 'Credential name is required'
           })}
           placeholder='e.g., Community Gardening Coordinator'
@@ -82,13 +84,13 @@ export function Step2(props: {
         />
       </Box>
       <TextEditor
-        value={props.watch('credentialDescription')}
-        onChange={props.handleTextEditorChange}
+        value={watch('credentialDescription')}
+        onChange={handleTextEditorChange}
       />
       <Box>
         <FormLabel
           sx={{
-            color: props.palette.t3BodyText,
+            color: palette.t3BodyText,
             fontFamily: 'Lato',
             fontSize: '16px',
             fontWeight: 600,
@@ -96,7 +98,7 @@ export function Step2(props: {
               color: '#000'
             }
           }}
-          id='name-label'
+          id='duration-label'
         >
           Duration{' '}
           <span
@@ -104,12 +106,11 @@ export function Step2(props: {
               color: 'red'
             }}
           >
-            {' '}
             *
           </span>
         </FormLabel>
         <TextField
-          {...props.register('credentialDuration', {
+          {...register('credentialDuration', {
             required: 'Duration is required'
           })}
           placeholder='1 Day'
@@ -122,7 +123,7 @@ export function Step2(props: {
               borderRadius: '8px'
             }
           }}
-          aria-labelledby='name-label'
+          aria-labelledby='duration-label'
           inputProps={{
             'aria-label': 'weight',
             style: {

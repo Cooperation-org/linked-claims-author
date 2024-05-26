@@ -1,11 +1,14 @@
 'use client'
+
 import React from 'react'
 import { Box } from '@mui/material'
 
-export function StepTrackShape(props: {
+interface StepTrackShapeProps {
   activeStep: number
-  palette: { t3BodyText: any }
-}) {
+  palette: { t3BodyText: string }
+}
+
+export function StepTrackShape({ activeStep, palette }: StepTrackShapeProps) {
   return (
     <Box
       sx={{
@@ -15,46 +18,42 @@ export function StepTrackShape(props: {
         justifyContent: 'center'
       }}
     >
-      {props.activeStep !== 0 && (
+      {activeStep !== 0 && (
         <Box
           sx={{
             width: '7px',
             height: '5px',
-            bgcolor: props.palette.t3BodyText,
+            bgcolor: palette.t3BodyText,
             borderRadius: '3px'
           }}
-        ></Box>
+        />
       )}
       <Box
         sx={{
           width:
-            props.activeStep === 0 || props.activeStep === 1 || props.activeStep === 2
-              ? '22px'
-              : '7px',
+            activeStep === 0 || activeStep === 1 || activeStep === 2 ? '22px' : '7px',
           height: '5px',
-          bgcolor: props.palette.t3BodyText,
+          bgcolor: palette.t3BodyText,
           borderRadius: '3px'
         }}
-      ></Box>
+      />
       <Box
         sx={{
           width:
-            props.activeStep === 3 || props.activeStep === 4 || props.activeStep === 5
-              ? '22px'
-              : '7px',
+            activeStep === 3 || activeStep === 4 || activeStep === 5 ? '22px' : '7px',
           height: '5px',
-          bgcolor: props.palette.t3BodyText,
+          bgcolor: palette.t3BodyText,
           borderRadius: '3px'
         }}
-      ></Box>
+      />
       <Box
         sx={{
-          width: props.activeStep === 6 ? '22px' : '7px',
+          width: activeStep === 6 ? '22px' : '7px',
           height: '5px',
-          bgcolor: props.palette.t3BodyText,
+          bgcolor: palette.t3BodyText,
           borderRadius: '3px'
         }}
-      ></Box>
+      />
     </Box>
   )
 }

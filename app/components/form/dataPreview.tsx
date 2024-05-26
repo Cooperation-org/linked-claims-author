@@ -2,13 +2,17 @@ import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import Image from 'next/image'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
-import { SVGDate } from '../Assets/SVGs'
-import { FormData } from '../components/form/Types'
-import test from '../Assets//test.png'
+import { SVGDate } from '../../Assets/SVGs'
+import { FormData } from './Types'
+import test from '../../Assets/test.png'
 
-const DataPreview = ({ formData }: { formData: FormData }) => {
+interface DataPreviewProps {
+  formData: FormData
+}
+
+const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
   const theme: Theme = useTheme()
-  const isLargeScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
 
   console.log(':  dataPreview  formData', formData)
 
@@ -36,11 +40,7 @@ const DataPreview = ({ formData }: { formData: FormData }) => {
           gap: !isLargeScreen ? '10px' : '20px'
         }}
       >
-        <Box
-          sx={{
-            borderRadius: '2px'
-          }}
-        >
+        <Box sx={{ borderRadius: '2px' }}>
           <Image
             style={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }}
             src={test}

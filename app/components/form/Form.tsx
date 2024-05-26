@@ -9,15 +9,14 @@ import { FormData } from './Types'
 import { textGuid, NoteText, SuccessText } from './FormTextSteps'
 import { FormTextSteps } from './FormTextSteps'
 import { StepTrackShape } from './StepTrackShape'
-import { BusinessLabel } from './BusinessLabel'
-import { StoringMethodRadios } from './StoringMethodRadios'
+import { Step0 } from './Step0'
 import { Buttons } from './Buttons'
 import { Step1 } from './Step1'
 import { Step2 } from './Step2'
 import { Step3 } from './Step3'
 import { Step4 } from './Step4'
 import { Step5 } from './Step5'
-import DataComponent from '../dataPreview'
+import DataComponent from './dataPreview'
 import { SuccessPage } from './SuccessPage'
 
 const Form = () => {
@@ -150,13 +149,14 @@ const Form = () => {
       {activeStep === 7 && <SuccessText t3BodyText={theme.palette.t3BodyText} />}
       <Box sx={{ width: { xs: '100%', md: '55%' } }}>
         <FormControl sx={{ width: '100%' }}>
-          {activeStep === 1 && <BusinessLabel />}
-          <StoringMethodRadios
-            activeStep={activeStep}
-            palette={theme.palette}
-            watch={watch}
-            setValue={setValue}
-          />
+          {activeStep === 0 && (
+            <Step0
+              activeStep={activeStep}
+              palette={theme.palette}
+              watch={watch}
+              setValue={setValue}
+            />
+          )}
           {activeStep === 1 && (
             <Step1
               palette={theme.palette}

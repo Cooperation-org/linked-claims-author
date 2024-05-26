@@ -1,14 +1,21 @@
 'use client'
+
 import React from 'react'
 import { Radio, RadioGroup, FormControlLabel } from '@mui/material'
 import { boxStyles } from './boxStyles'
 
-export function StoringMethodRadios(props: {
-  watch: (arg0: string) => any
-  setValue: (arg0: string, arg1: string) => void
+interface StoringMethodRadiosProps {
+  watch: (arg: string) => any
+  setValue: (arg1: string, arg2: string) => void
   activeStep: number
-  palette: { t3CheckboxBorderActive: any }
-}) {
+  palette: { t3CheckboxBorderActive: string }
+}
+
+export function Step0({
+  watch,
+  setValue,
+  palette
+}: StoringMethodRadiosProps) {
   return (
     <RadioGroup
       sx={{
@@ -26,10 +33,10 @@ export function StoringMethodRadios(props: {
       }}
       aria-labelledby='form-type-label'
       name='controlled-radio-buttons-group'
-      value={props.watch('storageOption')}
-      onChange={e => props.setValue('storageOption', e.target.value)}
+      value={watch('storageOption')}
+      onChange={e => setValue('storageOption', e.target.value)}
     >
-      {props.activeStep === 0 && (
+      <>
         <FormControlLabel
           value='Device'
           sx={boxStyles}
@@ -37,15 +44,13 @@ export function StoringMethodRadios(props: {
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: props.palette.t3CheckboxBorderActive
+                  color: palette.t3CheckboxBorderActive
                 }
               }}
             />
           }
           label='Save to My Device'
         />
-      )}
-      {props.activeStep === 0 && (
         <FormControlLabel
           value='Google Drive'
           sx={boxStyles}
@@ -53,15 +58,13 @@ export function StoringMethodRadios(props: {
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: props.palette.t3CheckboxBorderActive
+                  color: palette.t3CheckboxBorderActive
                 }
               }}
             />
           }
           label='Google Drive'
         />
-      )}
-      {props.activeStep === 0 && (
         <FormControlLabel
           value='Digital Wallet'
           sx={boxStyles}
@@ -69,15 +72,13 @@ export function StoringMethodRadios(props: {
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: props.palette.t3CheckboxBorderActive
+                  color: palette.t3CheckboxBorderActive
                 }
               }}
             />
           }
           label='Your Digital Wallet (e.g. Corner Pocket)'
         />
-      )}
-      {props.activeStep === 0 && (
         <FormControlLabel
           value='Dropbox'
           sx={boxStyles}
@@ -85,14 +86,14 @@ export function StoringMethodRadios(props: {
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: props.palette.t3CheckboxBorderActive
+                  color: palette.t3CheckboxBorderActive
                 }
               }}
             />
           }
           label='Dropbox'
         />
-      )}
+      </>
     </RadioGroup>
   )
 }

@@ -1,15 +1,16 @@
 'use client'
+
 import React from 'react'
 import { Typography } from '@mui/material'
 
 export const textGuid = [
   '',
   'Let’s get started with your name and address.',
-  'Thanks, Alice! Now let’s learn more about the skills you have.',
+  <>Thanks, Alice!<br/> Now let’s learn more about the skills you have.</>,
   'Now describe what you can demonstrate using this skill.',
   'Do you have any portfolio pieces you want to add?',
   'Would you like to add an image to your credential?',
-  'Well done! Here’s what you’ve created:',
+  <>Well done!<br/> Here’s what you’ve created:</>,
   'Success!'
 ]
 
@@ -18,25 +19,21 @@ export const note =
 export const successNote =
   'Congratulations on your achievement. Tell the world what you’ve accomplished!'
 
-export function FormTextSteps(props: {
-  t3BodyText: any
+interface FormTextStepsProps {
+  t3BodyText: string
   activeStep: number
-  _activeStep:
-    | string
-    | number
-    | bigint
-    | boolean
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | Iterable<React.ReactNode>
-    | React.ReactPortal
-    | Promise<React.AwaitedReactNode>
-    | null
-    | undefined
-}) {
+  _activeStep: any
+}
+
+export function FormTextSteps({
+  t3BodyText,
+  activeStep,
+  _activeStep
+}: FormTextStepsProps) {
   return (
     <Typography
       sx={{
-        color: props.t3BodyText,
+        color: t3BodyText,
         textAlign: 'center',
         fontFamily: 'Lato',
         fontSize: '24px',
@@ -46,20 +43,14 @@ export function FormTextSteps(props: {
         p: '0 50px'
       }}
     >
-      {props.activeStep === 0 && (
+      {activeStep === 0 && (
         <>
-          <span
-            style={{
-              display: 'block'
-            }}
-          >
-            Hi, I’m Tessa!
-          </span>
-          <span>Where do you want to save your LinkedClaims?</span>
+          Hi, I’m Tessa!
+          <br /> Where do you want to save your LinkedClaims?
         </>
       )}
-      {props._activeStep}
-      {props.activeStep === 0 && (
+      {_activeStep}
+      {activeStep === 0 && (
         <span
           style={{
             color: 'red'
@@ -73,11 +64,15 @@ export function FormTextSteps(props: {
   )
 }
 
-export function SuccessText(props: { t3BodyText: any }) {
+interface TextProps {
+  t3BodyText: string
+}
+
+export function SuccessText({ t3BodyText }: TextProps) {
   return (
     <Typography
       sx={{
-        color: props.t3BodyText,
+        color: t3BodyText,
         textAlign: 'center',
         fontFamily: 'Lato',
         fontSize: '16px',
@@ -91,11 +86,11 @@ export function SuccessText(props: { t3BodyText: any }) {
   )
 }
 
-export function NoteText(props: { t3BodyText: any }) {
+export function NoteText({ t3BodyText }: TextProps) {
   return (
     <Typography
       sx={{
-        color: props.t3BodyText,
+        color: t3BodyText,
         textAlign: 'center',
         fontFamily: 'Lato',
         fontSize: '16px',

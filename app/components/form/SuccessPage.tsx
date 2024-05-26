@@ -1,4 +1,5 @@
 'use client'
+
 import React from 'react'
 import Image from 'next/image'
 import { Box, Button, Typography } from '@mui/material'
@@ -10,15 +11,17 @@ import linkedin from '../../Assets/linkedin.svg'
 import mail from '../../Assets/mail.png'
 import messageCircle from '../../Assets/message-circle.png'
 
-export function SuccessPage(props: {
+interface SuccessPageProps {
   palette: {
-    t3LightGray: any
-    t3BodyText: any
-    t3PlaceholderText: any
-    t3ButtonBlue: any
+    t3LightGray: string
+    t3BodyText: string
+    t3PlaceholderText: string
+    t3ButtonBlue: string
   }
-  setActiveStep: (arg0: number) => void
-}) {
+  setActiveStep: (step: number) => void
+}
+
+export function SuccessPage({ palette, setActiveStep }: SuccessPageProps) {
   return (
     <Box
       sx={{
@@ -35,7 +38,7 @@ export function SuccessPage(props: {
           height: '100px',
           display: 'flex',
           gap: '15px',
-          bgcolor: props.palette.t3LightGray,
+          bgcolor: palette.t3LightGray,
           borderRadius: '20px'
         }}
       >
@@ -47,23 +50,13 @@ export function SuccessPage(props: {
           src={image}
           alt='logo'
         />
-        <Box
-          sx={{
-            width: '100%'
-          }}
-        >
-          <Box
-            sx={{
-              textAlign: 'right',
-              pr: '15px',
-              mt: '5px'
-            }}
-          >
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ textAlign: 'right', pr: '15px', mt: '5px' }}>
             <SVGGroup />
           </Box>
           <Typography
             sx={{
-              color: props.palette.t3BodyText,
+              color: palette.t3BodyText,
               textAlign: 'left',
               fontFamily: 'Inter',
               fontSize: '15px',
@@ -81,16 +74,11 @@ export function SuccessPage(props: {
               mt: '5px'
             }}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '3px'
-              }}
-            >
+            <Box sx={{ display: 'flex', gap: '3px' }}>
               <SVGDate />
               <Typography
                 sx={{
-                  color: props.palette.t3PlaceholderText,
+                  color: palette.t3PlaceholderText,
                   textAlign: 'center',
                   fontFamily: 'Poppins',
                   fontSize: '13px',
@@ -101,16 +89,11 @@ export function SuccessPage(props: {
                 2 days
               </Typography>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '3px'
-              }}
-            >
+            <Box sx={{ display: 'flex', gap: '3px' }}>
               <SVGTime />
               <Typography
                 sx={{
-                  color: props.palette.t3PlaceholderText,
+                  color: palette.t3PlaceholderText,
                   textAlign: 'center',
                   fontFamily: 'Poppins',
                   fontSize: '13px',
@@ -137,7 +120,7 @@ export function SuccessPage(props: {
           <Box
             key={index}
             sx={{
-              bgcolor: props.palette.t3LightGray,
+              bgcolor: palette.t3LightGray,
               borderRadius: '20px',
               height: '40px',
               width: '40px',
@@ -159,16 +142,16 @@ export function SuccessPage(props: {
       >
         <Button
           variant='contained'
-          onClick={() => props.setActiveStep(0)}
+          onClick={() => setActiveStep(0)}
           sx={{
             padding: '10px 24px',
             borderRadius: '100px',
-            bgcolor: props.palette.t3ButtonBlue,
+            bgcolor: palette.t3ButtonBlue,
             textTransform: 'capitalize',
             fontFamily: 'Roboto',
             lineHeight: '20px',
             '&:hover': {
-              bgcolor: props.palette.t3ButtonBlue
+              bgcolor: palette.t3ButtonBlue
             }
           }}
         >

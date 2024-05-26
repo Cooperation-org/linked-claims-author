@@ -1,4 +1,5 @@
 'use client'
+
 import React from 'react'
 import {
   FormLabel,
@@ -10,22 +11,24 @@ import {
   TextFieldVariants
 } from '@mui/material'
 
-export function Step4(props: {
-  fields: any[]
-  palette: { t3BodyText: any; t3ButtonBlue: any; t3Purple: any }
+interface Step4Props {
+  fields: { id: string; name: string; url: string }[]
+  palette: { t3BodyText: string; t3ButtonBlue: string; t3Purple: string }
   register: (
-    arg0: string,
+    arg: string,
     arg1: { required: string }
   ) => React.JSX.IntrinsicAttributes & { variant?: TextFieldVariants | undefined } & Omit<
       FilledTextFieldProps | OutlinedTextFieldProps | StandardTextFieldProps,
       'variant'
     >
-  append: (arg0: { name: string; url: string }) => void
+  append: (arg: { name: string; url: string }) => void
   handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
-}) {
+}
+
+export function Step4({ fields, palette, register, append, handleNext }: Step4Props) {
   return (
     <Box>
-      {props.fields.map((field, index) => (
+      {fields.map((field, index) => (
         <React.Fragment key={field.id}>
           <Box
             sx={{
@@ -34,7 +37,7 @@ export function Step4(props: {
           >
             <FormLabel
               sx={{
-                color: props.palette.t3BodyText,
+                color: palette.t3BodyText,
                 fontFamily: 'Lato',
                 fontSize: '16px',
                 fontWeight: 600,
@@ -47,7 +50,7 @@ export function Step4(props: {
               Name
             </FormLabel>
             <TextField
-              {...props.register(`portfolio.${index}.name`, {
+              {...register(`portfolio.${index}.name`, {
                 required: 'Name is required'
               })}
               defaultValue={field.name}
@@ -67,7 +70,7 @@ export function Step4(props: {
           <Box>
             <FormLabel
               sx={{
-                color: props.palette.t3BodyText,
+                color: palette.t3BodyText,
                 fontFamily: 'Lato',
                 fontSize: '16px',
                 fontWeight: 600,
@@ -80,7 +83,7 @@ export function Step4(props: {
               URL
             </FormLabel>
             <TextField
-              {...props.register(`portfolio.${index}.url`, {
+              {...register(`portfolio.${index}.url`, {
                 required: 'URL is required'
               })}
               defaultValue={field.url}
@@ -99,7 +102,7 @@ export function Step4(props: {
           </Box>
         </React.Fragment>
       ))}
-      {props.fields.length < 5 && (
+      {fields.length < 5 && (
         <Box
           sx={{
             width: '100%',
@@ -110,14 +113,14 @@ export function Step4(props: {
           <button
             type='button'
             onClick={() =>
-              props.append({
+              append({
                 name: '',
                 url: ''
               })
             }
             style={{
               background: 'none',
-              color: props.palette.t3ButtonBlue,
+              color: palette.t3ButtonBlue,
               border: 'none',
               padding: 0,
               textDecoration: 'underline',
@@ -144,10 +147,10 @@ export function Step4(props: {
       >
         <button
           type='button'
-          onClick={props.handleNext}
+          onClick={handleNext}
           style={{
             background: 'none',
-            color: props.palette.t3Purple,
+            color: palette.t3Purple,
             border: 'none',
             textDecoration: 'underline',
             cursor: 'pointer',

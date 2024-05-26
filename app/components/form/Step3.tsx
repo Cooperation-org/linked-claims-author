@@ -1,4 +1,5 @@
 'use client'
+
 import React from 'react'
 import {
   FormLabel,
@@ -13,10 +14,10 @@ import { SVGSparkles } from '../../Assets/SVGs'
 import { CustomTextField } from './boxStyles'
 import { MUIStyledCommonProps } from '@mui/system'
 
-export function Step3(props: {
-  palette: { t3BodyText: any }
+interface Step3Props {
+  palette: { t3BodyText: string }
   register: (
-    arg0: string,
+    arg: string,
     arg1: { required: string }
   ) => React.JSX.IntrinsicAttributes & { variant?: TextFieldVariants | undefined } & Omit<
       FilledTextFieldProps | OutlinedTextFieldProps | StandardTextFieldProps,
@@ -27,13 +28,21 @@ export function Step3(props: {
   handleInputChange:
     | React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
     | undefined
-  characterLimit: any
-}) {
+  characterLimit: number
+}
+
+export function Step3({
+  palette,
+  register,
+  inputValue,
+  handleInputChange,
+  characterLimit
+}: Step3Props) {
   return (
     <Box position='relative' width='100%'>
       <FormLabel
         sx={{
-          color: props.palette.t3BodyText,
+          color: palette.t3BodyText,
           fontFamily: 'Lato',
           fontSize: '16px',
           fontWeight: 600,
@@ -41,7 +50,7 @@ export function Step3(props: {
             color: '#000'
           }
         }}
-        id='name-label'
+        id='description-label'
       >
         Description (publicly visible){' '}
         <span
@@ -49,12 +58,11 @@ export function Step3(props: {
             color: 'red'
           }}
         >
-          {' '}
           *
         </span>
       </FormLabel>
       <CustomTextField
-        {...props.register('description', {
+        {...register('description', {
           required: 'Description is required'
         })}
         style={{
@@ -64,13 +72,13 @@ export function Step3(props: {
         multiline
         rows={11}
         variant='outlined'
-        value={props.inputValue}
-        onChange={props.handleInputChange}
+        value={inputValue}
+        onChange={handleInputChange}
         FormHelperTextProps={{
           className: 'MuiFormHelperText-root'
         }}
         inputProps={{
-          maxLength: props.characterLimit
+          maxLength: characterLimit
         }}
       />
       <Box
@@ -82,7 +90,7 @@ export function Step3(props: {
         <SVGSparkles />
         <FormLabel
           sx={{
-            color: props.palette.t3BodyText,
+            color: palette.t3BodyText,
             fontFamily: 'Lato',
             fontSize: '13px',
             textDecorationLine: 'underline',
@@ -93,7 +101,7 @@ export function Step3(props: {
               color: '#000'
             }
           }}
-          id='name-label'
+          id='ai-description-label'
         >
           Use AI to generate a description.
         </FormLabel>

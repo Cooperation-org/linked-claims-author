@@ -1,4 +1,5 @@
 'use client'
+
 import React from 'react'
 import {
   Radio,
@@ -14,21 +15,41 @@ import {
 } from '@mui/material'
 import { boxStyles } from './boxStyles'
 
-export function Step1(props: {
-  t3BodyText: any
+interface Step1Props {
+  t3BodyText: string
   register: (
-    arg0: string,
+    arg: string,
     arg1: { required: string }
   ) => React.JSX.IntrinsicAttributes & { variant?: TextFieldVariants | undefined } & Omit<
       FilledTextFieldProps | OutlinedTextFieldProps | StandardTextFieldProps,
       'variant'
     >
-  watch: (arg0: string) => any
-  setValue: (arg0: string, arg1: string) => void
-  palette: { t3CheckboxBorderActive: any }
-}) {
+  watch: (arg: string) => any
+  setValue: (arg1: string, arg2: string) => void
+  palette: { t3CheckboxBorderActive: string }
+}
+
+export function Step1({ t3BodyText, register, watch, setValue, palette }: Step1Props) {
   return (
     <>
+      <FormLabel
+        sx={{
+          color: 'var(--T3-Body-Text, #202E5B)',
+          fontFamily: 'Lato',
+          fontSize: '16px',
+          fontStyle: 'normal',
+          fontWeight: 600,
+          lineHeight: 'normal',
+          letterSpacing: '0.08px',
+          mb: '7px',
+          '&.Mui-focused': {
+            color: '#000'
+          }
+        }}
+        id='form-type-label'
+      >
+        Is this for an individual or a business?
+      </FormLabel>
       <RadioGroup
         sx={{
           display: 'flex',
@@ -44,8 +65,8 @@ export function Step1(props: {
         }}
         aria-labelledby='form-type-label'
         name='controlled-radio-buttons-group'
-        value={props.watch('persons')}
-        onChange={e => props.setValue('persons', e.target.value)}
+        value={watch('persons')}
+        onChange={e => setValue('persons', e.target.value)}
       >
         <FormControlLabel
           sx={{
@@ -60,7 +81,7 @@ export function Step1(props: {
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: props.palette.t3CheckboxBorderActive
+                  color: palette.t3CheckboxBorderActive
                 }
               }}
             />
@@ -80,7 +101,7 @@ export function Step1(props: {
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: props.palette.t3CheckboxBorderActive
+                  color: palette.t3CheckboxBorderActive
                 }
               }}
             />
@@ -95,7 +116,7 @@ export function Step1(props: {
       >
         <FormLabel
           sx={{
-            color: props.t3BodyText,
+            color: t3BodyText,
             fontFamily: 'Lato',
             fontSize: '16px',
             fontWeight: 600,
@@ -111,12 +132,11 @@ export function Step1(props: {
               color: 'red'
             }}
           >
-            {' '}
             *
           </span>
         </FormLabel>
         <TextField
-          {...props.register('fullName', {
+          {...register('fullName', {
             required: 'Full name is required'
           })}
           placeholder='e.g., Maria Fernández or Kumar Enterprises'
