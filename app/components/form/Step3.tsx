@@ -16,6 +16,7 @@ import { MUIStyledCommonProps } from '@mui/system'
 import { formLableStyles, UseAIStyles } from './boxStyles'
 
 interface Step3Props {
+  errors: any
   register: (
     arg: string,
     arg1: { required: string }
@@ -35,7 +36,8 @@ export function Step3({
   register,
   inputValue,
   handleInputChange,
-  characterLimit
+  characterLimit,
+  errors
 }: Step3Props) {
   return (
     <Box position='relative' width='100%'>
@@ -56,13 +58,12 @@ export function Step3({
           className: 'MuiFormHelperText-root'
         }}
         inputProps={{ maxLength: characterLimit }}
+        error={!!errors.description}
+        helperText={errors.description?.message}
       />
       <Box sx={{ display: 'flex', gap: '5px' }}>
         <SVGSparkles />
-        <FormLabel
-          sx={UseAIStyles}
-          id='ai-description-label'
-        >
+        <FormLabel sx={UseAIStyles} id='ai-description-label'>
           Use AI to generate a description.
         </FormLabel>
       </Box>

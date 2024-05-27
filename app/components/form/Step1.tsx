@@ -11,7 +11,8 @@ import {
   OutlinedTextFieldProps,
   StandardTextFieldProps,
   TextFieldVariants,
-  Box
+  Box,
+  FormHelperText
 } from '@mui/material'
 import { boxStyles } from './boxStyles'
 
@@ -25,9 +26,10 @@ interface Step1Props {
     >
   watch: (arg: string) => any
   setValue: (arg1: string, arg2: string) => void
+  errors: any
 }
 
-export function Step1({ register, watch, setValue }: Step1Props) {
+export function Step1({ register, watch, setValue, errors }: Step1Props) {
   return (
     <>
       <FormLabel
@@ -154,6 +156,8 @@ export function Step1({ register, watch, setValue }: Step1Props) {
               letterSpacing: '0.075px'
             }
           }}
+          error={!!errors.fullName}
+          helperText={errors.fullName?.message}
         />
       </Box>
     </>

@@ -46,7 +46,8 @@ const Form = () => {
       portfolio: [{ name: '', url: '' }],
       imageLink: '',
       description: ''
-    }
+    },
+    mode: 'onChange',
   })
 
   const { fields, append, remove } = useFieldArray({
@@ -108,6 +109,7 @@ const Form = () => {
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     console.log(data)
+    setActiveStep(0)
     reset()
 
     const codeToCopy = JSON.stringify(data, null, 2)
@@ -145,7 +147,7 @@ const Form = () => {
             <Step0 activeStep={activeStep} watch={watch} setValue={setValue} />
           )}
           {activeStep === 1 && (
-            <Step1 watch={watch} setValue={setValue} register={register} />
+            <Step1 watch={watch} setValue={setValue} register={register} errors={errors}  />
           )}
 
           {activeStep === 2 && (
@@ -153,6 +155,7 @@ const Form = () => {
               register={register}
               watch={watch}
               handleTextEditorChange={handleTextEditorChange}
+              errors={errors}
             />
           )}
           {activeStep === 3 && (
@@ -161,6 +164,7 @@ const Form = () => {
               characterLimit={characterLimit}
               register={register}
               handleInputChange={handleInputChange}
+              errors={errors}
             />
           )}
           {activeStep === 4 && (
@@ -169,6 +173,7 @@ const Form = () => {
               fields={fields}
               append={append}
               handleNext={handleNext}
+              errors={errors}
             />
           )}
           {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}
@@ -184,6 +189,7 @@ const Form = () => {
           handlePreview={handlePreview}
           handleSign={handleSign}
           handleBack={handleBack}
+          isValid={isValid}
         />
       )}
     </form>

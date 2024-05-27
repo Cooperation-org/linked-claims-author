@@ -1,5 +1,6 @@
 'use client'
 
+import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import {
   FormLabel,
@@ -8,11 +9,14 @@ import {
   FilledTextFieldProps,
   OutlinedTextFieldProps,
   StandardTextFieldProps,
-  TextFieldVariants
+  TextFieldVariants,
+  Theme,
+  Typography
 } from '@mui/material'
 import { formLableStyles, TextFieldStyles, buttonStyles } from './boxStyles'
 
 interface Step4Props {
+  errors: any
   fields: { id: string; name: string; url: string }[]
   register: (
     arg: string,
@@ -25,12 +29,23 @@ interface Step4Props {
   handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
 }
 
-export function Step4({ fields, register, append, handleNext }: Step4Props) {
+export function Step4({ fields, register, append, handleNext, errors }: Step4Props) {
+  const theme = useTheme<Theme>()
   return (
     <Box>
       {fields.map((field, index) => (
         <React.Fragment key={field.id}>
           <Box sx={{ mb: '15px' }}>
+            <Typography
+              sx={{
+                color: 't3BodyText',
+                fontFamily: 'Lato',
+                fontSize: '20px',
+                fontWeight: 700
+              }}
+            >
+              Portfolio Item {index + 1}
+            </Typography>
             <FormLabel sx={formLableStyles} id={`name-label-${index}`}>
               Name
             </FormLabel>
@@ -43,9 +58,11 @@ export function Step4({ fields, register, append, handleNext }: Step4Props) {
               variant='outlined'
               sx={TextFieldStyles}
               aria-labelledby={`name-label-${index}`}
+              error={!!errors?.portfolio?.[index]?.name}
+              helperText={errors?.portfolio?.[index]?.name?.message}
             />
           </Box>
-          <Box>
+          <Box sx={{ mb: '25px' }}>
             <FormLabel sx={formLableStyles} id={`url-label-${index}`}>
               URL
             </FormLabel>
@@ -58,6 +75,8 @@ export function Step4({ fields, register, append, handleNext }: Step4Props) {
               variant='outlined'
               sx={TextFieldStyles}
               aria-labelledby={`url-label-${index}`}
+              error={!!errors?.portfolio?.[index]?.url}
+              helperText={errors?.portfolio?.[index]?.url?.message}
             />
           </Box>
         </React.Fragment>
@@ -69,7 +88,7 @@ export function Step4({ fields, register, append, handleNext }: Step4Props) {
             onClick={() => append({ name: '', url: '' })}
             style={{
               background: 'none',
-              color: 't3ButtonBlue',
+              color: theme.palette.t3ButtonBlue,
               border: 'none',
               padding: 0,
               textDecoration: 'underline',

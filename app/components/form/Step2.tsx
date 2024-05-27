@@ -23,17 +23,12 @@ interface Step2Props {
     >
   watch: (arg: string) => any
   handleTextEditorChange: (value: any) => void
+  errors: any
 }
 
-export function Step2({ register, watch, handleTextEditorChange }: Step2Props) {
+export function Step2({ register, watch, handleTextEditorChange, errors }: Step2Props) {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '30px'
-      }}
-    >
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
         <FormLabel sx={formLableStyles} id='name-label'>
           Credential Name <span style={{ color: 'red' }}> *</span>
@@ -50,6 +45,8 @@ export function Step2({ register, watch, handleTextEditorChange }: Step2Props) {
             'aria-label': 'weight',
             style: inputPropsStyles
           }}
+          error={!!errors.credentialName}
+          helperText={errors.credentialName?.message}
         />
       </Box>
       <TextEditor
@@ -72,6 +69,8 @@ export function Step2({ register, watch, handleTextEditorChange }: Step2Props) {
             'aria-label': 'weight',
             style: inputPropsStyles
           }}
+          error={!!errors.credentialDuration}
+          helperText={errors.credentialDuration?.message}
         />
       </Box>
     </Box>
