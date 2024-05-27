@@ -5,7 +5,6 @@ import { Typography } from '@mui/material'
 
 export const textGuid = [
   <>
-    {' '}
     Hi, I’m Tessa! <br /> Where do you want to save your LinkedClaims?
   </>,
   'Let’s get started with your name and address.',
@@ -31,23 +30,11 @@ interface FormTextStepsProps {
   activeText: any
 }
 
-export function FormTextSteps({
-  activeStep,
-  activeText
-}: FormTextStepsProps) {
+export function FormTextSteps({ activeStep, activeText }: FormTextStepsProps) {
   return (
     <Typography variant='formTextStep'>
       {activeText}
-      {activeStep === 0 && (
-        <span
-          style={{
-            color: 'red'
-          }}
-        >
-          {' '}
-          *
-        </span>
-      )}
+      {activeStep === 0 && <span style={{ color: 'red' }}>*</span>}
     </Typography>
   )
 }

@@ -5,10 +5,9 @@ import { Box } from '@mui/material'
 
 interface StepTrackShapeProps {
   activeStep: number
-  palette: { t3BodyText: string }
 }
 
-export function StepTrackShape({ activeStep, palette }: StepTrackShapeProps) {
+export function StepTrackShape({ activeStep }: StepTrackShapeProps) {
   return (
     <Box
       sx={{
@@ -23,7 +22,7 @@ export function StepTrackShape({ activeStep, palette }: StepTrackShapeProps) {
           sx={{
             width: '7px',
             height: '5px',
-            bgcolor: palette.t3BodyText,
+            bgcolor: 't3BodyText',
             borderRadius: '3px'
           }}
         />
@@ -33,7 +32,7 @@ export function StepTrackShape({ activeStep, palette }: StepTrackShapeProps) {
           width:
             activeStep === 0 || activeStep === 1 || activeStep === 2 ? '22px' : '7px',
           height: '5px',
-          bgcolor: palette.t3BodyText,
+          bgcolor: 't3BodyText',
           borderRadius: '3px'
         }}
       />
@@ -42,7 +41,7 @@ export function StepTrackShape({ activeStep, palette }: StepTrackShapeProps) {
           width:
             activeStep === 3 || activeStep === 4 || activeStep === 5 ? '22px' : '7px',
           height: '5px',
-          bgcolor: palette.t3BodyText,
+          bgcolor: 't3BodyText',
           borderRadius: '3px'
         }}
       />
@@ -50,7 +49,7 @@ export function StepTrackShape({ activeStep, palette }: StepTrackShapeProps) {
         sx={{
           width: activeStep === 6 ? '22px' : '7px',
           height: '5px',
-          bgcolor: palette.t3BodyText,
+          bgcolor: 't3BodyText',
           borderRadius: '3px'
         }}
       />

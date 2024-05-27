@@ -16,7 +16,6 @@ import {
 import { boxStyles } from './boxStyles'
 
 interface Step1Props {
-  t3BodyText: string
   register: (
     arg: string,
     arg1: { required: string }
@@ -26,20 +25,19 @@ interface Step1Props {
     >
   watch: (arg: string) => any
   setValue: (arg1: string, arg2: string) => void
-  palette: { t3CheckboxBorderActive: string }
 }
 
-export function Step1({ t3BodyText, register, watch, setValue, palette }: Step1Props) {
+export function Step1({ register, watch, setValue }: Step1Props) {
   return (
     <>
       <FormLabel
         sx={{
-          color: '#202E5B',
+          color: 't3BodyText',
           fontFamily: 'Lato',
           letterSpacing: '0.08px',
           mb: '7px',
           '&.Mui-focused': {
-            color: '#000'
+            color: 't3Black'
           }
         }}
         id='form-type-label'
@@ -77,7 +75,7 @@ export function Step1({ t3BodyText, register, watch, setValue, palette }: Step1P
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: palette.t3CheckboxBorderActive
+                  color: 't3CheckboxBorderActive'
                 }
               }}
             />
@@ -97,7 +95,7 @@ export function Step1({ t3BodyText, register, watch, setValue, palette }: Step1P
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: palette.t3CheckboxBorderActive
+                  color: 't3CheckboxBorderActive'
                 }
               }}
             />
@@ -112,12 +110,12 @@ export function Step1({ t3BodyText, register, watch, setValue, palette }: Step1P
       >
         <FormLabel
           sx={{
-            color: t3BodyText,
+            color: 't3BodyText',
             fontFamily: 'Lato',
             fontSize: '16px',
             fontWeight: 600,
             '&.Mui-focused': {
-              color: '#000'
+              color: 't3Black'
             }
           }}
           id='name-label'
@@ -149,7 +147,7 @@ export function Step1({ t3BodyText, register, watch, setValue, palette }: Step1P
           inputProps={{
             'aria-label': 'weight',
             style: {
-              color: 'black',
+              color: 't3Black',
               fontSize: '15px',
               fontStyle: 'italic',
               fontWeight: 600,

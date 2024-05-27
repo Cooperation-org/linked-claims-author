@@ -13,9 +13,9 @@ import {
 import { SVGSparkles } from '../../Assets/SVGs'
 import { CustomTextField } from './boxStyles'
 import { MUIStyledCommonProps } from '@mui/system'
+import { formLableStyles, UseAIStyles } from './boxStyles'
 
 interface Step3Props {
-  palette: { t3BodyText: string }
   register: (
     arg: string,
     arg1: { required: string }
@@ -32,7 +32,6 @@ interface Step3Props {
 }
 
 export function Step3({
-  palette,
   register,
   inputValue,
   handleInputChange,
@@ -40,35 +39,14 @@ export function Step3({
 }: Step3Props) {
   return (
     <Box position='relative' width='100%'>
-      <FormLabel
-        sx={{
-          color: palette.t3BodyText,
-          fontFamily: 'Lato',
-          fontSize: '16px',
-          fontWeight: 600,
-          '&.Mui-focused': {
-            color: '#000'
-          }
-        }}
-        id='description-label'
-      >
-        Description (publicly visible){' '}
-        <span
-          style={{
-            color: 'red'
-          }}
-        >
-          *
-        </span>
+      <FormLabel sx={formLableStyles} id='description-label'>
+        Description (publicly visible) <span style={{ color: 'red' }}>*</span>
       </FormLabel>
       <CustomTextField
         {...register('description', {
           required: 'Description is required'
         })}
-        style={{
-          width: '100%',
-          marginBottom: '3px'
-        }}
+        style={{ width: '100%', marginBottom: '3px' }}
         multiline
         rows={11}
         variant='outlined'
@@ -77,30 +55,12 @@ export function Step3({
         FormHelperTextProps={{
           className: 'MuiFormHelperText-root'
         }}
-        inputProps={{
-          maxLength: characterLimit
-        }}
+        inputProps={{ maxLength: characterLimit }}
       />
-      <Box
-        sx={{
-          display: 'flex',
-          gap: '5px'
-        }}
-      >
+      <Box sx={{ display: 'flex', gap: '5px' }}>
         <SVGSparkles />
         <FormLabel
-          sx={{
-            color: palette.t3BodyText,
-            fontFamily: 'Lato',
-            fontSize: '13px',
-            textDecorationLine: 'underline',
-            lineHeight: '24px',
-            letterSpacing: '0.065px',
-            fontWeight: 400,
-            '&.Mui-focused': {
-              color: '#000'
-            }
-          }}
+          sx={UseAIStyles}
           id='ai-description-label'
         >
           Use AI to generate a description.

@@ -8,13 +8,11 @@ interface StoringMethodRadiosProps {
   watch: (arg: string) => any
   setValue: (arg1: string, arg2: string) => void
   activeStep: number
-  palette: { t3CheckboxBorderActive: string }
 }
 
 export function Step0({
   watch,
   setValue,
-  palette
 }: StoringMethodRadiosProps) {
   return (
     <RadioGroup
@@ -44,7 +42,7 @@ export function Step0({
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: palette.t3CheckboxBorderActive
+                  color: 't3CheckboxBorderActive'
                 }
               }}
             />
@@ -58,7 +56,7 @@ export function Step0({
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: palette.t3CheckboxBorderActive
+                  color: 't3CheckboxBorderActive'
                 }
               }}
             />
@@ -72,7 +70,7 @@ export function Step0({
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: palette.t3CheckboxBorderActive
+                  color: 't3CheckboxBorderActive'
                 }
               }}
             />
@@ -86,7 +84,7 @@ export function Step0({
             <Radio
               sx={{
                 '&.Mui-checked': {
-                  color: palette.t3CheckboxBorderActive
+                  color: 't3CheckboxBorderActive'
                 }
               }}
             />

@@ -69,7 +69,6 @@ function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
           fontFamily: 'Lato',
           fontSize: '16px',
           fontWeight: 600,
-          '&.Mui-focused': { color: '#000' }
         }}
         id='editor-label'
       >
