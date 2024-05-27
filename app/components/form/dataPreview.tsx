@@ -14,8 +14,6 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
   const theme: Theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
 
-  console.log(':  dataPreview  formData', formData)
-
   const handleNavigate = (url: string) => {
     window.location.href = url
   }
