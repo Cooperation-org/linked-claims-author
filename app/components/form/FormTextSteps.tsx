@@ -13,7 +13,7 @@ export const textGuid = [
   </>,
   'Now describe what you can demonstrate using this skill.',
   'Do you have any portfolio pieces you want to add?',
-  'Would you like to add an image to your credential?',
+  'Would you like to add an image to your skill?',
   <>
     Well done! <br /> Here’s what you’ve created:
   </>,

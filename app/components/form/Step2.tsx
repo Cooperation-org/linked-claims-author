@@ -31,11 +31,11 @@ export function Step2({ register, watch, handleTextEditorChange, errors }: Step2
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
         <FormLabel sx={formLableStyles} id='name-label'>
-          Credential Name <span style={{ color: 'red' }}> *</span>
+          Skill Name <span style={{ color: 'red' }}> *</span>
         </FormLabel>
         <TextField
           {...register('credentialName', {
-            required: 'Credential name is required'
+            required: 'Skill name is required'
           })}
           placeholder='e.g., Community Gardening Coordinator'
           variant='outlined'
