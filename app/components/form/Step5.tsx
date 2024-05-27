@@ -1,36 +1,26 @@
 'use client'
 
 import React from 'react'
+import { FormLabel, TextField, Box } from '@mui/material'
 import {
-  FormLabel,
-  TextField,
-  Box,
-  FilledTextFieldProps,
-  OutlinedTextFieldProps,
-  StandardTextFieldProps,
-  TextFieldVariants
-} from '@mui/material'
-import {
-  buttonStyles,
+  buttonLinkStyles,
   inputPropsStyles,
   TextFieldStyles,
-  formLableStyles
+  formLabelStyles,
+  skipButtonBoxStyles
 } from './boxStyles'
+import { UseFormRegister } from 'react-hook-form'
+import { FormData } from './Types'
 
 interface Step5Props {
-  register: (
-    arg: string
-  ) => React.JSX.IntrinsicAttributes & { variant?: TextFieldVariants | undefined } & Omit<
-      FilledTextFieldProps | OutlinedTextFieldProps | StandardTextFieldProps,
-      'variant'
-    >
+  register: UseFormRegister<FormData>
   handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
 }
 
-export function Step5({ register, handleNext }: Step5Props) {
+export function Step5({ register, handleNext }: Readonly<Step5Props>) {
   return (
     <Box>
-      <FormLabel sx={formLableStyles} id='image-url-label'>
+      <FormLabel sx={formLabelStyles} id='image-url-label'>
         URL of an image you have permission to use (optional)
       </FormLabel>
       <TextField
@@ -44,15 +34,8 @@ export function Step5({ register, handleNext }: Step5Props) {
           style: inputPropsStyles
         }}
       />
-      <Box
-        sx={{
-          width: '100%',
-          justifyContent: 'center',
-          display: 'flex',
-          marginTop: '40px'
-        }}
-      >
-        <button type='button' onClick={handleNext} style={buttonStyles}>
+      <Box sx={skipButtonBoxStyles}>
+        <button type='button' onClick={handleNext} style={buttonLinkStyles}>
           Skip
         </button>
       </Box>

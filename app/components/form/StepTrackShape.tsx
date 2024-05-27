@@ -7,7 +7,7 @@ interface StepTrackShapeProps {
   activeStep: number
 }
 
-export function StepTrackShape({ activeStep }: StepTrackShapeProps) {
+export function StepTrackShape({ activeStep }: Readonly<StepTrackShapeProps>) {
   return (
     <Box
       sx={{

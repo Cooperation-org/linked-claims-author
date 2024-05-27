@@ -5,9 +5,7 @@ import { useTheme } from '@mui/material/styles'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, useMediaQuery, Theme } from '@mui/material'
 import { FormData } from './Types'
-
-import { textGuid, NoteText, SuccessText } from './FormTextSteps'
-import { FormTextSteps } from './FormTextSteps'
+import { textGuid, NoteText, SuccessText, FormTextSteps } from './FormTextSteps'
 import { StepTrackShape } from './StepTrackShape'
 import { Step0 } from './Step0'
 import { Buttons } from './Buttons'
@@ -47,7 +45,7 @@ const Form = () => {
       imageLink: '',
       description: ''
     },
-    mode: 'onChange',
+    mode: 'onChange'
   })
 
   const { fields, append, remove } = useFieldArray({
@@ -147,7 +145,12 @@ const Form = () => {
             <Step0 activeStep={activeStep} watch={watch} setValue={setValue} />
           )}
           {activeStep === 1 && (
-            <Step1 watch={watch} setValue={setValue} register={register} errors={errors}  />
+            <Step1
+              watch={watch}
+              setValue={setValue}
+              register={register}
+              errors={errors}
+            />
           )}
 
           {activeStep === 2 && (

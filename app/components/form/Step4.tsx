@@ -2,51 +2,46 @@
 
 import { useTheme } from '@mui/material/styles'
 import React from 'react'
+import { FormLabel, TextField, Box, Theme, Typography } from '@mui/material'
 import {
-  FormLabel,
-  TextField,
-  Box,
-  FilledTextFieldProps,
-  OutlinedTextFieldProps,
-  StandardTextFieldProps,
-  TextFieldVariants,
-  Theme,
-  Typography
-} from '@mui/material'
-import { formLableStyles, TextFieldStyles, buttonStyles } from './boxStyles'
+  formLabelStyles,
+  TextFieldStyles,
+  buttonLinkStyles,
+  portfolioTypographyStyles,
+  addAnotherButtonStyles,
+  addAnotherBoxStyles,
+  skipButtonBoxStyles,
+  formBoxStyles,
+  formBoxStylesUrl
+} from './boxStyles'
+import { UseFormRegister, FieldErrors, UseFieldArrayAppend } from 'react-hook-form'
+import { FormData } from './Types'
 
 interface Step4Props {
-  errors: any
+  errors: FieldErrors<FormData>
   fields: { id: string; name: string; url: string }[]
-  register: (
-    arg: string,
-    arg1: { required: string }
-  ) => React.JSX.IntrinsicAttributes & { variant?: TextFieldVariants | undefined } & Omit<
-      FilledTextFieldProps | OutlinedTextFieldProps | StandardTextFieldProps,
-      'variant'
-    >
-  append: (arg: { name: string; url: string }) => void
+  register: UseFormRegister<FormData>
+  append: UseFieldArrayAppend<FormData, 'portfolio'>
   handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
 }
 
-export function Step4({ fields, register, append, handleNext, errors }: Step4Props) {
+export function Step4({
+  fields,
+  register,
+  append,
+  handleNext,
+  errors
+}: Readonly<Step4Props>) {
   const theme = useTheme<Theme>()
   return (
     <Box>
       {fields.map((field, index) => (
         <React.Fragment key={field.id}>
-          <Box sx={{ mb: '15px' }}>
-            <Typography
-              sx={{
-                color: 't3BodyText',
-                fontFamily: 'Lato',
-                fontSize: '20px',
-                fontWeight: 700
-              }}
-            >
+          <Box sx={formBoxStyles}>
+            <Typography sx={portfolioTypographyStyles}>
               Portfolio Item {index + 1}
             </Typography>
-            <FormLabel sx={formLableStyles} id={`name-label-${index}`}>
+            <FormLabel sx={formLabelStyles} id={`name-label-${index}`}>
               Name
             </FormLabel>
             <TextField
@@ -62,8 +57,8 @@ export function Step4({ fields, register, append, handleNext, errors }: Step4Pro
               helperText={errors?.portfolio?.[index]?.name?.message}
             />
           </Box>
-          <Box sx={{ mb: '25px' }}>
-            <FormLabel sx={formLableStyles} id={`url-label-${index}`}>
+          <Box sx={formBoxStylesUrl}>
+            <FormLabel sx={formLabelStyles} id={`url-label-${index}`}>
               URL
             </FormLabel>
             <TextField
@@ -82,38 +77,18 @@ export function Step4({ fields, register, append, handleNext, errors }: Step4Pro
         </React.Fragment>
       ))}
       {fields.length < 5 && (
-        <Box sx={{ width: '100%', justifyContent: 'flex-end', display: 'flex' }}>
+        <Box sx={addAnotherBoxStyles}>
           <button
             type='button'
             onClick={() => append({ name: '', url: '' })}
-            style={{
-              background: 'none',
-              color: theme.palette.t3ButtonBlue,
-              border: 'none',
-              padding: 0,
-              textDecoration: 'underline',
-              cursor: 'pointer',
-              fontSize: '12px',
-              fontWeight: 400,
-              letterSpacing: '0.075px',
-              textAlign: 'right',
-              lineHeight: '16px',
-              marginTop: '7px'
-            }}
+            style={addAnotherButtonStyles(theme)}
           >
             Add another
           </button>
         </Box>
       )}
-      <Box
-        sx={{
-          width: '100%',
-          justifyContent: 'center',
-          display: 'flex',
-          marginTop: '40px'
-        }}
-      >
-        <button type='button' onClick={handleNext} style={buttonStyles}>
+      <Box sx={skipButtonBoxStyles}>
+        <button type='button' onClick={handleNext} style={buttonLinkStyles}>
           Skip
         </button>
       </Box>

@@ -1,30 +1,22 @@
 'use client'
 
 import React from 'react'
-import {
-  FormLabel,
-  Box,
-  Theme,
-  FilledTextFieldProps,
-  OutlinedTextFieldProps,
-  StandardTextFieldProps,
-  TextFieldVariants
-} from '@mui/material'
+import { FormLabel, Box } from '@mui/material'
 import { SVGSparkles } from '../../Assets/SVGs'
-import { CustomTextField } from './boxStyles'
-import { MUIStyledCommonProps } from '@mui/system'
-import { formLableStyles, UseAIStyles } from './boxStyles'
+import {
+  CustomTextField,
+  formLabelStyles,
+  UseAIStyles,
+  formLabelSpanStyles,
+  customTextFieldStyles,
+  aiBoxStyles
+} from './boxStyles'
+import { UseFormRegister, FieldErrors } from 'react-hook-form'
+import { FormData } from './Types'
 
 interface Step3Props {
-  errors: any
-  register: (
-    arg: string,
-    arg1: { required: string }
-  ) => React.JSX.IntrinsicAttributes & { variant?: TextFieldVariants | undefined } & Omit<
-      FilledTextFieldProps | OutlinedTextFieldProps | StandardTextFieldProps,
-      'variant'
-    > &
-    MUIStyledCommonProps<Theme>
+  errors: FieldErrors<FormData>
+  register: UseFormRegister<FormData>
   inputValue: unknown
   handleInputChange:
     | React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
@@ -38,17 +30,17 @@ export function Step3({
   handleInputChange,
   characterLimit,
   errors
-}: Step3Props) {
+}: Readonly<Step3Props>) {
   return (
     <Box position='relative' width='100%'>
-      <FormLabel sx={formLableStyles} id='description-label'>
-        Description (publicly visible) <span style={{ color: 'red' }}>*</span>
+      <FormLabel sx={formLabelStyles} id='description-label'>
+        Description (publicly visible) <span style={formLabelSpanStyles}>*</span>
       </FormLabel>
       <CustomTextField
         {...register('description', {
           required: 'Description is required'
         })}
-        style={{ width: '100%', marginBottom: '3px' }}
+        sx={customTextFieldStyles}
         multiline
         rows={11}
         variant='outlined'
@@ -61,7 +53,7 @@ export function Step3({
         error={!!errors.description}
         helperText={errors.description?.message}
       />
-      <Box sx={{ display: 'flex', gap: '5px' }}>
+      <Box sx={aiBoxStyles}>
         <SVGSparkles />
         <FormLabel sx={UseAIStyles} id='ai-description-label'>
           Use AI to generate a description.

@@ -22,7 +22,7 @@ export function Buttons({
   handlePreview,
   maxSteps,
   isValid
-}: ButtonsProps) {
+}: Readonly<ButtonsProps>) {
   return (
     <Box
       sx={{
