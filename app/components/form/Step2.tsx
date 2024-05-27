@@ -10,10 +10,10 @@ import {
   StandardTextFieldProps,
   TextFieldVariants
 } from '@mui/material'
+import { inputPropsStyles, TextFieldStyles, formLableStyles } from './boxStyles'
 import TextEditor from '../Texteditor'
 
 interface Step2Props {
-  palette: { t3BodyText: string }
   register: (
     arg: string,
     arg1: { required: string }
@@ -23,64 +23,30 @@ interface Step2Props {
     >
   watch: (arg: string) => any
   handleTextEditorChange: (value: any) => void
+  errors: any
 }
 
-export function Step2({ palette, register, watch, handleTextEditorChange }: Step2Props) {
+export function Step2({ register, watch, handleTextEditorChange, errors }: Step2Props) {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '30px'
-      }}
-    >
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
-        <FormLabel
-          sx={{
-            color: palette.t3BodyText,
-            fontFamily: 'Lato',
-            fontSize: '16px',
-            fontWeight: 600,
-            '&.Mui-focused': {
-              color: '#000'
-            }
-          }}
-          id='name-label'
-        >
-          Credential Name{' '}
-          <span
-            style={{
-              color: 'red'
-            }}
-          >
-            *
-          </span>
+        <FormLabel sx={formLableStyles} id='name-label'>
+          Skill Name <span style={{ color: 'red' }}> *</span>
         </FormLabel>
         <TextField
           {...register('credentialName', {
-            required: 'Credential name is required'
+            required: 'Skill name is required'
           })}
           placeholder='e.g., Community Gardening Coordinator'
           variant='outlined'
-          sx={{
-            bgcolor: '#FFF',
-            width: '100%',
-            mt: '3px',
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '8px'
-            }
-          }}
+          sx={TextFieldStyles}
           aria-labelledby='name-label'
           inputProps={{
             'aria-label': 'weight',
-            style: {
-              color: 'black',
-              fontSize: '15px',
-              fontStyle: 'italic',
-              fontWeight: 600,
-              letterSpacing: '0.075px'
-            }
+            style: inputPropsStyles
           }}
+          error={!!errors.credentialName}
+          helperText={errors.credentialName?.message}
         />
       </Box>
       <TextEditor
@@ -88,26 +54,8 @@ export function Step2({ palette, register, watch, handleTextEditorChange }: Step
         onChange={handleTextEditorChange}
       />
       <Box>
-        <FormLabel
-          sx={{
-            color: palette.t3BodyText,
-            fontFamily: 'Lato',
-            fontSize: '16px',
-            fontWeight: 600,
-            '&.Mui-focused': {
-              color: '#000'
-            }
-          }}
-          id='duration-label'
-        >
-          Duration{' '}
-          <span
-            style={{
-              color: 'red'
-            }}
-          >
-            *
-          </span>
+        <FormLabel sx={formLableStyles} id='duration-label'>
+          Duration <span style={{ color: 'red' }}>*</span>
         </FormLabel>
         <TextField
           {...register('credentialDuration', {
@@ -115,25 +63,14 @@ export function Step2({ palette, register, watch, handleTextEditorChange }: Step
           })}
           placeholder='1 Day'
           variant='outlined'
-          sx={{
-            bgcolor: '#FFF',
-            width: '100%',
-            mt: '3px',
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '8px'
-            }
-          }}
+          sx={TextFieldStyles}
           aria-labelledby='duration-label'
           inputProps={{
             'aria-label': 'weight',
-            style: {
-              color: 'black',
-              fontSize: '15px',
-              fontStyle: 'italic',
-              fontWeight: 600,
-              letterSpacing: '0.075px'
-            }
+            style: inputPropsStyles
           }}
+          error={!!errors.credentialDuration}
+          helperText={errors.credentialDuration?.message}
         />
       </Box>
     </Box>

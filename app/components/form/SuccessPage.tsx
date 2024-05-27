@@ -12,16 +12,10 @@ import mail from '../../Assets/mail.png'
 import messageCircle from '../../Assets/message-circle.png'
 
 interface SuccessPageProps {
-  palette: {
-    t3LightGray: string
-    t3BodyText: string
-    t3PlaceholderText: string
-    t3ButtonBlue: string
-  }
   setActiveStep: (step: number) => void
 }
 
-export function SuccessPage({ palette, setActiveStep }: SuccessPageProps) {
+export function SuccessPage({ setActiveStep }: SuccessPageProps) {
   return (
     <Box
       sx={{
@@ -38,7 +32,7 @@ export function SuccessPage({ palette, setActiveStep }: SuccessPageProps) {
           height: '100px',
           display: 'flex',
           gap: '15px',
-          bgcolor: palette.t3LightGray,
+          bgcolor: 't3LightGray',
           borderRadius: '20px'
         }}
       >
@@ -56,7 +50,7 @@ export function SuccessPage({ palette, setActiveStep }: SuccessPageProps) {
           </Box>
           <Typography
             sx={{
-              color: palette.t3BodyText,
+              color: 't3BodyText',
               textAlign: 'left',
               fontFamily: 'Inter',
               fontSize: '15px',
@@ -78,7 +72,7 @@ export function SuccessPage({ palette, setActiveStep }: SuccessPageProps) {
               <SVGDate />
               <Typography
                 sx={{
-                  color: palette.t3PlaceholderText,
+                  color: 't3PlaceholderText',
                   textAlign: 'center',
                   fontFamily: 'Poppins',
                   fontSize: '13px',
@@ -93,7 +87,7 @@ export function SuccessPage({ palette, setActiveStep }: SuccessPageProps) {
               <SVGTime />
               <Typography
                 sx={{
-                  color: palette.t3PlaceholderText,
+                  color: 't3PlaceholderText',
                   textAlign: 'center',
                   fontFamily: 'Poppins',
                   fontSize: '13px',
@@ -120,7 +114,7 @@ export function SuccessPage({ palette, setActiveStep }: SuccessPageProps) {
           <Box
             key={index}
             sx={{
-              bgcolor: palette.t3LightGray,
+              bgcolor: 't3LightGray',
               borderRadius: '20px',
               height: '40px',
               width: '40px',
@@ -146,12 +140,12 @@ export function SuccessPage({ palette, setActiveStep }: SuccessPageProps) {
           sx={{
             padding: '10px 24px',
             borderRadius: '100px',
-            bgcolor: palette.t3ButtonBlue,
+            bgcolor: 't3ButtonBlue',
             textTransform: 'capitalize',
             fontFamily: 'Roboto',
             lineHeight: '20px',
             '&:hover': {
-              bgcolor: palette.t3ButtonBlue
+              bgcolor: 't3ButtonBlue'
             }
           }}
         >

@@ -46,7 +46,8 @@ const Form = () => {
       portfolio: [{ name: '', url: '' }],
       imageLink: '',
       description: ''
-    }
+    },
+    mode: 'onChange',
   })
 
   const { fields, append, remove } = useFieldArray({
@@ -108,6 +109,7 @@ const Form = () => {
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     console.log(data)
+    setActiveStep(0)
     reset()
 
     const codeToCopy = JSON.stringify(data, null, 2)
@@ -136,64 +138,47 @@ const Form = () => {
       onSubmit={handleFormSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-      {!isLargeScreen && activeStep !== 7 && (
-        <StepTrackShape activeStep={activeStep} palette={theme.palette} />
-      )}
+      {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
       {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && <NoteText />}
       {activeStep === 7 && <SuccessText />}
       <Box sx={{ width: { xs: '100%', md: '55%' } }}>
         <FormControl sx={{ width: '100%' }}>
           {activeStep === 0 && (
-            <Step0
-              activeStep={activeStep}
-              palette={theme.palette}
-              watch={watch}
-              setValue={setValue}
-            />
+            <Step0 activeStep={activeStep} watch={watch} setValue={setValue} />
           )}
           {activeStep === 1 && (
-            <Step1
-              palette={theme.palette}
-              watch={watch}
-              setValue={setValue}
-              t3BodyText={theme.palette.t3BodyText}
-              register={register}
-            />
+            <Step1 watch={watch} setValue={setValue} register={register} errors={errors}  />
           )}
 
           {activeStep === 2 && (
             <Step2
-              palette={theme.palette}
               register={register}
               watch={watch}
               handleTextEditorChange={handleTextEditorChange}
+              errors={errors}
             />
           )}
           {activeStep === 3 && (
             <Step3
               inputValue={inputValue}
-              palette={theme.palette}
               characterLimit={characterLimit}
               register={register}
               handleInputChange={handleInputChange}
+              errors={errors}
             />
           )}
           {activeStep === 4 && (
             <Step4
-              palette={theme.palette}
               register={register}
               fields={fields}
               append={append}
               handleNext={handleNext}
+              errors={errors}
             />
           )}
-          {activeStep === 5 && (
-            <Step5 palette={theme.palette} register={register} handleNext={handleNext} />
-          )}
+          {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}
           {activeStep === 6 && <DataComponent formData={watch()} />}
-          {activeStep === 7 && (
-            <SuccessPage setActiveStep={setActiveStep} palette={theme.palette} />
-          )}
+          {activeStep === 7 && <SuccessPage setActiveStep={setActiveStep} />}
         </FormControl>
       </Box>
       {activeStep !== 7 && (
@@ -204,6 +189,7 @@ const Form = () => {
           handlePreview={handlePreview}
           handleSign={handleSign}
           handleBack={handleBack}
+          isValid={isValid}
         />
       )}
     </form>
