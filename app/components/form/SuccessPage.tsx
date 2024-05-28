@@ -2,26 +2,34 @@
 
 import React from 'react'
 import Image from 'next/image'
-import { Box, Button, Typography } from '@mui/material'
-import { SVGGroup, SVGDate, SVGTime } from '../../Assets/SVGs'
+import {
+  Box,
+  Button,
+  Typography,
+  TextField,
+  InputAdornment,
+  Divider
+} from '@mui/material'
+import { SVGDate } from '../../Assets/SVGs'
 import image from '../../Assets/nathan-dumlao-zUNs99PGDg0-unsplash 1.png'
 import twitter from '../../Assets/twitter.svg'
 import instagram from '../../Assets/instagram.svg'
 import linkedin from '../../Assets/linkedin.svg'
-import mail from '../../Assets/mail.png'
-import messageCircle from '../../Assets/message-circle.png'
+import mail from '../../Assets/mail.svg'
+import messageCircle from '../../Assets/message-circle.svg'
+import copy from '../../Assets/copy.svg'
 import {
   successPageContainerStyles,
-  successPageBoxStyles,
-  successPageImageStyles,
-  successPageInnerBoxStyles,
-  successPageTypographyStyles,
-  successPageInfoBoxStyles,
+  successPageHeaderStyles,
+  successPageTitleStyles,
+  successPageInfoStyles,
+  successPageDateStyles,
+  successPageShareStyles,
+  successPageShareTextStyles,
   successPageIconContainerStyles,
-  successPageIconTextStyles,
-  successPageSocialContainerStyles,
-  successPageSocialIconStyles,
-  successPageButtonContainerStyles,
+  successPageCopyLinkStyles,
+  successPageCopyLinkTextStyles,
+  successPageTextFieldStyles,
   successPageButtonStyles
 } from './boxStyles'
 
@@ -31,42 +39,58 @@ interface SuccessPageProps {
 
 export function SuccessPage({ setActiveStep }: Readonly<SuccessPageProps>) {
   return (
-    <Box sx={successPageContainerStyles}>
-      <Box sx={successPageBoxStyles}>
-        <Image style={successPageImageStyles} src={image} alt='logo' />
-        <Box sx={{ width: '100%' }}>
-          <Box sx={successPageInnerBoxStyles}>
-            <SVGGroup />
-          </Box>
-          <Typography sx={successPageTypographyStyles}>Basic Barista Training</Typography>
-          <Box sx={successPageInfoBoxStyles}>
-            <Box sx={successPageIconContainerStyles}>
+    <>
+      <Box sx={successPageContainerStyles}>
+        <Box sx={successPageHeaderStyles}>
+          <Image style={{ width: '69px', height: '69px' }} src={image} alt='logo' />
+          <Box sx={{ flex: 1 }}>
+            <Typography sx={successPageTitleStyles}>Basic Barista Training</Typography>
+            <Box sx={successPageInfoStyles}>
               <SVGDate />
-              <Typography sx={successPageIconTextStyles}>2 days</Typography>
-            </Box>
-            <Box sx={successPageIconContainerStyles}>
-              <SVGTime />
-              <Typography sx={successPageIconTextStyles}>3 min</Typography>
+              <Typography sx={successPageDateStyles}>2 days</Typography>
             </Box>
           </Box>
         </Box>
+
+        <Divider sx={{ width: '100%' }} />
+
+        <Box sx={successPageShareStyles}>
+          <Typography sx={successPageShareTextStyles}>Share on:</Typography>
+          {[twitter, linkedin, instagram, mail, messageCircle].map((icon, index) => (
+            <Box key={index} sx={successPageIconContainerStyles}>
+              <Image src={icon} alt={`${icon}Icon`} />
+            </Box>
+          ))}
+        </Box>
+
+        <Divider sx={{ width: '100%' }} />
+
+        <Box sx={successPageCopyLinkStyles}>
+          <Typography sx={successPageCopyLinkTextStyles}>Copy link:</Typography>
+          <TextField
+            sx={successPageTextFieldStyles}
+            value='https://www.linkedclaims.com/file/f0g7iKqcLqxEscHmeZgDmp/Linked-Credentials?type=design&node-id=1-3&mode=design&t=2dmf296EWsNQ7ZFL-0'
+            InputProps={{
+              startAdornment: <InputAdornment position='start'>http://</InputAdornment>,
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <Button>
+                    <Image src={copy} alt='copyIcon' />
+                  </Button>
+                </InputAdornment>
+              ),
+              readOnly: true
+            }}
+          />
+        </Box>
       </Box>
-      <Box sx={successPageSocialContainerStyles}>
-        {[twitter, linkedin, instagram, mail, messageCircle].map((icon, index) => (
-          <Box key={index} sx={successPageSocialIconStyles}>
-            <Image src={icon} alt={`${icon}Icon`} />
-          </Box>
-        ))}
-      </Box>
-      <Box sx={successPageButtonContainerStyles}>
-        <Button
-          variant='contained'
-          onClick={() => setActiveStep(0)}
-          sx={successPageButtonStyles}
-        >
-          Add Another
-        </Button>
-      </Box>
-    </Box>
+      <Button
+        variant='contained'
+        onClick={() => setActiveStep(0)}
+        sx={successPageButtonStyles}
+      >
+        Add Another
+      </Button>
+    </>
   )
 }

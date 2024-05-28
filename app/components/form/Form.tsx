@@ -139,7 +139,7 @@ const Form = () => {
       {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
       {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && <NoteText />}
       {activeStep === 7 && <SuccessText />}
-      <Box sx={{ width: { xs: '100%', md: '55%' } }}>
+      <Box sx={{ width: { xs: '100%', md: '50%' } }}>
         <FormControl sx={{ width: '100%' }}>
           {activeStep === 0 && (
             <Step0 activeStep={activeStep} watch={watch} setValue={setValue} />

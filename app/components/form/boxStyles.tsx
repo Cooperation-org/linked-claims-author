@@ -1,5 +1,3 @@
-// boxStyles.tsx
-
 import { styled, TextField, Button, ButtonProps, Theme } from '@mui/material'
 import { CSSProperties } from 'react'
 
@@ -237,72 +235,69 @@ export const formBoxStylesUrl = {
 export const successPageContainerStyles = {
   display: 'flex',
   flexDirection: 'column',
-  gap: '30px',
   alignItems: 'center',
+  flexShrink: 0,
+  borderRadius: '8px',
+  background: '#e5e7ebb2',
   width: '100%'
 }
 
-export const successPageBoxStyles = {
+export const successPageHeaderStyles = {
   width: '100%',
   height: '100px',
   display: 'flex',
-  gap: '15px',
-  bgcolor: 't3LightGray',
-  borderRadius: '20px'
+  alignItems: 'center',
+  gap: '20px',
+  backgroundColor: '#e5e7eb',
+  borderRadius: '8px 8px 0 0',
+  padding: '0 15px'
 }
 
-export const successPageImageStyles = {
-  width: '100px',
-  height: '100px'
-}
-
-export const successPageInnerBoxStyles = {
-  width: '100%',
-  textAlign: 'right',
-  pr: '15px',
-  mt: '5px'
-}
-
-export const successPageTypographyStyles = {
-  color: 't3BodyText',
+export const successPageTitleStyles = {
+  color: '#202E5B',
   textAlign: 'left',
-  fontFamily: 'Inter',
-  fontSize: '15px',
+  fontFamily: 'Inter, sans-serif',
+  fontSize: '18px',
   fontWeight: 700,
+  letterSpacing: '0.09px',
   textTransform: 'capitalize'
 }
 
-export const successPageInfoBoxStyles = {
+export const successPageInfoStyles = {
   display: 'flex',
-  width: '100%',
-  gap: '15px',
-  mt: '5px'
+  gap: '3px',
+  marginTop: '5px',
+  alignItems: 'center'
 }
 
-export const successPageIconContainerStyles = {
-  display: 'flex',
-  gap: '3px'
-}
-
-export const successPageIconTextStyles = {
-  color: 't3PlaceholderText',
+export const successPageDateStyles = {
+  color: '#4E4E4E',
+  background: '#E5E7EB',
   textAlign: 'center',
-  fontFamily: 'Poppins',
+  fontFamily: 'Poppins, sans-serif',
   fontSize: '13px',
   fontWeight: 400,
   lineHeight: '150%'
 }
 
-export const successPageSocialContainerStyles = {
+export const successPageShareStyles = {
   width: '100%',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  gap: '9px'
+  gap: '9px',
+  padding: '10px 21px'
 }
 
-export const successPageSocialIconStyles = {
-  bgcolor: 't3LightGray',
+export const successPageShareTextStyles = {
+  color: '#202e5b',
+  fontWeight: 600,
+  fontFamily: 'Inter, sans-serif',
+  fontSize: '15px',
+  letterSpacing: '0.075px'
+}
+
+export const successPageIconContainerStyles = {
+  backgroundColor: '#e5e7eb',
   borderRadius: '20px',
   height: '40px',
   width: '40px',
@@ -311,21 +306,51 @@ export const successPageSocialIconStyles = {
   alignItems: 'center'
 }
 
-export const successPageButtonContainerStyles = {
+export const successPageCopyLinkStyles = {
   width: '100%',
-  justifyContent: 'center',
-  display: 'flex'
+  display: 'flex',
+  alignItems: 'center',
+  gap: '6px',
+  padding: '15px 21px'
+}
+
+export const successPageCopyLinkTextStyles = {
+  color: '#202e5b',
+  fontWeight: 600,
+  fontFamily: 'Inter, sans-serif',
+  fontSize: '15px',
+  letterSpacing: '0.075px'
+}
+
+export const successPageTextFieldStyles = {
+  flex: 1,
+  '& .MuiInputBase-root': {
+    color: '#6B7280',
+    fontSize: '15px',
+    letterSpacing: '0.075px',
+    fontFamily: 'Inter, sans-serif',
+    textAlign: 'center'
+  }
 }
 
 export const successPageButtonStyles = {
+  display: 'flex',
+  ml: 'auto',
+  mr: 'auto',
+  marginTop: '22px',
+  alignContent: 'center',
+  alignItems: 'center',
+  justifyContent: 'center',
   padding: '10px 24px',
+  width: '127px',
+  height: '40px',
   borderRadius: '100px',
-  bgcolor: 't3ButtonBlue',
+  backgroundColor: '#003FE0',
   textTransform: 'capitalize',
-  fontFamily: 'Roboto',
+  fontFamily: 'Roboto, sans-serif',
   lineHeight: '20px',
   '&:hover': {
-    bgcolor: 't3ButtonBlue'
+    backgroundColor: '#3182ce'
   }
 }
 
