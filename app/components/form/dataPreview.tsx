@@ -1,10 +1,18 @@
-import { useTheme } from '@mui/material/styles'
 import React from 'react'
+import { useTheme } from '@mui/material/styles'
 import Image from 'next/image'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
 import { SVGDate } from '../../Assets/SVGs'
 import { FormData } from './Types'
 import test from '../../Assets/test.png'
+import {
+  boxStyles,
+  commonTypographyStyles,
+  commonBoxStyles,
+  evidenceListStyles,
+  credentialBoxStyles,
+  imageBoxStyles
+} from './boxStyles'
 
 interface DataPreviewProps {
   formData: FormData
@@ -21,12 +29,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
   return (
     <Box
       sx={{
-        width: '100%',
-        borderRadius: '10px',
-        border: '1px solid #E5E7EB',
+        ...boxStyles,
         p: '10px',
-        display: 'flex',
-        flexDirection: 'column',
         gap: '20px',
         bgcolor: isLargeScreen ? theme.palette.t3NewWhitesmoke : 'none'
       }}
@@ -35,28 +39,20 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         sx={{
           display: 'flex',
           flexDirection: isLargeScreen ? 'row' : 'column',
-          gap: !isLargeScreen ? '10px' : '20px'
+          gap: isLargeScreen ? '20px' : '10px'
         }}
       >
-        <Box sx={{ borderRadius: '2px' }}>
+        <Box sx={imageBoxStyles}>
           <Image
             style={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }}
             src={test}
             alt='testImage'
           />
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-            justifyContent: 'center'
-          }}
-        >
+        <Box sx={commonBoxStyles}>
           <Typography
             sx={{
-              color: theme.palette.t3BodyText,
-              fontFamily: 'Inter',
+              ...commonTypographyStyles,
               fontSize: '18px',
               fontWeight: 800
             }}
@@ -65,68 +61,27 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           </Typography>
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '2px',
-              p: '2px 5px',
-              bgcolor: theme.palette.t3LightGray,
-              borderRadius: '5px',
-              width: '80px'
+              ...credentialBoxStyles,
+              bgcolor: theme.palette.t3LightGray
             }}
           >
             <Box sx={{ mt: '2px' }}>
               <SVGDate />
             </Box>
-            <Typography
-              sx={{
-                color: theme.palette.t3PlaceholderText,
-                fontFamily: 'Poppins',
-                fontSize: '13px',
-                fontWeight: 400
-              }}
-            >
+            <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
               {formData.credentialDuration}
             </Typography>
           </Box>
         </Box>
       </Box>
-      <Typography
-        sx={{
-          color: theme.palette.t3BodyText,
-          fontFamily: 'Inter',
-          fontSize: '15px',
-          fontWeight: 400
-        }}
-      >
-        {formData.description}
-      </Typography>
-      <Box
-        sx={{
-          color: theme.palette.t3BodyText,
-          fontFamily: 'Inter',
-          fontSize: '15px',
-          fontWeight: 400
-        }}
-      >
+      <Typography sx={commonTypographyStyles}>{formData.description}</Typography>
+      <Box sx={commonTypographyStyles}>
         <span style={{ display: 'block' }}>Earning criteria:</span>
         {formData.credentialDescription}
       </Box>
-      <Box
-        sx={{
-          color: theme.palette.t3BodyText,
-          fontFamily: 'Inter',
-          fontSize: '15px',
-          fontWeight: 400
-        }}
-      >
+      <Box sx={commonTypographyStyles}>
         Evidence:
-        <ul
-          style={{
-            marginLeft: '25px',
-            textDecorationLine: 'underline',
-            color: theme.palette.t3ButtonBlue
-          }}
-        >
+        <ul style={evidenceListStyles}>
           {formData?.portfolio?.map(porto => (
             <li key={porto.url} onClick={() => handleNavigate(porto.url)}>
               {porto.name}

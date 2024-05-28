@@ -1,37 +1,35 @@
 'use client'
 
 import React from 'react'
+import { FormLabel, TextField, Box } from '@mui/material'
 import {
-  FormLabel,
-  TextField,
-  Box,
-  FilledTextFieldProps,
-  OutlinedTextFieldProps,
-  StandardTextFieldProps,
-  TextFieldVariants
-} from '@mui/material'
-import { inputPropsStyles, TextFieldStyles, formLableStyles } from './boxStyles'
+  inputPropsStyles,
+  TextFieldStyles,
+  formLabelStyles,
+  formLabelSpanStyles
+} from './boxStyles'
 import TextEditor from '../Texteditor'
+import { UseFormRegister, FieldErrors } from 'react-hook-form'
+import { FormData } from './Types'
 
 interface Step2Props {
-  register: (
-    arg: string,
-    arg1: { required: string }
-  ) => React.JSX.IntrinsicAttributes & { variant?: TextFieldVariants | undefined } & Omit<
-      OutlinedTextFieldProps | StandardTextFieldProps | FilledTextFieldProps,
-      'variant'
-    >
-  watch: (arg: string) => any
+  register: UseFormRegister<FormData>
+  watch: (field: string) => any
   handleTextEditorChange: (value: any) => void
-  errors: any
+  errors: FieldErrors<FormData>
 }
 
-export function Step2({ register, watch, handleTextEditorChange, errors }: Step2Props) {
+export function Step2({
+  register,
+  watch,
+  handleTextEditorChange,
+  errors
+}: Readonly<Step2Props>) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
-        <FormLabel sx={formLableStyles} id='name-label'>
-          Skill Name <span style={{ color: 'red' }}> *</span>
+        <FormLabel sx={formLabelStyles} id='name-label'>
+          Skill Name <span style={formLabelSpanStyles}> *</span>
         </FormLabel>
         <TextField
           {...register('credentialName', {
@@ -54,8 +52,8 @@ export function Step2({ register, watch, handleTextEditorChange, errors }: Step2
         onChange={handleTextEditorChange}
       />
       <Box>
-        <FormLabel sx={formLableStyles} id='duration-label'>
-          Duration <span style={{ color: 'red' }}>*</span>
+        <FormLabel sx={formLabelStyles} id='duration-label'>
+          Duration <span style={formLabelSpanStyles}>*</span>
         </FormLabel>
         <TextField
           {...register('credentialDuration', {

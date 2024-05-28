@@ -30,7 +30,7 @@ interface FormTextStepsProps {
   activeText: any
 }
 
-export function FormTextSteps({ activeStep, activeText }: FormTextStepsProps) {
+export function FormTextSteps({ activeStep, activeText }: Readonly<FormTextStepsProps>) {
   return (
     <Typography variant='formTextStep'>
       {activeText}

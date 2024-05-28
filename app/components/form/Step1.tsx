@@ -7,58 +7,34 @@ import {
   FormControlLabel,
   FormLabel,
   TextField,
-  FilledTextFieldProps,
-  OutlinedTextFieldProps,
-  StandardTextFieldProps,
-  TextFieldVariants,
-  Box,
-  FormHelperText
+  Box
 } from '@mui/material'
-import { boxStyles } from './boxStyles'
+import {
+  boxStyles,
+  formLabelStyles,
+  radioCheckedStyles,
+  radioGroupStep1Styles,
+  TextFieldStyles,
+  textFieldInputProps
+} from './boxStyles'
+import { UseFormRegister, FieldErrors } from 'react-hook-form'
+import { FormData } from './Types'
 
 interface Step1Props {
-  register: (
-    arg: string,
-    arg1: { required: string }
-  ) => React.JSX.IntrinsicAttributes & { variant?: TextFieldVariants | undefined } & Omit<
-      FilledTextFieldProps | OutlinedTextFieldProps | StandardTextFieldProps,
-      'variant'
-    >
-  watch: (arg: string) => any
-  setValue: (arg1: string, arg2: string) => void
-  errors: any
+  register: UseFormRegister<FormData>
+  watch: (field: string) => any
+  setValue: (field: string, value: any) => void
+  errors: FieldErrors<FormData>
 }
 
-export function Step1({ register, watch, setValue, errors }: Step1Props) {
+export function Step1({ register, watch, setValue, errors }: Readonly<Step1Props>) {
   return (
     <>
-      <FormLabel
-        sx={{
-          color: 't3BodyText',
-          fontFamily: 'Lato',
-          letterSpacing: '0.08px',
-          mb: '7px',
-          '&.Mui-focused': {
-            color: 't3Black'
-          }
-        }}
-        id='form-type-label'
-      >
+      <FormLabel sx={formLabelStyles} id='form-type-label'>
         Is this for an individual or a business?
       </FormLabel>
       <RadioGroup
-        sx={{
-          display: 'flex',
-          flexDirection: {
-            xs: 'column',
-            sm: 'row',
-            md: 'row'
-          },
-          gap: '15px',
-          m: '0 auto',
-          width: '100%',
-          ml: '10px'
-        }}
+        sx={radioGroupStep1Styles}
         aria-labelledby='form-type-label'
         name='controlled-radio-buttons-group'
         value={watch('persons')}
@@ -73,15 +49,7 @@ export function Step1({ register, watch, setValue, errors }: Step1Props) {
             }
           }}
           value='Individual'
-          control={
-            <Radio
-              sx={{
-                '&.Mui-checked': {
-                  color: 't3CheckboxBorderActive'
-                }
-              }}
-            />
-          }
+          control={<Radio sx={radioCheckedStyles} />}
           label='Individual'
         />
         <FormControlLabel
@@ -93,43 +61,13 @@ export function Step1({ register, watch, setValue, errors }: Step1Props) {
             }
           }}
           value='Business'
-          control={
-            <Radio
-              sx={{
-                '&.Mui-checked': {
-                  color: 't3CheckboxBorderActive'
-                }
-              }}
-            />
-          }
+          control={<Radio sx={radioCheckedStyles} />}
           label='Business'
         />
       </RadioGroup>
-      <Box
-        sx={{
-          mt: '20px'
-        }}
-      >
-        <FormLabel
-          sx={{
-            color: 't3BodyText',
-            fontFamily: 'Lato',
-            fontSize: '16px',
-            fontWeight: 600,
-            '&.Mui-focused': {
-              color: 't3Black'
-            }
-          }}
-          id='name-label'
-        >
-          Full Name or Business Name{' '}
-          <span
-            style={{
-              color: 'red'
-            }}
-          >
-            *
-          </span>
+      <Box sx={{ mt: '20px' }}>
+        <FormLabel sx={formLabelStyles} id='name-label'>
+          Full Name or Business Name <span style={{ color: 'red' }}>*</span>
         </FormLabel>
         <TextField
           {...register('fullName', {
@@ -137,25 +75,9 @@ export function Step1({ register, watch, setValue, errors }: Step1Props) {
           })}
           placeholder='e.g., Maria Fernández or Kumar Enterprises'
           variant='outlined'
-          sx={{
-            bgcolor: '#FFF',
-            width: '100%',
-            mt: '3px',
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '8px'
-            }
-          }}
+          sx={TextFieldStyles}
           aria-labelledby='name-label'
-          inputProps={{
-            'aria-label': 'weight',
-            style: {
-              color: 't3Black',
-              fontSize: '15px',
-              fontStyle: 'italic',
-              fontWeight: 600,
-              letterSpacing: '0.075px'
-            }
-          }}
+          inputProps={textFieldInputProps}
           error={!!errors.fullName}
           helperText={errors.fullName?.message}
         />

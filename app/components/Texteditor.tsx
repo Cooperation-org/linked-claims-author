@@ -62,13 +62,13 @@ function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
   ]
 
   return (
-    <Box sx={{ width: '103%', borderRadius: '8px' }}>
+    <Box sx={{ width: '100%', borderRadius: '8px' }}>
       <FormLabel
         sx={{
           color: theme.palette.t3BodyText,
           fontFamily: 'Lato',
           fontSize: '16px',
-          fontWeight: 600,
+          fontWeight: 600
         }}
         id='editor-label'
       >

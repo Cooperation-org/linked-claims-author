@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Radio, RadioGroup, FormControlLabel } from '@mui/material'
-import { boxStyles } from './boxStyles'
+import { boxStyles, radioCheckedStyles, radioGroupStyles } from './boxStyles'
 
 interface StoringMethodRadiosProps {
   watch: (arg: string) => any
@@ -10,25 +10,10 @@ interface StoringMethodRadiosProps {
   activeStep: number
 }
 
-export function Step0({
-  watch,
-  setValue,
-}: StoringMethodRadiosProps) {
+export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
   return (
     <RadioGroup
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '15px',
-        m: '0 auto',
-        width: {
-          xs: '100%',
-          md: '50%'
-        },
-        pl: '10px',
-        minWidth: '355px',
-        alignItems: 'center'
-      }}
+      sx={radioGroupStyles}
       aria-labelledby='form-type-label'
       name='controlled-radio-buttons-group'
       value={watch('storageOption')}
@@ -38,57 +23,25 @@ export function Step0({
         <FormControlLabel
           value='Device'
           sx={boxStyles}
-          control={
-            <Radio
-              sx={{
-                '&.Mui-checked': {
-                  color: 't3CheckboxBorderActive'
-                }
-              }}
-            />
-          }
+          control={<Radio sx={radioCheckedStyles} />}
           label='Save to My Device'
         />
         <FormControlLabel
           value='Google Drive'
           sx={boxStyles}
-          control={
-            <Radio
-              sx={{
-                '&.Mui-checked': {
-                  color: 't3CheckboxBorderActive'
-                }
-              }}
-            />
-          }
+          control={<Radio sx={radioCheckedStyles} />}
           label='Google Drive'
         />
         <FormControlLabel
           value='Digital Wallet'
           sx={boxStyles}
-          control={
-            <Radio
-              sx={{
-                '&.Mui-checked': {
-                  color: 't3CheckboxBorderActive'
-                }
-              }}
-            />
-          }
+          control={<Radio sx={radioCheckedStyles} />}
           label='Your Digital Wallet (e.g. Corner Pocket)'
         />
         <FormControlLabel
           value='Dropbox'
           sx={boxStyles}
-          control={
-            <Radio
-              sx={{
-                '&.Mui-checked': {
-                  color: 't3CheckboxBorderActive'
-                }
-              }}
-            />
-          }
+          control={<Radio sx={radioCheckedStyles} />}
           label='Dropbox'
         />
       </>
