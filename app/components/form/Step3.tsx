@@ -16,21 +16,18 @@ import { FormData } from './Types'
 
 interface Step3Props {
   errors: FieldErrors<FormData>
+  watch: (arg: string) => any
   register: UseFormRegister<FormData>
-  inputValue: unknown
-  handleInputChange:
-    | React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
-    | undefined
   characterLimit: number
 }
 
 export function Step3({
   register,
-  inputValue,
-  handleInputChange,
   characterLimit,
-  errors
+  errors,
+  watch
 }: Readonly<Step3Props>) {
+
   return (
     <Box position='relative' width='100%'>
       <FormLabel sx={formLabelStyles} id='description-label'>
@@ -44,14 +41,16 @@ export function Step3({
         multiline
         rows={11}
         variant='outlined'
-        value={inputValue}
-        onChange={handleInputChange}
         FormHelperTextProps={{
           className: 'MuiFormHelperText-root'
         }}
         inputProps={{ maxLength: characterLimit }}
         error={!!errors.description}
-        helperText={errors.description?.message}
+        helperText={
+          errors.description?.message
+            ? `${errors.description.message}`
+            : `${watch('description').length}/${characterLimit} characters`
+        }
       />
       <Box sx={aiBoxStyles}>
         <SVGSparkles />

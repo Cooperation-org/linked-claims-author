@@ -163,11 +163,10 @@ const Form = () => {
           )}
           {activeStep === 3 && (
             <Step3
-              inputValue={inputValue}
-              characterLimit={characterLimit}
+              watch={watch}
               register={register}
-              handleInputChange={handleInputChange}
               errors={errors}
+              characterLimit={characterLimit}
             />
           )}
           {activeStep === 4 && (
