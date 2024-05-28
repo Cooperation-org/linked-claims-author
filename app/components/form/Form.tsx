@@ -47,7 +47,7 @@ const Form = () => {
       imageLink: '',
       description: ''
     },
-    mode: 'onChange',
+    mode: 'onChange'
   })
 
   const { fields, append, remove } = useFieldArray({
@@ -147,7 +147,12 @@ const Form = () => {
             <Step0 activeStep={activeStep} watch={watch} setValue={setValue} />
           )}
           {activeStep === 1 && (
-            <Step1 watch={watch} setValue={setValue} register={register} errors={errors}  />
+            <Step1
+              watch={watch}
+              setValue={setValue}
+              register={register}
+              errors={errors}
+            />
           )}
 
           {activeStep === 2 && (
@@ -160,11 +165,10 @@ const Form = () => {
           )}
           {activeStep === 3 && (
             <Step3
-              inputValue={inputValue}
-              characterLimit={characterLimit}
+              watch={watch}
               register={register}
-              handleInputChange={handleInputChange}
               errors={errors}
+              characterLimit={characterLimit}
             />
           )}
           {activeStep === 4 && (
