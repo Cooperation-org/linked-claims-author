@@ -17,6 +17,7 @@ import { formLableStyles, UseAIStyles } from './boxStyles'
 
 interface Step3Props {
   errors: any
+  watch: (arg: string) => any
   register: (
     arg: string,
     arg1: { required: string }
@@ -25,20 +26,10 @@ interface Step3Props {
       'variant'
     > &
     MUIStyledCommonProps<Theme>
-  inputValue: unknown
-  handleInputChange:
-    | React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
-    | undefined
   characterLimit: number
 }
 
-export function Step3({
-  register,
-  inputValue,
-  handleInputChange,
-  characterLimit,
-  errors
-}: Step3Props) {
+export function Step3({ register, characterLimit, errors, watch }: Step3Props) {
   return (
     <Box position='relative' width='100%'>
       <FormLabel sx={formLableStyles} id='description-label'>
@@ -52,14 +43,16 @@ export function Step3({
         multiline
         rows={11}
         variant='outlined'
-        value={inputValue}
-        onChange={handleInputChange}
         FormHelperTextProps={{
           className: 'MuiFormHelperText-root'
         }}
         inputProps={{ maxLength: characterLimit }}
         error={!!errors.description}
-        helperText={errors.description?.message}
+        helperText={
+          errors.description?.message
+            ? `${errors.description.message}`
+            : `${watch('description').length}/${characterLimit} characters`
+        }
       />
       <Box sx={{ display: 'flex', gap: '5px' }}>
         <SVGSparkles />
