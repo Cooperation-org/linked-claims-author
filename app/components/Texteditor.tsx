@@ -13,19 +13,8 @@ interface TextEditorProps {
 function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
   const theme = useTheme()
 
-  const handleChange = (
-    content: string,
-    delta: any,
-    source: string,
-    editor: { getHTML: () => string }
-  ) => {
-    if (source === 'user') {
-      const htmlContent = editor.getHTML()
-      const tempDiv = document.createElement('div')
-      tempDiv.innerHTML = htmlContent
-      const plainText = tempDiv.innerText.trim()
-      onChange(plainText)
-    }
+  const handleChange = (content: string) => {
+    onChange(content)
   }
 
   const handleBlur = () => {
@@ -34,17 +23,9 @@ function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
 
   const modules = {
     toolbar: [
-      [
-        'bold',
-        'italic',
-        'underline',
-        'strike',
-        'link',
-        { list: 'ordered' },
-        { list: 'bullet' },
-        { list: 'check' },
-        'code-block'
-      ]
+      ['bold', 'italic', 'underline', 'strike', 'link'],
+      [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
+      ['code-block']
     ]
   }
 
@@ -53,11 +34,10 @@ function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
     'italic',
     'underline',
     'strike',
-    'blockquote',
-    'code-block',
-    'bullet',
     'link',
-    'ordered',
+    'list',
+    'bullet',
+    'code-block',
     'check'
   ]
 
