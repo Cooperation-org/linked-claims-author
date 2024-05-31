@@ -4,28 +4,40 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { Box, FormLabel } from '@mui/material'
 import './TextEditor.css'
+import Quill from 'quill'
+const Delta = Quill.import('delta')
 
 interface TextEditorProps {
   value: any
   onChange: (value: any) => void
 }
+const Clipboard = Quill.import('modules/clipboard') as any
+
+class PlainClipboard extends Clipboard {
+  quill: any
+
+  onPaste(e: ClipboardEvent) {
+    e.preventDefault()
+    const range = this.quill.getSelection()
+    if (range) {
+      const text = (e.clipboardData || (window as any).clipboardData).getData(
+        'text/plain'
+      )
+      const delta = new Delta().retain(range.index).delete(range.length).insert(text)
+      this.quill.updateContents(delta, 'silent')
+      this.quill.setSelection(range.index + text.length)
+      this.quill.scrollIntoView()
+    }
+  }
+}
+
+Quill.register('modules/clipboard', PlainClipboard, true)
 
 function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
   const theme = useTheme()
 
-  const handleChange = (
-    content: string,
-    delta: any,
-    source: string,
-    editor: { getHTML: () => string }
-  ) => {
-    if (source === 'user') {
-      const htmlContent = editor.getHTML()
-      const tempDiv = document.createElement('div')
-      tempDiv.innerHTML = htmlContent
-      const plainText = tempDiv.innerText.trim()
-      onChange(plainText)
-    }
+  const handleChange = (content: string) => {
+    onChange(content)
   }
 
   const handleBlur = () => {
@@ -34,18 +46,13 @@ function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
 
   const modules = {
     toolbar: [
-      [
-        'bold',
-        'italic',
-        'underline',
-        'strike',
-        'link',
-        { list: 'ordered' },
-        { list: 'bullet' },
-        { list: 'check' },
-        'code-block'
-      ]
-    ]
+      ['bold', 'italic', 'underline', 'strike', 'link'],
+      [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
+      ['code-block']
+    ],
+    clipboard: {
+      matchVisual: false
+    }
   }
 
   const formats = [
@@ -53,11 +60,10 @@ function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
     'italic',
     'underline',
     'strike',
-    'blockquote',
-    'code-block',
-    'bullet',
     'link',
-    'ordered',
+    'list',
+    'bullet',
+    'code-block',
     'check'
   ]
 
