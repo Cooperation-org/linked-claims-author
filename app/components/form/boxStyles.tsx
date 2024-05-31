@@ -259,16 +259,18 @@ export const successPageContainerStyles = {
 
 export const successPageBoxStyles = {
   width: '100%',
-  height: '100px',
+  height: '101px',
   display: 'flex',
   gap: '15px',
   bgcolor: 't3LightGray',
-  borderRadius: '20px'
+  borderRadius: '20px',
+  p:'15px 22px',
+  alignItems: 'center'
 }
 
 export const successPageImageStyles = {
   width: '100px',
-  height: '100px'
+  height: '100%'
 }
 
 export const successPageInnerBoxStyles = {
