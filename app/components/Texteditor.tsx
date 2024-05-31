@@ -25,7 +25,7 @@ class PlainClipboard extends Clipboard {
       )
       const delta = new Delta().retain(range.index).delete(range.length).insert(text)
       this.quill.updateContents(delta, 'silent')
-      this.quill.setSelection(range.index + text.length, Quill.sources.SILENT)
+      this.quill.setSelection(range.index + text.length)
       this.quill.scrollIntoView()
     }
   }
