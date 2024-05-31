@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Box } from '@mui/material'
-import { StyledButton } from './boxStyles'
+import { Box, Button } from '@mui/material'
+import { StyledButton, nextButtonStyle } from './boxStyles'
 
 interface ButtonsProps {
   activeStep: number
@@ -34,32 +34,39 @@ export function Buttons({
     >
       {activeStep !== 0 && (
         <>
-          <StyledButton onClick={handleBack} color='secondary'>
+          <Button sx={StyledButton} onClick={handleBack} color='secondary'>
             Back
-          </StyledButton>
-          <StyledButton type='submit' color='secondary'>
+          </Button>
+          <Button sx={StyledButton} type='submit' color='secondary'>
             Save & Exit
-          </StyledButton>
+          </Button>
         </>
       )}
       {activeStep !== 5 && activeStep !== 6 && (
-        <StyledButton onClick={handleNext} color='primary' disabled={!isValid}>
+        <Button
+          sx={nextButtonStyle}
+          onClick={handleNext}
+          color='primary'
+          disabled={!isValid}
+          variant='contained'
+        >
           Next
-        </StyledButton>
+        </Button>
       )}
       {activeStep === 6 && (
-        <StyledButton onClick={handleSign} color='primary'>
+        <Button sx={StyledButton} onClick={handleSign} color='primary'>
           Sign
-        </StyledButton>
+        </Button>
       )}
       {activeStep === 5 && (
-        <StyledButton
+        <Button
+          sx={nextButtonStyle}
           onClick={handlePreview}
           disabled={activeStep === maxSteps - 1}
           color='primary'
         >
           Preview
-        </StyledButton>
+        </Button>
       )}
     </Box>
   )

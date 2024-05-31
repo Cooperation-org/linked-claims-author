@@ -1,9 +1,9 @@
 // boxStyles.tsx
 
-import { styled, TextField, Button, ButtonProps, Theme } from '@mui/material'
+import { styled, TextField, Theme } from '@mui/material'
 import { CSSProperties } from 'react'
 
-export const StyledButton = styled(Button)<ButtonProps>(({ theme, color }) => ({
+export const StyledButton = {
   padding: '10px 24px',
   borderRadius: '100px',
   textTransform: 'capitalize',
@@ -11,12 +11,25 @@ export const StyledButton = styled(Button)<ButtonProps>(({ theme, color }) => ({
   fontWeight: '600',
   lineHeight: '20px',
   border: '1px solid  #4E4E4E',
-  backgroundColor: color === 'primary' ? theme.palette.t3ButtonBlue : '#FFF',
-  color: color === 'primary' ? '#FFF' : theme.palette.t3PlaceholderText,
+  color: '#4e4e4e',
   '&:hover': {
-    backgroundColor: color === 'primary' ? theme.palette.t3ButtonBlue : '#FFF'
+    backgroundColor: '003fe0'
   }
-}))
+}
+
+export const nextButtonStyle = {
+  padding: '10px 24px',
+  borderRadius: '100px',
+  textTransform: 'capitalize',
+  fontFamily: 'Roboto',
+  fontWeight: '600',
+  lineHeight: '20px',
+  backgroundColor: '#003FE0',
+  color: '#FFFFFF',
+  '&:hover': {
+    backgroundColor: '#003FE0'
+  }
+}
 
 export const CustomTextField = styled(TextField)({
   '& .MuiInputBase-root': {
@@ -195,7 +208,9 @@ export const portfolioTypographyStyles = {
   color: 't3BodyText',
   fontFamily: 'Lato',
   fontSize: '20px',
-  fontWeight: 700
+  fontWeight: 700,
+  display: 'flex',
+  justifyContent: 'space-between'
 }
 
 export const addAnotherButtonStyles = (theme: Theme): CSSProperties => ({

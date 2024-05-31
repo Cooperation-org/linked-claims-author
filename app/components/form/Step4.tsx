@@ -2,7 +2,7 @@
 
 import { useTheme } from '@mui/material/styles'
 import React from 'react'
-import { FormLabel, TextField, Box, Theme, Typography } from '@mui/material'
+import { FormLabel, TextField, Box, Theme, Typography, Button } from '@mui/material'
 import {
   formLabelStyles,
   TextFieldStyles,
@@ -14,6 +14,7 @@ import {
   formBoxStyles,
   formBoxStylesUrl
 } from './boxStyles'
+import ClearIcon from '@mui/icons-material/Clear'
 import { UseFormRegister, FieldErrors, UseFieldArrayAppend } from 'react-hook-form'
 import { FormData } from './Types'
 
@@ -23,6 +24,7 @@ interface Step4Props {
   register: UseFormRegister<FormData>
   append: UseFieldArrayAppend<FormData, 'portfolio'>
   handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
+  remove: (index: number) => void
 }
 
 export function Step4({
@@ -30,7 +32,8 @@ export function Step4({
   register,
   append,
   handleNext,
-  errors
+  errors,
+  remove
 }: Readonly<Step4Props>) {
   const theme = useTheme<Theme>()
   return (
@@ -40,6 +43,13 @@ export function Step4({
           <Box sx={formBoxStyles}>
             <Typography sx={portfolioTypographyStyles}>
               Portfolio Item {index + 1}
+              {index > 0 && (
+                <ClearIcon
+                  type='button'
+                  onClick={() => remove(index)}
+                  sx={{ mt: '5px', cursor: 'pointer' }}
+                />
+              )}
             </Typography>
             <FormLabel sx={formLabelStyles} id={`name-label-${index}`}>
               Name
