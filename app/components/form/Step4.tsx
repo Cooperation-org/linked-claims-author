@@ -39,7 +39,7 @@ export function Step4({
   return (
     <Box>
       {fields.map((field, index) => (
-        <React.Fragment key={index}>
+        <React.Fragment key={field.id}>
           <Box sx={formBoxStyles}>
             <Typography sx={portfolioTypographyStyles}>
               Portfolio Item {index + 1}
