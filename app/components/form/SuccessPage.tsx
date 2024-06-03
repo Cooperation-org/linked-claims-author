@@ -41,7 +41,6 @@ interface SuccessPageProps {
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({ setActiveStep, formData, reset }) => {
-  console.log(':  SuccessPage  formData', formData)
   return (
     <>
       <Box sx={successPageContainerStyles}>
