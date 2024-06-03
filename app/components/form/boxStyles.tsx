@@ -1,7 +1,8 @@
 import { styled, TextField, Button, ButtonProps, Theme } from '@mui/material'
+
 import { CSSProperties } from 'react'
 
-export const StyledButton = styled(Button)<ButtonProps>(({ theme, color }) => ({
+export const StyledButton = {
   padding: '10px 24px',
   borderRadius: '100px',
   textTransform: 'capitalize',
@@ -9,12 +10,25 @@ export const StyledButton = styled(Button)<ButtonProps>(({ theme, color }) => ({
   fontWeight: '600',
   lineHeight: '20px',
   border: '1px solid  #4E4E4E',
-  backgroundColor: color === 'primary' ? theme.palette.t3ButtonBlue : '#FFF',
-  color: color === 'primary' ? '#FFF' : theme.palette.t3PlaceholderText,
+  color: '#4e4e4e',
   '&:hover': {
-    backgroundColor: color === 'primary' ? theme.palette.t3ButtonBlue : '#FFF'
+    backgroundColor: '003fe0'
   }
-}))
+}
+
+export const nextButtonStyle = {
+  padding: '10px 24px',
+  borderRadius: '100px',
+  textTransform: 'capitalize',
+  fontFamily: 'Roboto',
+  fontWeight: '600',
+  lineHeight: '20px',
+  backgroundColor: '#003FE0',
+  color: '#FFFFFF',
+  '&:hover': {
+    backgroundColor: '#003FE0'
+  }
+}
 
 export const CustomTextField = styled(TextField)({
   '& .MuiInputBase-root': {
@@ -36,8 +50,8 @@ export const CustomTextField = styled(TextField)({
 export const boxStyles = {
   width: '100%',
   bgcolor: '#FFF',
-  borderRadius: '8px'
-  // border: '1px solid #E5E7EB'
+  borderRadius: '8px',
+  border: '1px solid #E5E7EB'
 }
 
 export const formLabelStyles = {
@@ -109,7 +123,7 @@ export const commonBoxStyles = {
 export const evidenceListStyles = {
   marginLeft: '25px',
   textDecorationLine: 'underline',
-  color: 't3ButtonBlue'
+  color:'blue'
 }
 
 export const credentialBoxStyles = {
@@ -118,7 +132,8 @@ export const credentialBoxStyles = {
   gap: '2px',
   padding: '2px 5px',
   borderRadius: '5px',
-  width: '80px'
+  width: '80px',
+  mb:'10px'
 }
 
 export const imageBoxStyles = {
@@ -193,7 +208,9 @@ export const portfolioTypographyStyles = {
   color: 't3BodyText',
   fontFamily: 'Lato',
   fontSize: '20px',
-  fontWeight: 700
+  fontWeight: 700,
+  display: 'flex',
+  justifyContent: 'space-between'
 }
 
 export const addAnotherButtonStyles = (theme: Theme): CSSProperties => ({
@@ -251,6 +268,18 @@ export const successPageHeaderStyles = {
   backgroundColor: '#e5e7eb',
   borderRadius: '8px 8px 0 0',
   padding: '0 15px'
+}
+
+export const successPageImageStyles = {
+  width: '100px',
+  height: '100%'
+}
+
+export const successPageInnerBoxStyles = {
+  width: '100%',
+  textAlign: 'right',
+  pr: '15px',
+  mt: '5px'
 }
 
 export const successPageTitleStyles = {
