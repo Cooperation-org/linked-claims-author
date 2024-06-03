@@ -79,7 +79,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         <Typography sx={commonTypographyStyles}>{formData.description}</Typography>
         <Box sx={commonTypographyStyles}>
           <span style={{ display: 'block' }}>Earning criteria:</span>
-          {formData.credentialDescription}
+          {formData.credentialDescription.replace(/<[^>]+>/g, '')}
         </Box>
         <Box sx={commonTypographyStyles}>
           Evidence:
