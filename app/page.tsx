@@ -143,11 +143,11 @@ const Page = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
-                textTransform: 'lowercase',
                 border: 'none',
                 cursor: 'pointer',
+                textTransform: 'none',
                 '&:hover': {
-                  backgroundColor: theme.palette.t3BackgroundDarkBlue
+                  backgroundColor: theme.palette.t3ButtonBlue
                 }
               }}
             >

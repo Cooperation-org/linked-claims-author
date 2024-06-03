@@ -137,7 +137,9 @@ const Form = () => {
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
       {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
-      {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && <NoteText />}
+      {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && activeStep !== 4 && (
+        <NoteText />
+      )}
       {activeStep === 7 && <SuccessText />}
       <Box sx={{ width: { xs: '100%', md: '55%' } }}>
         <FormControl sx={{ width: '100%' }}>
@@ -176,6 +178,7 @@ const Form = () => {
               append={append}
               handleNext={handleNext}
               errors={errors}
+              remove={remove}
             />
           )}
           {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}

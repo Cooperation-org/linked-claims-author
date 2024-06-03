@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Radio,
   RadioGroup,
@@ -28,6 +28,7 @@ interface Step1Props {
 }
 
 export function Step1({ register, watch, setValue, errors }: Readonly<Step1Props>) {
+  const [inputNamevalue, setNameInputvalue] = useState('Full Name or Business Name')
   return (
     <>
       <FormLabel sx={formLabelStyles} id='form-type-label'>
@@ -38,7 +39,10 @@ export function Step1({ register, watch, setValue, errors }: Readonly<Step1Props
         aria-labelledby='form-type-label'
         name='controlled-radio-buttons-group'
         value={watch('persons')}
-        onChange={e => setValue('persons', e.target.value)}
+        onChange={e => {
+          setValue('persons', e.target.value)
+          setNameInputvalue(e.target.value)
+        }}
       >
         <FormControlLabel
           sx={{
@@ -67,7 +71,12 @@ export function Step1({ register, watch, setValue, errors }: Readonly<Step1Props
       </RadioGroup>
       <Box sx={{ mt: '20px' }}>
         <FormLabel sx={formLabelStyles} id='name-label'>
-          Full Name or Business Name <span style={{ color: 'red' }}>*</span>
+          {inputNamevalue === 'Individual'
+            ? 'Full Name'
+            : inputNamevalue === 'Business'
+            ? 'Business Name'
+            : inputNamevalue}{' '}
+          <span style={{ color: 'red' }}>*</span>
         </FormLabel>
         <TextField
           {...register('fullName', {

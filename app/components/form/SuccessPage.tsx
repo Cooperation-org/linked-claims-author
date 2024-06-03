@@ -35,9 +35,6 @@ export function SuccessPage({ setActiveStep }: Readonly<SuccessPageProps>) {
       <Box sx={successPageBoxStyles}>
         <Image style={successPageImageStyles} src={image} alt='logo' />
         <Box sx={{ width: '100%' }}>
-          <Box sx={successPageInnerBoxStyles}>
-            <SVGGroup />
-          </Box>
           <Typography sx={successPageTypographyStyles}>Basic Barista Training</Typography>
           <Box sx={successPageInfoBoxStyles}>
             <Box sx={successPageIconContainerStyles}>

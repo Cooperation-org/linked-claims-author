@@ -39,7 +39,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         sx={{
           display: 'flex',
           flexDirection: isLargeScreen ? 'row' : 'column',
-          gap: isLargeScreen ? '20px' : '10px'
+          gap: isLargeScreen ? '20px' : '10px',
+          mb:'10px'
         }}
       >
         <Box sx={imageBoxStyles}>
@@ -74,20 +75,22 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           </Box>
         </Box>
       </Box>
-      <Typography sx={commonTypographyStyles}>{formData.description}</Typography>
-      <Box sx={commonTypographyStyles}>
-        <span style={{ display: 'block' }}>Earning criteria:</span>
-        {formData.credentialDescription}
-      </Box>
-      <Box sx={commonTypographyStyles}>
-        Evidence:
-        <ul style={evidenceListStyles}>
-          {formData?.portfolio?.map(porto => (
-            <li key={porto.url} onClick={() => handleNavigate(porto.url)}>
-              {porto.name}
-            </li>
-          ))}
-        </ul>
+      <Box sx={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+        <Typography sx={commonTypographyStyles}>{formData.description}</Typography>
+        <Box sx={commonTypographyStyles}>
+          <span style={{ display: 'block' }}>Earning criteria:</span>
+          {formData.credentialDescription}
+        </Box>
+        <Box sx={commonTypographyStyles}>
+          Evidence:
+          <ul style={evidenceListStyles}>
+            {formData?.portfolio?.map(porto => (
+              <li key={porto.url} onClick={() => handleNavigate(porto.url)}>
+                {porto.name}
+              </li>
+            ))}
+          </ul>
+        </Box>
       </Box>
     </Box>
   )
