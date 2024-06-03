@@ -124,7 +124,7 @@ export const commonBoxStyles = {
 export const evidenceListStyles = {
   marginLeft: '25px',
   textDecorationLine: 'underline',
-  color: 't3ButtonBlue'
+  color:'blue'
 }
 
 export const credentialBoxStyles = {
@@ -133,7 +133,8 @@ export const credentialBoxStyles = {
   gap: '2px',
   padding: '2px 5px',
   borderRadius: '5px',
-  width: '80px'
+  width: '80px',
+  mb:'10px'
 }
 
 export const imageBoxStyles = {
