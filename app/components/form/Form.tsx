@@ -15,7 +15,7 @@ import { Step3 } from './Step3'
 import { Step4 } from './Step4'
 import { Step5 } from './Step5'
 import DataComponent from './dataPreview'
-import { SuccessPage } from './SuccessPage'
+import SuccessPage from './SuccessPage'
 
 const Form = () => {
   const [activeStep, setActiveStep] = useState(0)
@@ -84,13 +84,8 @@ const Form = () => {
     handleStepChange(activeStep + 1)
   }
 
-  const handlePreview = () => {
-    handleStepChange(activeStep + 1)
-  }
-
   const handleSign = () => {
     handleStepChange(activeStep + 1)
-    reset()
   }
 
   const handleBack = () => {
@@ -181,7 +176,9 @@ const Form = () => {
           )}
           {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}
           {activeStep === 6 && <DataComponent formData={watch()} />}
-          {activeStep === 7 && <SuccessPage setActiveStep={setActiveStep} />}
+          {activeStep === 7 && (
+            <SuccessPage formData={watch()} setActiveStep={setActiveStep} reset={reset}/>
+          )}
         </FormControl>
       </Box>
       {activeStep !== 7 && (
@@ -189,7 +186,6 @@ const Form = () => {
           activeStep={activeStep}
           maxSteps={maxSteps}
           handleNext={handleNext}
-          handlePreview={handlePreview}
           handleSign={handleSign}
           handleBack={handleBack}
           isValid={isValid}

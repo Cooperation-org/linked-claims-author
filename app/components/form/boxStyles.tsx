@@ -285,7 +285,8 @@ export const successPageShareStyles = {
   display: 'flex',
   alignItems: 'center',
   gap: '9px',
-  padding: '10px 21px'
+  padding: '10px 21px',
+  bgcolor: '#FBFBFB'
 }
 
 export const successPageShareTextStyles = {
@@ -311,7 +312,8 @@ export const successPageCopyLinkStyles = {
   display: 'flex',
   alignItems: 'center',
   gap: '6px',
-  padding: '15px 21px'
+  padding: '15px 21px',
+  bgcolor: '#FBFBFB'
 }
 
 export const successPageCopyLinkTextStyles = {
@@ -329,7 +331,8 @@ export const successPageTextFieldStyles = {
     fontSize: '15px',
     letterSpacing: '0.075px',
     fontFamily: 'Inter, sans-serif',
-    textAlign: 'center'
+    textAlign: 'center',
+    bgcolor: '#FFFFFF'
   }
 }
 

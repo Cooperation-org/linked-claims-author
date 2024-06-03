@@ -32,22 +32,28 @@ import {
   successPageTextFieldStyles,
   successPageButtonStyles
 } from './boxStyles'
+import { FormData } from './Types'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
+  formData: FormData
+  reset: () => void
 }
 
-export function SuccessPage({ setActiveStep }: Readonly<SuccessPageProps>) {
+const SuccessPage: React.FC<SuccessPageProps> = ({ setActiveStep, formData, reset }) => {
+  console.log(':  SuccessPage  formData', formData)
   return (
     <>
       <Box sx={successPageContainerStyles}>
         <Box sx={successPageHeaderStyles}>
           <Image style={{ width: '69px', height: '69px' }} src={image} alt='logo' />
           <Box sx={{ flex: 1 }}>
-            <Typography sx={successPageTitleStyles}>Basic Barista Training</Typography>
+            <Typography sx={successPageTitleStyles}>{formData.credentialName}</Typography>
             <Box sx={successPageInfoStyles}>
               <SVGDate />
-              <Typography sx={successPageDateStyles}>2 days</Typography>
+              <Typography sx={successPageDateStyles}>
+                {formData.credentialDuration}
+              </Typography>
             </Box>
           </Box>
         </Box>
@@ -86,7 +92,10 @@ export function SuccessPage({ setActiveStep }: Readonly<SuccessPageProps>) {
       </Box>
       <Button
         variant='contained'
-        onClick={() => setActiveStep(0)}
+        onClick={() => {
+          setActiveStep(0)
+          reset()
+        }}
         sx={successPageButtonStyles}
       >
         Add Another
@@ -94,3 +103,5 @@ export function SuccessPage({ setActiveStep }: Readonly<SuccessPageProps>) {
     </>
   )
 }
+
+export default SuccessPage
