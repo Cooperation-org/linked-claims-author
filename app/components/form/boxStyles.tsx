@@ -323,7 +323,8 @@ export const successPageShareTextStyles = {
   fontWeight: 600,
   fontFamily: 'Inter, sans-serif',
   fontSize: '15px',
-  letterSpacing: '0.075px'
+  letterSpacing: '0.075px',
+  mr:'5px'
 }
 
 export const successPageIconContainerStyles = {
@@ -350,7 +351,8 @@ export const successPageCopyLinkTextStyles = {
   fontWeight: 600,
   fontFamily: 'Inter, sans-serif',
   fontSize: '15px',
-  letterSpacing: '0.075px'
+  letterSpacing: '0.075px',
+  mr:'10px'
 }
 
 export const successPageTextFieldStyles = {
