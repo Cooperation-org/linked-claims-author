@@ -127,7 +127,7 @@ const Form = ({ onStepChange }: any) => {
         marginTop: '30px',
         padding: '0 15px 30px'
       }}
-      onSubmit={handleFormSubmit}
+      onSubmit={handleFormSubmit }
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
       {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
