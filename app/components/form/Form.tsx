@@ -17,7 +17,7 @@ import { Step5 } from './Step5'
 import DataComponent from './dataPreview'
 import SuccessPage from './SuccessPage'
 
-const Form = () => {
+const Form = ({ onStepChange }: any) => {
   const [activeStep, setActiveStep] = useState(0)
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
@@ -74,6 +74,10 @@ const Form = () => {
     window.location.hash = `step-0`
   }, [])
 
+  useEffect(() => {
+    onStepChange()
+  }, [activeStep, onStepChange])
+
   const handleStepChange = (step: number) => {
     setActiveStep(step)
     window.location.hash = `step-${step}`
@@ -124,7 +128,7 @@ const Form = () => {
         padding: '0 15px 30px',
         overflow: 'auto' 
       }}
-      onSubmit={handleFormSubmit}
+      onSubmit={handleFormSubmit }
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
       {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
@@ -175,7 +179,7 @@ const Form = () => {
           {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}
           {activeStep === 6 && <DataComponent formData={watch()} />}
           {activeStep === 7 && (
-            <SuccessPage formData={watch()} setActiveStep={setActiveStep} reset={reset}/>
+            <SuccessPage formData={watch()} setActiveStep={setActiveStep} reset={reset} />
           )}
         </FormControl>
       </Box>

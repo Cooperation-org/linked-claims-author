@@ -1,24 +1,32 @@
 'use client'
 import { useTheme } from '@mui/material/styles'
-import React from 'react'
-import dynamic from 'next/dynamic'
+import React, { useCallback, useRef } from 'react'
 import Image from 'next/image'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
 import fram from '../Assets/Frame 35278.png'
 import vector from '../Assets/Vector 145.png'
 import img3 from '../Assets/Tessa Persona large sceens.png'
 import { SVGLargeScreen } from '../Assets/SVGs'
+import dynamic from 'next/dynamic'
 
 const FormComponent = () => {
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
+  const formRef = useRef<HTMLDivElement>(null)
 
   const DynamicComponentWithNoSSR = dynamic(() => import('../components/form/Form'), {
     ssr: false
   })
 
+  const handleScrollToTop = useCallback(() => {
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [formRef])
+
   return (
-    <Box
+    <Box 
+      ref={formRef}
       sx={{
         minHeight: 'calc(100vh - 153px)',
         display: !isLargeScreen ? 'flex' : 'block',
@@ -56,7 +64,7 @@ const FormComponent = () => {
           </Box>
         </Box>
       </Box>
-      <DynamicComponentWithNoSSR />
+      <DynamicComponentWithNoSSR onStepChange={handleScrollToTop} />
       {!isLargeScreen && (
         <Box
           sx={{

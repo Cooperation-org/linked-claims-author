@@ -74,7 +74,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ setActiveStep, formData, rese
           <Typography sx={successPageCopyLinkTextStyles}>Copy link:</Typography>
           <TextField
             sx={successPageTextFieldStyles}
-            value='https://www.linkedclaims.com/file/f0g7iKqcLqxEscHmeZgDmp/Linked-Credentials?type=design&node-id=1-3&mode=design&t=2dmf296EWsNQ7ZFL-0'
+            value='www.linkedclaims.com/file/f0g7iKqcLqxEscHmeZgDmp/Linked-Credentials?type=design&node-id=1-3&mode=design&t=2dmf296EWsNQ7ZFL-0'
             InputProps={{
               startAdornment: <InputAdornment position='start'>http://</InputAdornment>,
               endAdornment: (
