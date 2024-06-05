@@ -52,11 +52,38 @@ const Form = ({ onStepChange }: any) => {
     name: 'portfolio'
   })
 
+  const validateCurrentStep = () => {
+    switch (activeStep) {
+      case 1:
+        return watch('fullName') && watch('persons')
+      case 2:
+        return (
+          watch('credentialName') &&
+          watch('credentialDuration') &&
+          watch('credentialDescription')
+        )
+      case 3:
+        return watch('description') && watch('imageLink')
+      case 4:
+        return fields.every(field => field.name && field.url)
+      default:
+        return true
+    }
+  }
+
   useEffect(() => {
     const handleHashChange = () => {
       const stepFromHash = parseInt(window.location.hash.replace('#step-', ''), 10)
       if (!isNaN(stepFromHash) && stepFromHash >= 0 && stepFromHash < maxSteps) {
-        setActiveStep(stepFromHash)
+        if (validateCurrentStep()) {
+          if (stepFromHash === activeStep + 1) {
+            setActiveStep(stepFromHash)
+          } else {
+            window.location.hash = `step-${activeStep}`
+          }
+        } else {
+          window.location.hash = `step-${activeStep}`
+        }
       }
     }
 
@@ -67,7 +94,7 @@ const Form = ({ onStepChange }: any) => {
     return () => {
       window.removeEventListener('hashchange', handleHashChange)
     }
-  }, [maxSteps])
+  }, [activeStep, maxSteps])
 
   useEffect(() => {
     setActiveStep(0)
@@ -79,8 +106,12 @@ const Form = ({ onStepChange }: any) => {
   }, [activeStep, onStepChange])
 
   const handleStepChange = (step: number) => {
-    setActiveStep(step)
-    window.location.hash = `step-${step}`
+    if (validateCurrentStep()) {
+      if (step === activeStep + 1) {
+        setActiveStep(step)
+        window.location.hash = `step-${step}`
+      }
+    }
   }
 
   const handleNext = () => {
@@ -92,7 +123,8 @@ const Form = ({ onStepChange }: any) => {
   }
 
   const handleBack = () => {
-    handleStepChange(activeStep - 1)
+    setActiveStep(activeStep - 1)
+    window.location.hash = `step-${activeStep - 1}`
   }
 
   const handleTextEditorChange = (value: string | undefined) => {
@@ -126,9 +158,9 @@ const Form = ({ onStepChange }: any) => {
         alignItems: 'center',
         marginTop: '30px',
         padding: '0 15px 30px',
-        overflow: 'auto' 
+        overflow: 'auto'
       }}
-      onSubmit={handleFormSubmit }
+      onSubmit={handleFormSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
       {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
