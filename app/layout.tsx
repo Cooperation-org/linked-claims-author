@@ -23,7 +23,6 @@ export default function RootLayout({
             flexDirection: 'column',
             minHeight: '100vh',
             margin: 0,
-            maxHeight: '100vh'
           }}
         >
           <NavBar />

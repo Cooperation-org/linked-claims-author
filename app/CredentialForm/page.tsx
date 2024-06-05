@@ -23,7 +23,8 @@ const FormComponent = () => {
         minHeight: 'calc(100vh - 153px)',
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        overflow: 'auto' 
       }}
     >
       <Box
