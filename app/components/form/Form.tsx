@@ -76,7 +76,7 @@ const Form = ({ onStepChange }: any) => {
 
   useEffect(() => {
     onStepChange()
-  }, [activeStep])
+  }, [activeStep, onStepChange])
 
   const handleStepChange = (step: number) => {
     setActiveStep(step)

@@ -1,6 +1,6 @@
 'use client'
 import { useTheme } from '@mui/material/styles'
-import React, { useRef } from 'react'
+import React, { useCallback, useRef } from 'react'
 import Image from 'next/image'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
 import fram from '../Assets/Frame 35278.png'
@@ -14,14 +14,15 @@ const FormComponent = () => {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const formRef = useRef<HTMLDivElement>(null)
 
-  const handleScrollToTop = () => {
+  const handleScrollToTop = useCallback(() => {
     if (formRef.current) {
       formRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }
+  }, [formRef])
 
   return (
-    <Box
+    <Box 
+      ref={formRef}
       sx={{
         minHeight: 'calc(100vh - 153px)',
         display: !isLargeScreen ? 'flex' : 'block',
