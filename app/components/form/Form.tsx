@@ -19,7 +19,6 @@ import SuccessPage from './SuccessPage'
 
 const Form = () => {
   const [activeStep, setActiveStep] = useState(0)
-  const [inputValue, setInputValue] = useState('')
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const characterLimit = 294
@@ -90,10 +89,6 @@ const Form = () => {
 
   const handleBack = () => {
     handleStepChange(activeStep - 1)
-  }
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value)
   }
 
   const handleTextEditorChange = (value: string | undefined) => {
