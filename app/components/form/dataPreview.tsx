@@ -55,7 +55,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
             sx={{
               ...commonTypographyStyles,
               fontSize: '24px',
-              fontWeight: 700
+              fontWeight: 700,
+              fontFamily: 'Inter',
             }}
           >
             {formData.credentialName}

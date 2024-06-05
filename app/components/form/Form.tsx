@@ -64,8 +64,6 @@ const Form = ({ onStepChange }: any) => {
         )
       case 3:
         return watch('description')
-      case 4:
-        return fields.every(field => field.name && field.url)
       default:
         return true
     }
