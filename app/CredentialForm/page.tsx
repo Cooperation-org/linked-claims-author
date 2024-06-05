@@ -21,6 +21,9 @@ const FormComponent = () => {
   const handleScrollToTop = useCallback(() => {
     if (formRef.current) {
       formRef.current.scrollIntoView({ behavior: 'smooth' })
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth' })
+      })
     }
   }, [formRef])
 
