@@ -129,7 +129,7 @@ export const credentialBoxStyles = {
   gap: '2px',
   padding: '2px 5px',
   borderRadius: '5px',
-  width: '80px',
+  width: 'fit-content',
   mb:'10px'
 }
 
@@ -310,7 +310,7 @@ export const successPageShareStyles = {
   width: '100%',
   display: 'flex',
   alignItems: 'center',
-  gap: '9px',
+  gap: '5px',
   padding: '10px 21px',
   bgcolor: '#FBFBFB'
 }
