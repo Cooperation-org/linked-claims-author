@@ -23,19 +23,19 @@ const FormComponent = () => {
       formRef.current.scrollIntoView({ behavior: 'smooth' })
       setTimeout(() => {
         formRef.current?.scrollIntoView({ behavior: 'smooth' })
-      })
+      }, 10)
     }
   }, [formRef])
 
   return (
-    <Box 
+    <Box
       ref={formRef}
       sx={{
         minHeight: 'calc(100vh - 153px)',
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        overflow: 'auto' 
+        overflow: 'auto'
       }}
     >
       <Box

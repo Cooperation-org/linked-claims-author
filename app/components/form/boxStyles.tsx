@@ -104,9 +104,9 @@ export const UseAIStyles = {
 
 export const commonTypographyStyles = {
   color: 't3BodyText',
-  fontFamily: 'Inter',
   fontSize: '15px',
-  fontWeight: 400
+  fontWeight: 400,
+  fontStyle:'normal'
 }
 
 export const commonBoxStyles = {

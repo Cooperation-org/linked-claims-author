@@ -40,7 +40,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           display: 'flex',
           flexDirection: isLargeScreen ? 'row' : 'column',
           gap: isLargeScreen ? '20px' : '10px',
-          mb:'10px'
+          mb: '10px'
         }}
       >
         <Box sx={imageBoxStyles}>
@@ -54,8 +54,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           <Typography
             sx={{
               ...commonTypographyStyles,
-              fontSize: '18px',
-              fontWeight: 800
+              fontSize: '24px',
+              fontWeight: 700
             }}
           >
             {formData.credentialName}
@@ -75,7 +75,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           </Box>
         </Box>
       </Box>
-      <Box sx={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <Typography sx={commonTypographyStyles}>{formData.description}</Typography>
         <Box sx={commonTypographyStyles}>
           <span style={{ display: 'block' }}>Earning criteria:</span>
@@ -85,7 +85,11 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           Evidence:
           <ul style={evidenceListStyles}>
             {formData?.portfolio?.map(porto => (
-              <li key={porto.url} onClick={() => handleNavigate(porto.url)}>
+              <li
+                style={{ cursor: 'pointer', width: 'fit-content' }}
+                key={porto.url}
+                onClick={() => handleNavigate(porto.url)}
+              >
                 {porto.name}
               </li>
             ))}
