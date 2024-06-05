@@ -17,9 +17,8 @@ import { Step5 } from './Step5'
 import DataComponent from './dataPreview'
 import SuccessPage from './SuccessPage'
 
-const Form = () => {
+const Form = ({ onStepChange }: any) => {
   const [activeStep, setActiveStep] = useState(0)
-  const [inputValue, setInputValue] = useState('')
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const characterLimit = 294
@@ -75,6 +74,10 @@ const Form = () => {
     window.location.hash = `step-0`
   }, [])
 
+  useEffect(() => {
+    onStepChange()
+  }, [activeStep])
+
   const handleStepChange = (step: number) => {
     setActiveStep(step)
     window.location.hash = `step-${step}`
@@ -90,10 +93,6 @@ const Form = () => {
 
   const handleBack = () => {
     handleStepChange(activeStep - 1)
-  }
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value)
   }
 
   const handleTextEditorChange = (value: string | undefined) => {
@@ -179,7 +178,7 @@ const Form = () => {
           {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}
           {activeStep === 6 && <DataComponent formData={watch()} />}
           {activeStep === 7 && (
-            <SuccessPage formData={watch()} setActiveStep={setActiveStep} reset={reset}/>
+            <SuccessPage formData={watch()} setActiveStep={setActiveStep} reset={reset} />
           )}
         </FormControl>
       </Box>
