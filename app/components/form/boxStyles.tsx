@@ -25,9 +25,6 @@ export const nextButtonStyle = {
   lineHeight: '20px',
   backgroundColor: '#003FE0',
   color: '#FFFFFF',
-  '&:hover': {
-    backgroundColor: '#003FE0'
-  }
 }
 
 export const CustomTextField = styled(TextField)({
@@ -79,7 +76,6 @@ export const inputPropsStyles = {
   color: 'black',
   fontSize: '15px',
   fontStyle: 'italic',
-  fontWeight: 600,
   letterSpacing: '0.075px'
 }
 
@@ -179,7 +175,6 @@ export const textFieldInputProps = {
     color: 't3Black',
     fontSize: '15px',
     fontStyle: 'italic',
-    fontWeight: 600,
     letterSpacing: '0.075px'
   }
 }
