@@ -7,12 +7,16 @@ import fram from '../Assets/Frame 35278.png'
 import vector from '../Assets/Vector 145.png'
 import img3 from '../Assets/Tessa Persona large sceens.png'
 import { SVGLargeScreen } from '../Assets/SVGs'
-import Form from '../components/form/Form'
+import dynamic from 'next/dynamic'
 
 const FormComponent = () => {
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const formRef = useRef<HTMLDivElement>(null)
+
+  const DynamicComponentWithNoSSR = dynamic(() => import('../components/form/Form'), {
+    ssr: false
+  })
 
   const handleScrollToTop = useCallback(() => {
     if (formRef.current) {
@@ -27,7 +31,8 @@ const FormComponent = () => {
         minHeight: 'calc(100vh - 153px)',
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        overflow: 'auto' 
       }}
     >
       <Box
@@ -59,7 +64,7 @@ const FormComponent = () => {
           </Box>
         </Box>
       </Box>
-      <Form onStepChange={handleScrollToTop} />
+      <DynamicComponentWithNoSSR onStepChange={handleScrollToTop} />
       {!isLargeScreen && (
         <Box
           sx={{

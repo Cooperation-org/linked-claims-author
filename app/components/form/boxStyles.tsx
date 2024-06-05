@@ -25,9 +25,6 @@ export const nextButtonStyle = {
   lineHeight: '20px',
   backgroundColor: '#003FE0',
   color: '#FFFFFF',
-  '&:hover': {
-    backgroundColor: '#003FE0'
-  }
 }
 
 export const CustomTextField = styled(TextField)({

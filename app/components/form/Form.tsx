@@ -125,7 +125,8 @@ const Form = ({ onStepChange }: any) => {
         gap: '30px',
         alignItems: 'center',
         marginTop: '30px',
-        padding: '0 15px 30px'
+        padding: '0 15px 30px',
+        overflow: 'auto' 
       }}
       onSubmit={handleFormSubmit }
     >
