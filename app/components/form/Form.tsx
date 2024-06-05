@@ -55,7 +55,7 @@ const Form = ({ onStepChange }: any) => {
   const validateCurrentStep = () => {
     switch (activeStep) {
       case 1:
-        return watch('fullName') && watch('persons')
+        return watch('fullName') 
       case 2:
         return (
           watch('credentialName') &&
@@ -63,7 +63,7 @@ const Form = ({ onStepChange }: any) => {
           watch('credentialDescription')
         )
       case 3:
-        return watch('description') && watch('imageLink')
+        return watch('description')
       case 4:
         return fields.every(field => field.name && field.url)
       default:
