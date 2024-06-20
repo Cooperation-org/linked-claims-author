@@ -16,6 +16,8 @@ import { Step4 } from './Step4'
 import { Step5 } from './Step5'
 import DataComponent from './dataPreview'
 import SuccessPage from './SuccessPage'
+import { useSession } from 'next-auth/react'
+import { GoogleDriveStorage } from 'trust_storage'
 
 const Form = ({ onStepChange }: any) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -23,6 +25,8 @@ const Form = ({ onStepChange }: any) => {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const characterLimit = 294
   const maxSteps = textGuid.length
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken as string
 
   const {
     register,
@@ -100,9 +104,14 @@ const Form = ({ onStepChange }: any) => {
   }
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    console.log(data)
+    if (data.storageOption === "Google Drive") {
+      createFolderAndUploadFile(data);
+    } else {
+      localStorage.setItem("personalCredential", JSON.stringify(data));
+    }
+
+    reset();
     setActiveStep(0)
-    reset()
 
     const codeToCopy = JSON.stringify(data, null, 2)
 
@@ -117,6 +126,26 @@ const Form = ({ onStepChange }: any) => {
       })
   })
 
+  async function createFolderAndUploadFile(data: FormData) {
+    try {
+      const storage = new GoogleDriveStorage(accessToken)
+      const folderName = 'USER_UNIQUE_KEY'
+      const folderId = await storage.createFolder(folderName)
+
+      const fileData = {
+        fileName: 'test.json',
+        mimeType: 'application/json',
+        body: new Blob([JSON.stringify(data)], {
+          type: 'application/json'
+        })
+      }
+      const fileId = await storage.save(fileData, folderId)
+      console.log('File uploaded successfully with ID:', fileId)
+    } catch (error) {
+      console.error('Error:', error)
+    }
+  }
+
   return (
     <form
       style={{
@@ -126,9 +155,9 @@ const Form = ({ onStepChange }: any) => {
         alignItems: 'center',
         marginTop: '30px',
         padding: '0 15px 30px',
-        overflow: 'auto' 
+        overflow: 'auto'
       }}
-      onSubmit={handleFormSubmit }
+      onSubmit={handleFormSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
       {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
