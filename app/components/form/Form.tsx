@@ -26,7 +26,7 @@ const Form = ({ onStepChange }: any) => {
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { data: session } = useSession()
-  const accessToken = session?.accessToken
+  const accessToken = session?.accessToken as string
 
   const {
     register,
