@@ -1,7 +1,13 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Box, Button, Typography } from "@mui/material";
+import { DefaultSession } from "next-auth";
+
+// Extend the Session type to include accessToken
+interface ExtendedSession extends DefaultSession {
+  accessToken?: string;
+}
 
 const buttonStyle = {
   padding: "10px 20px",
@@ -20,6 +26,15 @@ const buttonStyle = {
 
 const SigninButton = () => {
   const { data: session } = useSession();
+
+  useEffect(() => {
+    const extendedSession = session as ExtendedSession;
+    if (extendedSession?.accessToken) {
+      localStorage.setItem('accessToken', extendedSession.accessToken);
+    } else {
+      localStorage.removeItem('accessToken');
+    }
+  }, [session]);
 
   if (session && session.user) {
     return (
