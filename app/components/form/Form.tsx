@@ -16,6 +16,8 @@ import { Step4 } from './Step4'
 import { Step5 } from './Step5'
 import DataComponent from './dataPreview'
 import SuccessPage from './SuccessPage'
+import { useSession } from 'next-auth/react'
+import { GoogleDriveStorage } from 'trust_storage'
 
 const Form = ({ onStepChange }: any) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -23,6 +25,8 @@ const Form = ({ onStepChange }: any) => {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const characterLimit = 294
   const maxSteps = textGuid.length
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
 
   const {
     register,
@@ -109,7 +113,6 @@ const Form = ({ onStepChange }: any) => {
     reset();
     setActiveStep(0)
 
-
     const codeToCopy = JSON.stringify(data, null, 2)
 
     navigator.clipboard
@@ -125,23 +128,21 @@ const Form = ({ onStepChange }: any) => {
 
   async function createFolderAndUploadFile(data: FormData) {
     try {
-      const storage = new GoogleDriveStorage(
-        "ya29.a0AXooCgtr98BzDdaKVCEjt_iKv1qYXN1K82qkUDdBe5Gbk4Dt7UuiXDAhRUJhdYYsDBoYqLqLONWWPcG6SC9JUOIVodhxazXgMeHR5oZaVMeitHZK6FwhPoWOmkC8X0UOfw3thCGaOIVAivkc7RT159cPRvUvNjfAhQ72aCgYKAYUSARASFQHGX2Mial7SSpMkWhSj0iF-_-1taA0171"
-      );
-      const folderName = "USER_UN(IQUE_KEY";
-      const folderId = await storage.createFolder(folderName);
+      const storage = new GoogleDriveStorage(accessToken)
+      const folderName = 'USER_UNIQUE_KEY'
+      const folderId = await storage.createFolder(folderName)
 
       const fileData = {
-        fileName: "test.json",
-        mimeType: "application/json",
+        fileName: 'test.json',
+        mimeType: 'application/json',
         body: new Blob([JSON.stringify(data)], {
-          type: "application/json",
-        }),
-      };
-      const fileId = await storage.save(fileData, folderId);
-      console.log("File uploaded successfully with ID:", fileId);
+          type: 'application/json'
+        })
+      }
+      const fileId = await storage.save(fileData, folderId)
+      console.log('File uploaded successfully with ID:', fileId)
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error)
     }
   }
 
@@ -154,9 +155,9 @@ const Form = ({ onStepChange }: any) => {
         alignItems: 'center',
         marginTop: '30px',
         padding: '0 15px 30px',
-        overflow: 'auto' 
+        overflow: 'auto'
       }}
-      onSubmit={handleFormSubmit }
+      onSubmit={handleFormSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
       {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}

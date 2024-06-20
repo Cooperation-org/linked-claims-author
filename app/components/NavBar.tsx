@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import Link from 'next/link'
+import SigninButton from "./SigninButton";
 
 const NavBar = () => {
   const theme = useTheme()
@@ -106,6 +107,7 @@ const NavBar = () => {
           />
         </svg>
       </Box>
+        <SigninButton/>
     </Box>
   )
 }

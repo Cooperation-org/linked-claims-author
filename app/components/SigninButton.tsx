@@ -4,7 +4,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Box, Button, Typography } from "@mui/material";
 import { DefaultSession } from "next-auth";
 
-// Extend the Session type to include accessToken
 interface ExtendedSession extends DefaultSession {
   accessToken?: string;
 }
@@ -26,6 +25,7 @@ const buttonStyle = {
 
 const SigninButton = () => {
   const { data: session } = useSession();
+  console.log(":  SigninButton  data", session)
 
   useEffect(() => {
     const extendedSession = session as ExtendedSession;
