@@ -49,7 +49,7 @@ const SigninButton = () => {
   }
   return (
     <Button sx={{ ...buttonStyle, mt: '20px' }} onClick={() => signIn()}>
-      Sign In 
+      Sign In
     </Button>
   )
 }
