@@ -27,7 +27,7 @@ const Form = ({ onStepChange }: any) => {
   const maxSteps = textGuid.length
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
- 
+  
   const {
     register,
     handleSubmit,
