@@ -1,10 +1,8 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, useMediaQuery, Theme } from '@mui/material'
-import { FormData } from './Types'
+import { FormData, credential } from './Types'
 import { textGuid, NoteText, SuccessText, FormTextSteps } from './FormTextSteps'
 import { StepTrackShape } from './StepTrackShape'
 import { Step0 } from './Step0'
@@ -18,16 +16,18 @@ import DataComponent from './dataPreview'
 import SuccessPage from './SuccessPage'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from 'trust_storage'
+import * as jose from 'node-jose'
 
 const Form = ({ onStepChange }: any) => {
   const [activeStep, setActiveStep] = useState(0)
+  const [link, setLink] = useState<string>('')
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
-  
+
   const {
     register,
     handleSubmit,
@@ -93,6 +93,7 @@ const Form = ({ onStepChange }: any) => {
 
   const handleSign = () => {
     handleStepChange(activeStep + 1)
+    handleFormSubmit()
   }
 
   const handleBack = () => {
@@ -103,47 +104,126 @@ const Form = ({ onStepChange }: any) => {
     setValue('credentialDescription', value ?? '')
   }
 
-  const handleFormSubmit = handleSubmit((data: FormData) => {
-    if (data.storageOption === "Google Drive") {
-      createFolderAndUploadFile(data);
-    } else {
-      localStorage.setItem("personalCredential", JSON.stringify(data));
-    }
+  async function generateKeyPair() {
+    const keyStore = jose.JWK.createKeyStore()
+    const key = await keyStore.generate('RSA', 2048, { alg: 'RS256', use: 'sig' })
+    const publicKey = key.toJSON()
+    const privateKey = key.toJSON(true)
 
-    reset();
-    setActiveStep(0)
+    console.log('Public Key:', publicKey)
+    console.log('Private Key:', privateKey)
 
-    const codeToCopy = JSON.stringify(data, null, 2)
+    return key
+  }
 
-    navigator.clipboard
-      .writeText(codeToCopy)
-      .then(() => {
-        console.log('Form values copied to clipboard')
-        reset()
-      })
-      .catch(err => {
-        console.error('Unable to copy form values to clipboard: ', err)
-      })
-  })
+  async function signCredential(credential: credential) {
+    const key = await generateKeyPair()
+    const input = JSON.stringify(credential)
+    const signed = await jose.JWS.createSign({ format: 'compact' }, key)
+      .update(input, 'utf8')
+      .final()
 
-  async function createFolderAndUploadFile(data: FormData) {
+    console.log('Signed JWT:', signed)
+    return { signed, key }
+  }
+
+  async function createFolderAndUploadFile(data: FormData, accessToken: string) {
+    const credential = createCredential(data)
+    const { signed, key } = await signCredential(credential)
+    const fileName = data.fullName.toLowerCase().replace(/\s+/g, '') + '.json'
+
     try {
       const storage = new GoogleDriveStorage(accessToken)
       const folderName = 'USER_UNIQUE_KEY'
       const folderId = await storage.createFolder(folderName)
 
       const fileData = {
-        fileName: 'test.json',
+        fileName: fileName,
         mimeType: 'application/json',
-        body: new Blob([JSON.stringify(data)], {
-          type: 'application/json'
-        })
+        body: new Blob([signed.toString()], { type: 'application/json' })
       }
       const fileId = await storage.save(fileData, folderId)
-      console.log('File uploaded successfully with ID:', fileId)
+
+      const fileLink = `https://drive.google.com/file/d/${fileId}/view?usp=sharing`
+      setLink(fileLink)
+      console.log('File uploaded successfully with link:', fileLink)
+
+      return fileLink
     } catch (error) {
       console.error('Error:', error)
     }
+  }
+
+  function createCredential(data: FormData) {
+    return {
+      '@context': 'https://w3id.org/openbadges/v3',
+      id:
+        'https://example.org/assertions/' +
+        data.fullName.toLowerCase().replace(/\s+/g, ''),
+      type: 'Assertion',
+      recipient: {
+        type: 'email',
+        hashed: true,
+        salt: 'unique-salt',
+        identity:
+          'sha256$hashed-email-address-for-' +
+          data.fullName.toLowerCase().replace(/\s+/g, '')
+      },
+      badge:
+        'https://example.org/badges/' +
+        data.credentialName.toLowerCase().replace(/\s+/g, ''),
+      issuedOn: new Date().toISOString(),
+      verification: {
+        type: 'hosted'
+      },
+      badgeClass: {
+        '@context': 'https://w3id.org/openbadges/v3',
+        id:
+          'https://example.org/badges/' +
+          data.credentialName.toLowerCase().replace(/\s+/g, ''),
+        type: 'BadgeClass',
+        name: data.credentialName,
+        description: data.description,
+        image: data.imageLink,
+        criteria: {
+          narrative: data.description
+        },
+        issuer: {
+          id: 'https://example.org/issuers/' + data.persons.toLowerCase(),
+          type: 'Issuer',
+          name: data.persons,
+          url: 'https://example.org'
+        }
+      },
+      issuer: {
+        '@context': 'https://w3id.org/openbadges/v3',
+        id: 'https://example.org/issuers/' + data.persons.toLowerCase(),
+        type: 'Issuer',
+        name: data.persons,
+        url: 'https://example.org'
+      }
+    }
+  }
+
+  const handleFormSubmit = handleSubmit(async data => {
+    let fileLink
+
+    if (data.storageOption === 'Google Drive') {
+      fileLink = await createFolderAndUploadFile(data, accessToken)
+      console.log('Credential link:', fileLink)
+    } else {
+      localStorage.setItem('personalCredential', JSON.stringify(data))
+    }
+
+    const credential = createCredential(data)
+    const codeToCopy = JSON.stringify(credential, null, 2)
+  })
+
+  const onSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault()
+    await handleFormSubmit()
+    reset()
+    setActiveStep(0)
   }
 
   return (
@@ -157,7 +237,7 @@ const Form = ({ onStepChange }: any) => {
         padding: '0 15px 30px',
         overflow: 'auto'
       }}
-      onSubmit={handleFormSubmit}
+      onSubmit={onSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
       {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
@@ -178,7 +258,6 @@ const Form = ({ onStepChange }: any) => {
               errors={errors}
             />
           )}
-
           {activeStep === 2 && (
             <Step2
               register={register}
@@ -208,7 +287,12 @@ const Form = ({ onStepChange }: any) => {
           {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}
           {activeStep === 6 && <DataComponent formData={watch()} />}
           {activeStep === 7 && (
-            <SuccessPage formData={watch()} setActiveStep={setActiveStep} reset={reset} />
+            <SuccessPage
+              formData={watch()}
+              setActiveStep={setActiveStep}
+              reset={reset}
+              link={link}
+            />
           )}
         </FormControl>
       </Box>

@@ -58,6 +58,26 @@ export interface FormData {
   url: string
   [key: string]: string | undefined | Portfolio[]
 }
+export interface credential {
+  '@context': string
+  id: string
+  type: string
+  recipient: { type: string; hashed: boolean; salt: string; identity: string }
+  badge: string
+  issuedOn: string
+  verification: { type: string }
+  badgeClass: {
+    '@context': string
+    id: string
+    type: string
+    name: any
+    description: any
+    image: any
+    criteria: { narrative: any }
+    issuer: { id: string; type: string; name: any; url: string }
+  }
+  issuer: { '@context': string; id: string; type: string; name: any; url: string }
+}
 
 // Component Props for the form
 export interface FormProps {
