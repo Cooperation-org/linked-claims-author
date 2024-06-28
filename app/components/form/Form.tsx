@@ -152,11 +152,8 @@ const Form = ({ onStepChange }: any) => {
     holderAddress: string
   ) {
     const credential = createCredential(data, holderAddress)
-    console.log(':  Form  credential', credential)
-    const vcJwt = JSON.stringify(credential) // Convert credential to string (or JWT if needed)
-    console.log(':  Form  vcJwt', vcJwt)
+    const vcJwt = JSON.stringify(credential)
     const signature = await signCredentialWithMetaMask(vcJwt, holderAddress)
-    console.log(':  Form  signature', signature)
 
     // Add signature to the credential
     credential.proof = {
@@ -203,7 +200,7 @@ const Form = ({ onStepChange }: any) => {
       id: 'urn:uuid:' + crypto.randomUUID(), 
       name: data.credentialName,
       issuer: {
-        id: 'did:key:z6MkwDsrhd2TWx1vExAh3CLwAdBuUtvTQQNXGH2Q1VkrjrDo', // DID of the issuer
+        id: issuerDid,
         name: data.persons,
         url: 'https://example.org', // issuer URL
         image: {
