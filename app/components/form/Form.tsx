@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, useMediaQuery, Theme } from '@mui/material'
-import { FormData, credential,CredentialProof  } from './Types'
+import jwt from 'jsonwebtoken'
+import { ethers } from 'ethers'
+import { FormData, Credential, CredentialProof } from './Types'
 import { textGuid, NoteText, SuccessText, FormTextSteps } from './FormTextSteps'
 import { StepTrackShape } from './StepTrackShape'
 import { Step0 } from './Step0'
@@ -19,7 +21,7 @@ import { GoogleDriveStorage } from 'trust_storage'
 
 declare global {
   interface Window {
-    ethereum?: any;
+    ethereum?: any
   }
 }
 const Form = ({ onStepChange }: any) => {
@@ -152,7 +154,12 @@ const Form = ({ onStepChange }: any) => {
     holderAddress: string
   ) {
     const credential = createCredential(data, holderAddress)
-    const vcJwt = JSON.stringify(credential)
+
+    // Generate a private key programmatically using ethers.js
+    const wallet = ethers.Wallet.createRandom()
+    const privateKey = wallet.privateKey
+
+    const vcJwt = jwt.sign(credential, privateKey, { algorithm: 'HS256' })
     const signature = await signCredentialWithMetaMask(vcJwt, holderAddress)
 
     // Add signature to the credential
@@ -189,7 +196,7 @@ const Form = ({ onStepChange }: any) => {
     }
   }
 
-  function createCredential(data: FormData, holderAddress: string) {
+  function createCredential(data: FormData, holderAddress: string): Credential {
     const issuerDid = `did:ethr:${holderAddress}`
     return {
       '@context': [
@@ -197,7 +204,7 @@ const Form = ({ onStepChange }: any) => {
         'https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.1.json'
       ],
       type: ['VerifiableCredential', 'OpenBadgeCredential'],
-      id: 'urn:uuid:' + crypto.randomUUID(), 
+      id: 'urn:uuid:' + crypto.randomUUID(),
       name: data.credentialName,
       issuer: {
         id: issuerDid,
@@ -211,22 +218,20 @@ const Form = ({ onStepChange }: any) => {
       issuanceDate: new Date().toISOString(),
       credentialSubject: {
         id: '', // subject's DID
-        type: 'AchievementSubject',
+        type: ['AchievementSubject'],
         achievement: {
-          id:
-            'https://example.org/badges/' +
-            data.credentialName.toLowerCase().replace(/\s+/g, ''),
-          type: 'Badge',
-          name: data.credentialName,
-          description: data.description,
-          image: {
-            id: data.imageLink,
-            type: 'Image'
-          },
-          criteria: {
-            narrative: data.description
+            id:'https://example.org/badges/', 
+            type: ['Badge'],
+            name: data.credentialName,
+            description: data.description,
+            image: {
+              id: data.imageLink,
+              type: 'Image'
+            },
+            criteria: {
+              narrative: data.description
+            }
           }
-        }
       }
     }
   }

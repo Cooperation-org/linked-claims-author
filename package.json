@@ -13,6 +13,8 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.18",
+    "ethers": "^6.13.1",
+    "jsonwebtoken": "^9.0.2",
     "next": "14.1.0",
     "next-auth": "^4.24.7",
     "node-jose": "^2.2.0",
@@ -23,6 +25,7 @@
     "trust_storage": "1.0.1"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/node-jose": "^1.1.13",
     "@types/react": "^18",
