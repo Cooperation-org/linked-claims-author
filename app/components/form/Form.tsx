@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, useMediaQuery, Theme } from '@mui/material'
-import { FormData, credential,CredentialProof  } from './Types'
+import { FormData, credential } from './Types'
 import { textGuid, NoteText, SuccessText, FormTextSteps } from './FormTextSteps'
 import { StepTrackShape } from './StepTrackShape'
 import { Step0 } from './Step0'
@@ -16,17 +16,11 @@ import DataComponent from './dataPreview'
 import SuccessPage from './SuccessPage'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from 'trust_storage'
+import * as jose from 'node-jose'
 
-declare global {
-  interface Window {
-    ethereum?: any;
-  }
-}
 const Form = ({ onStepChange }: any) => {
   const [activeStep, setActiveStep] = useState(0)
   const [link, setLink] = useState<string>('')
-  const [address, setAddress] = useState<string>('')
-  const [isRequesting, setIsRequesting] = useState<boolean>(false)
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const characterLimit = 294
@@ -110,64 +104,32 @@ const Form = ({ onStepChange }: any) => {
     setValue('credentialDescription', value ?? '')
   }
 
-  const detectProvider = async () => {
-    if (window.ethereum && !isRequesting) {
-      setIsRequesting(true)
-      try {
-        const accounts = await window.ethereum.request({
-          method: 'eth_requestAccounts'
-        })
-        const address = accounts[0]
-        setAddress(address)
-        setIsRequesting(false)
-        return address
-      } catch (error) {
-        console.error('User rejected the request')
-        setIsRequesting(false)
-      }
-    } else if (!window.ethereum) {
-      console.error('MetaMask not found')
-    }
+  async function generateKeyPair() {
+    const keyStore = jose.JWK.createKeyStore()
+    const key = await keyStore.generate('RSA', 2048, { alg: 'RS256', use: 'sig' })
+    const publicKey = key.toJSON()
+    const privateKey = key.toJSON(true)
+
+    console.log('Public Key:', publicKey)
+    console.log('Private Key:', privateKey)
+
+    return key
   }
 
-  async function signCredentialWithMetaMask(
-    vcJwt: string,
-    holderAddress: string
-  ): Promise<string> {
-    if (!window.ethereum) {
-      throw new Error('MetaMask is not installed')
-    }
+  async function signCredential(credential: credential) {
+    const key = await generateKeyPair()
+    const input = JSON.stringify(credential)
+    const signed = await jose.JWS.createSign({ format: 'compact' }, key)
+      .update(input, 'utf8')
+      .final()
 
-    const signature = await window.ethereum.request({
-      method: 'personal_sign',
-      params: [holderAddress, vcJwt]
-    })
-
-    return signature
+    console.log('Signed JWT:', signed)
+    return { signed, key }
   }
 
-  async function createFolderAndUploadFile(
-    data: FormData,
-    accessToken: string,
-    holderAddress: string
-  ) {
-    const credential = createCredential(data, holderAddress)
-    console.log(':  Form  credential', credential)
-    const vcJwt = JSON.stringify(credential) // Convert credential to string (or JWT if needed)
-    console.log(':  Form  vcJwt', vcJwt)
-    const signature = await signCredentialWithMetaMask(vcJwt, holderAddress)
-    console.log(':  Form  signature', signature)
-
-    // Add signature to the credential
-    credential.proof = {
-      type: 'EcdsaSecp256k1Signature2019',
-      created: new Date().toISOString(),
-      proofPurpose: 'assertionMethod',
-      verificationMethod: holderAddress,
-      jws: signature
-    } as CredentialProof
-    console.log(':  Form  credential', credential)
-
+  async function createFolderAndUploadFile(data: FormData, accessToken: string) {
+    const credential = createCredential(data)
+    const { signed, key } = await signCredential(credential)
     const fileName = data.fullName.toLowerCase().replace(/\s+/g, '') + '.json'
 
     try {
@@ -178,7 +140,7 @@ const Form = ({ onStepChange }: any) => {
       const fileData = {
         fileName: fileName,
         mimeType: 'application/json',
-        body: new Blob([JSON.stringify(credential)], { type: 'application/json' })
+        body: new Blob([signed.toString()], { type: 'application/json' })
       }
       const fileId = await storage.save(fileData, folderId)
 
@@ -192,58 +154,69 @@ const Form = ({ onStepChange }: any) => {
     }
   }
 
-  function createCredential(data: FormData, holderAddress: string) {
-    const issuerDid = `did:ethr:${holderAddress}`
+  function createCredential(data: FormData) {
     return {
-      '@context': [
-        'https://www.w3.org/2018/credentials/v1',
-        'https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.1.json'
-      ],
-      type: ['VerifiableCredential', 'OpenBadgeCredential'],
-      id: 'urn:uuid:' + crypto.randomUUID(), 
-      name: data.credentialName,
-      issuer: {
-        id: 'did:key:z6MkwDsrhd2TWx1vExAh3CLwAdBuUtvTQQNXGH2Q1VkrjrDo', // DID of the issuer
-        name: data.persons,
-        url: 'https://example.org', // issuer URL
-        image: {
-          id: data.imageLink,
-          type: 'Image'
+      '@context': 'https://w3id.org/openbadges/v3',
+      id:
+        'https://example.org/assertions/' +
+        data.fullName.toLowerCase().replace(/\s+/g, ''),
+      type: 'Assertion',
+      recipient: {
+        type: 'email',
+        hashed: true,
+        salt: 'unique-salt',
+        identity:
+          'sha256$hashed-email-address-for-' +
+          data.fullName.toLowerCase().replace(/\s+/g, '')
+      },
+      badge:
+        'https://example.org/badges/' +
+        data.credentialName.toLowerCase().replace(/\s+/g, ''),
+      issuedOn: new Date().toISOString(),
+      verification: {
+        type: 'hosted'
+      },
+      badgeClass: {
+        '@context': 'https://w3id.org/openbadges/v3',
+        id:
+          'https://example.org/badges/' +
+          data.credentialName.toLowerCase().replace(/\s+/g, ''),
+        type: 'BadgeClass',
+        name: data.credentialName,
+        description: data.description,
+        image: data.imageLink,
+        criteria: {
+          narrative: data.description
+        },
+        issuer: {
+          id: 'https://example.org/issuers/' + data.persons.toLowerCase(),
+          type: 'Issuer',
+          name: data.persons,
+          url: 'https://example.org'
         }
       },
-      issuanceDate: new Date().toISOString(),
-      credentialSubject: {
-        id: '', // subject's DID
-        type: 'AchievementSubject',
-        achievement: {
-          id:
-            'https://example.org/badges/' +
-            data.credentialName.toLowerCase().replace(/\s+/g, ''),
-          type: 'Badge',
-          name: data.credentialName,
-          description: data.description,
-          image: {
-            id: data.imageLink,
-            type: 'Image'
-          },
-          criteria: {
-            narrative: data.description
-          }
-        }
+      issuer: {
+        '@context': 'https://w3id.org/openbadges/v3',
+        id: 'https://example.org/issuers/' + data.persons.toLowerCase(),
+        type: 'Issuer',
+        name: data.persons,
+        url: 'https://example.org'
       }
     }
   }
 
   const handleFormSubmit = handleSubmit(async data => {
     let fileLink
-    const holderAddress = await detectProvider()
 
     if (data.storageOption === 'Google Drive') {
-      fileLink = await createFolderAndUploadFile(data, accessToken, holderAddress)
+      fileLink = await createFolderAndUploadFile(data, accessToken)
       console.log('Credential link:', fileLink)
     } else {
       localStorage.setItem('personalCredential', JSON.stringify(data))
     }
+
+    const credential = createCredential(data)
+    const codeToCopy = JSON.stringify(credential, null, 2)
   })
 
   const onSubmit = async (event: { preventDefault: () => void }) => {

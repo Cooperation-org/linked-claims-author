@@ -57,15 +57,6 @@ export interface FormData {
   description: string
   url: string
   [key: string]: string | undefined | Portfolio[]
-  
-}
-
-export interface CredentialProof {
-  type: string
-  created: string
-  proofPurpose: string
-  verificationMethod: string
-  jws: string
 }
 export interface credential {
   '@context': string
@@ -86,7 +77,6 @@ export interface credential {
     issuer: { id: string; type: string; name: any; url: string }
   }
   issuer: { '@context': string; id: string; type: string; name: any; url: string }
-  proof?: CredentialProof
 }
 
 // Component Props for the form
