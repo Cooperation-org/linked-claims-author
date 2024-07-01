@@ -1,43 +1,45 @@
 // Interfaces for the credential data
-export interface Address {
-  addressCountry: string
-  addressRegion: string
-  addressLocality: string
-  streetAddress: string
-  postalCode: string
+ export interface VerifiableCredential {
+  '@context': string[];
+  type: string[];
+  issuer: Issuer;
+  issuanceDate: Date;
+  credentialSubject: CredentialSubject;
+  proof?: Proof; 
 }
 
-export interface Achievement {
-  id: string
-  type: string[]
-  criteria: { narrative: string }
-  description: string
-  name: string
-  imageUrl: string
+interface Issuer {
+  id: string;
+  name: string;
 }
 
-export interface CredentialSubject {
-  type: string[]
-  name: string
-  address?: Address
-  achievement: Achievement[]
+interface CredentialSubject {
+  type: string;
+  id: string;
+  achievement: Achievement;
 }
 
-export interface Issuer {
-  id: string
-  type: string[]
+interface Achievement {
+  id: string;
+  type: string;
+  name: string;
+  description: string;
+  criteria: Criteria;
 }
 
-export interface Credential {
-  '@context': string[]
-  type: string[]
-  issuer: Issuer
-  issuanceDate: string
-  expirationDate?: string
-  awardedDate?: string
-  name: string
-  credentialSubject: CredentialSubject
+interface Criteria {
+  type: string;
+  narrative: string;
 }
+
+interface Proof {
+  type?: string;
+  created?: Date;
+  proofPurpose?: string;
+  verificationMethod?: string;
+  jws?: string;
+}
+
 
 interface Portfolio {
   name: string

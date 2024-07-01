@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, useMediaQuery, Theme } from '@mui/material'
-import { FormData, credential } from './Types'
+import { FormData, VerifiableCredential } from './Types'
 import { textGuid, NoteText, SuccessText, FormTextSteps } from './FormTextSteps'
 import { StepTrackShape } from './StepTrackShape'
 import { Step0 } from './Step0'
@@ -116,7 +116,7 @@ const Form = ({ onStepChange }: any) => {
     return key
   }
 
-  async function signCredential(credential: credential) {
+  async function signCredential(credential: VerifiableCredential) {
     const key = await generateKeyPair()
     const input = JSON.stringify(credential)
     const signed = await jose.JWS.createSign({ format: 'compact' }, key)
@@ -124,12 +124,15 @@ const Form = ({ onStepChange }: any) => {
       .final()
 
     console.log('Signed JWT:', signed)
+    if (credential.proof) {
+      credential.proof.jws = signed as unknown as string
+    }
     return { signed, key }
   }
 
   async function createFolderAndUploadFile(data: FormData, accessToken: string) {
     const credential = createCredential(data)
-    const { signed, key } = await signCredential(credential)
+    const { signed } = await signCredential(credential)
     const fileName = data.fullName.toLowerCase().replace(/\s+/g, '') + '.json'
 
     try {
@@ -156,51 +159,37 @@ const Form = ({ onStepChange }: any) => {
 
   function createCredential(data: FormData) {
     return {
-      '@context': 'https://w3id.org/openbadges/v3',
-      id:
-        'https://example.org/assertions/' +
-        data.fullName.toLowerCase().replace(/\s+/g, ''),
-      type: 'Assertion',
-      recipient: {
-        type: 'email',
-        hashed: true,
-        salt: 'unique-salt',
-        identity:
-          'sha256$hashed-email-address-for-' +
-          data.fullName.toLowerCase().replace(/\s+/g, '')
+      '@context': [
+        'https://www.w3.org/2018/credentials/v1',
+        'https://w3id.org/openbadges/v3'
+      ],
+      type: ['VerifiableCredential', 'OpenBadgeCredential'],
+      issuer: {
+        id: 'did:key:z6MkrHKzgsahxBLyNAbLQyB1pcWNYC9GmywiWPgkrvntAZcj',
+        name: data.fullName
       },
-      badge:
-        'https://example.org/badges/' +
-        data.credentialName.toLowerCase().replace(/\s+/g, ''),
-      issuedOn: new Date().toISOString(),
-      verification: {
-        type: 'hosted'
-      },
-      badgeClass: {
-        '@context': 'https://w3id.org/openbadges/v3',
-        id:
-          'https://example.org/badges/' +
-          data.credentialName.toLowerCase().replace(/\s+/g, ''),
-        type: 'BadgeClass',
-        name: data.credentialName,
-        description: data.description,
-        image: data.imageLink,
-        criteria: {
-          narrative: data.description
-        },
-        issuer: {
-          id: 'https://example.org/issuers/' + data.persons.toLowerCase(),
-          type: 'Issuer',
-          name: data.persons,
-          url: 'https://example.org'
+      issuanceDate: new Date(),
+      credentialSubject: {
+        type: 'AchievementSubject',
+        id: 'did:key:z6MkrHKzgsahxBLyNAbLQyB1pcWNYC9GmywiWPgkrvntAZcj',
+        achievement: {
+          id: 'urn:uuid:e8096060-ce7c-47b3-a682-57098685d48d',
+          type: 'Achievement',
+          name: data.credentialName,
+          description: data.credentialDescription,
+          criteria: {
+            type: 'Criteria',
+            narrative: data.description
+          }
         }
       },
-      issuer: {
-        '@context': 'https://w3id.org/openbadges/v3',
-        id: 'https://example.org/issuers/' + data.persons.toLowerCase(),
-        type: 'Issuer',
-        name: data.persons,
-        url: 'https://example.org'
+      proof: {
+        type: 'RsaSignature2018',
+        created: new Date(),
+        proofPurpose: 'authentication',
+        verificationMethod:
+          'did:key:z6MkrHKzgsahxBLyNAbLQyB1pcWNYC9GmywiWPgkrvntAZcj#key-1',
+        jws: ''
       }
     }
   }
@@ -217,6 +206,7 @@ const Form = ({ onStepChange }: any) => {
 
     const credential = createCredential(data)
     const codeToCopy = JSON.stringify(credential, null, 2)
+    console.log('codeToCopy', codeToCopy)
   })
 
   const onSubmit = async (event: { preventDefault: () => void }) => {
