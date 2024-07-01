@@ -13,30 +13,23 @@ export interface Achievement {
   criteria: { narrative: string }
   description: string
   name: string
-  image: any
+  imageUrl: string
 }
 
 export interface CredentialSubject {
-  id: string
   type: string[]
+  name: string
   address?: Address
   achievement: Achievement[]
 }
 
-interface Issuer {
-  id: string;
-  name?: string; 
-  url: string;
-  image: {
-    id: string;
-    type: string;
-  };
+export interface Issuer {
+  id: string
+  type: string[]
 }
 
 export interface Credential {
-  proof: CredentialProof
   '@context': string[]
-  id: string
   type: string[]
   issuer: Issuer
   issuanceDate: string
