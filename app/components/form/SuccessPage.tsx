@@ -38,9 +38,27 @@ interface SuccessPageProps {
   setActiveStep: (step: number) => void
   formData: FormData
   reset: () => void
+  link: string
+  fileData: any
 }
 
-const SuccessPage: React.FC<SuccessPageProps> = ({ setActiveStep, formData, reset }) => {
+const SuccessPage: React.FC<SuccessPageProps> = ({
+  setActiveStep,
+  formData,
+  reset,
+  link,
+  fileData
+}) => {
+  const copyLink = () => {
+    navigator.clipboard
+      .writeText(link)
+      .then(() => {
+        console.log('Credential copied to clipboard')
+      })
+      .catch(err => {
+        console.error('Unable to copy credential to clipboard:', err)
+      })
+  }
   return (
     <>
       <Box sx={successPageContainerStyles}>
@@ -74,12 +92,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ setActiveStep, formData, rese
           <Typography sx={successPageCopyLinkTextStyles}>Copy link:</Typography>
           <TextField
             sx={successPageTextFieldStyles}
-            value='www.linkedclaims.com/file/f0g7iKqcLqxEscHmeZgDmp/Linked-Credentials?type=design&node-id=1-3&mode=design&t=2dmf296EWsNQ7ZFL-0'
+            value={link}
             InputProps={{
               startAdornment: <InputAdornment position='start'>http://</InputAdornment>,
               endAdornment: (
                 <InputAdornment position='end'>
-                  <Button>
+                  <Button onClick={copyLink}>
                     <Image src={copy} alt='copyIcon' />
                   </Button>
                 </InputAdornment>

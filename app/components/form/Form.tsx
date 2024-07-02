@@ -19,15 +19,22 @@ import SuccessPage from './SuccessPage'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from 'trust_storage'
 
+declare global {
+  interface Window {
+    gapi: any
+  }
+}
 const Form = ({ onStepChange }: any) => {
   const [activeStep, setActiveStep] = useState(0)
   const theme = useTheme<Theme>()
+  const [link, setLink] = useState<string>('')
+  const [fileData, setFileData] = useState<string | null>(null)
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
-  
+
   const {
     register,
     handleSubmit,
@@ -93,6 +100,7 @@ const Form = ({ onStepChange }: any) => {
 
   const handleSign = () => {
     handleStepChange(activeStep + 1)
+    handleFormSubmit()
   }
 
   const handleBack = () => {
@@ -104,13 +112,13 @@ const Form = ({ onStepChange }: any) => {
   }
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    if (data.storageOption === "Google Drive") {
-      createFolderAndUploadFile(data);
+    if (data.storageOption === 'Google Drive') {
+      createFolderAndUploadFile(data)
     } else {
-      localStorage.setItem("personalCredential", JSON.stringify(data));
+      localStorage.setItem('personalCredential', JSON.stringify(data))
     }
 
-    reset();
+    reset()
     setActiveStep(0)
 
     const codeToCopy = JSON.stringify(data, null, 2)
@@ -141,11 +149,22 @@ const Form = ({ onStepChange }: any) => {
       }
       const fileId = await storage.save(fileData, folderId)
       console.log('File uploaded successfully with ID:', fileId)
+
+      const fileLink = `https://drive.google.com/file/d/${fileId}/view?usp=sharing`
+      setLink(fileLink)
+      console.log('File uploaded successfully with link:', fileLink)
+
     } catch (error) {
       console.error('Error:', error)
     }
   }
 
+  const onSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault()
+    await handleFormSubmit()
+    reset()
+    setActiveStep(0)
+  }
   return (
     <form
       style={{
@@ -157,7 +176,7 @@ const Form = ({ onStepChange }: any) => {
         padding: '0 15px 30px',
         overflow: 'auto'
       }}
-      onSubmit={handleFormSubmit}
+      onSubmit={onSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
       {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
@@ -208,7 +227,13 @@ const Form = ({ onStepChange }: any) => {
           {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}
           {activeStep === 6 && <DataComponent formData={watch()} />}
           {activeStep === 7 && (
-            <SuccessPage formData={watch()} setActiveStep={setActiveStep} reset={reset} />
+            <SuccessPage
+              formData={watch()}
+              setActiveStep={setActiveStep}
+              reset={reset}
+              link={link}
+              fileData={fileData}
+            />
           )}
         </FormControl>
       </Box>
