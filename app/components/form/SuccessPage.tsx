@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import {
   Box,
@@ -33,6 +33,7 @@ import {
   successPageButtonStyles
 } from './boxStyles'
 import { FormData } from './Types'
+import useGoogleDrive from '../../hooks/useGoogleDrive'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
@@ -49,6 +50,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   link,
   fileData
 }) => {
+  const { fetchFile, fileData: fetchedFileData } = useGoogleDrive()
+  const [viewingFile, setViewingFile] = useState(false)
+
   const copyLink = () => {
     navigator.clipboard
       .writeText(link)
@@ -59,6 +63,14 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         console.error('Unable to copy credential to clipboard:', err)
       })
   }
+
+  const handleViewFile = () => {
+    const fileId = link.split('/d/')[1].split('/')[0]
+    const resourceKey = '' // If you have a resource key, include it here
+    fetchFile(fileId, resourceKey)
+    setViewingFile(true)
+  }
+
   return (
     <>
       <Box sx={successPageContainerStyles}>
@@ -106,7 +118,19 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             }}
           />
         </Box>
+
+        <Button variant='contained' onClick={handleViewFile}>
+          View File Content
+        </Button>
+
+        {viewingFile && fetchedFileData && (
+          <Box sx={{ mt: 2 }}>
+            <Typography variant='h6'>File Content:</Typography>
+            <pre>{JSON.stringify(JSON.parse(fetchedFileData), null, 2)}</pre>
+          </Box>
+        )}
       </Box>
+
       <Button
         variant='contained'
         onClick={() => {
