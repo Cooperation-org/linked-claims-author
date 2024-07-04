@@ -19,16 +19,11 @@ import SuccessPage from './SuccessPage'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from 'trust_storage'
 
-declare global {
-  interface Window {
-    gapi: any
-  }
-}
 const Form = ({ onStepChange }: any) => {
   const [activeStep, setActiveStep] = useState(0)
   const theme = useTheme<Theme>()
   const [link, setLink] = useState<string>('')
-  const [fileData, setFileData] = useState<string | null>(null)
+  const [submittedData, setSubmittedData] = useState<FormData | null>(null)
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const characterLimit = 294
   const maxSteps = textGuid.length
@@ -64,19 +59,16 @@ const Form = ({ onStepChange }: any) => {
   })
 
   useEffect(() => {
-    const handleHashChange = () => {
+    const handleHashStepChange = () => {
       const stepFromHash = parseInt(window.location.hash.replace('#step-', ''), 10)
       if (!isNaN(stepFromHash) && stepFromHash >= 0 && stepFromHash < maxSteps) {
         setActiveStep(stepFromHash)
       }
     }
-
-    window.addEventListener('hashchange', handleHashChange)
-
-    handleHashChange()
-
+    window.addEventListener('hashchange', handleHashStepChange)
+    handleHashStepChange()
     return () => {
-      window.removeEventListener('hashchange', handleHashChange)
+      window.removeEventListener('hashchange', handleHashStepChange)
     }
   }, [maxSteps])
 
@@ -112,6 +104,7 @@ const Form = ({ onStepChange }: any) => {
   }
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
+    setSubmittedData(data)
     if (data.storageOption === 'Google Drive') {
       createFolderAndUploadFile(data)
     } else {
@@ -120,18 +113,6 @@ const Form = ({ onStepChange }: any) => {
 
     reset()
     setActiveStep(0)
-
-    const codeToCopy = JSON.stringify(data, null, 2)
-
-    navigator.clipboard
-      .writeText(codeToCopy)
-      .then(() => {
-        console.log('Form values copied to clipboard')
-        reset()
-      })
-      .catch(err => {
-        console.error('Unable to copy form values to clipboard: ', err)
-      })
   })
 
   async function createFolderAndUploadFile(data: FormData) {
@@ -153,7 +134,6 @@ const Form = ({ onStepChange }: any) => {
       const fileLink = `https://drive.google.com/file/d/${fileId}/view?usp=sharing`
       setLink(fileLink)
       console.log('File uploaded successfully with link:', fileLink)
-
     } catch (error) {
       console.error('Error:', error)
     }
@@ -228,11 +208,10 @@ const Form = ({ onStepChange }: any) => {
           {activeStep === 6 && <DataComponent formData={watch()} />}
           {activeStep === 7 && (
             <SuccessPage
-              formData={watch()}
+              formData={submittedData}
               setActiveStep={setActiveStep}
               reset={reset}
               link={link}
-              fileData={fileData}
             />
           )}
         </FormControl>

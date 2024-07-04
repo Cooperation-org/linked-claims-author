@@ -37,20 +37,18 @@ import useGoogleDrive from '../../hooks/useGoogleDrive'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
-  formData: FormData
+  formData: FormData | null
   reset: () => void
   link: string
-  fileData: any
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
   setActiveStep,
   formData,
   reset,
-  link,
-  fileData
+  link
 }) => {
-  const { fetchFile, fileData: fetchedFileData } = useGoogleDrive()
+  const { fetchFile, fileData } = useGoogleDrive()
   const [viewingFile, setViewingFile] = useState(false)
 
   const copyLink = () => {
@@ -66,7 +64,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
   const handleViewFile = () => {
     const fileId = link.split('/d/')[1].split('/')[0]
-    const resourceKey = '' // If you have a resource key, include it here
+    const resourceKey = ''
     fetchFile(fileId, resourceKey)
     setViewingFile(true)
   }
@@ -77,11 +75,11 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         <Box sx={successPageHeaderStyles}>
           <Image style={{ width: '69px', height: '69px' }} src={image} alt='logo' />
           <Box sx={{ flex: 1 }}>
-            <Typography sx={successPageTitleStyles}>{formData.credentialName}</Typography>
+            <Typography sx={successPageTitleStyles}>{formData?.credentialName}</Typography>
             <Box sx={successPageInfoStyles}>
               <SVGDate />
               <Typography sx={successPageDateStyles}>
-                {formData.credentialDuration}
+                {formData?.credentialDuration}
               </Typography>
             </Box>
           </Box>
@@ -123,11 +121,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           View File Content
         </Button>
 
-        {viewingFile && fetchedFileData && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant='h6'>File Content:</Typography>
-            <pre>{JSON.stringify(JSON.parse(fetchedFileData), null, 2)}</pre>
-          </Box>
+        {viewingFile && fileData && (
+          <pre style={{ width: '100%', overflow: 'auto' }}>
+            <code style={{ color: 'black' }}>
+              {JSON.stringify(JSON.parse(fileData), null, 2)}
+            </code>
+          </pre>
         )}
       </Box>
 
