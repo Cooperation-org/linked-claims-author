@@ -55,9 +55,7 @@ export function Step4({
               Name
             </FormLabel>
             <TextField
-              {...register(`portfolio.${index}.name`, {
-                required: 'Name is required'
-              })}
+              {...register(`portfolio.${index}.name`)}
               defaultValue={field.name}
               placeholder='Picture of the Community Garden'
               variant='outlined'
@@ -72,9 +70,7 @@ export function Step4({
               URL
             </FormLabel>
             <TextField
-              {...register(`portfolio.${index}.url`, {
-                required: 'URL is required'
-              })}
+              {...register(`portfolio.${index}.url`)}
               defaultValue={field.url}
               placeholder='https://www.example.com'
               variant='outlined'

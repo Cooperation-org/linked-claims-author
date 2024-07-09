@@ -21,22 +21,14 @@ interface Step3Props {
   characterLimit: number
 }
 
-export function Step3({
-  register,
-  characterLimit,
-  errors,
-  watch
-}: Readonly<Step3Props>) {
-
+export function Step3({ register, characterLimit, errors, watch }: Readonly<Step3Props>) {
   return (
     <Box position='relative' width='100%'>
       <FormLabel sx={formLabelStyles} id='description-label'>
-        Description (publicly visible) <span style={formLabelSpanStyles}>*</span>
+        Description (publicly visible)
       </FormLabel>
       <CustomTextField
-        {...register('description', {
-          required: 'Description is required'
-        })}
+        {...register('description')}
         sx={customTextFieldStyles}
         multiline
         rows={11}

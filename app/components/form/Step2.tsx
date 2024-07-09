@@ -53,12 +53,10 @@ export function Step2({
       />
       <Box>
         <FormLabel sx={formLabelStyles} id='duration-label'>
-          Duration <span style={formLabelSpanStyles}>*</span>
+          Duration
         </FormLabel>
         <TextField
-          {...register('credentialDuration', {
-            required: 'Duration is required'
-          })}
+          {...register('credentialDuration')}
           placeholder='1 Day'
           variant='outlined'
           sx={TextFieldStyles}
