@@ -11,7 +11,12 @@ export async function GET(request: Request) {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        Accept: '*/*'
+        Accept:
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
       }
     })
 
@@ -24,7 +29,11 @@ export async function GET(request: Request) {
       throw new Error('URL does not have a valid content type')
     }
 
+    console.log('Content-Type:', contentType)
+
     const data = await response.text()
+
+    console.log('Data:', data)
 
     return NextResponse.json({ contentType, data })
   } catch (error: any) {

@@ -30,8 +30,10 @@ export function Step5({ register, handleNext }: Readonly<Step5Props>) {
           throw new Error(`Error: ${response.status} ${response.statusText}`)
         }
 
-        const { contentType } = await response.json()
+        const { contentType, data } = await response.json()
+
         console.log(':  handleUrlChange  contentType', contentType)
+        console.log(':  handleUrlChange  data', data)
 
         if (contentType.includes('text/html')) {
           setUrlError('The URL points to a web page.')
