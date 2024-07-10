@@ -1,22 +1,20 @@
 'use client'
 import { useTheme } from '@mui/material/styles'
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
 import fram from '../Assets/Frame 35278.png'
 import vector from '../Assets/Vector 145.png'
 import img3 from '../Assets/Tessa Persona large sceens.png'
 import { SVGLargeScreen } from '../Assets/SVGs'
-import dynamic from 'next/dynamic'
+import { StepTrackShape } from '../components/form/StepTrackShape'
+import Form from '../components/form/Form'
 
 const FormComponent = () => {
+  const [activStep, setactivStep] = useState(0)
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const formRef = useRef<HTMLDivElement>(null)
-
-  const DynamicComponentWithNoSSR = dynamic(() => import('../components/form/Form'), {
-    ssr: false
-  })
 
   const handleScrollToTop = useCallback(() => {
     if (formRef.current) {
@@ -46,12 +44,13 @@ const FormComponent = () => {
           overflow: 'hidden'
         }}
       >
+        <StepTrackShape activeStep={activStep} />
         <Box
           sx={{
             position: 'relative',
             width: '100%',
             height: '100px',
-            mt: '50px'
+            mt: '30px'
           }}
         >
           <SVGLargeScreen />
@@ -67,7 +66,10 @@ const FormComponent = () => {
           </Box>
         </Box>
       </Box>
-      <DynamicComponentWithNoSSR onStepChange={handleScrollToTop} />
+      <Form
+        onStepChange={handleScrollToTop}
+        setactivStep={setactivStep}
+      />
       {!isLargeScreen && (
         <Box
           sx={{

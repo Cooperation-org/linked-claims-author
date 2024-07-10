@@ -1,12 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useTheme } from '@mui/material/styles'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, useMediaQuery, Theme } from '@mui/material'
+import { FormControl, Box } from '@mui/material'
 import { FormData } from './Types'
 import { textGuid, NoteText, SuccessText, FormTextSteps } from './FormTextSteps'
-import { StepTrackShape } from './StepTrackShape'
 import { Step0 } from './Step0'
 import { Buttons } from './Buttons'
 import { Step1 } from './Step1'
@@ -19,10 +17,8 @@ import SuccessPage from './SuccessPage'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from 'trust_storage'
 
-const Form = ({ onStepChange }: any) => {
+const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
-  const theme = useTheme<Theme>()
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { data: session } = useSession()
@@ -79,6 +75,7 @@ const Form = ({ onStepChange }: any) => {
   }, [])
 
   useEffect(() => {
+    setactivStep(activeStep)
     onStepChange()
   }, [activeStep, onStepChange])
 
@@ -160,7 +157,6 @@ const Form = ({ onStepChange }: any) => {
       onSubmit={handleFormSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-      {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
       {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && activeStep !== 4 && (
         <NoteText />
       )}

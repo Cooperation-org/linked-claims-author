@@ -7,7 +7,23 @@ interface StepTrackShapeProps {
   activeStep: number
 }
 
+const TOTAL_STEPS = 8
+
 export function StepTrackShape({ activeStep }: Readonly<StepTrackShapeProps>) {
+  const renderStepBox = (step: number) => (
+    <Box
+      key={step}
+      sx={{
+        width: activeStep === step ? '22px' : '7px',
+        height: '5px',
+        bgcolor:
+          activeStep === step ? '#003fe0' : activeStep > step ? '#14b8a6' : '#d1d5db',
+        borderRadius: '3px',
+        mt:'20px'
+      }}
+    />
+  )
+
   return (
     <Box
       sx={{
@@ -17,42 +33,7 @@ export function StepTrackShape({ activeStep }: Readonly<StepTrackShapeProps>) {
         justifyContent: 'center'
       }}
     >
-      {activeStep !== 0 && (
-        <Box
-          sx={{
-            width: '7px',
-            height: '5px',
-            bgcolor: 't3BodyText',
-            borderRadius: '3px'
-          }}
-        />
-      )}
-      <Box
-        sx={{
-          width:
-            activeStep === 0 || activeStep === 1 || activeStep === 2 ? '22px' : '7px',
-          height: '5px',
-          bgcolor: 't3BodyText',
-          borderRadius: '3px'
-        }}
-      />
-      <Box
-        sx={{
-          width:
-            activeStep === 3 || activeStep === 4 || activeStep === 5 ? '22px' : '7px',
-          height: '5px',
-          bgcolor: 't3BodyText',
-          borderRadius: '3px'
-        }}
-      />
-      <Box
-        sx={{
-          width: activeStep === 6 ? '22px' : '7px',
-          height: '5px',
-          bgcolor: 't3BodyText',
-          borderRadius: '3px'
-        }}
-      />
+      {Array.from({ length: TOTAL_STEPS }, (_, index) => renderStepBox(index))}
     </Box>
   )
 }
