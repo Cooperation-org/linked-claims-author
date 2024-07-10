@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Box, Button } from '@mui/material'
-import { StyledButton, nextButtonStyle } from './boxStyles'
+import { StyledButton, nextButtonStyle } from '../../Styles/appStyles'
 
 interface ButtonsProps {
   activeStep: number

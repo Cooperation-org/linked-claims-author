@@ -8,9 +8,9 @@ import {
   TextFieldStyles,
   formLabelStyles,
   skipButtonBoxStyles
-} from './boxStyles'
+} from '../../Styles/appStyles'
 import { UseFormRegister } from 'react-hook-form'
-import { FormData } from './Types'
+import { FormData } from '../types/Types'
 
 interface Step5Props {
   register: UseFormRegister<FormData>

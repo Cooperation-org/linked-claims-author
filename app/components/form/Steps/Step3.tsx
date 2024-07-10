@@ -2,17 +2,16 @@
 
 import React from 'react'
 import { FormLabel, Box } from '@mui/material'
-import { SVGSparkles } from '../../Assets/SVGs'
+import { SVGSparkles } from '../../../Assets/SVGs'
 import {
   CustomTextField,
   formLabelStyles,
   UseAIStyles,
-  formLabelSpanStyles,
   customTextFieldStyles,
   aiBoxStyles
-} from './boxStyles'
+} from '../../Styles/appStyles'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
-import { FormData } from './Types'
+import { FormData } from '../types/Types'
 
 interface Step3Props {
   errors: FieldErrors<FormData>
