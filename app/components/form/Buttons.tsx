@@ -24,6 +24,7 @@ export function Buttons({
   return (
     <Box
       sx={{
+        width: { xs: '100%', md: '35%', lg: '35%' },
         height: '40px',
         display: 'flex',
         gap: '15px',
@@ -42,7 +43,10 @@ export function Buttons({
       )}
       {activeStep !== 5 && activeStep !== 6 && (
         <Button
-          sx={nextButtonStyle}
+          sx={{
+            ...nextButtonStyle,
+            maxWidth: '355px',
+          }}
           onClick={handleNext}
           color='primary'
           disabled={!isValid}
