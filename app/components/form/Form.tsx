@@ -27,7 +27,7 @@ const Form = ({ onStepChange }: any) => {
   const maxSteps = textGuid.length
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
-  
+
   const {
     register,
     handleSubmit,
@@ -45,7 +45,7 @@ const Form = ({ onStepChange }: any) => {
       credentialDuration: '',
       credentialDescription: '',
       portfolio: [{ name: '', url: '' }],
-      imageLink: '',
+      evidenceLink: '',
       description: ''
     },
     mode: 'onChange'
@@ -104,13 +104,13 @@ const Form = ({ onStepChange }: any) => {
   }
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    if (data.storageOption === "Google Drive") {
-      createFolderAndUploadFile(data);
+    if (data.storageOption === 'Google Drive') {
+      createFolderAndUploadFile(data)
     } else {
-      localStorage.setItem("personalCredential", JSON.stringify(data));
+      localStorage.setItem('personalCredential', JSON.stringify(data))
     }
 
-    reset();
+    reset()
     setActiveStep(0)
 
     const codeToCopy = JSON.stringify(data, null, 2)

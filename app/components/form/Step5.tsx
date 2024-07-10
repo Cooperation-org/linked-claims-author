@@ -24,7 +24,7 @@ export function Step5({ register, handleNext }: Readonly<Step5Props>) {
         URL of an image you have permission to use (optional)
       </FormLabel>
       <TextField
-        {...register('imageLink')}
+        {...register('evidenceLink')}
         placeholder='https://'
         variant='outlined'
         sx={TextFieldStyles}
