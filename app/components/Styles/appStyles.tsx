@@ -13,7 +13,7 @@ export const StyledButton = {
   color: '#4e4e4e',
   '&:hover': {
     backgroundColor: '003fe0'
-  }
+  },
 }
 
 export const nextButtonStyle = {
@@ -25,6 +25,7 @@ export const nextButtonStyle = {
   lineHeight: '20px',
   backgroundColor: '#003FE0',
   color: '#FFFFFF',
+  flexGrow: 8
 }
 
 export const CustomTextField = styled(TextField)({

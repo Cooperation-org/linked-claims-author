@@ -1,30 +1,38 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useTheme } from '@mui/material/styles'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, useMediaQuery, Theme } from '@mui/material'
-import { FormData } from './Types'
-import { textGuid, NoteText, SuccessText, FormTextSteps } from './FormTextSteps'
-import { StepTrackShape } from './StepTrackShape'
-import { Step0 } from './Step0'
-import { Buttons } from './Buttons'
-import { Step1 } from './Step1'
-import { Step2 } from './Step2'
-import { Step3 } from './Step3'
-import { Step4 } from './Step4'
-import { Step5 } from './Step5'
-import DataComponent from './dataPreview'
-import SuccessPage from './SuccessPage'
+import { FormControl, Box } from '@mui/material'
+import { FormData } from './types/Types'
+import {
+  textGuid,
+  NoteText,
+  SuccessText,
+  FormTextSteps
+} from './fromTexts & stepTrack/FormTextSteps'
+import { Step0 } from './Steps/Step0'
+import { Buttons } from './buttons/Buttons'
+import { Step1 } from './Steps/Step1'
+import { Step2 } from './Steps/Step2'
+import { Step3 } from './Steps/Step3'
+import { Step4 } from './Steps/Step4'
+import { Step5 } from './Steps/Step5'
+import DataComponent from './Steps/dataPreview'
+import SuccessPage from './Steps/SuccessPage'
 import { useSession } from 'next-auth/react'
-import { GoogleDriveStorage } from 'trust_storage'
+import {
+  handleStepHashChange,
+  createFolderAndUploadFile,
+  copyFormValuesToClipboard,
+  handleNext,
+  handleSign,
+  handleBack
+} from '../../utils/formUtils'
 
-const Form = ({ onStepChange }: any) => {
+const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
-  const theme = useTheme<Theme>()
   const [link, setLink] = useState<string>('')
   const [submittedData, setSubmittedData] = useState<FormData | null>(null)
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { data: session } = useSession()
@@ -47,7 +55,7 @@ const Form = ({ onStepChange }: any) => {
       credentialDuration: '',
       credentialDescription: '',
       portfolio: [{ name: '', url: '' }],
-      imageLink: '',
+      evidenceLink: '',
       description: ''
     },
     mode: 'onChange'
@@ -59,16 +67,15 @@ const Form = ({ onStepChange }: any) => {
   })
 
   useEffect(() => {
-    const handleHashStepChange = () => {
-      const stepFromHash = parseInt(window.location.hash.replace('#step-', ''), 10)
-      if (!isNaN(stepFromHash) && stepFromHash >= 0 && stepFromHash < maxSteps) {
-        setActiveStep(stepFromHash)
-      }
-    }
-    window.addEventListener('hashchange', handleHashStepChange)
-    handleHashStepChange()
+    const handleStepHashChangeWrapper = () =>
+      handleStepHashChange(setActiveStep, maxSteps)
+
+    window.addEventListener('hashchange', handleStepHashChangeWrapper)
+
+    handleStepHashChangeWrapper()
+
     return () => {
-      window.removeEventListener('hashchange', handleHashStepChange)
+      window.removeEventListener('hashchange', handleStepHashChangeWrapper)
     }
   }, [maxSteps])
 
@@ -78,73 +85,21 @@ const Form = ({ onStepChange }: any) => {
   }, [])
 
   useEffect(() => {
+    setactivStep(activeStep)
     onStepChange()
   }, [activeStep, onStepChange])
 
-  const handleStepChange = (step: number) => {
-    setActiveStep(step)
-    window.location.hash = `step-${step}`
-  }
-
-  const handleNext = () => {
-    handleStepChange(activeStep + 1)
-  }
-
-  const handleSign = () => {
-    handleStepChange(activeStep + 1)
-    handleFormSubmit()
-  }
-
-  const handleBack = () => {
-    handleStepChange(activeStep - 1)
-  }
-
-  const handleTextEditorChange = (value: string | undefined) => {
-    setValue('credentialDescription', value ?? '')
-  }
-
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    setSubmittedData(data)
     if (data.storageOption === 'Google Drive') {
-      createFolderAndUploadFile(data)
-    } else {
-      localStorage.setItem('personalCredential', JSON.stringify(data))
+      createFolderAndUploadFile(data, accessToken)
     }
 
     reset()
     setActiveStep(0)
+    const codeToCopy = JSON.stringify(data, null, 2)
+    copyFormValuesToClipboard(codeToCopy)
   })
 
-  async function createFolderAndUploadFile(data: FormData) {
-    try {
-      const storage = new GoogleDriveStorage(accessToken)
-      const folderName = 'USER_UNIQUE_KEY'
-      const folderId = await storage.createFolder(folderName)
-
-      const fileData = {
-        fileName: 'test.json',
-        mimeType: 'application/json',
-        body: new Blob([JSON.stringify(data)], {
-          type: 'application/json'
-        })
-      }
-      const fileId = await storage.save(fileData, folderId)
-      console.log('File uploaded successfully with ID:', fileId)
-
-      const fileLink = `https://drive.google.com/file/d/${fileId}/view?usp=sharing`
-      setLink(fileLink)
-      console.log('File uploaded successfully with link:', fileLink)
-    } catch (error) {
-      console.error('Error:', error)
-    }
-  }
-
-  const onSubmit = async (event: { preventDefault: () => void }) => {
-    event.preventDefault()
-    await handleFormSubmit()
-    reset()
-    setActiveStep(0)
-  }
   return (
     <form
       style={{
@@ -156,10 +111,9 @@ const Form = ({ onStepChange }: any) => {
         padding: '0 15px 30px',
         overflow: 'auto'
       }}
-      onSubmit={onSubmit}
+      onSubmit={handleFormSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-      {!isLargeScreen && activeStep !== 7 && <StepTrackShape activeStep={activeStep} />}
       {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && activeStep !== 4 && (
         <NoteText />
       )}
@@ -182,7 +136,9 @@ const Form = ({ onStepChange }: any) => {
             <Step2
               register={register}
               watch={watch}
-              handleTextEditorChange={handleTextEditorChange}
+              handleTextEditorChange={value =>
+                setValue('credentialDescription', value ?? '')
+              }
               errors={errors}
             />
           )}
@@ -199,12 +155,17 @@ const Form = ({ onStepChange }: any) => {
               register={register}
               fields={fields}
               append={append}
-              handleNext={handleNext}
+              handleNext={() => handleNext(activeStep, setActiveStep)}
               errors={errors}
               remove={remove}
             />
           )}
-          {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}
+          {activeStep === 5 && (
+            <Step5
+              register={register}
+              handleNext={() => handleNext(activeStep, setActiveStep)}
+            />
+          )}
           {activeStep === 6 && <DataComponent formData={watch()} />}
           {activeStep === 7 && (
             <SuccessPage
@@ -220,9 +181,9 @@ const Form = ({ onStepChange }: any) => {
         <Buttons
           activeStep={activeStep}
           maxSteps={maxSteps}
-          handleNext={handleNext}
-          handleSign={handleSign}
-          handleBack={handleBack}
+          handleNext={() => handleNext(activeStep, setActiveStep)}
+          handleSign={() => handleSign(activeStep, setActiveStep)}
+          handleBack={() => handleBack(activeStep, setActiveStep)}
           isValid={isValid}
         />
       )}

@@ -78,7 +78,7 @@ function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
         }}
         id='editor-label'
       >
-        Earning Criteria<span style={{ color: 'red' }}> *</span>
+        Earning Criteria
       </FormLabel>
       <Box className='text-editor-container' sx={{ borderRadius: '8px' }}>
         <ReactQuill

@@ -2,18 +2,18 @@
 import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography, useMediaQuery, Avatar, Button } from '@mui/material'
-import ProfileImageWithLabels from './components/ProfileImageWithLabels'
+import ProfileImageWithLabels from './CredentialForm/ProfileImageWithLabels'
 import SVGDesign, { SVGCheckMarks } from './Assets/SVGs'
 import Image from 'next/image'
-import AddIcon from './Assets/Add_icon.png'
-import TwoPhonesM from './Assets/TwoPhonesMobile.svg'
-import TwoPhonesT from './Assets/TwoPhonesTablet.svg'
-import TwoPhonesD from './Assets/TwoPhonesDesktop.svg'
+import AddIcon from './Assets/Images/Add_icon.png'
+import TwoPhonesM from './Assets/SVGs/TwoPhonesMobile.svg'
+import TwoPhonesT from './Assets/SVGs/TwoPhonesTablet.svg'
+import TwoPhonesD from './Assets/SVGs/TwoPhonesDesktop.svg'
 import {
   testimonials,
   featuresSmallScreen,
   featuresLargeScreen
-} from './components/landingPageVariables'
+} from './CredentialForm/landingPageVariables'
 import Link from 'next/link'
 
 const Page = () => {

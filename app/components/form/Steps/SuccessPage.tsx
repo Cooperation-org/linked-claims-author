@@ -10,14 +10,14 @@ import {
   InputAdornment,
   Divider
 } from '@mui/material'
-import { SVGDate } from '../../Assets/SVGs'
-import image from '../../Assets/nathan-dumlao-zUNs99PGDg0-unsplash 1.png'
-import twitter from '../../Assets/twitter.svg'
-import instagram from '../../Assets/instagram.svg'
-import linkedin from '../../Assets/linkedin.svg'
-import mail from '../../Assets/mail.svg'
-import messageCircle from '../../Assets/message-circle.svg'
-import copy from '../../Assets/copy.svg'
+import { SVGDate } from '../../../Assets/SVGs'
+import image from '../../../Assets/Images/nathan-dumlao-zUNs99PGDg0-unsplash 1.png'
+import twitter from '../../../Assets/SVGs/twitter.svg'
+import instagram from '../../../Assets/SVGs/instagram.svg'
+import linkedin from '../../../Assets/SVGs/linkedin.svg'
+import mail from '../../../Assets/SVGs/mail.svg'
+import messageCircle from '../../../Assets/SVGs/message-circle.svg'
+import copy from '../../../Assets/SVGs/copy.svg'
 import {
   successPageContainerStyles,
   successPageHeaderStyles,
@@ -31,9 +31,9 @@ import {
   successPageCopyLinkTextStyles,
   successPageTextFieldStyles,
   successPageButtonStyles
-} from './boxStyles'
-import { FormData } from './Types'
-import useGoogleDrive from '../../hooks/useGoogleDrive'
+} from '../../Styles/appStyles'
+import { FormData } from '../types/Types'
+import useGoogleDrive from '../../../hooks/useGoogleDrive'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void

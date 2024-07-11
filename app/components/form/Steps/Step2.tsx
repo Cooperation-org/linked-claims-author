@@ -7,10 +7,10 @@ import {
   TextFieldStyles,
   formLabelStyles,
   formLabelSpanStyles
-} from './boxStyles'
-import TextEditor from '../Texteditor'
+} from '../../Styles/appStyles'
+import TextEditor from '../TextEditor/Texteditor'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
-import { FormData } from './Types'
+import { FormData } from '../types/Types'
 
 interface Step2Props {
   register: UseFormRegister<FormData>
@@ -53,12 +53,10 @@ export function Step2({
       />
       <Box>
         <FormLabel sx={formLabelStyles} id='duration-label'>
-          Duration <span style={formLabelSpanStyles}>*</span>
+          Duration
         </FormLabel>
         <TextField
-          {...register('credentialDuration', {
-            required: 'Duration is required'
-          })}
+          {...register('credentialDuration')}
           placeholder='1 Day'
           variant='outlined'
           sx={TextFieldStyles}

@@ -2,9 +2,9 @@ import React from 'react'
 import { useTheme } from '@mui/material/styles'
 import Image from 'next/image'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
-import { SVGDate } from '../../Assets/SVGs'
-import { FormData } from './Types'
-import test from '../../Assets/test.png'
+import { SVGDate } from '../../../Assets/SVGs'
+import { FormData } from '../types/Types'
+import test from '../../../Assets/Images/test.png'
 import {
   boxStyles,
   commonTypographyStyles,
@@ -12,7 +12,7 @@ import {
   evidenceListStyles,
   credentialBoxStyles,
   imageBoxStyles
-} from './boxStyles'
+} from '../../Styles/appStyles'
 
 interface DataPreviewProps {
   formData: FormData
