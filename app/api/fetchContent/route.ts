@@ -29,13 +29,13 @@ export async function GET(request: Request) {
       throw new Error('URL does not have a valid content type')
     }
 
-    console.log('Content-Type:', contentType)
+    // console.log('Content-Type:', contentType)
 
-    const data = await response.text()
+    // const data = await response.text()
 
-    console.log('Data:', data)
+    // console.log('Data:', data)
 
-    return NextResponse.json({ contentType, data })
+    return NextResponse.json({ contentType })
   } catch (error: any) {
     return NextResponse.json(
       { error: `Failed to fetch the URL: ${error.message}` },

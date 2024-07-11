@@ -33,7 +33,8 @@ import {
   successPageButtonStyles
 } from '../../Styles/appStyles'
 import { FormData } from '../types/Types'
-import useGoogleDrive from '../../../hooks/useGoogleDrive'
+// import useGoogleDrive from '../../../hooks/useGoogleDrive'
+import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
@@ -48,26 +49,18 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   reset,
   link
 }) => {
-  const { fetchFile, fileData } = useGoogleDrive()
-  const [viewingFile, setViewingFile] = useState(false)
 
-  const copyLink = () => {
-    navigator.clipboard
-      .writeText(link)
-      .then(() => {
-        console.log('Credential copied to clipboard')
-      })
-      .catch(err => {
-        console.error('Unable to copy credential to clipboard:', err)
-      })
-  }
+  // comment the fetch data function 
 
-  const handleViewFile = () => {
-    const fileId = link.split('/d/')[1].split('/')[0]
-    const resourceKey = ''
-    fetchFile(fileId, resourceKey)
-    setViewingFile(true)
-  }
+  // const { fetchFile, fileData } = useGoogleDrive()
+  // const [viewingFile, setViewingFile] = useState(false)
+
+  // const handleViewFile = () => {
+  //   const fileId = link.split('/d/')[1].split('/')[0]
+  //   const resourceKey = ''
+  //   fetchFile(fileId, resourceKey)
+  //   setViewingFile(true)
+  // }
 
   return (
     <>
@@ -75,7 +68,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         <Box sx={successPageHeaderStyles}>
           <Image style={{ width: '69px', height: '69px' }} src={image} alt='logo' />
           <Box sx={{ flex: 1 }}>
-            <Typography sx={successPageTitleStyles}>{formData?.credentialName}</Typography>
+            <Typography sx={successPageTitleStyles}>
+              {formData?.credentialName}
+            </Typography>
             <Box sx={successPageInfoStyles}>
               <SVGDate />
               <Typography sx={successPageDateStyles}>
@@ -107,7 +102,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
               startAdornment: <InputAdornment position='start'>http://</InputAdornment>,
               endAdornment: (
                 <InputAdornment position='end'>
-                  <Button onClick={copyLink}>
+                  <Button onClick={() => copyFormValuesToClipboard(link)}>
                     <Image src={copy} alt='copyIcon' />
                   </Button>
                 </InputAdornment>
@@ -116,18 +111,6 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             }}
           />
         </Box>
-
-        <Button variant='contained' onClick={handleViewFile}>
-          View File Content
-        </Button>
-
-        {viewingFile && fileData && (
-          <pre style={{ width: '100%', overflow: 'auto' }}>
-            <code style={{ color: 'black' }}>
-              {JSON.stringify(JSON.parse(fileData), null, 2)}
-            </code>
-          </pre>
-        )}
       </Box>
 
       <Button

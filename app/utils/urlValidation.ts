@@ -4,15 +4,12 @@ export const handleUrlValidation = async (event: React.ChangeEvent<HTMLInputElem
     if (url) {
       try {
         const response = await fetch(`/api/fetchContent?url=${encodeURIComponent(url)}`)
-        console.log(':  handleUrlChange  response', response)
         if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`)
         }
 
-        const { contentType, data } = await response.json()
+        const { contentType } = await response.json()
 
-        console.log(':  handleUrlChange  contentType', contentType)
-        console.log(':  handleUrlChange  data', data)
         const videoRegex =
           /\.(mp4|webm|ogg|avi|mov|wmv|flv|mkv)$|youtube\.com|vimeo\.com/i
 
