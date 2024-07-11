@@ -34,13 +34,19 @@ export function Step5({ register, handleNext }: Readonly<Step5Props>) {
 
         console.log(':  handleUrlChange  contentType', contentType)
         console.log(':  handleUrlChange  data', data)
+        const videoRegex =
+          /\.(mp4|webm|ogg|avi|mov|wmv|flv|mkv)$|youtube\.com|vimeo\.com/i
 
-        if (contentType.includes('text/html')) {
+        const gitHubRegex = /github\.com/i
+
+        if (videoRegex.test(url)) {
+          setUrlError('The URL points to a video link.')
+        } else if (gitHubRegex.test(url)) {
+          setUrlError('The URL points to a video link.')
+        } else if (contentType.includes('text/html')) {
           setUrlError('The URL points to a web page.')
         } else if (contentType.startsWith('image/')) {
           setUrlError('The URL points to an image.')
-        } else if (contentType.startsWith('video/')) {
-          setUrlError('The URL points to a video.')
         } else if (contentType.startsWith('audio/')) {
           setUrlError('The URL points to an audio.')
         } else if (contentType === 'application/pdf') {
