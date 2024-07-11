@@ -31,6 +31,7 @@ import {
 
 const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
+  const [link, setLink] = useState<string>('')
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { data: session } = useSession()
@@ -89,13 +90,8 @@ const Form = ({ onStepChange, setactivStep }: any) => {
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     if (data.storageOption === 'Google Drive') {
-      createFolderAndUploadFile(data, accessToken)
+      createFolderAndUploadFile(data, accessToken, setLink)
     }
-
-    reset()
-    setActiveStep(0)
-    const codeToCopy = JSON.stringify(data, null, 2)
-    copyFormValuesToClipboard(codeToCopy)
   })
 
   return (
@@ -166,7 +162,12 @@ const Form = ({ onStepChange, setactivStep }: any) => {
           )}
           {activeStep === 6 && <DataComponent formData={watch()} />}
           {activeStep === 7 && (
-            <SuccessPage formData={watch()} setActiveStep={setActiveStep} reset={reset} />
+            <SuccessPage
+              formData={watch()}
+              setActiveStep={setActiveStep}
+              reset={reset}
+              link={link}
+            />
           )}
         </FormControl>
       </Box>
@@ -175,7 +176,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
           activeStep={activeStep}
           maxSteps={maxSteps}
           handleNext={() => handleNext(activeStep, setActiveStep)}
-          handleSign={() => handleSign(activeStep, setActiveStep)}
+          handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
           handleBack={() => handleBack(activeStep, setActiveStep)}
           isValid={isValid}
         />

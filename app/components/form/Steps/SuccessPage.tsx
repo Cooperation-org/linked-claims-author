@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import {
   Box,
@@ -33,25 +33,48 @@ import {
   successPageButtonStyles
 } from '../../Styles/appStyles'
 import { FormData } from '../types/Types'
+// import useGoogleDrive from '../../../hooks/useGoogleDrive'
+import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
-  formData: FormData
+  formData: FormData | null
   reset: () => void
+  link: string
 }
 
-const SuccessPage: React.FC<SuccessPageProps> = ({ setActiveStep, formData, reset }) => {
+const SuccessPage: React.FC<SuccessPageProps> = ({
+  setActiveStep,
+  formData,
+  reset,
+  link
+}) => {
+
+  // comment the fetch data function 
+
+  // const { fetchFile, fileData } = useGoogleDrive()
+  // const [viewingFile, setViewingFile] = useState(false)
+
+  // const handleViewFile = () => {
+  //   const fileId = link.split('/d/')[1].split('/')[0]
+  //   const resourceKey = ''
+  //   fetchFile(fileId, resourceKey)
+  //   setViewingFile(true)
+  // }
+
   return (
     <>
       <Box sx={successPageContainerStyles}>
         <Box sx={successPageHeaderStyles}>
           <Image style={{ width: '69px', height: '69px' }} src={image} alt='logo' />
           <Box sx={{ flex: 1 }}>
-            <Typography sx={successPageTitleStyles}>{formData.credentialName}</Typography>
+            <Typography sx={successPageTitleStyles}>
+              {formData?.credentialName}
+            </Typography>
             <Box sx={successPageInfoStyles}>
               <SVGDate />
               <Typography sx={successPageDateStyles}>
-                {formData.credentialDuration}
+                {formData?.credentialDuration}
               </Typography>
             </Box>
           </Box>
@@ -74,12 +97,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ setActiveStep, formData, rese
           <Typography sx={successPageCopyLinkTextStyles}>Copy link:</Typography>
           <TextField
             sx={successPageTextFieldStyles}
-            value='www.linkedclaims.com/file/f0g7iKqcLqxEscHmeZgDmp/Linked-Credentials?type=design&node-id=1-3&mode=design&t=2dmf296EWsNQ7ZFL-0'
+            value={link}
             InputProps={{
               startAdornment: <InputAdornment position='start'>http://</InputAdornment>,
               endAdornment: (
                 <InputAdornment position='end'>
-                  <Button>
+                  <Button onClick={() => copyFormValuesToClipboard(link)}>
                     <Image src={copy} alt='copyIcon' />
                   </Button>
                 </InputAdornment>
@@ -89,6 +112,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ setActiveStep, formData, rese
           />
         </Box>
       </Box>
+
       <Button
         variant='contained'
         onClick={() => {
