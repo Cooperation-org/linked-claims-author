@@ -53,7 +53,7 @@ export interface FormData {
   credentialDuration: string
   credentialDescription: string
   portfolio: Portfolio[]
-  imageLink: string
+  evidenceLink: string
   description: string
   url: string
   [key: string]: string | undefined | Portfolio[]

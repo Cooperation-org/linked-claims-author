@@ -2,7 +2,7 @@
 
 import { useTheme } from '@mui/material/styles'
 import React from 'react'
-import { FormLabel, TextField, Box, Theme, Typography, Button } from '@mui/material'
+import { FormLabel, TextField, Box, Theme, Typography } from '@mui/material'
 import {
   formLabelStyles,
   TextFieldStyles,
@@ -13,10 +13,10 @@ import {
   skipButtonBoxStyles,
   formBoxStyles,
   formBoxStylesUrl
-} from './boxStyles'
+} from '../../Styles/appStyles'
 import ClearIcon from '@mui/icons-material/Clear'
 import { UseFormRegister, FieldErrors, UseFieldArrayAppend } from 'react-hook-form'
-import { FormData } from './Types'
+import { FormData } from '../types/Types'
 
 interface Step4Props {
   errors: FieldErrors<FormData>
@@ -55,9 +55,7 @@ export function Step4({
               Name
             </FormLabel>
             <TextField
-              {...register(`portfolio.${index}.name`, {
-                required: 'Name is required'
-              })}
+              {...register(`portfolio.${index}.name`)}
               defaultValue={field.name}
               placeholder='Picture of the Community Garden'
               variant='outlined'
@@ -72,9 +70,7 @@ export function Step4({
               URL
             </FormLabel>
             <TextField
-              {...register(`portfolio.${index}.url`, {
-                required: 'URL is required'
-              })}
+              {...register(`portfolio.${index}.url`)}
               defaultValue={field.url}
               placeholder='https://www.example.com'
               variant='outlined'

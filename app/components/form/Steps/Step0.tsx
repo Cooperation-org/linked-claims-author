@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Radio, RadioGroup, FormControlLabel } from '@mui/material'
-import { boxStyles, radioCheckedStyles, radioGroupStyles } from './boxStyles'
+import { boxStyles, radioCheckedStyles, radioGroupStyles } from '../../Styles/appStyles'
 
 interface StoringMethodRadiosProps {
   watch: (arg: string) => any

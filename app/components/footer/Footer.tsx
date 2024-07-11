@@ -2,9 +2,9 @@ import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import Image from 'next/image'
-import LinkedinImage from '../Assets/linkedin.svg'
-import TwitterImage from '../Assets/twitter.svg'
-import InstagramImage from '../Assets/instagram.svg'
+import LinkedinImage from '../../Assets/SVGs/linkedin.svg'
+import TwitterImage from '../../Assets/SVGs/twitter.svg'
+import InstagramImage from '../../Assets/SVGs/instagram.svg'
 
 const Footer = () => {
   const theme = useTheme()

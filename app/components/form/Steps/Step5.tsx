@@ -8,9 +8,9 @@ import {
   TextFieldStyles,
   formLabelStyles,
   skipButtonBoxStyles
-} from './boxStyles'
+} from '../../Styles/appStyles'
 import { UseFormRegister } from 'react-hook-form'
-import { FormData } from './Types'
+import { FormData } from '../types/Types'
 
 interface Step5Props {
   register: UseFormRegister<FormData>
@@ -99,7 +99,7 @@ export function Step5({ register, handleNext }: Readonly<Step5Props>) {
         URL of an image you have permission to use (optional)
       </FormLabel>
       <TextField
-        {...register('imageLink')}
+        {...register('evidenceLink')}
         placeholder='https://'
         variant='outlined'
         sx={TextFieldStyles}

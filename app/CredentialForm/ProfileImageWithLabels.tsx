@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography, useMediaQuery } from '@mui/material'
 import Image from 'next/image'
-import profileImage from '../Assets/Tessa.png'
+import profileImage from '../Assets/Images/Tessa.png'
 import styled from '@emotion/styled'
 
 const ProfileContainer = styled(Box)`
