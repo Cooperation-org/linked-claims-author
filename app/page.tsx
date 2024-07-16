@@ -124,34 +124,43 @@ const Page = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            mt: { xs: '37px', md: '26px' }
+            mt: { xs: '37px', md: '36px' }
           }}
         >
           <Link href='/CredentialForm'>
             <Button
               sx={{
-                width: '176px',
+                width: '200px',
                 height: '40px',
                 fontFamily: 'Lato',
-                fontSize: '14px',
-                fontWeight: 500,
+                fontSize: '16px',
+                fontWeight: 600,
                 lineHeight: '20px',
                 borderRadius: '100px',
                 backgroundColor: theme.palette.t3ButtonBlue,
                 color: 'white',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                border: 'none',
-                cursor: 'pointer',
                 textTransform: 'none',
                 '&:hover': {
                   backgroundColor: theme.palette.t3ButtonBlue
                 }
               }}
             >
-              Get started for FREE
+              Create a Credential
+            </Button>
+          </Link>
+          <Link href='/CredentialForm'>
+            <Button
+              sx={{
+                fontFamily: 'Lato',
+                fontSize: '18px',
+                fontWeight: 500,
+                lineHeight: '20px',
+                borderRadius: '100px',
+                color: theme.palette.t3ButtonBlue,
+                textTransform: 'none'
+              }}
+            >
+              Resume Previous Session
             </Button>
           </Link>
         </Box>
@@ -169,7 +178,7 @@ const Page = () => {
           textAlign: 'center',
           position: 'relative',
           width: { xs: '360px', md: '437px' },
-          marginTop: { xs: '90px', md: '90px' }
+          marginTop: { xs: '90px', md: '160px' }
         }}
       >
         <Box

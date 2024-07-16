@@ -206,7 +206,8 @@ export const portfolioTypographyStyles = {
   fontSize: '20px',
   fontWeight: 700,
   display: 'flex',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
+  mb:'10px'
 }
 
 export const addAnotherButtonStyles = (theme: Theme): CSSProperties => ({
