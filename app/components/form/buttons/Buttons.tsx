@@ -57,7 +57,7 @@ export function Buttons({
       )}
       {activeStep === 6 && (
         <Button sx={nextButtonStyle} onClick={handleSign} color='primary'>
-          Sign
+          Finish & Sign
         </Button>
       )}
       {activeStep === 5 && (
