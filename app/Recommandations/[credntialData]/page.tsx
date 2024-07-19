@@ -1,45 +1,37 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  Button,
-  Container,
-  TextField,
-  Typography,
-  Box,
-  useMediaQuery,
-  Theme
-} from '@mui/material'
+import { Typography, Box, useMediaQuery, Theme } from '@mui/material'
 import Image from 'next/image'
 import { useTheme } from '@mui/material/styles'
-import { StepTrackShape } from '../components/form/fromTexts & stepTrack/StepTrackShape'
-import { SVGLargeScreen } from '../Assets/SVGs'
-import img3 from '../Assets/Images/Tessa Persona large sceens.png'
-import fram from '../Assets/Images/Frame 35278.png'
-import vector from '../Assets/Images/Vector 145.png'
+import { StepTrackShape } from '../../components/form/fromTexts & stepTrack/StepTrackShape'
+import { SVGLargeScreen } from '../../Assets/SVGs'
+import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
+import fram from '../../Assets/Images/Frame 35278.png'
+import vector from '../../Assets/Images/Vector 145.png'
+import useGoogleDrive from '../../hooks/useGoogleDrive'
+import Form from './RecommandationForm/Form'
 
-
-const SendEmailPage = () => {
+const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  const activStep = 1
-  const [emailData, setEmailData] = useState({
-    to: '',
-    subject: '',
-    text: '',
-    html: ''
-  })
+  const [activStep, setactivStep] = useState(0)
 
-  const handleChange = (e: { target: { name: any; value: any } }) => {
-    setEmailData({
-      ...emailData,
-      [e.target.name]: e.target.value
-    })
-  }
+  // get the path
+  const fileParam = params.credntialData
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    console.log(':  handleSubmit  emailData', emailData)
-    e.preventDefault()
+  // decode the URL
+  const decodedLink = decodeURIComponent(fileParam)
+  const extractedFile = decodedLink ? decodedLink.split('=')[1] : ''
+
+  const { fetchFile, fileData } = useGoogleDrive()
+  const [viewingFile, setViewingFile] = useState(false)
+
+  const handleViewFile = () => {
+    const fileId = extractedFile.split('/d/')[1].split('/')[0]
+    const resourceKey = ''
+    fetchFile(fileId, resourceKey)
+    setViewingFile(true)
   }
 
   return (
@@ -60,7 +52,7 @@ const SendEmailPage = () => {
           overflow: 'hidden'
         }}
       >
-        <StepTrackShape activeStep={activStep} />
+        <StepTrackShape activeStep={0} />
         <Box
           sx={{
             position: 'relative',
@@ -82,6 +74,7 @@ const SendEmailPage = () => {
           </Box>
         </Box>
       </Box>
+      {activStep !== 0 && <Form setactivStep={setactivStep} />}
       {!isLargeScreen && (
         <Box
           sx={{
@@ -120,4 +113,4 @@ const SendEmailPage = () => {
   )
 }
 
-export default SendEmailPage
+export default CredntialData
