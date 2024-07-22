@@ -139,7 +139,7 @@ const Theme = createTheme({
       fontStyle: 'normal',
       fontWeight: 400,
       lineHeight: 'normal',
-      padding: '0 50px'
+      padding: '0 30px'
     },
     successText: {
       color: palette.t3BodyText,

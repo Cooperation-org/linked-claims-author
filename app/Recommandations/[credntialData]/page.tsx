@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Typography, Box, useMediaQuery, Theme } from '@mui/material'
 import Image from 'next/image'
 import { useTheme } from '@mui/material/styles'
@@ -9,30 +9,12 @@ import { SVGLargeScreen } from '../../Assets/SVGs'
 import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
 import fram from '../../Assets/Images/Frame 35278.png'
 import vector from '../../Assets/Images/Vector 145.png'
-import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Form from './RecommandationForm/Form'
 
 const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  const [activStep, setactivStep] = useState(0)
-
-  // get the path
-  const fileParam = params.credntialData
-
-  // decode the URL
-  const decodedLink = decodeURIComponent(fileParam)
-  const extractedFile = decodedLink ? decodedLink.split('=')[1] : ''
-
-  const { fetchFile, fileData } = useGoogleDrive()
-  const [viewingFile, setViewingFile] = useState(false)
-
-  const handleViewFile = () => {
-    const fileId = extractedFile.split('/d/')[1].split('/')[0]
-    const resourceKey = ''
-    fetchFile(fileId, resourceKey)
-    setViewingFile(true)
-  }
+  // const [activStep, setactivStep] = useState(0)
 
   return (
     <Box
@@ -74,7 +56,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
           </Box>
         </Box>
       </Box>
-      {activStep !== 0 && <Form setactivStep={setactivStep} />}
+      <Form />
       {!isLargeScreen && (
         <Box
           sx={{
@@ -85,7 +67,8 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
             p: '28px 70px 28px 50px',
             display: 'flex',
             alignItems: 'center',
-            gap: '12px'
+            gap: '12px',
+            bottom: 0
           }}
         >
           <Box>

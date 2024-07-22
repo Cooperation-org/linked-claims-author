@@ -21,11 +21,12 @@ export const nextButtonStyle = {
   borderRadius: '100px',
   textTransform: 'capitalize',
   fontFamily: 'Roboto',
-  fontWeight: '600',
+  fontWeight: '500',
   lineHeight: '20px',
   backgroundColor: '#003FE0',
   color: '#FFFFFF',
-  flexGrow: 8
+  flexGrow: 8,
+  fontSize:'14px'
 }
 
 export const CustomTextField = styled(TextField)({

@@ -25,6 +25,9 @@ export const note =
 export const successNote =
   'Congratulations on your achievement. Tell the world what you’ve accomplished!'
 
+export const CredentialViewText =
+  'Hi, I’m Tessa! I’ll help you with Alice’s recommendation.'
+
 interface FormTextStepsProps {
   activeStep: number
   activeText: any
