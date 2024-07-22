@@ -1,3 +1,4 @@
+import { Box } from '@mui/material'
 import React from 'react'
 
 const SVGDesign = () => {
@@ -412,5 +413,39 @@ export const SVGBadge = () => {
         />
       </svg>
     </div>
+
+export const Dropbox = () => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        width='20px'
+        height='20px'
+        viewBox='0 0 24 24'
+      >
+        <path
+          fill='#1e88e5'
+          d='m3 6.2l5 3.19l5-3.19L8 3zm10 0l5 3.19l5-3.19L18 3zM3 12.55l5 3.19l5-3.19l-5-3.2zm15-3.2l-5 3.2l5 3.19l5-3.19zM8.03 16.8l5.01 3.2l5-3.2l-5-3.19z'
+        />
+      </svg>
+    </Box>
+  )
+}
+export const GoogleDrive = () => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        x='0px'
+        y='0px'
+        width='20'
+        height='20'
+        viewBox='0 0 48 48'
+      >
+        <path fill='#FFC107' d='M17 6L31 6 45 30 31 30z'></path>
+        <path fill='#1976D2' d='M9.875 42L16.938 30 45 30 38 42z'></path>
+        <path fill='#4CAF50' d='M3 30.125L9.875 42 24 18 17 6z'></path>
+      </svg>
+    </Box>
   )
 }

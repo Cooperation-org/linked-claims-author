@@ -1,8 +1,10 @@
 'use client'
 
 import React from 'react'
-import { Radio, RadioGroup, FormControlLabel } from '@mui/material'
+import { Radio, RadioGroup, FormControlLabel, Box, Typography } from '@mui/material'
 import { boxStyles, radioCheckedStyles, radioGroupStyles } from '../../Styles/appStyles'
+import { Dropbox } from '../../../Assets/SVGs'
+import { GoogleDrive } from '../../../Assets/SVGs'
 
 interface StoringMethodRadiosProps {
   watch: (arg: string) => any
@@ -30,7 +32,11 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
           value='Google Drive'
           sx={boxStyles}
           control={<Radio sx={radioCheckedStyles} />}
-          label='Google Drive'
+          label={
+            <Box sx={{ display: 'flex', gap: '10px', alignItems:'center' }}>
+              <GoogleDrive />  Google Drive
+            </Box>
+          }
         />
         <FormControlLabel
           value='Digital Wallet'
@@ -42,7 +48,11 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
           value='Dropbox'
           sx={boxStyles}
           control={<Radio sx={radioCheckedStyles} />}
-          label='Dropbox'
+          label={
+            <Box sx={{ display: 'flex', gap: '10px', alignItems:'center' }}>
+              <Dropbox />  Dropbox
+            </Box>
+          }
         />
       </>
     </RadioGroup>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useTheme } from '@mui/material/styles'
-import React from 'react'
+import React, { useState } from 'react'
 import { FormLabel, TextField, Box, Theme, Typography } from '@mui/material'
 import {
   formLabelStyles,
@@ -17,6 +17,7 @@ import {
 import ClearIcon from '@mui/icons-material/Clear'
 import { UseFormRegister, FieldErrors, UseFieldArrayAppend } from 'react-hook-form'
 import { FormData } from '../types/Types'
+import { handleUrlValidation } from '../../../utils/urlValidation'
 
 interface Step4Props {
   errors: FieldErrors<FormData>
@@ -36,13 +37,18 @@ export function Step4({
   remove
 }: Readonly<Step4Props>) {
   const theme = useTheme<Theme>()
+  const [urlError, setUrlError] = useState<string | null>(null)
+
+  const handleUrlChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleUrlValidation(event, setUrlError)
+  }
   return (
     <Box>
       {fields.map((field, index) => (
         <React.Fragment key={field.id}>
           <Box sx={formBoxStyles}>
             <Typography sx={portfolioTypographyStyles}>
-              Portfolio Item {index + 1}
+              Evidence #{index + 1}
               {index > 0 && (
                 <ClearIcon
                   type='button'
@@ -77,9 +83,20 @@ export function Step4({
               sx={TextFieldStyles}
               aria-labelledby={`url-label-${index}`}
               error={!!errors?.portfolio?.[index]?.url}
-              helperText={errors?.portfolio?.[index]?.url?.message}
+              onChange={handleUrlChange}
+              helperText={urlError}
             />
           </Box>
+          <Box
+            sx={{
+              bgcolor: theme.palette.t3LightGray,
+              width: '100%',
+              height: '1px',
+              m: '30px 0'
+            }}
+            width={'100%'}
+            height={'1px'}
+          ></Box>
         </React.Fragment>
       ))}
       {fields.length < 5 && (

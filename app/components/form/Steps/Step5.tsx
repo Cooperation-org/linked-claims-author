@@ -19,11 +19,6 @@ interface Step5Props {
 }
 
 export function Step5({ register, handleNext }: Readonly<Step5Props>) {
-  const [urlError, setUrlError] = useState<string | null>(null)
-
-  const handleUrlChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleUrlValidation(event, setUrlError)
-  }
 
   return (
     <Box>
@@ -40,8 +35,6 @@ export function Step5({ register, handleNext }: Readonly<Step5Props>) {
           'aria-label': 'weight',
           style: inputPropsStyles
         }}
-        onChange={handleUrlChange}
-        helperText={urlError}
       />
       <Box sx={skipButtonBoxStyles}>
         <button type='button' onClick={handleNext} style={buttonLinkStyles}>
