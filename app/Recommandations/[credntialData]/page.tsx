@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { Typography, Box, useMediaQuery, Theme } from '@mui/material'
 import Image from 'next/image'
 import { useTheme } from '@mui/material/styles'
@@ -10,11 +9,12 @@ import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
 import fram from '../../Assets/Images/Frame 35278.png'
 import vector from '../../Assets/Images/Vector 145.png'
 import Form from './RecommandationForm/Form'
+import { useState } from 'react'
 
 const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  // const [activStep, setactivStep] = useState(0)
+  const [activeStep, setActiveStep] = useState(0)
 
   return (
     <Box
@@ -34,7 +34,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
           overflow: 'hidden'
         }}
       >
-        <StepTrackShape activeStep={0} />
+        <StepTrackShape activeStep={activeStep} />
         <Box
           sx={{
             position: 'relative',
@@ -56,7 +56,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
           </Box>
         </Box>
       </Box>
-      <Form />
+      <Form onStepChange={() => {}} setActiveStep={setActiveStep} />
       {!isLargeScreen && (
         <Box
           sx={{

@@ -1,10 +1,9 @@
 'use client'
 
 import React from 'react'
-import { Radio, RadioGroup, FormControlLabel, Box, Typography } from '@mui/material'
+import { Radio, RadioGroup, FormControlLabel, Box } from '@mui/material'
 import { boxStyles, radioCheckedStyles, radioGroupStyles } from '../../Styles/appStyles'
-import { Dropbox } from '../../../Assets/SVGs'
-import { GoogleDrive } from '../../../Assets/SVGs'
+import { Dropbox, GoogleDrive, DigitalWallet } from '../../../Assets/SVGs'
 
 interface StoringMethodRadiosProps {
   watch: (arg: string) => any
@@ -33,8 +32,8 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
           sx={boxStyles}
           control={<Radio sx={radioCheckedStyles} />}
           label={
-            <Box sx={{ display: 'flex', gap: '10px', alignItems:'center' }}>
-              <GoogleDrive />  Google Drive
+            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <GoogleDrive /> Google Drive
             </Box>
           }
         />
@@ -42,15 +41,19 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
           value='Digital Wallet'
           sx={boxStyles}
           control={<Radio sx={radioCheckedStyles} />}
-          label='Your Digital Wallet (e.g. Corner Pocket)'
+          label={
+            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <DigitalWallet /> Your Digital Wallet (e.g. Corner Pocket)
+            </Box>
+          }
         />
         <FormControlLabel
           value='Dropbox'
           sx={boxStyles}
           control={<Radio sx={radioCheckedStyles} />}
           label={
-            <Box sx={{ display: 'flex', gap: '10px', alignItems:'center' }}>
-              <Dropbox />  Dropbox
+            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <Dropbox /> Dropbox
             </Box>
           }
         />

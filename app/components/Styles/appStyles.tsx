@@ -13,7 +13,7 @@ export const StyledButton = {
   color: '#4e4e4e',
   '&:hover': {
     backgroundColor: '003fe0'
-  },
+  }
 }
 
 export const nextButtonStyle = {
@@ -26,7 +26,7 @@ export const nextButtonStyle = {
   backgroundColor: '#003FE0',
   color: '#FFFFFF',
   flexGrow: 8,
-  fontSize:'14px'
+  fontSize: '14px'
 }
 
 export const CustomTextField = styled(TextField)({
@@ -108,7 +108,7 @@ export const commonTypographyStyles = {
   color: 't3BodyText',
   fontSize: '15px',
   fontWeight: 400,
-  fontStyle:'normal'
+  fontStyle: 'normal'
 }
 
 export const commonBoxStyles = {
@@ -121,7 +121,7 @@ export const commonBoxStyles = {
 export const evidenceListStyles = {
   marginLeft: '25px',
   textDecorationLine: 'underline',
-  color:'blue'
+  color: 'blue'
 }
 
 export const credentialBoxStyles = {
@@ -131,7 +131,7 @@ export const credentialBoxStyles = {
   padding: '2px 5px',
   borderRadius: '5px',
   width: 'fit-content',
-  mb:'10px'
+  mb: '10px'
 }
 
 export const imageBoxStyles = {
@@ -208,7 +208,7 @@ export const portfolioTypographyStyles = {
   fontWeight: 700,
   display: 'flex',
   justifyContent: 'space-between',
-  mb:'10px'
+  mb: '10px'
 }
 
 export const addAnotherButtonStyles = (theme: Theme): CSSProperties => ({
@@ -322,7 +322,7 @@ export const successPageShareTextStyles = {
   fontFamily: 'Inter, sans-serif',
   fontSize: '15px',
   letterSpacing: '0.075px',
-  mr:'5px'
+  mr: '5px'
 }
 
 export const successPageIconContainerStyles = {
@@ -350,7 +350,7 @@ export const successPageCopyLinkTextStyles = {
   fontFamily: 'Inter, sans-serif',
   fontSize: '15px',
   letterSpacing: '0.075px',
-  mr:'10px'
+  mr: '10px'
 }
 
 export const successPageTextFieldStyles = {

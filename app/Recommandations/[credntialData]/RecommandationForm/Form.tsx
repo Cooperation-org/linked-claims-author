@@ -1,49 +1,30 @@
-import { Box, FormControl, Typography } from '@mui/material'
+'use client'
+
 import React, { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import {
-  FormTextSteps,
-  CredentialViewText,
-  SuccessText,
-  textGuid
-} from '../../../components/form/fromTexts & stepTrack/FormTextSteps'
+import { useForm, useFieldArray } from 'react-hook-form'
+import { FormControl, Box } from '@mui/material'
+import Step0 from './Steps/Step0'
+import Step1 from './Steps/Step1'
+import Step2 from './Steps/Step2'
+import Step3 from './Steps/Step3'
+import { useSession } from 'next-auth/react'
+import { createFolderAndUploadFile } from '../../../utils/formUtils'
 import { FormData } from '../../../components/form/types/Types'
-import ViewCredential from '../viewCredential/Credential'
+import { FormTextSteps, textGuid, NoteText } from './fromTexts & stepTrack/FormTextSteps'
 
-const Form = () => {
-  const [activeStep, SetFormStep] = useState(0)
-
-  // useEffect(() => {
-  //   setActiveStep(activeStep)
-  // }, [activeStep])
-
-  // const [emailData, setEmailData] = useState({
-  //   to: '',
-  //   subject: '',
-  //   text: '',
-  //   html: ''
-  // })
-
-  // const handleChange = (e: { target: { name: any; value: any } }) => {
-  //   setEmailData({
-  //     ...emailData,
-  //     [e.target.name]: e.target.value
-  //   })
-  // }
-
-  // const handleSubmit = async (e: { preventDefault: () => void }) => {
-  //   console.log(':  handleSubmit  emailData', emailData)
-  //   e.preventDefault()
-  // }
+const Form = ({ onStepChange, setactivStep }: any) => {
+  const [activeStep, setActiveStep] = useState(0)
+  const [link, setLink] = useState<string>('')
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken as string
 
   const {
     register,
     handleSubmit,
     watch,
-    reset,
     setValue,
     control,
-    formState: { errors, isValid }
+    formState: { errors }
   } = useForm<FormData>({
     defaultValues: {
       storageOption: 'Device',
@@ -54,10 +35,43 @@ const Form = () => {
       credentialDescription: '',
       portfolio: [{ name: '', url: '' }],
       evidenceLink: '',
-      description: ''
+      description: '',
+      recommendationText: '',
+      howDoYouKnowAlice: ''
     },
     mode: 'onChange'
   })
+
+  useFieldArray({
+    control,
+    name: 'portfolio'
+  })
+
+  useEffect(() => {
+    setActiveStep(0)
+    window.location.hash = `step-0`
+  }, [])
+
+  useEffect(() => {
+    if (typeof setactivStep === 'function') {
+      setactivStep(activeStep)
+    }
+    onStepChange()
+  }, [activeStep, onStepChange])
+
+  const handleFormSubmit = handleSubmit((data: FormData) => {
+    if (data.storageOption === 'Google Drive') {
+      createFolderAndUploadFile(data, accessToken, setLink)
+    }
+  })
+
+  const handleNextStep = () => {
+    setActiveStep(prevStep => prevStep + 1)
+  }
+
+  const handleBackStep = () => {
+    setActiveStep(prevStep => prevStep - 1)
+  }
 
   return (
     <form
@@ -68,32 +82,42 @@ const Form = () => {
         alignItems: 'center',
         marginTop: '30px',
         padding: '0 15px 30px',
-        overflow: 'auto',
-        flexGrow: 1
+        overflow: 'auto'
       }}
-      // onSubmit={{}}
+      onSubmit={handleFormSubmit}
     >
-      {activeStep === 0 && (
-        <Typography variant='formTextStep'>{CredentialViewText}</Typography>
-      )}
-      {activeStep !== 0 && (
-        <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-      )}
-      {activeStep === 7 && <SuccessText />}
+      <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
+      {activeStep !== 0 && activeStep !== 6 && activeStep !== 4 && <NoteText />}
       <Box sx={{ width: { xs: '100%', md: '50%' } }}>
         <FormControl sx={{ width: '100%' }}>
-          {activeStep === 0 && <ViewCredential />}
-          {/* {activeStep === 1 && <Step1 />}
-
-          {activeStep === 2 && <Step2 />}
-          {activeStep === 3 && <Step3 />}
-          {activeStep === 4 && <Step4 />}
-          {activeStep === 5 && <Step5 />}
-          {activeStep === 6 && <DataComponent />}
-          {activeStep === 7 && <SuccessPage />} */}
+          {activeStep === 0 && <Step0 handleNext={handleNextStep} />}
+          {activeStep === 1 && (
+            <Step1 watch={watch} setValue={setValue} handleNext={handleNextStep} />
+          )}
+          {activeStep === 2 && (
+            <Step2
+              register={register}
+              watch={watch}
+              handleTextEditorChange={value =>
+                setValue('credentialDescription', value ?? '')
+              }
+              errors={errors}
+              handleNext={handleNextStep}
+              handleBack={handleBackStep}
+            />
+          )}
+          {activeStep === 3 && (
+            <Step3
+              register={register}
+              watch={watch}
+              setValue={setValue}
+              errors={errors}
+              handleNext={handleNextStep}
+              handleBack={handleBackStep}
+            />
+          )}
         </FormControl>
       </Box>
-      {/* {activeStep !== 7 && <Buttons />} */}
     </form>
   )
 }

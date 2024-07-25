@@ -13,7 +13,10 @@ import { SVGBadge, SVGDate } from '../../../Assets/SVGs'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
 import CircularProgress from '@mui/material/CircularProgress'
 
-const Credential = () => {
+interface CredentialProps {
+  handleNext: () => void
+}
+const Credential: React.FC<CredentialProps> = ({ handleNext }) => {
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
 
@@ -32,6 +35,23 @@ const Credential = () => {
 
     fetchDriveData()
   }, 1500)
+  // useEffect(() => {
+  //   const fetchDriveData = async () => {
+  //     if (gapiLoaded) {
+  //       try {
+  //         const decodedLink = decodeURIComponent(params.credntialData as any)
+  //         const extractedFile = decodedLink ? decodedLink.split('=')[1] : ''
+  //         const fileId = extractedFile.split('/d/')[1].split('/')[0]
+  //         const resourceKey = ''
+  //         await fetchFile(fileId, resourceKey)
+  //       } catch (error) {
+  //         console.error('Error fetching file: ', error)
+  //       }
+  //     }
+  //   }
+
+  //   fetchDriveData()
+  // }, [gapiLoaded, params.credntialData, fetchFile])
 
   useEffect(() => {
     if (fileData) {
@@ -46,7 +66,7 @@ const Credential = () => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Button onClick={() => {}} sx={{ ...nextButtonStyle, width: '100%' }}>
+      <Button onClick={handleNext} sx={{ ...nextButtonStyle, width: '100%' }}>
         Get Started
       </Button>
       <Box
@@ -130,12 +150,13 @@ const Credential = () => {
                       | null
                       | undefined
                   }) => (
-                    <li
-                      style={{ cursor: 'pointer', width: 'fit-content' }}
-                      key={porto.url}
-                      onClick={() => handleNavigate(porto.url as any)}
-                    >
-                      {porto.name}
+                    <li key={porto.url}>
+                      <button
+                        style={{ cursor: 'pointer', width: 'fit-content' }}
+                        onClick={() => handleNavigate(porto.url as any)}
+                      >
+                        {porto.name}
+                      </button>
                     </li>
                   )
                 )}
