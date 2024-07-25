@@ -121,7 +121,8 @@ export const commonBoxStyles = {
 export const evidenceListStyles = {
   marginLeft: '25px',
   textDecorationLine: 'underline',
-  color: 'blue'
+  color: 'blue',
+  backGroundColor: '#FFFFFF'
 }
 
 export const credentialBoxStyles = {

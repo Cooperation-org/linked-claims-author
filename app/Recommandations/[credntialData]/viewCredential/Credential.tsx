@@ -3,26 +3,32 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { Box, Button, Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import {
   credentialBoxStyles,
   nextButtonStyle,
   commonTypographyStyles,
   evidenceListStyles
 } from '../../../components/Styles/appStyles'
-import { SVGBadge, SVGDate } from '../../../Assets/SVGs'
+import { SVGBadge, SVGDate, SVGCheckMarks } from '../../../Assets/SVGs'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
 import CircularProgress from '@mui/material/CircularProgress'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import { featuresRecommentations } from '../RecommandationForm/fromTexts & stepTrack/FormTextSteps'
+import Link from 'next/link'
 
 interface CredentialProps {
   handleNext: () => void
 }
 const Credential: React.FC<CredentialProps> = ({ handleNext }) => {
+  const theme = useTheme()
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
 
+
   const { fetchFile, fileData, gapiLoaded } = useGoogleDrive()
 
-  setTimeout(() => {
+  useEffect(() => {
     const fetchDriveData = async () => {
       const decodedLink = decodeURIComponent(params.credntialData as any)
       const extractedFile = decodedLink ? decodedLink.split('=')[1] : ''
@@ -34,24 +40,7 @@ const Credential: React.FC<CredentialProps> = ({ handleNext }) => {
     }
 
     fetchDriveData()
-  }, 1500)
-  // useEffect(() => {
-  //   const fetchDriveData = async () => {
-  //     if (gapiLoaded) {
-  //       try {
-  //         const decodedLink = decodeURIComponent(params.credntialData as any)
-  //         const extractedFile = decodedLink ? decodedLink.split('=')[1] : ''
-  //         const fileId = extractedFile.split('/d/')[1].split('/')[0]
-  //         const resourceKey = ''
-  //         await fetchFile(fileId, resourceKey)
-  //       } catch (error) {
-  //         console.error('Error fetching file: ', error)
-  //       }
-  //     }
-  //   }
-
-  //   fetchDriveData()
-  // }, [gapiLoaded, params.credntialData, fetchFile])
+  }, [ gapiLoaded ])
 
   useEffect(() => {
     if (fileData) {
@@ -60,107 +49,116 @@ const Credential: React.FC<CredentialProps> = ({ handleNext }) => {
     }
   }, [fileData])
 
-  const handleNavigate = (url: string) => {
-    window.location.href = url
-  }
-
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Button onClick={handleNext} sx={{ ...nextButtonStyle, width: '100%' }}>
         Get Started
       </Button>
-      <Box
+      <Typography
         sx={{
-          display: 'flex',
-          height: '46px',
-          gap: '5px',
-          alignItems: 'center',
-          border: '1px solid #003FE0',
-          borderRadius: '10px',
-          m: '30px 0 10px 0',
-          p: '10px'
+          flexShrink: 0,
+          fontFamily: 'Lato',
+          fontSize: '16px',
+          fontWeight: '400',
+          lineHeight: 'normal',
+          m: '0 3px 0 15px'
         }}
       >
-        <SVGBadge />
-        <Typography sx={{ fontWeight: 700, fontSize: '10px', color: '#202E5B' }}>
-          {driveData?.fullName}’s Credential Claims:
-        </Typography>
+        Here’s what you may need before getting started:
+      </Typography>
+      <Box>
+        {featuresRecommentations.map((feature: { id: any; name: any }) => (
+          <Box
+            key={feature.id}
+            sx={{ display: 'flex', width: '100%', maxWidth: '321px', ml: '30px' }}
+          >
+            <SVGCheckMarks />
+            <Typography
+              sx={{
+                color: theme.palette.t3BodyText,
+                flexShrink: 0,
+                fontFamily: 'Lato',
+                fontSize: '18px',
+                fontWeight: '400',
+                lineHeight: 'normal',
+                m: '0 5px 0 15px'
+              }}
+            >
+              {feature.name}
+            </Typography>
+            <InfoOutlinedIcon sx={{ width: '15px', height: '15px', mt: '3px ' }} />
+          </Box>
+        ))}
       </Box>
       {driveData ? (
-        <Box>
-          <Box>
-            <Typography
-              sx={{
-                color: '#202E5B',
-                fontFamily: 'Inter',
-                fontSize: '15px',
-                fontWeight: 700,
-                letterSpacing: '0.075px',
-                mb: '10px'
-              }}
-            >
-              Management Skills
+        <Box sx={{ border: '1px solid #003FE0', borderRadius: '10px', p: '15px' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: '5px',
+              alignItems: 'center'
+            }}
+          >
+            <SVGBadge />
+            <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
+              {driveData?.fullName}’s has claimed:
             </Typography>
-            <Box
-              sx={{
-                ...credentialBoxStyles,
-                bgcolor: '#D5E1FB'
-              }}
-            >
-              <Box sx={{ mt: '2px' }}>
-                <SVGDate />
-              </Box>
-              <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
-                {driveData?.credentialDuration}
-              </Typography>
-            </Box>
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <Typography
-              sx={{
-                fontFamily: 'Lato',
-                fontSize: '17px',
-                letterSpacing: '0.075px',
-                lineHeight: '24px'
-              }}
-            >
-              This credential certifies about {driveData?.credentialName}.
-            </Typography>
+          <Box>
             <Box>
-              <Typography>Earning criteria:</Typography>
-              <ul style={{ marginLeft: '25px' }}>
-                <li>{driveData?.credentialDescription.replace(/<\/?[^>]+>/gi, '')}</li>
-              </ul>
+              <Typography
+                sx={{
+                  color: '#202E5B',
+                  fontFamily: 'Inter',
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  letterSpacing: '0.075px',
+                  mb: '10px'
+                }}
+              >
+                Management Skills
+              </Typography>
+              <Box
+                sx={{
+                  ...credentialBoxStyles,
+                  bgcolor: '#d5e1fb'
+                }}
+              >
+                <Box sx={{ mt: '2px' }}>
+                  <SVGDate />
+                </Box>
+                <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
+                  {driveData?.credentialDuration}
+                </Typography>
+              </Box>
             </Box>
-            <Box>
-              <Typography>Evidence</Typography>
-              <ul style={evidenceListStyles}>
-                {driveData?.portfolio?.map(
-                  (porto: {
-                    url: React.Key | null | undefined
-                    name:
-                      | string
-                      | number
-                      | bigint
-                      | boolean
-                      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-                      | Iterable<React.ReactNode>
-                      | React.ReactPortal
-                      | Promise<React.AwaitedReactNode>
-                      | null
-                      | undefined
-                  }) => (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <Typography
+                sx={{
+                  fontFamily: 'Lato',
+                  fontSize: '17px',
+                  letterSpacing: '0.075px',
+                  lineHeight: '24px'
+                }}
+              >
+                This credential certifies about {driveData?.credentialName}.
+              </Typography>
+              <Box>
+                <Typography>Earning criteria:</Typography>
+                <ul style={{ marginLeft: '25px' }}>
+                  <li>{driveData?.credentialDescription.replace(/<\/?[^>]+>/gi, '')}</li>
+                </ul>
+              </Box>
+              <Box>
+                <Typography>Evidence:</Typography>
+                <ul style={evidenceListStyles}>
+                  {driveData?.portfolio?.map((porto: { url: any; name: any }) => (
                     <li key={porto.url}>
-                      <button
-                        style={{ cursor: 'pointer', width: 'fit-content' }}
-                        onClick={() => handleNavigate(porto.url as any)}
-                      >
-                        {porto.name}
-                      </button>
+                      <Link href={porto.url}>{porto.name}</Link>
                     </li>
-                  )
-                )}
-              </ul>
+                  ))}
+                </ul>
+              </Box>
             </Box>
           </Box>
         </Box>

@@ -24,7 +24,8 @@ const useGoogleDrive = () => {
             })
           }
           console.log('Initializing Google API client: Done')
-          setGapiLoaded(true)
+          
+          setTimeout(() => setGapiLoaded(true), 1000) 
         } catch (error) {
           console.error('Error initializing Google API client:', error)
         }

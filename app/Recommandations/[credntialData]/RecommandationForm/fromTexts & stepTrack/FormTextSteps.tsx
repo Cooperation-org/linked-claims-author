@@ -26,6 +26,12 @@ export const successNote =
 export const CredentialViewText =
   'Hi, I’m Tessa! I’ll help you with Alice’s recommendation.'
 
+export const featuresRecommentations = [
+  { id: 1, name: 'How you know Alice' },
+  { id: 2, name: 'Proof of your qualifications' },
+  { id: 3, name: 'Evidence of Alice’s skills' }
+]
+
 interface FormTextStepsProps {
   activeStep: number
   activeText: any
