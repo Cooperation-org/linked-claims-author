@@ -87,7 +87,6 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       onSubmit={handleFormSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-      {activeStep !== 0 && activeStep !== 6 && activeStep !== 4 && <NoteText />}
       <Box sx={{ width: { xs: '100%', md: '50%' } }}>
         <FormControl sx={{ width: '100%' }}>
           {activeStep === 0 && <Step0 handleNext={handleNextStep} />}

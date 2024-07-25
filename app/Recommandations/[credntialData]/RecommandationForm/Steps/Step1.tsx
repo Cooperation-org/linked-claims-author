@@ -18,6 +18,8 @@ import {
   radioCheckedStyles,
   radioGroupStyles
 } from '../../../../components/Styles/appStyles'
+import { signIn} from 'next-auth/react'
+
 
 interface Step1Props {
   watch: UseFormWatch<FormData>
@@ -28,30 +30,32 @@ interface Step1Props {
 const Step1: React.FC<Step1Props> = ({ watch, setValue, handleNext }) => {
   const storageOption = watch('storageOption')
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedValue = e.target.value
+    setValue('storageOption', selectedValue)
+    if (selectedValue === 'Google Drive') {
+      signIn()
+    }
+    setValue('storageOption', e.target.value)
+  }
+
   return (
     <Box sx={{ maxWidth: 400, margin: '0 auto', textAlign: 'center' }}>
-      {/* <Typography variant='h6' gutterBottom>
-        First, choose where to save your recommendation.
-      </Typography>
-      <Typography variant='body2' gutterBottom>
-        Your recommendation will be stored in the location you select. This will ensure it
-        can be linked to Alice’s credential once you’re finished:
-      </Typography> */}
       <RadioGroup
         sx={radioGroupStyles}
         aria-labelledby='form-type-label'
         name='controlled-radio-buttons-group'
         value={storageOption}
-        onChange={e => setValue('storageOption', e.target.value)}
+        onChange={handleChange}
       >
-        <Card variant='outlined' sx={{ marginBottom: 2 }}>
+        <Card variant='outlined'>
           <CardContent>
             <FormControlLabel
               value='Google Drive'
-              sx={boxStyles}
+              sx={{ width: '100%', bgcolor: '#FFF' }}
               control={<Radio sx={radioCheckedStyles} />}
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', pb: '5px' }}>
                   <GoogleDrive />
                   <Typography variant='body1' sx={{ marginLeft: 1 }}>
                     Google Drive
@@ -59,17 +63,17 @@ const Step1: React.FC<Step1Props> = ({ watch, setValue, handleNext }) => {
                 </Box>
               }
             />
-            <Typography variant='body2' sx={{ marginLeft: 4 }}>
+            <Typography variant='body2' sx={{ marginLeft: 4, textAlign: 'justify' }}>
               You must have a Google account and be able to login to use this option. This
               is where your credentials will be stored once you select Sign and Save.
             </Typography>
           </CardContent>
         </Card>
-        <Card variant='outlined' sx={{ marginBottom: 2 }}>
+        <Card variant='outlined'>
           <CardContent>
             <FormControlLabel
               value='Digital Wallet'
-              sx={boxStyles}
+              sx={{ width: '100%', bgcolor: '#FFF' }}
               control={<Radio sx={radioCheckedStyles} />}
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -80,11 +84,22 @@ const Step1: React.FC<Step1Props> = ({ watch, setValue, handleNext }) => {
                 </Box>
               }
             />
-            <Typography variant='body2' sx={{ marginLeft: 4 }}>
+            <Typography variant='body2' sx={{ marginLeft: 4, textAlign: 'justify' }}>
               You must have a digital wallet account and be able to login to the wallet
-              application to use this option. This is where your credentials will be
-              stored once you select Sign and Save.{' '}
-              <a href='#wallet-options'>See wallet options.</a>
+              application to use this option. This is where your{' '}
+              <a
+                style={{ color: '#0052CC', textDecoration: 'underline' }}
+                href='#wallet-options'
+              >
+                credentials
+              </a>{' '}
+              will be stored once you select Sign and Save.{' '}
+              <a
+                style={{ color: '#0052CC', textDecoration: 'underline' }}
+                href='#wallet-options'
+              >
+                See wallet options.
+              </a>
             </Typography>
           </CardContent>
         </Card>
