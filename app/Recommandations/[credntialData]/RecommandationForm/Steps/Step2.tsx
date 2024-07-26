@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Box, FormLabel, TextField, Button, Typography, FormControl } from '@mui/material'
+import { Box, FormLabel, TextField, Button } from '@mui/material'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
 import TextEditor from '../TextEditor/Texteditor'
 import { FormData } from '../../../../components/form/types/Types'
@@ -32,15 +32,7 @@ const Step2: React.FC<Step2Props> = ({
   handleBack
 }) => {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '30px',
-        maxWidth: '600px',
-        margin: '0 auto'
-      }}
-    >
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
         <FormLabel sx={formLabelStyles} id='full-name-label'>
           Full Name <span style={formLabelSpanStyles}> *</span>
@@ -66,7 +58,7 @@ const Step2: React.FC<Step2Props> = ({
           How do you know Alice? <span style={formLabelSpanStyles}> *</span>
         </FormLabel>
         <TextEditor
-          value={watch('credentialDescription')}
+          value={watch('RecommenderDescription')}
           onChange={handleTextEditorChange}
           placeholder='e.g., I am Alice’s former supervisor. I’ve known her for 5 years.'
         />
