@@ -8,12 +8,12 @@ export const textGuid = [
     Hi, I’m Tessa! <br /> Where do you want to save your LinkedClaims?
   </>,
   <>
-    'First, choose where to save your recommendation'.{' '}
+    First, choose where to save your recommendation.{' '}
     <span style={{ color: 'red' }}>*</span>
   </>,
   <>Now tell us more about you and how you know Alice. </>,
   <>
-    Thanks, Carol! <br /> Now share your recommendation and how you know Alice.',
+    Thanks, Carol! <br /> Now share your recommendation and how you know Alice.,
   </>,
   <>
     Thanks, Carol! <br /> Now share your recommendation and how you know Alice. <br /> Do

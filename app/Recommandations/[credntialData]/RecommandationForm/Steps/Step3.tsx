@@ -63,7 +63,7 @@ const Step3: React.FC<Step3Props> = ({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-      <Box sx={{ mt: 3 }}>
+      <Box>
         <FormLabel sx={{ fontWeight: 'bold' }} id='recommendation-text-label'>
           Recommendation Text <span style={{ color: 'red' }}>*</span>
         </FormLabel>
@@ -76,7 +76,7 @@ const Step3: React.FC<Step3Props> = ({
           <Typography color='error'>{errors.recommendationText.message}</Typography>
         )}
       </Box>
-      <Box sx={{ mt: 3 }}>
+      <Box>
         <FormLabel sx={{ fontWeight: 'bold' }} id='qualifications-label'>
           Your Qualifications
         </FormLabel>
@@ -93,9 +93,7 @@ const Step3: React.FC<Step3Props> = ({
           <Typography color='error'>{errors.qualifications.message}</Typography>
         )}
       </Box>
-      <Typography sx={{ marginTop: '20px', marginBottom: '10px' }}>
-        Adding supporting evidence of your qualifications.
-      </Typography>
+      <Typography>Adding supporting evidence of your qualifications.</Typography>
       {fields.map((field, index) => (
         <React.Fragment key={field.id}>
           <Box sx={formBoxStyles}>

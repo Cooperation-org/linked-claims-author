@@ -20,44 +20,42 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
       value={watch('storageOption')}
       onChange={e => setValue('storageOption', e.target.value)}
     >
-      <>
-        <FormControlLabel
-          value='Device'
-          sx={boxStyles}
-          control={<Radio sx={radioCheckedStyles} />}
-          label='Save to My Device'
-        />
-        <FormControlLabel
-          value='Google Drive'
-          sx={boxStyles}
-          control={<Radio sx={radioCheckedStyles} />}
-          label={
-            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <GoogleDrive /> Google Drive
-            </Box>
-          }
-        />
-        <FormControlLabel
-          value='Digital Wallet'
-          sx={boxStyles}
-          control={<Radio sx={radioCheckedStyles} />}
-          label={
-            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <DigitalWallet /> Your Digital Wallet (e.g. Corner Pocket)
-            </Box>
-          }
-        />
-        <FormControlLabel
-          value='Dropbox'
-          sx={boxStyles}
-          control={<Radio sx={radioCheckedStyles} />}
-          label={
-            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <Dropbox /> Dropbox
-            </Box>
-          }
-        />
-      </>
+      <FormControlLabel
+        value='Device'
+        sx={boxStyles}
+        control={<Radio sx={radioCheckedStyles} />}
+        label='Save to My Device'
+      />
+      <FormControlLabel
+        value='Google Drive'
+        sx={boxStyles}
+        control={<Radio sx={radioCheckedStyles} />}
+        label={
+          <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <GoogleDrive /> Google Drive
+          </Box>
+        }
+      />
+      <FormControlLabel
+        value='Digital Wallet'
+        sx={boxStyles}
+        control={<Radio sx={radioCheckedStyles} />}
+        label={
+          <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <DigitalWallet /> Your Digital Wallet (e.g. Corner Pocket)
+          </Box>
+        }
+      />
+      <FormControlLabel
+        value='Dropbox'
+        sx={boxStyles}
+        control={<Radio sx={radioCheckedStyles} />}
+        label={
+          <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <Dropbox /> Dropbox
+          </Box>
+        }
+      />
     </RadioGroup>
   )
 }

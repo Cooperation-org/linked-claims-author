@@ -3,7 +3,6 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Typography } from '@mui/material'
 import { FormData } from '../../../components/form/types/Types'
 import {
-  FormTextSteps,
   textGuid,
   NoteText,
   SuccessText,
@@ -29,6 +28,25 @@ const Form = ({ activeStep, setActiveStep }: any) => {
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
 
+  const savedFormData = localStorage.getItem('formData')
+  const defaultValues: FormData = savedFormData
+    ? JSON.parse(savedFormData)
+    : {
+        storageOption: 'Device',
+        fullName: '',
+        persons: '',
+        credentialName: '',
+        credentialDuration: '',
+        credentialDescription: '',
+        portfolio: [{ name: '', url: '' }],
+        evidenceLink: '',
+        description: '',
+        communicationRating: 0,
+        dependabilityRating: 0,
+        explainAnswer: '',
+        howDoYouKnowAlice: ''
+      }
+
   const {
     register,
     handleSubmit,
@@ -37,19 +55,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
     control,
     formState: { errors, isValid }
   } = useForm<FormData>({
-    defaultValues: {
-      storageOption: 'Device',
-      fullName: '',
-      persons: '',
-      credentialName: '',
-      credentialDuration: '',
-      credentialDescription: '',
-      portfolio: [{ name: '', url: '' }],
-      evidenceLink: '',
-      description: '',
-      communicationRating: 0,
-      dependabilityRating: 0
-    },
+    defaultValues,
     mode: 'onChange'
   })
 
@@ -62,7 +68,16 @@ const Form = ({ activeStep, setActiveStep }: any) => {
     if (data.storageOption === 'Google Drive') {
       createFolderAndUploadFile(data, accessToken, setLink)
     }
+
+    localStorage.removeItem('formData')
   })
+
+  useEffect(() => {
+    const subscription = watch(value => {
+      localStorage.setItem('formData', JSON.stringify(value))
+    })
+    return () => subscription.unsubscribe()
+  }, [watch])
 
   return (
     <form
@@ -79,8 +94,8 @@ const Form = ({ activeStep, setActiveStep }: any) => {
     >
       {activeStep === 2 && <NoteText />}
       {activeStep === 1 && (
-        <Typography sx={{ foentWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>
-          {StorageText} 
+        <Typography sx={{ fontWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>
+          {StorageText}
         </Typography>
       )}
       {activeStep === 7 && <SuccessText />}
@@ -138,7 +153,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
           )}
         </FormControl>
       </Box>
-      {activeStep !== 7 && (
+      {activeStep !== 7 && activeStep !== 1 && activeStep !== 0 && (
         <Buttons
           activeStep={activeStep}
           maxSteps={textGuid.length}
