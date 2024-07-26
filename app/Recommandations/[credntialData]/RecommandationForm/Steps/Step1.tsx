@@ -102,22 +102,6 @@ const Step1: React.FC<Step1Props> = ({ watch, setValue, handleNext }) => {
           </CardContent>
         </Card>
       </RadioGroup>
-      <Box textAlign='center'>
-        <button
-          style={{
-            backgroundColor: '#0052CC',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginTop: '20px'
-          }}
-          onClick={handleNext}
-        >
-          Next
-        </button>
-      </Box>
     </Box>
   )
 }

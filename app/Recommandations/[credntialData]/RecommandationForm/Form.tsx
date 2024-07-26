@@ -14,14 +14,17 @@ import Step0 from './Steps/Step0'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
 import Step3 from './Steps/Step3'
+import Step4 from './Steps/Step4'
 import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
+import { Buttons } from './buttons/Buttons'
 import { useSession } from 'next-auth/react'
 import {
   handleStepHashChange,
   createFolderAndUploadFile,
   handleNext,
-  handleBack
+  handleBack,
+  handleSign
 } from '../../../utils/formUtils'
 
 const Form = ({ onStepChange, setactivStep }: any) => {
@@ -36,7 +39,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
     watch,
     setValue,
     control,
-    formState: { errors }
+    formState: { errors, isValid }
   } = useForm<FormData>({
     defaultValues: {
       storageOption: 'Device',
@@ -124,8 +127,6 @@ const Form = ({ onStepChange, setactivStep }: any) => {
                 setValue('credentialDescription', value ?? '')
               }
               errors={errors}
-              handleNext={() => handleNext(activeStep, setActiveStep)}
-              handleBack={() => handleBack(activeStep, setActiveStep)}
             />
           )}
           {activeStep === 3 && (
@@ -134,11 +135,25 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               watch={watch}
               setValue={setValue}
               errors={errors}
+            />
+          )}
+          {activeStep === 4 && (
+            <Step4
+              register={register}
+              watch={watch}
+              setValue={setValue}
+              errors={errors}
+              fields={fields}
+              append={append}
+              remove={remove}
+              handleTextEditorChange={(field: string, value: any) =>
+                setValue(field, value)
+              }
               handleNext={() => handleNext(activeStep, setActiveStep)}
               handleBack={() => handleBack(activeStep, setActiveStep)}
             />
           )}
-          {activeStep === 6 && <DataComponent formData={watch()} />}{' '}
+          {activeStep === 6 && <DataComponent formData={watch()} />}
           {activeStep === 7 && (
             <SuccessPage
               formData={watch()}
@@ -149,6 +164,16 @@ const Form = ({ onStepChange, setactivStep }: any) => {
           )}
         </FormControl>
       </Box>
+      {activeStep !== 7 && activeStep !== 0 && (
+        <Buttons
+          activeStep={activeStep}
+          maxSteps={textGuid.length}
+          handleNext={() => handleNext(activeStep, setActiveStep)}
+          handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
+          handleBack={() => handleBack(activeStep, setActiveStep)}
+          isValid={isValid}
+        />
+      )}
     </form>
   )
 }

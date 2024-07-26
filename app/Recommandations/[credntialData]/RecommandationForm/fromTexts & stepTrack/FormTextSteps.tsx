@@ -9,8 +9,13 @@ export const textGuid = [
   </>,
   'First, choose where to save your recommendation.',
   <>Now tell us more about you and how you know Alice. </>,
-  'Now describe what you can demonstrate using this skill.',
-  'Do you have any portfolio pieces you want to add?',
+  <>
+    Thanks, Carol! <br /> Now share your recommendation and how you know Alice.',
+  </>,
+  <>
+    Thanks, Carol! <br /> Now share your recommendation and how you know Alice. <br /> Do
+    you have evidence to share?
+  </>,
   'Would you like to add an image to your skill?',
   <>
     Well done! <br /> Here’s what you’ve created:
