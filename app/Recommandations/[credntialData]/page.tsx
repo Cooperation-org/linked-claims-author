@@ -10,6 +10,8 @@ import fram from '../../Assets/Images/Frame 35278.png'
 import vector from '../../Assets/Images/Vector 145.png'
 import Form from './RecommandationForm/Form'
 import { useState } from 'react'
+import Credential from './viewCredential/Credential'
+import TabsComponent from '../../components/Tabs/Tabs'
 
 const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   const theme = useTheme<Theme>()
@@ -56,7 +58,8 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
           </Box>
         </Box>
       </Box>
-      <Form onStepChange={() => {}} setActiveStep={setActiveStep} />
+      {activeStep == 0 && <Credential setactivStep={setActiveStep} activeStep={activeStep} />}
+      {activeStep == 1 && <TabsComponent setactivStep={setActiveStep} />}
       {!isLargeScreen && (
         <Box
           sx={{

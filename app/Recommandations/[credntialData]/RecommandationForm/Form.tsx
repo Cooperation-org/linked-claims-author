@@ -10,7 +10,6 @@ import {
   NoteText,
   SuccessText
 } from './fromTexts & stepTrack/FormTextSteps'
-import Step0 from './Steps/Step0'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
 import Step3 from './Steps/Step3'
@@ -79,7 +78,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
     if (setactivStep) {
       setactivStep(activeStep)
     }
-    onStepChange()
+    // onStepChange()
   }, [activeStep, onStepChange, setactivStep])
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
@@ -102,21 +101,19 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       onSubmit={handleFormSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
+
       {activeStep !== 0 && activeStep !== 6 && activeStep !== 7 && <NoteText />}
       {activeStep === 7 && <SuccessText />}
       <Box sx={{ width: { xs: '100%', md: '50%' } }}>
         <FormControl sx={{ width: '100%' }}>
           {activeStep === 0 && (
-            <Step0 handleNext={() => handleNext(activeStep, setActiveStep)} />
-          )}
-          {activeStep === 1 && (
             <Step1
               watch={watch}
               setValue={setValue}
               handleNext={() => handleNext(activeStep, setActiveStep)}
             />
           )}
-          {activeStep === 2 && (
+          {activeStep === 1 && (
             <Step2
               register={register}
               watch={watch}
@@ -128,7 +125,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               handleBack={() => handleBack(activeStep, setActiveStep)}
             />
           )}
-          {activeStep === 3 && (
+          {activeStep === 2 && (
             <Step3
               register={register}
               watch={watch}
@@ -138,8 +135,8 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               handleBack={() => handleBack(activeStep, setActiveStep)}
             />
           )}
-          {activeStep === 6 && <DataComponent formData={watch()} />}{' '}
-          {activeStep === 7 && (
+          {activeStep === 3 && <DataComponent formData={watch()} />}{' '}
+          {activeStep === 4 && (
             <SuccessPage
               formData={watch()}
               setActiveStep={setActiveStep}
