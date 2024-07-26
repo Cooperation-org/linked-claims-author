@@ -1,168 +1,112 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useTheme } from '@mui/material/styles'
-import { Box, Typography, FormLabel, TextField } from '@mui/material'
+import {
+  Box,
+  Typography,
+  FormLabel,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  Rating
+} from '@mui/material'
 import {
   UseFormRegister,
   FieldErrors,
   UseFormWatch,
-  UseFieldArrayAppend,
   UseFormSetValue
 } from 'react-hook-form'
-import {
-  formLabelStyles,
-  TextFieldStyles,
-  buttonLinkStyles,
-  portfolioTypographyStyles,
-  addAnotherButtonStyles,
-  addAnotherBoxStyles,
-  skipButtonBoxStyles,
-  formBoxStyles,
-  formBoxStylesUrl
-} from '../../../../components/Styles/appStyles'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
+import ThumbDownIcon from '@mui/icons-material/ThumbDown'
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined'
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined'
 import TextEditor from '../TextEditor/Texteditor'
 import { FormData } from '../../../../components/form/types/Types'
-import ClearIcon from '@mui/icons-material/Clear'
-import { handleUrlValidation } from '../../../../utils/urlValidation'
 
 interface Step4Props {
-  errors: FieldErrors<FormData>
-  fields: { id: string; name: string; url: string }[]
   register: UseFormRegister<FormData>
-  append: UseFieldArrayAppend<FormData, 'portfolio'>
-  remove: (index: number) => void
   watch: UseFormWatch<FormData>
   setValue: UseFormSetValue<FormData>
-  handleTextEditorChange: (field: string, value: any) => void
-  handleNext: () => void
-  handleBack: () => void
+  errors: FieldErrors<FormData>
 }
 
-const Step4: React.FC<Step4Props> = ({
-  fields,
-  register,
-  append,
-  errors,
-  remove,
-  watch,
-  setValue,
-  handleTextEditorChange,
-  handleNext,
-  handleBack
-}) => {
-  const theme = useTheme()
-  const [urlError, setUrlError] = useState<string | null>(null)
-
-  const handleUrlChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleUrlValidation(event, setUrlError)
-  }
+const Step4: React.FC<Step4Props> = ({ register, watch, setValue, errors }) => {
+  const [recommend, setRecommend] = useState('')
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-      <Box sx={{ mt: 3 }}>
-        <FormLabel sx={{ fontWeight: 'bold' }} id='recommendation-text-label'>
-          Recommendation Text <span style={{ color: 'red' }}>*</span>
+      <Box>
+        <Typography sx={{ fontWeight: 'bold' }}>Would you recommend Alice?</Typography>
+        <RadioGroup row value={recommend} onChange={e => setRecommend(e.target.value)}>
+          <FormControlLabel
+            value='yes'
+            control={
+              <Radio
+                icon={<ThumbUpOutlinedIcon />}
+                checkedIcon={<ThumbUpIcon color='primary' />}
+              />
+            }
+            label='YES'
+          />
+          <FormControlLabel
+            value='no'
+            control={
+              <Radio
+                icon={<ThumbDownOutlinedIcon />}
+                checkedIcon={<ThumbDownIcon color='primary' />}
+              />
+            }
+            label='NO'
+          />
+        </RadioGroup>
+      </Box>
+      <Box>
+        <FormLabel sx={{ fontWeight: 'bold' }} id='explain-answer-label'>
+          Explain your answer:
         </FormLabel>
         <TextEditor
-          value={watch('recommendationText')}
-          onChange={value => handleTextEditorChange('recommendationText', value ?? '')}
-          placeholder='e.g., Alice managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative'
+          value={watch('explainAnswer')}
+          onChange={value => setValue('explainAnswer', value ?? '')}
+          placeholder='I worked with Alice for about two years managing her work at the community garden. She was an excellent worker, prompt, and friendly.'
         />
-        {errors.recommendationText && (
-          <Typography color='error'>{errors.recommendationText.message}</Typography>
+        {errors.explainAnswer && (
+          <Typography color='error'>{errors.explainAnswer.message}</Typography>
         )}
       </Box>
-      <Box sx={{ mt: 3 }}>
-        <FormLabel sx={{ fontWeight: 'bold' }} id='qualifications-label'>
-          Your Qualifications
+      <Box>
+        <FormLabel sx={{ fontWeight: 'bold' }} id='how-do-you-know-alice-label'>
+          How do you know Alice? <span style={{ color: 'red' }}>*</span>
         </FormLabel>
-        <Typography sx={{ marginBottom: '10px' }}>
-          Please share how you are qualified to provide this recommendation. Sharing your
-          qualifications will further increase the value of this recommendation.
-        </Typography>
         <TextEditor
-          value={watch('qualifications')}
-          onChange={value => handleTextEditorChange('qualifications', value ?? '')}
-          placeholder='e.g., I managed Alice at a local garden for 2 years where she coordinated weekly gardening workshops and lead a community clean-up initiative.'
+          value={watch('howDoYouKnowAlice')}
+          onChange={value => setValue('howDoYouKnowAlice', value ?? '')}
+          placeholder='I was Alice’s manager for about two years, but I have known her in total for about 5 years.'
         />
-        {errors.qualifications && (
-          <Typography color='error'>{errors.qualifications.message}</Typography>
+        {errors.howDoYouKnowAlice && (
+          <Typography color='error'>{errors.howDoYouKnowAlice.message}</Typography>
         )}
       </Box>
-      <Typography sx={{ marginTop: '20px', marginBottom: '10px' }}>
-        Adding supporting evidence of your qualifications.
-      </Typography>
-      {fields.map((field, index) => (
-        <React.Fragment key={field.id}>
-          <Box sx={formBoxStyles}>
-            <Typography sx={portfolioTypographyStyles}>
-              Evidence #{index + 1}
-              {index > 0 && (
-                <ClearIcon
-                  type='button'
-                  onClick={() => remove(index)}
-                  sx={{ mt: '5px', cursor: 'pointer' }}
-                />
-              )}
-            </Typography>
-            <FormLabel sx={formLabelStyles} id={`name-label-${index}`}>
-              Name
-            </FormLabel>
-            <TextField
-              {...register(`portfolio.${index}.name`)}
-              defaultValue={field.name}
-              placeholder='(e.g., LinkedIn profile, github repo, etc.)'
-              variant='outlined'
-              sx={TextFieldStyles}
-              aria-labelledby={`name-label-${index}`}
-              error={!!errors?.portfolio?.[index]?.name}
-              helperText={errors?.portfolio?.[index]?.name?.message}
-            />
-          </Box>
-          <Box sx={formBoxStylesUrl}>
-            <FormLabel sx={formLabelStyles} id={`url-label-${index}`}>
-              URL
-            </FormLabel>
-            <TextField
-              {...register(`portfolio.${index}.url`)}
-              defaultValue={field.url}
-              placeholder='https://'
-              variant='outlined'
-              sx={TextFieldStyles}
-              aria-labelledby={`url-label-${index}`}
-              error={!!errors?.portfolio?.[index]?.url}
-              onChange={handleUrlChange}
-              helperText={urlError}
-            />
-          </Box>
-          <Box
-            sx={{
-              bgcolor: theme.palette.t3LightGray,
-              width: '100%',
-              height: '1px',
-              m: '30px 0'
-            }}
-            width={'100%'}
-            height={'1px'}
-          ></Box>
-        </React.Fragment>
-      ))}
-      {fields.length < 5 && (
-        <Box sx={addAnotherBoxStyles}>
-          <button
-            type='button'
-            onClick={() => append({ name: '', url: '' })}
-            style={addAnotherButtonStyles(theme)}
-          >
-            Add another
-          </button>
-        </Box>
-      )}
-      <Box sx={skipButtonBoxStyles}>
-        <button type='button' onClick={handleNext} style={buttonLinkStyles}>
-          Skip
-        </button>
+      <Box>
+        <Typography sx={{ fontWeight: 'bold' }}>Rate Alice’s Communication</Typography>
+        <Rating
+          sx={{ fontSize: '37px' }}
+          name='communicationRating'
+          value={watch('communicationRating')}
+          onChange={(event, newValue) => {
+            setValue('communicationRating', newValue ?? 0)
+          }}
+        />
+      </Box>
+      <Box>
+        <Typography sx={{ fontWeight: 'bold' }}>Rate Alice’s Dependability</Typography>
+        <Rating
+          sx={{ fontSize: '37px' }}
+          name='dependabilityRating'
+          value={watch('dependabilityRating')}
+          onChange={(event, newValue) => {
+            setValue('dependabilityRating', newValue ?? 0)
+          }}
+        />
       </Box>
     </Box>
   )

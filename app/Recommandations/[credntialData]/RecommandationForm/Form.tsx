@@ -8,7 +8,8 @@ import {
   FormTextSteps,
   textGuid,
   NoteText,
-  SuccessText
+  SuccessText,
+  StorageOptionNote
 } from './fromTexts & stepTrack/FormTextSteps'
 import Step0 from './Steps/Step0'
 import Step1 from './Steps/Step1'
@@ -50,7 +51,9 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       credentialDescription: '',
       portfolio: [{ name: '', url: '' }],
       evidenceLink: '',
-      description: ''
+      description: '',
+      communicationRating: 0,
+      dependabilityRating: 0
     },
     mode: 'onChange'
   })
@@ -105,7 +108,10 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       onSubmit={handleFormSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-      {activeStep !== 0 && activeStep !== 6 && activeStep !== 7 && <NoteText />}
+      {activeStep !== 0 && activeStep !== 6 && activeStep !== 7 && activeStep !== 1 && (
+        <NoteText />
+      )}
+      {activeStep === 1 && <StorageOptionNote />}
       {activeStep === 7 && <SuccessText />}
       <Box sx={{ width: { xs: '100%', md: '50%' } }}>
         <FormControl sx={{ width: '100%' }}>
@@ -135,14 +141,6 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               watch={watch}
               setValue={setValue}
               errors={errors}
-            />
-          )}
-          {activeStep === 4 && (
-            <Step4
-              register={register}
-              watch={watch}
-              setValue={setValue}
-              errors={errors}
               fields={fields}
               append={append}
               remove={remove}
@@ -151,6 +149,14 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               }
               handleNext={() => handleNext(activeStep, setActiveStep)}
               handleBack={() => handleBack(activeStep, setActiveStep)}
+            />
+          )}
+          {activeStep === 4 && (
+            <Step4
+              register={register}
+              watch={watch}
+              setValue={setValue}
+              errors={errors}
             />
           )}
           {activeStep === 6 && <DataComponent formData={watch()} />}
@@ -164,13 +170,23 @@ const Form = ({ onStepChange, setactivStep }: any) => {
           )}
         </FormControl>
       </Box>
-      {activeStep !== 7 && activeStep !== 0 && (
+      {activeStep !== 7 && activeStep !== 0 && activeStep !== 1 && (
         <Buttons
           activeStep={activeStep}
           maxSteps={textGuid.length}
           handleNext={() => handleNext(activeStep, setActiveStep)}
           handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
           handleBack={() => handleBack(activeStep, setActiveStep)}
+          isValid={isValid}
+        />
+      )}
+      {activeStep === 1 && (
+        <Buttons
+          activeStep={activeStep}
+          maxSteps={textGuid.length}
+          handleNext={() => handleNext(activeStep, setActiveStep)}
+          handleSign={undefined}
+          handleBack={undefined}
           isValid={isValid}
         />
       )}

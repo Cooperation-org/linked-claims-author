@@ -24,15 +24,14 @@ export function Buttons({
   return (
     <Box
       sx={{
-        width: { xs: '100%', md: '35%', lg: '35%' },
+        width: { xs: '100%', md: '40%', lg: '40%' },
         height: '40px',
         display: 'flex',
-
         gap: '15px',
-        justifyContent: activeStep == 1 ? 'center' : 'space-between'
+        justifyContent: activeStep === 1 || activeStep === 0 ? 'center' : 'space-between'
       }}
     >
-      {activeStep !== 0 && activeStep !== 1 && (
+      {activeStep !== 0 && activeStep !== 1 && handleBack && (
         <>
           <Button sx={StyledButton} onClick={handleBack} color='secondary'>
             Back
@@ -56,7 +55,7 @@ export function Buttons({
           Next
         </Button>
       )}
-      {activeStep === 6 && (
+      {activeStep === 6 && handleSign && (
         <Button sx={nextButtonStyle} onClick={handleSign} color='primary'>
           Finish & Sign
         </Button>

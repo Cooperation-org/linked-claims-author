@@ -55,8 +55,9 @@ export interface FormData {
   portfolio: Portfolio[]
   evidenceLink: string
   description: string
-  url: string
-  [key: string]: string | undefined | Portfolio[]
+  communicationRating: number
+  dependabilityRating: number
+  [key: string]: string | number | Portfolio[] | undefined
 }
 
 // Component Props for the form
