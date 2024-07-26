@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Box, Typography, FormLabel, Button } from '@mui/material'
+import { Box, Typography, FormLabel } from '@mui/material'
 import {
   UseFormRegister,
   FieldErrors,
@@ -16,23 +16,11 @@ interface Step3Props {
   watch: UseFormWatch<FormData>
   setValue: UseFormSetValue<FormData>
   errors: FieldErrors<FormData>
-  handleNext: () => void
-  handleBack: () => void
 }
 
-const Step3: React.FC<Step3Props> = ({
-  register,
-  watch,
-  setValue,
-  errors,
-  handleNext,
-  handleBack
-}) => {
+const Step3: React.FC<Step3Props> = ({ register, watch, setValue, errors }) => {
   return (
-    <Box sx={{ maxWidth: 400, margin: '0 auto' }}>
-      <Typography variant='h6' gutterBottom>
-        Thanks, Carol! Now share your recommendation and how you know Alice.
-      </Typography>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box sx={{ mt: 3 }}>
         <FormLabel sx={{ fontWeight: 'bold' }} id='recommendation-text-label'>
           Recommendation Text <span style={{ color: 'red' }}>*</span>
@@ -40,7 +28,7 @@ const Step3: React.FC<Step3Props> = ({
         <TextEditor
           value={watch('recommendationText')}
           onChange={value => setValue('recommendationText', value ?? '')}
-          placeholder=''
+          placeholder='e.g., Alice managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative'
         />
         {errors.recommendationText && (
           <Typography color='error'>{errors.recommendationText.message}</Typography>
@@ -53,19 +41,11 @@ const Step3: React.FC<Step3Props> = ({
         <TextEditor
           value={watch('howDoYouKnowAlice')}
           onChange={value => setValue('howDoYouKnowAlice', value ?? '')}
-          placeholder=''
+          placeholder='I was Alice’s manager for about two years, but I have known her in total for about 5 years.'
         />
         {errors.howDoYouKnowAlice && (
           <Typography color='error'>{errors.howDoYouKnowAlice.message}</Typography>
         )}
-      </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-        <Button variant='outlined' onClick={handleBack}>
-          Back
-        </Button>
-        <Button variant='contained' color='primary' onClick={handleNext}>
-          Next
-        </Button>
       </Box>
     </Box>
   )
