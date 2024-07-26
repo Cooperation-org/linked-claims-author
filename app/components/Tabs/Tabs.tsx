@@ -1,4 +1,3 @@
-// TabsComponent.tsx
 import React, { useState } from 'react'
 import { Tabs, Tab, Box } from '@mui/material'
 import FetchedData from '../../Recommandations/[credntialData]/viewCredential/FetchedData'
@@ -11,20 +10,15 @@ function a11yProps(index: number) {
   }
 }
 
-const TabsComponent = ({ setactivStep }: { setactivStep: any }) => {
+const TabsComponent = ({ setactivStep, activeStep }: { setactivStep: any, activeStep: any }) => {
   const [value, setValue] = useState(0)
-  const [stepData, setStepData] = useState({})
 
   const handleChange = (event: any, newValue: React.SetStateAction<number>) => {
     setValue(newValue)
   }
 
-  const handleStepData = (step: any, data: any) => {
-    setStepData(prev => ({ ...prev, [step]: data }))
-  }
-
   return (
-    <Box>
+    <Box sx={{minHeight:'100%',mt:'10px'}}>
       <Tabs
         sx={{ width: '100%' }}
         value={value}
@@ -43,7 +37,7 @@ const TabsComponent = ({ setactivStep }: { setactivStep: any }) => {
         />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <Form />
+        <Form activeStep={activeStep} setActiveStep={setactivStep} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <FetchedData />

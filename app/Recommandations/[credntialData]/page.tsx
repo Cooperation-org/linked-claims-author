@@ -8,7 +8,10 @@ import { SVGLargeScreen } from '../../Assets/SVGs'
 import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
 import fram from '../../Assets/Images/Frame 35278.png'
 import vector from '../../Assets/Images/Vector 145.png'
-import Form from './RecommandationForm/Form'
+import {
+  FormTextSteps,
+  textGuid
+} from './RecommandationForm/fromTexts & stepTrack/FormTextSteps'
 import { useState } from 'react'
 import Credential from './viewCredential/Credential'
 import TabsComponent from '../../components/Tabs/Tabs'
@@ -58,8 +61,13 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
           </Box>
         </Box>
       </Box>
-      {activeStep == 0 && <Credential setactivStep={setActiveStep} activeStep={activeStep} />}
-      {activeStep == 1 && <TabsComponent setactivStep={setActiveStep} />}
+      {activeStep === 0 && <Credential setactivStep={setActiveStep} />}
+      {activeStep !== 0 && (
+        <>
+          <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
+          <TabsComponent setactivStep={setActiveStep} activeStep={activeStep} />
+        </>
+      )}
       {!isLargeScreen && (
         <Box
           sx={{

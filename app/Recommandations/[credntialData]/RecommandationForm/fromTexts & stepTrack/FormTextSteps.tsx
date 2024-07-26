@@ -7,7 +7,10 @@ export const textGuid = [
   <>
     Hi, I’m Tessa! <br /> Where do you want to save your LinkedClaims?
   </>,
-  'First, choose where to save your recommendation.',
+  <>
+    'First, choose where to save your recommendation'.{' '}
+    <span style={{ color: 'red' }}>*</span>
+  </>,
   <>Now tell us more about you and how you know Alice. </>,
   <>
     Thanks, Carol! <br /> Now share your recommendation and how you know Alice.',
@@ -30,6 +33,8 @@ export const successNote =
 
 export const CredentialViewText =
   'Hi, I’m Tessa! I’ll help you with Alice’s recommendation.'
+export const StorageText =
+  'Your recommendation will be stored in the location you select. This will ensure it can be linked to Alice’s credential once you’re finished:'
 
 export const featuresRecommentations = [
   { id: 1, name: 'How you know Alice' },

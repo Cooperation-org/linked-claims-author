@@ -41,9 +41,9 @@ const FetchedData = () => {
     }
   }, [fileData])
   return (
-    <>
+    <Box sx={{ border: '1px solid #003FE0', borderRadius: '10px', p: '15px' }}>
       {driveData ? (
-        <Box sx={{ border: '1px solid #003FE0', borderRadius: '10px', p: '15px' }}>
+        <>
           <Box
             sx={{
               display: 'flex',
@@ -98,35 +98,28 @@ const FetchedData = () => {
               <Box>
                 <Typography>Earning criteria:</Typography>
                 <ul style={{ marginLeft: '25px' }}>
-                  <li>
-                    {driveData?.credentialDescription?.replace(
-                      /<\/?[^>]+>/gi,
-                      ''
-                    )}
-                  </li>
+                  <li>{driveData?.credentialDescription?.replace(/<\/?[^>]+>/gi, '')}</li>
                 </ul>
               </Box>
               <Box>
                 <Typography>Evidence:</Typography>
                 <ul style={evidenceListStyles}>
-                  {driveData?.portfolio?.map(
-                    (porto: { url: any; name: any }) => (
-                      <li key={porto.url}>
-                        <Link href={porto.url}>{porto.name}</Link>
-                      </li>
-                    )
-                  )}
+                  {driveData?.portfolio?.map((porto: { url: any; name: any }) => (
+                    <li key={porto.url}>
+                      <Link href={porto.url}>{porto.name}</Link>
+                    </li>
+                  ))}
                 </ul>
               </Box>
             </Box>
           </Box>
-        </Box>
+        </>
       ) : (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <CircularProgress />
         </Box>
       )}
-    </>
+    </Box>
   )
 }
 

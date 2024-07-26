@@ -1,7 +1,7 @@
 'use client'
 
 import { GoogleDriveStorage } from 'trust_storage'
-
+import { signIn } from 'next-auth/react'
 export const handleStepHashChange = (
   setActiveStep: (step: number) => void,
   maxSteps: number
@@ -53,7 +53,6 @@ export const copyFormValuesToClipboard = (codeToCopy: string) => {
 
 export const handleStepChange = (step: number, setActiveStep: (step: number) => void) => {
   setActiveStep(step)
-  window.location.hash = `step-${step}`
 }
 
 export const handleNext = (activeStep: number, setActiveStep: (step: number) => void) => {

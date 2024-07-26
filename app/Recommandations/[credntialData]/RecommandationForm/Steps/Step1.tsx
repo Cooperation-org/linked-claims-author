@@ -38,15 +38,15 @@ const Step1: React.FC<Step1Props> = ({ watch, setValue, handleNext }) => {
   }
 
   return (
-    <Box sx={{ maxWidth: 400, margin: '0 auto', textAlign: 'center' }}>
+    <Box sx={{ width:'100%' }}>
       <RadioGroup
-        sx={radioGroupStyles}
+        sx={{...radioGroupStyles, pl:'0'}}
         aria-labelledby='form-type-label'
         name='controlled-radio-buttons-group'
         value={storageOption}
         onChange={handleChange}
       >
-        <Card variant='outlined'>
+        <Card variant='outlined' sx={{width:'100%'}}>
           <CardContent>
             <FormControlLabel
               value='Google Drive'
@@ -61,7 +61,7 @@ const Step1: React.FC<Step1Props> = ({ watch, setValue, handleNext }) => {
                 </Box>
               }
             />
-            <Typography variant='body2' sx={{ marginLeft: 4, textAlign: 'justify' }}>
+            <Typography variant='body2' sx={{ marginLeft: 4, textAlign: 'justify', overflow: 'auto' }}>
               You must have a Google account and be able to login to use this option. This
               is where your credentials will be stored once you select Sign and Save.
             </Typography>

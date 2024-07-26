@@ -1,14 +1,13 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { FormControl, Box } from '@mui/material'
+import { FormControl, Box, Typography } from '@mui/material'
 import { FormData } from '../../../components/form/types/Types'
 import {
   FormTextSteps,
   textGuid,
   NoteText,
-  SuccessText
+  SuccessText,
+  StorageText
 } from './fromTexts & stepTrack/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
@@ -19,15 +18,13 @@ import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import { useSession } from 'next-auth/react'
 import {
-  handleStepHashChange,
   createFolderAndUploadFile,
   handleNext,
   handleBack,
   handleSign
 } from '../../../utils/formUtils'
 
-const Form = ({ onStepChange, setactivStep }: any) => {
-  const [activeStep, setActiveStep] = useState(0)
+const Form = ({ activeStep, setActiveStep }: any) => {
   const [link, setLink] = useState<string>('')
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
@@ -59,31 +56,6 @@ const Form = ({ onStepChange, setactivStep }: any) => {
     name: 'portfolio'
   })
 
-  useEffect(() => {
-    const handleStepHashChangeWrapper = () =>
-      handleStepHashChange(setActiveStep, textGuid.length)
-
-    window.addEventListener('hashchange', handleStepHashChangeWrapper)
-
-    handleStepHashChangeWrapper()
-
-    return () => {
-      window.removeEventListener('hashchange', handleStepHashChangeWrapper)
-    }
-  }, [])
-
-  useEffect(() => {
-    setActiveStep(0)
-    window.location.hash = `step-0`
-  }, [])
-
-  useEffect(() => {
-    if (setactivStep) {
-      setactivStep(activeStep)
-    }
-    // onStepChange()
-  }, [activeStep, onStepChange, setactivStep])
-
   const handleFormSubmit = handleSubmit((data: FormData) => {
     if (data.storageOption === 'Google Drive') {
       createFolderAndUploadFile(data, accessToken, setLink)
@@ -103,20 +75,23 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       }}
       onSubmit={handleFormSubmit}
     >
-      <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-
-      {activeStep !== 0 && activeStep !== 6 && activeStep !== 7 && <NoteText />}
+      {activeStep === 2 && <NoteText />}
+      {activeStep === 1 && (
+        <Typography sx={{ foentWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>
+          {StorageText} 
+        </Typography>
+      )}
       {activeStep === 7 && <SuccessText />}
       <Box sx={{ width: { xs: '100%', md: '50%' } }}>
         <FormControl sx={{ width: '100%' }}>
-          {activeStep === 0 && (
+          {activeStep === 1 && (
             <Step1
               watch={watch}
               setValue={setValue}
               handleNext={() => handleNext(activeStep, setActiveStep)}
             />
           )}
-          {activeStep === 1 && (
+          {activeStep === 2 && (
             <Step2
               register={register}
               watch={watch}
@@ -126,7 +101,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               errors={errors}
             />
           )}
-          {activeStep === 2 && (
+          {activeStep === 3 && (
             <Step3
               register={register}
               watch={watch}
@@ -150,8 +125,8 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               handleBack={() => handleBack(activeStep, setActiveStep)}
             />
           )}
-          {activeStep === 3 && <DataComponent formData={watch()} />}{' '}
-          {activeStep === 4 && (
+          {activeStep === 5 && <DataComponent formData={watch()} />}{' '}
+          {activeStep === 6 && (
             <SuccessPage
               formData={watch()}
               setActiveStep={setActiveStep}
@@ -161,7 +136,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
           )}
         </FormControl>
       </Box>
-      {activeStep !== 7 && activeStep !== 0 && (
+      {activeStep !== 7 && (
         <Buttons
           activeStep={activeStep}
           maxSteps={textGuid.length}

@@ -155,7 +155,7 @@ export const radioGroupStyles = {
     md: '50%'
   },
   pl: '10px',
-  minWidth: '355px',
+  // minWidth: '355px',  // will change later 
   alignItems: 'center'
 }
 

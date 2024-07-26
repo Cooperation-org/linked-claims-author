@@ -9,13 +9,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { featuresRecommentations } from '../RecommandationForm/fromTexts & stepTrack/FormTextSteps'
 import FetchedData from './FetchedData'
 
-const Credential = ({
-  setactivStep,
-  activeStep
-}: {
-  setactivStep: any
-  activeStep: any
-}) => {
+const Credential = ({ setactivStep }: { setactivStep: any }) => {
   const theme = useTheme()
 
   const handleClick = () => {
