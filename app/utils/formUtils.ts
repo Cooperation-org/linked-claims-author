@@ -1,7 +1,7 @@
 'use client'
 
 import { GoogleDriveStorage } from 'trust_storage'
-import { signIn } from 'next-auth/react'
+// import { signIn } from 'next-auth/react'  // will use later
 export const handleStepHashChange = (
   setActiveStep: (step: number) => void,
   maxSteps: number

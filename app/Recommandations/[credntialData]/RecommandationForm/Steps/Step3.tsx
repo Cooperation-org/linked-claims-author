@@ -69,7 +69,7 @@ const Step3: React.FC<Step3Props> = ({
         </FormLabel>
         <TextEditor
           value={watch('recommendationText')}
-          onChange={value => handleTextEditorChange('recommendationText', value ?? '')}
+          onChange={value => handleTextEditorChange('RecommendationText', value ?? '')}
           placeholder='e.g., Alice managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative'
         />
         {errors.recommendationText && (
@@ -93,75 +93,79 @@ const Step3: React.FC<Step3Props> = ({
           <Typography color='error'>{errors.qualifications.message}</Typography>
         )}
       </Box>
-      <Typography>Adding supporting evidence of your qualifications.</Typography>
-      {fields.map((field, index) => (
-        <React.Fragment key={field.id}>
-          <Box sx={formBoxStyles}>
-            <Typography sx={portfolioTypographyStyles}>
-              Evidence #{index + 1}
-              {index > 0 && (
-                <ClearIcon
-                  type='button'
-                  onClick={() => remove(index)}
-                  sx={{ mt: '5px', cursor: 'pointer' }}
-                />
-              )}
-            </Typography>
-            <FormLabel sx={formLabelStyles} id={`name-label-${index}`}>
-              Name
-            </FormLabel>
-            <TextField
-              {...register(`portfolio.${index}.name`)}
-              defaultValue={field.name}
-              placeholder='(e.g., LinkedIn profile, github repo, etc.)'
-              variant='outlined'
-              sx={TextFieldStyles}
-              aria-labelledby={`name-label-${index}`}
-              error={!!errors?.portfolio?.[index]?.name}
-              helperText={errors?.portfolio?.[index]?.name?.message}
-            />
+      <Box>
+        <Typography sx={{ mb: '10px' }}>
+          Adding supporting evidence of your qualifications.
+        </Typography>
+        {fields.map((field, index) => (
+          <React.Fragment key={field.id}>
+            <Box sx={formBoxStyles}>
+              <Typography sx={portfolioTypographyStyles}>
+                Evidence #{index + 1}
+                {index > 0 && (
+                  <ClearIcon
+                    type='button'
+                    onClick={() => remove(index)}
+                    sx={{ mt: '5px', cursor: 'pointer' }}
+                  />
+                )}
+              </Typography>
+              <FormLabel sx={formLabelStyles} id={`name-label-${index}`}>
+                Name
+              </FormLabel>
+              <TextField
+                {...register(`portfolio.${index}.name`)}
+                defaultValue={field.name}
+                placeholder='(e.g., LinkedIn profile, github repo, etc.)'
+                variant='outlined'
+                sx={TextFieldStyles}
+                aria-labelledby={`name-label-${index}`}
+                error={!!errors?.portfolio?.[index]?.name}
+                helperText={errors?.portfolio?.[index]?.name?.message}
+              />
+            </Box>
+            <Box sx={formBoxStylesUrl}>
+              <FormLabel sx={formLabelStyles} id={`url-label-${index}`}>
+                URL
+              </FormLabel>
+              <TextField
+                {...register(`portfolio.${index}.url`)}
+                defaultValue={field.url}
+                placeholder='https://'
+                variant='outlined'
+                sx={TextFieldStyles}
+                aria-labelledby={`url-label-${index}`}
+                error={!!errors?.portfolio?.[index]?.url}
+                onChange={handleUrlChange}
+                helperText={urlError}
+              />
+            </Box>
+            <Box
+              sx={{
+                bgcolor: theme.palette.t3LightGray
+              }}
+              width={'100%'}
+              height={'1px'}
+            ></Box>
+          </React.Fragment>
+        ))}
+        {fields.length < 5 && (
+          <Box sx={addAnotherBoxStyles}>
+            <Button
+              type='button'
+              onClick={() => append({ name: '', url: '' })}
+              sx={addAnotherButtonStyles(theme)}
+              endIcon={
+                <Box sx={addAnotherIconStyles(theme)}>
+                  <AddIcon />
+                </Box>
+              }
+            >
+              Add another
+            </Button>
           </Box>
-          <Box sx={formBoxStylesUrl}>
-            <FormLabel sx={formLabelStyles} id={`url-label-${index}`}>
-              URL
-            </FormLabel>
-            <TextField
-              {...register(`portfolio.${index}.url`)}
-              defaultValue={field.url}
-              placeholder='https://'
-              variant='outlined'
-              sx={TextFieldStyles}
-              aria-labelledby={`url-label-${index}`}
-              error={!!errors?.portfolio?.[index]?.url}
-              onChange={handleUrlChange}
-              helperText={urlError}
-            />
-          </Box>
-          <Box
-            sx={{
-              bgcolor: theme.palette.t3LightGray
-            }}
-            width={'100%'}
-            height={'1px'}
-          ></Box>
-        </React.Fragment>
-      ))}
-      {fields.length < 5 && (
-        <Box sx={addAnotherBoxStyles}>
-          <Button
-            type='button'
-            onClick={() => append({ name: '', url: '' })}
-            sx={addAnotherButtonStyles(theme)}
-            endIcon={
-              <Box sx={addAnotherIconStyles(theme)}>
-                <AddIcon />
-              </Box>
-            }
-          >
-            Add another
-          </Button>
-        </Box>
-      )}
+        )}
+      </Box>
       <Box sx={skipButtonBoxStyles}>
         <Button type='button' onClick={handleNext} sx={skipButtonStyles(theme)}>
           Skip

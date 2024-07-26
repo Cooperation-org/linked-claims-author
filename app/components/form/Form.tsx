@@ -22,7 +22,6 @@ import SuccessPage from './Steps/SuccessPage'
 import { useSession } from 'next-auth/react'
 import {
   createFolderAndUploadFile,
-  copyFormValuesToClipboard,
   handleNext,
   handleSign,
   handleBack

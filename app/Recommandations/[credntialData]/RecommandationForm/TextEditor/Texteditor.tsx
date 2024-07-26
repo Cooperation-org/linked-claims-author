@@ -1,8 +1,8 @@
-import { useTheme } from '@mui/material/styles'
-import React from 'react'
+import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { Box, FormLabel } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import './TextEditor.css'
 import Quill from 'quill'
 const Delta = Quill.import('delta')
@@ -35,62 +35,70 @@ class PlainClipboard extends Clipboard {
 
 Quill.register('modules/clipboard', PlainClipboard, true)
 
-function TextEditor({ value, onChange, placeholder }: Readonly<TextEditorProps>) {
-  const theme = useTheme()
+const TextEditor = forwardRef(
+  ({ value, onChange, placeholder }: TextEditorProps, ref) => {
+    const theme = useTheme()
+    const quillRef = useRef<ReactQuill>(null)
 
-  const handleChange = (content: string) => {
-    onChange(content)
-  }
-
-  const handleBlur = () => {
-    console.log('Saving data:', value)
-  }
-
-  const modules = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike', 'link'],
-      [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
-      ['code-block']
-    ],
-    clipboard: {
-      matchVisual: false
+    const handleChange = (content: string) => {
+      onChange(content)
     }
-  }
 
-  const formats = [
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'link',
-    'list',
-    'bullet',
-    'code-block',
-    'check'
-  ]
+    const handleBlur = () => {
+      console.log('Saving data:', value)
+    }
 
-  return (
-    <Box sx={{ width: '100%', borderRadius: '8px' }}>
-      <Box
-        className='text-editor-container'
-        sx={{ borderRadius: '8px', fontFamily: 'Inter', fontWeight: 500 }}
-      >
-        <ReactQuill
-          theme='snow'
-          value={value}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          modules={modules}
-          formats={formats}
-          style={{
-            marginTop: '4px',
-            borderRadius: '8px'
-          }}
-          placeholder={placeholder}
-        />
+    useImperativeHandle(ref, () => ({
+      getValue: () => quillRef.current?.getEditor().getText() ?? ''
+    }))
+
+    const modules = {
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike', 'link'],
+        [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
+        ['code-block']
+      ],
+      clipboard: {
+        matchVisual: false
+      }
+    }
+
+    const formats = [
+      'bold',
+      'italic',
+      'underline',
+      'strike',
+      'link',
+      'list',
+      'bullet',
+      'code-block',
+      'check'
+    ]
+
+    return (
+      <Box sx={{ width: '100%', borderRadius: '8px' }}>
+        <Box
+          className='text-editor-container'
+          sx={{ borderRadius: '8px', fontFamily: 'Inter', fontWeight: 500 }}
+        >
+          <ReactQuill
+            ref={quillRef}
+            theme='snow'
+            value={value}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            modules={modules}
+            formats={formats}
+            style={{
+              marginTop: '4px',
+              borderRadius: '8px'
+            }}
+            placeholder={placeholder}
+          />
+        </Box>
       </Box>
-    </Box>
-  )
-}
+    )
+  }
+)
 
 export default TextEditor

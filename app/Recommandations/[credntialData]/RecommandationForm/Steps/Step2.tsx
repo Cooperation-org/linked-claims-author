@@ -52,7 +52,7 @@ const Step2: React.FC<Step2Props> = ({
           How do you know Alice? <span style={formLabelSpanStyles}> *</span>
         </FormLabel>
         <TextEditor
-          value={watch('RecommenderDescription')}
+          value={watch('howKnow')}
           onChange={handleTextEditorChange}
           placeholder='e.g., I am Alice’s former supervisor. I’ve known her for 5 years.'
         />

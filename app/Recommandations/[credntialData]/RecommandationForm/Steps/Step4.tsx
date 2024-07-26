@@ -33,11 +33,17 @@ interface Step4Props {
 const Step4: React.FC<Step4Props> = ({ register, watch, setValue, errors }) => {
   const [recommend, setRecommend] = useState('')
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setRecommend(value)
+    setValue('isRecommand', value)
+  }
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
         <Typography sx={{ fontWeight: 'bold' }}>Would you recommend Alice?</Typography>
-        <RadioGroup row value={recommend} onChange={e => setRecommend(e.target.value)}>
+        <RadioGroup row value={recommend} onChange={handleChange}>
           <FormControlLabel
             value='yes'
             control={
@@ -73,19 +79,7 @@ const Step4: React.FC<Step4Props> = ({ register, watch, setValue, errors }) => {
           <Typography color='error'>{errors.explainAnswer.message}</Typography>
         )}
       </Box>
-      <Box>
-        <FormLabel sx={{ fontWeight: 'bold' }} id='how-do-you-know-alice-label'>
-          How do you know Alice? <span style={{ color: 'red' }}>*</span>
-        </FormLabel>
-        <TextEditor
-          value={watch('howDoYouKnowAlice')}
-          onChange={value => setValue('howDoYouKnowAlice', value ?? '')}
-          placeholder='I was Alice’s manager for about two years, but I have known her in total for about 5 years.'
-        />
-        {errors.howDoYouKnowAlice && (
-          <Typography color='error'>{errors.howDoYouKnowAlice.message}</Typography>
-        )}
-      </Box>
+
       <Box>
         <Typography sx={{ fontWeight: 'bold' }}>Rate Alice’s Communication</Typography>
         <Rating
