@@ -46,7 +46,9 @@ const Form = ({ activeStep, setActiveStep }: any) => {
       credentialDescription: '',
       portfolio: [{ name: '', url: '' }],
       evidenceLink: '',
-      description: ''
+      description: '',
+      communicationRating: 0,
+      dependabilityRating: 0
     },
     mode: 'onChange'
   })
@@ -107,14 +109,6 @@ const Form = ({ activeStep, setActiveStep }: any) => {
               watch={watch}
               setValue={setValue}
               errors={errors}
-            />
-          )}
-          {activeStep === 4 && (
-            <Step4
-              register={register}
-              watch={watch}
-              setValue={setValue}
-              errors={errors}
               fields={fields}
               append={append}
               remove={remove}
@@ -125,8 +119,16 @@ const Form = ({ activeStep, setActiveStep }: any) => {
               handleBack={() => handleBack(activeStep, setActiveStep)}
             />
           )}
-          {activeStep === 5 && <DataComponent formData={watch()} />}{' '}
-          {activeStep === 6 && (
+          {activeStep === 4 && (
+            <Step4
+              register={register}
+              watch={watch}
+              setValue={setValue}
+              errors={errors}
+            />
+          )}
+          {activeStep === 6 && <DataComponent formData={watch()} />}
+          {activeStep === 7 && (
             <SuccessPage
               formData={watch()}
               setActiveStep={setActiveStep}
@@ -143,6 +145,16 @@ const Form = ({ activeStep, setActiveStep }: any) => {
           handleNext={() => handleNext(activeStep, setActiveStep)}
           handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
           handleBack={() => handleBack(activeStep, setActiveStep)}
+          isValid={isValid}
+        />
+      )}
+      {activeStep === 1 && (
+        <Buttons
+          activeStep={activeStep}
+          maxSteps={textGuid.length}
+          handleNext={() => handleNext(activeStep, setActiveStep)}
+          handleSign={undefined}
+          handleBack={undefined}
           isValid={isValid}
         />
       )}

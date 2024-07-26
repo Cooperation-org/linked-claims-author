@@ -1,6 +1,5 @@
 import { styled, TextField, Button, ButtonProps, Theme } from '@mui/material'
-
-import { CSSProperties } from 'react'
+import { SxProps } from '@mui/material/styles'
 
 export const StyledButton = {
   padding: '10px 24px',
@@ -212,34 +211,55 @@ export const portfolioTypographyStyles = {
   mb: '10px'
 }
 
-export const addAnotherButtonStyles = (theme: Theme): CSSProperties => ({
-  background: 'none',
-  color: theme.palette.t3ButtonBlue,
-  border: 'none',
-  padding: 0,
-  textDecoration: 'underline',
-  cursor: 'pointer',
-  fontSize: '12px',
-  fontWeight: 400,
-  letterSpacing: '0.075px',
-  textAlign: 'right' as const,
-  lineHeight: '16px',
-  marginTop: '7px'
+export const addAnotherButtonStyles = (theme: Theme): SxProps<Theme> => ({
+  textTransform: 'none',
+  width: '100%',
+  fontWeight: 'bold',
+  color: theme.palette.primary.main,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  '& .MuiButton-endIcon': {
+    marginRight: '0'
+  },
+  '&:hover': {
+    backgroundColor: 'transparent',
+    textDecoration: 'underline'
+  }
+})
+
+export const addAnotherIconStyles = (theme: Theme): SxProps<Theme> => ({
+  width: '24px',
+  height: '24px',
+  borderRadius: '50%',
+  border: `1px solid ${theme.palette.text.primary}`,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+
+  '& .MuiSvgIcon-root': {
+    fontSize: '16px'
+  }
 })
 
 export const addAnotherBoxStyles = {
   width: '100%',
-  justifyContent: 'flex-end',
-  display: 'flex'
+  display: 'flex',
+  justifyContent: 'flex-start'
 }
 
 export const skipButtonBoxStyles = {
   width: '100%',
   justifyContent: 'center',
   display: 'flex',
-  marginTop: '40px'
+  alignItems: 'center'
 }
 
+export const skipButtonStyles = (theme: Theme): SxProps<Theme> => ({
+  fontWeight: 'bold',
+  color: '#1F2937',
+  textDecoration: 'none'
+})
 export const formBoxStyles = {
   marginBottom: '15px'
 }

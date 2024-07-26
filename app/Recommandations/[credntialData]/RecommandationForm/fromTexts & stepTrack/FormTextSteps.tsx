@@ -28,6 +28,8 @@ export const textGuid = [
 
 export const note =
   'Please note, all fields marked with an asterisk are required and must be completed.'
+export const storageOptionNote =
+  'Your recommendation will be stored in the location you select. This will ensure it can be linked to Alice’s credential once you’re finished:'
 export const successNote =
   'Congratulations on your achievement. Tell the world what you’ve accomplished!'
 
@@ -56,14 +58,13 @@ export function FormTextSteps({ activeStep, activeText }: Readonly<FormTextSteps
   )
 }
 
-interface TextProps {
-  t3BodyText: string
-}
-
 export function SuccessText() {
   return <Typography variant='successText'>{successNote}</Typography>
 }
 
 export function NoteText() {
   return <Typography variant='noteText'>{note}</Typography>
+}
+export function StorageOptionNote() {
+  return <Typography variant='noteText'>{storageOptionNote}</Typography>
 }
