@@ -8,7 +8,7 @@ import {
   UseFormWatch,
   UseFormSetValue
 } from 'react-hook-form'
-import TextEditor from '../../../../components/form/TextEditor/Texteditor'
+import TextEditor from '../TextEditor/Texteditor'
 import { FormData } from '../../../../components/form/types/Types'
 
 interface Step3Props {
@@ -40,6 +40,7 @@ const Step3: React.FC<Step3Props> = ({
         <TextEditor
           value={watch('recommendationText')}
           onChange={value => setValue('recommendationText', value ?? '')}
+          placeholder=''
         />
         {errors.recommendationText && (
           <Typography color='error'>{errors.recommendationText.message}</Typography>
@@ -52,6 +53,7 @@ const Step3: React.FC<Step3Props> = ({
         <TextEditor
           value={watch('howDoYouKnowAlice')}
           onChange={value => setValue('howDoYouKnowAlice', value ?? '')}
+          placeholder=''
         />
         {errors.howDoYouKnowAlice && (
           <Typography color='error'>{errors.howDoYouKnowAlice.message}</Typography>

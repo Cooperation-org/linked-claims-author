@@ -3,14 +3,26 @@
 import React, { useState, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box } from '@mui/material'
+import { FormData } from '../../../components/form/types/Types'
+import {
+  FormTextSteps,
+  textGuid,
+  NoteText,
+  SuccessText
+} from './fromTexts & stepTrack/FormTextSteps'
 import Step0 from './Steps/Step0'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
 import Step3 from './Steps/Step3'
+import DataComponent from './Steps/dataPreview'
+import SuccessPage from './Steps/SuccessPage'
 import { useSession } from 'next-auth/react'
-import { createFolderAndUploadFile } from '../../../utils/formUtils'
-import { FormData } from '../../../components/form/types/Types'
-import { FormTextSteps, textGuid, NoteText } from './fromTexts & stepTrack/FormTextSteps'
+import {
+  handleStepHashChange,
+  createFolderAndUploadFile,
+  handleNext,
+  handleBack
+} from '../../../utils/formUtils'
 
 const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -35,17 +47,28 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       credentialDescription: '',
       portfolio: [{ name: '', url: '' }],
       evidenceLink: '',
-      description: '',
-      recommendationText: '',
-      howDoYouKnowAlice: ''
+      description: ''
     },
     mode: 'onChange'
   })
 
-  useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'portfolio'
   })
+
+  useEffect(() => {
+    const handleStepHashChangeWrapper = () =>
+      handleStepHashChange(setActiveStep, textGuid.length)
+
+    window.addEventListener('hashchange', handleStepHashChangeWrapper)
+
+    handleStepHashChangeWrapper()
+
+    return () => {
+      window.removeEventListener('hashchange', handleStepHashChangeWrapper)
+    }
+  }, [])
 
   useEffect(() => {
     setActiveStep(0)
@@ -53,25 +76,17 @@ const Form = ({ onStepChange, setactivStep }: any) => {
   }, [])
 
   useEffect(() => {
-    if (typeof setactivStep === 'function') {
+    if (setactivStep) {
       setactivStep(activeStep)
     }
     onStepChange()
-  }, [activeStep, onStepChange])
+  }, [activeStep, onStepChange, setactivStep])
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     if (data.storageOption === 'Google Drive') {
       createFolderAndUploadFile(data, accessToken, setLink)
     }
   })
-
-  const handleNextStep = () => {
-    setActiveStep(prevStep => prevStep + 1)
-  }
-
-  const handleBackStep = () => {
-    setActiveStep(prevStep => prevStep - 1)
-  }
 
   return (
     <form
@@ -87,11 +102,19 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       onSubmit={handleFormSubmit}
     >
       <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
+      {activeStep !== 0 && activeStep !== 6 && activeStep !== 7 && <NoteText />}
+      {activeStep === 7 && <SuccessText />}
       <Box sx={{ width: { xs: '100%', md: '50%' } }}>
         <FormControl sx={{ width: '100%' }}>
-          {activeStep === 0 && <Step0 handleNext={handleNextStep} />}
+          {activeStep === 0 && (
+            <Step0 handleNext={() => handleNext(activeStep, setActiveStep)} />
+          )}
           {activeStep === 1 && (
-            <Step1 watch={watch} setValue={setValue} handleNext={handleNextStep} />
+            <Step1
+              watch={watch}
+              setValue={setValue}
+              handleNext={() => handleNext(activeStep, setActiveStep)}
+            />
           )}
           {activeStep === 2 && (
             <Step2
@@ -101,8 +124,8 @@ const Form = ({ onStepChange, setactivStep }: any) => {
                 setValue('credentialDescription', value ?? '')
               }
               errors={errors}
-              handleNext={handleNextStep}
-              handleBack={handleBackStep}
+              handleNext={() => handleNext(activeStep, setActiveStep)}
+              handleBack={() => handleBack(activeStep, setActiveStep)}
             />
           )}
           {activeStep === 3 && (
@@ -111,8 +134,17 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               watch={watch}
               setValue={setValue}
               errors={errors}
-              handleNext={handleNextStep}
-              handleBack={handleBackStep}
+              handleNext={() => handleNext(activeStep, setActiveStep)}
+              handleBack={() => handleBack(activeStep, setActiveStep)}
+            />
+          )}
+          {activeStep === 6 && <DataComponent formData={watch()} />}{' '}
+          {activeStep === 7 && (
+            <SuccessPage
+              formData={watch()}
+              setActiveStep={setActiveStep}
+              link={link}
+              reset={() => setValue('credentialDescription', '')}
             />
           )}
         </FormControl>

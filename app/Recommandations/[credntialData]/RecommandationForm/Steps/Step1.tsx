@@ -14,12 +14,10 @@ import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { FormData } from '../../../../components/form/types/Types'
 import { GoogleDrive, DigitalWallet } from '../../../../Assets/SVGs'
 import {
-  boxStyles,
   radioCheckedStyles,
   radioGroupStyles
 } from '../../../../components/Styles/appStyles'
-import { signIn} from 'next-auth/react'
-
+import { signIn } from 'next-auth/react'
 
 interface Step1Props {
   watch: UseFormWatch<FormData>

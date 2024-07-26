@@ -1,10 +1,18 @@
 'use client'
 
 import React from 'react'
-import { Box, Typography, FormLabel, TextField, Button } from '@mui/material'
+import { Box, FormLabel, TextField, Button, Typography, FormControl } from '@mui/material'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
-import TextEditor from '../../../../components/form/TextEditor/Texteditor'
+import TextEditor from '../TextEditor/Texteditor'
 import { FormData } from '../../../../components/form/types/Types'
+import {
+  formLabelStyles,
+  formLabelSpanStyles,
+  inputPropsStyles,
+  TextFieldStyles,
+  StyledButton,
+  nextButtonStyle
+} from '../../../../components/Styles/appStyles'
 
 interface Step2Props {
   register: UseFormRegister<FormData>
@@ -24,10 +32,18 @@ const Step2: React.FC<Step2Props> = ({
   handleBack
 }) => {
   return (
-    <Box sx={{ maxWidth: 400, margin: '0 auto' }}>
-      <Box sx={{ mt: 3 }}>
-        <FormLabel sx={{ fontWeight: 'bold' }} id='full-name-label'>
-          Full Name <span style={{ color: 'red' }}>*</span>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '30px',
+        maxWidth: '600px',
+        margin: '0 auto'
+      }}
+    >
+      <Box>
+        <FormLabel sx={formLabelStyles} id='full-name-label'>
+          Full Name <span style={formLabelSpanStyles}> *</span>
         </FormLabel>
         <TextField
           {...register('fullName', {
@@ -35,31 +51,39 @@ const Step2: React.FC<Step2Props> = ({
           })}
           placeholder='Firstname Lastname'
           variant='outlined'
-          fullWidth
-          sx={{ mt: 1 }}
+          sx={TextFieldStyles}
           aria-labelledby='full-name-label'
+          inputProps={{
+            'aria-label': 'Full Name',
+            style: inputPropsStyles
+          }}
           error={!!errors.fullName}
           helperText={errors.fullName?.message}
         />
       </Box>
-      <Box sx={{ mt: 3 }}>
-        <FormLabel sx={{ fontWeight: 'bold' }} id='qualifications-label'>
-          Your Qualifications
+      <Box>
+        <FormLabel sx={formLabelStyles} id='qualifications-label'>
+          How do you know Alice? <span style={formLabelSpanStyles}> *</span>
         </FormLabel>
-        <Typography variant='body2' gutterBottom>
-          Please share how you are qualified to provide this recommendation. Sharing your
-          qualifications will further increase the value of this recommendation.
-        </Typography>
         <TextEditor
           value={watch('credentialDescription')}
           onChange={handleTextEditorChange}
+          placeholder='e.g., I am Alice’s former supervisor. I’ve known her for 5 years.'
         />
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-        <Button variant='outlined' onClick={handleBack}>
+        <Button sx={StyledButton} onClick={handleBack} color='secondary'>
           Back
         </Button>
-        <Button variant='contained' color='primary' onClick={handleNext}>
+        <Button
+          sx={{
+            ...nextButtonStyle,
+            maxWidth: '355px'
+          }}
+          onClick={handleNext}
+          color='primary'
+          variant='contained'
+        >
           Next
         </Button>
       </Box>
