@@ -45,7 +45,6 @@ const useGoogleDrive = () => {
   const fetchFile = async (
     fileId,
     resourceKey
-    // , retries = 3, delay = 1000
   ) => {
     console.log('Fetching file:', fileId, resourceKey)
     try {
@@ -60,10 +59,6 @@ const useGoogleDrive = () => {
       setFileData(response.body)
     } catch (error) {
       console.error('Error fetching file:', error)
-      // if (error.result?.error?.code === 403 && retries > 0) {
-      //   console.log(`Retrying... attempts left: ${retries - 1}`)
-      //   setTimeout(() => fetchFile(fileId, resourceKey, retries - 1, delay * 2), delay)
-      // }
     }
   }
 

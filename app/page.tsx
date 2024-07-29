@@ -15,10 +15,11 @@ import {
   featuresLargeScreen
 } from './CredentialForm/landingPageVariables'
 import Link from 'next/link'
+import useAutoSignOut from './hooks/useAutoSignOut'
 
 const Page = () => {
   const theme = useTheme()
-
+  useAutoSignOut()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
