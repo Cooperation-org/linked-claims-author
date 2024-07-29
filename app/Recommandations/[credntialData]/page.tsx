@@ -61,13 +61,15 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
           </Box>
         </Box>
       </Box>
-      {activeStep === 0 && <Credential setactivStep={setActiveStep} />}
-      {activeStep !== 0 && (
-        <>
-          <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-          <TabsComponent setactivStep={setActiveStep} activeStep={activeStep} />
-        </>
-      )}
+      <Box sx={{ height: '100%' }}>
+        {activeStep === 0 && <Credential setactivStep={setActiveStep} />}
+        {activeStep !== 0 && (
+          <>
+            <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
+            <TabsComponent setactivStep={setActiveStep} activeStep={activeStep} />
+          </>
+        )}
+      </Box>
       {!isLargeScreen && (
         <Box
           sx={{
