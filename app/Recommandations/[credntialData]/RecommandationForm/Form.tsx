@@ -16,9 +16,11 @@ import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import { handleNext, handleBack, handleSign } from '../../../utils/formUtils'
+import useLocalStorage from '../../../hooks/useLocalStorage'
 
 const Form = ({ activeStep, setActiveStep }: any) => {
   const savedFormData = localStorage.getItem('formData')
+  console.log(":  Form  savedFormData", savedFormData)
   const defaultValues: FormData = savedFormData
     ? JSON.parse(savedFormData)
     : {
@@ -54,20 +56,14 @@ const Form = ({ activeStep, setActiveStep }: any) => {
     name: 'portfolio'
   })
 
+  const formData = watch()
+  const { removeItem } = useLocalStorage('formData', formData, watch)
+
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    console.log('Form data on submit:', data)
-    localStorage.removeItem('formData')
-    console.log('Removed formData from localStorage')
+    removeItem()
     reset()
     setActiveStep(1)
-  })
-
-  useEffect(() => {
-    const subscription = watch(value => {
-      localStorage.setItem('formData', JSON.stringify(value))
-    })
-    return () => subscription.unsubscribe()
-  }, [watch])
+  })  
 
   return (
     <FormProvider {...methods}>
@@ -78,8 +74,9 @@ const Form = ({ activeStep, setActiveStep }: any) => {
           gap: '30px',
           alignItems: 'center',
           marginTop: '30px',
-          padding: '0 15px 30px',
-          overflow: 'auto'
+          padding: '0 0 30px',
+          overflow: 'auto',
+          width: '100%'
         }}
         onSubmit={handleFormSubmit}
       >

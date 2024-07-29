@@ -10,7 +10,13 @@ function a11yProps(index: number) {
   }
 }
 
-const TabsComponent = ({ setactivStep, activeStep }: { setactivStep: any, activeStep: any }) => {
+const TabsComponent = ({
+  setactivStep,
+  activeStep
+}: {
+  setactivStep: any
+  activeStep: any
+}) => {
   const [value, setValue] = useState(0)
 
   const handleChange = (event: any, newValue: React.SetStateAction<number>) => {
@@ -18,9 +24,9 @@ const TabsComponent = ({ setactivStep, activeStep }: { setactivStep: any, active
   }
 
   return (
-    <Box sx={{minHeight:'100%',mt:'10px'}}>
+    <Box sx={{ minHeight: '100%', mt: '10px' }}>
       <Tabs
-        sx={{ width: '100%' }}
+        sx={{ width: '100%', pl: '20px' }}
         value={value}
         onChange={handleChange}
         aria-label='simple tabs example'

@@ -38,7 +38,7 @@ const Step1: React.FC<Step1Props> = ({ watch, setValue, handleNext }) => {
   }
 
   return (
-    <Box sx={{ maxWidth: 400, margin: '0 auto', textAlign: 'center' }}>
+    <Box sx={{ maxWidth: '100%', margin: '0 auto', textAlign: 'center' }}>
       <RadioGroup
         sx={{ ...radioGroupStyles, pl: '0' }}
         aria-labelledby='form-type-label'
