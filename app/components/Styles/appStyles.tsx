@@ -1,4 +1,4 @@
-import { styled, TextField, Button, ButtonProps, Theme } from '@mui/material'
+import { styled, TextField, Theme } from '@mui/material'
 import { SxProps } from '@mui/material/styles'
 
 export const StyledButton = {
@@ -273,9 +273,9 @@ export const successPageContainerStyles = {
   flexDirection: 'column',
   alignItems: 'center',
   flexShrink: 0,
-  borderRadius: '8px',
   background: '#e5e7ebb2',
-  width: '100%'
+  width: '100%',
+  borderRadius: '20px'
 }
 
 export const successPageHeaderStyles = {
@@ -315,12 +315,15 @@ export const successPageInfoStyles = {
   display: 'flex',
   gap: '3px',
   marginTop: '5px',
-  alignItems: 'center'
+  alignItems: 'center',
+  background: '#d5e1fb',
+  width: 'fit-content',
+  p: '3px'
 }
 
 export const successPageDateStyles = {
   color: '#4E4E4E',
-  background: '#E5E7EB',
+  background: '#d5e1fb',
   textAlign: 'center',
   fontFamily: 'Poppins, sans-serif',
   fontSize: '13px',

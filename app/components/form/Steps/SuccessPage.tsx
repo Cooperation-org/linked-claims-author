@@ -33,7 +33,6 @@ import {
   successPageButtonStyles
 } from '../../Styles/appStyles'
 import { FormData } from '../types/Types'
-// import useGoogleDrive from '../../../hooks/useGoogleDrive'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 
 interface SuccessPageProps {
@@ -50,23 +49,11 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   link
 }) => {
 
-  // comment the fetch data function 
-
-  // const { fetchFile, fileData } = useGoogleDrive()
-  // const [viewingFile, setViewingFile] = useState(false)
-
-  // const handleViewFile = () => {
-  //   const fileId = link.split('/d/')[1].split('/')[0]
-  //   const resourceKey = ''
-  //   fetchFile(fileId, resourceKey)
-  //   setViewingFile(true)
-  // }
-
   return (
     <>
       <Box sx={successPageContainerStyles}>
         <Box sx={successPageHeaderStyles}>
-          <Image style={{ width: '69px', height: '69px' }} src={image} alt='logo' />
+          {/* <Image style={{ width: '69px', height: '69px' }} src={image} alt='logo' /> */}
           <Box sx={{ flex: 1 }}>
             <Typography sx={successPageTitleStyles}>
               {formData?.credentialName}

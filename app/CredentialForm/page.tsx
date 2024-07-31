@@ -10,10 +10,9 @@ import { SVGLargeScreen } from '../Assets/SVGs'
 import { StepTrackShape } from '../components/form/fromTexts & stepTrack/StepTrackShape'
 import dynamic from 'next/dynamic'
 
-
 const DynamicForm = dynamic(() => import('../components/form/Form'), {
   ssr: false,
-  loading: () => <p>Loading...</p>,
+  loading: () => <p></p>
 })
 
 const FormComponent = () => {
@@ -72,10 +71,7 @@ const FormComponent = () => {
           </Box>
         </Box>
       </Box>
-      <DynamicForm
-        onStepChange={handleScrollToTop}
-        setactivStep={setactivStep}
-      />
+      <DynamicForm onStepChange={handleScrollToTop} setactivStep={setactivStep} />
       {!isLargeScreen && (
         <Box
           sx={{

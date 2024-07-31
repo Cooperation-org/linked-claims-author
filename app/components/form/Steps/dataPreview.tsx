@@ -44,11 +44,11 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         }}
       >
         <Box sx={imageBoxStyles}>
-          <Image
-            style={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }}
-            src={test}
-            alt='testImage'
-          />
+            {/* <Image
+              style={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }}
+              src={test}
+              alt='testImage'
+            /> */}
         </Box>
         <Box sx={commonBoxStyles}>
           <Typography
