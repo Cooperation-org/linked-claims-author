@@ -25,13 +25,19 @@ const handler = NextAuth({
       if (account) {
         token.accessToken = account.access_token
         token.idToken = account.id_token
+        token.expires = Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7)
       }
       return token
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken as string
+      session.expires = token.expires as string
       return session
     }
+  },
+  session: {
+    strategy: 'jwt', 
+    maxAge: 60 * 60 * 24 * 7, 
   }
 })
 

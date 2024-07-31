@@ -1,0 +1,17 @@
+.ql-toolbar {
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.ql-container {
+  border-radius: 0 0 8px 8px;
+  border-top: none;
+}
+
+.ql-editor {
+  min-height: 160px;
+}
+
+.text-editor-container:focus-within {
+  box-shadow: 0 0 0 2px #14b8a6;
+}

@@ -1,16 +1,7 @@
 'use client'
 
 import { GoogleDriveStorage } from 'trust_storage'
-
-export const handleStepHashChange = (
-  setActiveStep: (step: number) => void,
-  maxSteps: number
-) => {
-  const stepFromHash = parseInt(window.location.hash.replace('#step-', ''), 10)
-  if (!isNaN(stepFromHash) && stepFromHash >= 0 && stepFromHash < maxSteps) {
-    setActiveStep(stepFromHash)
-  }
-}
+// import { signIn } from 'next-auth/react'  // will use later
 
 export const createFolderAndUploadFile = async (
   data: any,
@@ -53,7 +44,6 @@ export const copyFormValuesToClipboard = (codeToCopy: string) => {
 
 export const handleStepChange = (step: number, setActiveStep: (step: number) => void) => {
   setActiveStep(step)
-  window.location.hash = `step-${step}`
 }
 
 export const handleNext = (activeStep: number, setActiveStep: (step: number) => void) => {

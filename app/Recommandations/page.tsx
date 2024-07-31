@@ -1,39 +1,21 @@
 'use client'
-import { useTheme } from '@mui/material/styles'
-import React, { useCallback, useRef, useState } from 'react'
+
+import { Typography, Box, useMediaQuery, Theme } from '@mui/material'
 import Image from 'next/image'
-import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import { StepTrackShape } from '../components/form/fromTexts & stepTrack/StepTrackShape'
+import { SVGLargeScreen } from '../Assets/SVGs'
+import img3 from '../Assets/Images/Tessa Persona large sceens.png'
 import fram from '../Assets/Images/Frame 35278.png'
 import vector from '../Assets/Images/Vector 145.png'
-import img3 from '../Assets/Images/Tessa Persona large sceens.png'
-import { SVGLargeScreen } from '../Assets/SVGs'
-import { StepTrackShape } from '../components/form/fromTexts & stepTrack/StepTrackShape'
-import dynamic from 'next/dynamic'
 
-
-const DynamicForm = dynamic(() => import('../components/form/Form'), {
-  ssr: false,
-  loading: () => <p>Loading...</p>,
-})
-
-const FormComponent = () => {
-  const [activStep, setactivStep] = useState(0)
+const SendEmailPage = () => {
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  const formRef = useRef<HTMLDivElement>(null)
-
-  const handleScrollToTop = useCallback(() => {
-    if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth' })
-      setTimeout(() => {
-        formRef.current?.scrollIntoView({ behavior: 'smooth' })
-      }, 10)
-    }
-  }, [formRef])
+  const activStep = 1
 
   return (
     <Box
-      ref={formRef}
       sx={{
         minHeight: 'calc(100vh - 153px)',
         display: !isLargeScreen ? 'flex' : 'block',
@@ -72,10 +54,6 @@ const FormComponent = () => {
           </Box>
         </Box>
       </Box>
-      <DynamicForm
-        onStepChange={handleScrollToTop}
-        setactivStep={setactivStep}
-      />
       {!isLargeScreen && (
         <Box
           sx={{
@@ -114,4 +92,4 @@ const FormComponent = () => {
   )
 }
 
-export default FormComponent
+export default SendEmailPage

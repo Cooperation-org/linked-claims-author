@@ -24,7 +24,8 @@ const useGoogleDrive = () => {
             })
           }
           console.log('Initializing Google API client: Done')
-          setGapiLoaded(true)
+          
+          setTimeout(() => setGapiLoaded(true), 1000) 
         } catch (error) {
           console.error('Error initializing Google API client:', error)
         }
@@ -41,7 +42,10 @@ const useGoogleDrive = () => {
     }
   }, [session])
 
-  const fetchFile = async (fileId, resourceKey) => {
+  const fetchFile = async (
+    fileId,
+    resourceKey
+  ) => {
     console.log('Fetching file:', fileId, resourceKey)
     try {
       const response = await window.gapi.client.drive.files.get({

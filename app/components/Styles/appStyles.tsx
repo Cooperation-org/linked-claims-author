@@ -1,6 +1,5 @@
 import { styled, TextField, Button, ButtonProps, Theme } from '@mui/material'
-
-import { CSSProperties } from 'react'
+import { SxProps } from '@mui/material/styles'
 
 export const StyledButton = {
   padding: '10px 24px',
@@ -13,7 +12,7 @@ export const StyledButton = {
   color: '#4e4e4e',
   '&:hover': {
     backgroundColor: '003fe0'
-  },
+  }
 }
 
 export const nextButtonStyle = {
@@ -21,11 +20,12 @@ export const nextButtonStyle = {
   borderRadius: '100px',
   textTransform: 'capitalize',
   fontFamily: 'Roboto',
-  fontWeight: '600',
+  fontWeight: '500',
   lineHeight: '20px',
   backgroundColor: '#003FE0',
   color: '#FFFFFF',
-  flexGrow: 8
+  flexGrow: 8,
+  fontSize: '14px'
 }
 
 export const CustomTextField = styled(TextField)({
@@ -107,7 +107,7 @@ export const commonTypographyStyles = {
   color: 't3BodyText',
   fontSize: '15px',
   fontWeight: 400,
-  fontStyle:'normal'
+  fontStyle: 'normal'
 }
 
 export const commonBoxStyles = {
@@ -120,7 +120,8 @@ export const commonBoxStyles = {
 export const evidenceListStyles = {
   marginLeft: '25px',
   textDecorationLine: 'underline',
-  color:'blue'
+  color: 'blue',
+  backGroundColor: '#FFFFFF'
 }
 
 export const credentialBoxStyles = {
@@ -130,7 +131,7 @@ export const credentialBoxStyles = {
   padding: '2px 5px',
   borderRadius: '5px',
   width: 'fit-content',
-  mb:'10px'
+  mb: '10px'
 }
 
 export const imageBoxStyles = {
@@ -153,7 +154,7 @@ export const radioGroupStyles = {
     md: '50%'
   },
   pl: '10px',
-  minWidth: '355px',
+  // minWidth: '355px',  // will change later
   alignItems: 'center'
 }
 
@@ -207,37 +208,58 @@ export const portfolioTypographyStyles = {
   fontWeight: 700,
   display: 'flex',
   justifyContent: 'space-between',
-  mb:'10px'
+  mb: '10px'
 }
 
-export const addAnotherButtonStyles = (theme: Theme): CSSProperties => ({
-  background: 'none',
-  color: theme.palette.t3ButtonBlue,
-  border: 'none',
-  padding: 0,
-  textDecoration: 'underline',
-  cursor: 'pointer',
-  fontSize: '12px',
-  fontWeight: 400,
-  letterSpacing: '0.075px',
-  textAlign: 'right' as const,
-  lineHeight: '16px',
-  marginTop: '7px'
+export const addAnotherButtonStyles = (theme: Theme) => ({
+  textTransform: 'none',
+  width: '100%',
+  fontWeight: 'bold',
+  color: theme.palette.primary.main,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  '& .MuiButton-endIcon': {
+    marginRight: '0'
+  },
+  '&:hover': {
+    backgroundColor: 'transparent',
+    textDecoration: 'underline'
+  }
+})
+
+export const addAnotherIconStyles = (theme: Theme): SxProps<Theme> => ({
+  width: '24px',
+  height: '24px',
+  borderRadius: '50%',
+  border: `1px solid ${theme.palette.text.primary}`,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+
+  '& .MuiSvgIcon-root': {
+    fontSize: '16px'
+  }
 })
 
 export const addAnotherBoxStyles = {
   width: '100%',
-  justifyContent: 'flex-end',
-  display: 'flex'
+  display: 'flex',
+  justifyContent: 'flex-start'
 }
 
 export const skipButtonBoxStyles = {
   width: '100%',
   justifyContent: 'center',
   display: 'flex',
-  marginTop: '40px'
+  alignItems: 'center'
 }
 
+export const skipButtonStyles = (theme: Theme): SxProps<Theme> => ({
+  fontWeight: 'bold',
+  color: '#1F2937',
+  textDecoration: 'none'
+})
 export const formBoxStyles = {
   marginBottom: '15px'
 }
@@ -321,7 +343,7 @@ export const successPageShareTextStyles = {
   fontFamily: 'Inter, sans-serif',
   fontSize: '15px',
   letterSpacing: '0.075px',
-  mr:'5px'
+  mr: '5px'
 }
 
 export const successPageIconContainerStyles = {
@@ -349,7 +371,7 @@ export const successPageCopyLinkTextStyles = {
   fontFamily: 'Inter, sans-serif',
   fontSize: '15px',
   letterSpacing: '0.075px',
-  mr:'10px'
+  mr: '10px'
 }
 
 export const successPageTextFieldStyles = {

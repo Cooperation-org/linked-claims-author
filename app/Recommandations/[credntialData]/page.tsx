@@ -1,39 +1,28 @@
 'use client'
-import { useTheme } from '@mui/material/styles'
-import React, { useCallback, useRef, useState } from 'react'
+
+import { Typography, Box, useMediaQuery, Theme } from '@mui/material'
 import Image from 'next/image'
-import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
-import fram from '../Assets/Images/Frame 35278.png'
-import vector from '../Assets/Images/Vector 145.png'
-import img3 from '../Assets/Images/Tessa Persona large sceens.png'
-import { SVGLargeScreen } from '../Assets/SVGs'
-import { StepTrackShape } from '../components/form/fromTexts & stepTrack/StepTrackShape'
-import dynamic from 'next/dynamic'
+import { useTheme } from '@mui/material/styles'
+import { StepTrackShape } from '../../components/form/fromTexts & stepTrack/StepTrackShape'
+import { SVGLargeScreen } from '../../Assets/SVGs'
+import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
+import fram from '../../Assets/Images/Frame 35278.png'
+import vector from '../../Assets/Images/Vector 145.png'
+import {
+  FormTextSteps,
+  textGuid
+} from './RecommandationForm/fromTexts & stepTrack/FormTextSteps'
+import { useState } from 'react'
+import Credential from './viewCredential/Credential'
+import TabsComponent from '../../components/Tabs/Tabs'
 
-
-const DynamicForm = dynamic(() => import('../components/form/Form'), {
-  ssr: false,
-  loading: () => <p>Loading...</p>,
-})
-
-const FormComponent = () => {
-  const [activStep, setactivStep] = useState(0)
+const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  const formRef = useRef<HTMLDivElement>(null)
-
-  const handleScrollToTop = useCallback(() => {
-    if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth' })
-      setTimeout(() => {
-        formRef.current?.scrollIntoView({ behavior: 'smooth' })
-      }, 10)
-    }
-  }, [formRef])
+  const [activeStep, setActiveStep] = useState(0)
 
   return (
     <Box
-      ref={formRef}
       sx={{
         minHeight: 'calc(100vh - 153px)',
         display: !isLargeScreen ? 'flex' : 'block',
@@ -47,10 +36,11 @@ const FormComponent = () => {
           position: 'relative',
           textAlign: 'center',
           width: '100%',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          mb:'20px'
         }}
       >
-        <StepTrackShape activeStep={activStep} />
+        <StepTrackShape activeStep={activeStep} />
         <Box
           sx={{
             position: 'relative',
@@ -72,10 +62,15 @@ const FormComponent = () => {
           </Box>
         </Box>
       </Box>
-      <DynamicForm
-        onStepChange={handleScrollToTop}
-        setactivStep={setactivStep}
-      />
+      <Box sx={{ height: '100%' }}>
+        {activeStep === 0 && <Credential setactivStep={setActiveStep} />}
+        {activeStep !== 0 && (
+          <>
+            <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
+            <TabsComponent setactivStep={setActiveStep} activeStep={activeStep} />
+          </>
+        )}
+      </Box>
       {!isLargeScreen && (
         <Box
           sx={{
@@ -86,7 +81,8 @@ const FormComponent = () => {
             p: '28px 70px 28px 50px',
             display: 'flex',
             alignItems: 'center',
-            gap: '12px'
+            gap: '12px',
+            bottom: 0
           }}
         >
           <Box>
@@ -114,4 +110,4 @@ const FormComponent = () => {
   )
 }
 
-export default FormComponent
+export default CredntialData

@@ -139,7 +139,6 @@ const Theme = createTheme({
       fontStyle: 'normal',
       fontWeight: 400,
       lineHeight: 'normal',
-      padding: '0 50px'
     },
     successText: {
       color: palette.t3BodyText,
@@ -152,7 +151,6 @@ const Theme = createTheme({
     },
     noteText: {
       color: palette.t3BodyText,
-      textAlign: 'center',
       fontFamily: 'Lato',
       fontSize: '16px',
       fontStyle: 'italic',

@@ -21,9 +21,7 @@ import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { useSession } from 'next-auth/react'
 import {
-  handleStepHashChange,
   createFolderAndUploadFile,
-  copyFormValuesToClipboard,
   handleNext,
   handleSign,
   handleBack
@@ -64,24 +62,6 @@ const Form = ({ onStepChange, setactivStep }: any) => {
     control,
     name: 'portfolio'
   })
-
-  useEffect(() => {
-    const handleStepHashChangeWrapper = () =>
-      handleStepHashChange(setActiveStep, maxSteps)
-
-    window.addEventListener('hashchange', handleStepHashChangeWrapper)
-
-    handleStepHashChangeWrapper()
-
-    return () => {
-      window.removeEventListener('hashchange', handleStepHashChangeWrapper)
-    }
-  }, [maxSteps])
-
-  useEffect(() => {
-    setActiveStep(0)
-    window.location.hash = `step-0`
-  }, [])
 
   useEffect(() => {
     setactivStep(activeStep)
