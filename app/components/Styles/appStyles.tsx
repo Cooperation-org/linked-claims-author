@@ -154,7 +154,7 @@ export const radioGroupStyles = {
     md: '50%'
   },
   pl: '10px',
-  // minWidth: '355px',  // will change later 
+  // minWidth: '355px',  // will change later
   alignItems: 'center'
 }
 
@@ -211,7 +211,7 @@ export const portfolioTypographyStyles = {
   mb: '10px'
 }
 
-export const addAnotherButtonStyles = (theme: Theme): SxProps<Theme> => ({
+export const addAnotherButtonStyles = (theme: Theme) => ({
   textTransform: 'none',
   width: '100%',
   fontWeight: 'bold',

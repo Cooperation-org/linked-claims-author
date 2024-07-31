@@ -104,7 +104,7 @@ export function Step4({
           <button
             type='button'
             onClick={() => append({ name: '', url: '' })}
-            style={addAnotherButtonStyles(theme)}
+            style={addAnotherBoxStyles}
           >
             Add another
           </button>
