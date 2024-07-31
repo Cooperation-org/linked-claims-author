@@ -8,57 +8,62 @@ const useGoogleDrive = () => {
 
   useEffect(() => {
     const initializeGapi = () => {
-      console.log('Initializing Google API client...')
-      window.gapi.load('client', async () => {
-        try {
-          console.log('Initializing Google API client: Loading client...')
-          await window.gapi.client.init({
-            apiKey: process.env.GOOGLE_API_KEY,
-            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
-          })
-
-          console.log('Initializing Google API client: Setting token...')
-          if (session?.accessToken) {
-            window.gapi.client.setToken({
-              access_token: session.accessToken
+      if (typeof window !== 'undefined') {
+        console.log('Initializing Google API client...')
+        window.gapi.load('client', async () => {
+          try {
+            console.log('Initializing Google API client: Loading client...')
+            await window.gapi.client.init({
+              apiKey: process.env.GOOGLE_API_KEY,
+              discoveryDocs: [
+                'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'
+              ]
             })
+
+            console.log('Initializing Google API client: Setting token...')
+            if (session?.accessToken) {
+              window.gapi.client.setToken({
+                access_token: session.accessToken
+              })
+            }
+            console.log('Initializing Google API client: Done')
+
+            setTimeout(() => setGapiLoaded(true), 1000)
+          } catch (error) {
+            console.error('Error initializing Google API client:', error)
           }
-          console.log('Initializing Google API client: Done')
-          
-          setTimeout(() => setGapiLoaded(true), 1000) 
-        } catch (error) {
-          console.error('Error initializing Google API client:', error)
-        }
-      })
+        })
+      }
     }
 
-    if (window.gapi) {
-      initializeGapi()
-    } else {
-      const script = document.createElement('script')
-      script.src = 'https://apis.google.com/js/api.js'
-      script.onload = initializeGapi
-      document.body.appendChild(script)
+    if (typeof window !== 'undefined') {
+      if (window.gapi) {
+        initializeGapi()
+      } else {
+        const script = document.createElement('script')
+        script.src = 'https://apis.google.com/js/api.js'
+        script.onload = initializeGapi
+        document.body.appendChild(script)
+      }
     }
   }, [session])
 
-  const fetchFile = async (
-    fileId,
-    resourceKey
-  ) => {
-    console.log('Fetching file:', fileId, resourceKey)
-    try {
-      const response = await window.gapi.client.drive.files.get({
-        fileId: fileId,
-        alt: 'media',
-        headers: {
-          'X-Goog-Drive-Resource-Keys': `${fileId}/${resourceKey}`
-        }
-      })
-      console.log('Fetched file:', response.body)
-      setFileData(response.body)
-    } catch (error) {
-      console.error('Error fetching file:', error)
+  const fetchFile = async (fileId, resourceKey) => {
+    if (typeof window !== 'undefined') {
+      console.log('Fetching file:', fileId, resourceKey)
+      try {
+        const response = await window.gapi.client.drive.files.get({
+          fileId: fileId,
+          alt: 'media',
+          headers: {
+            'X-Goog-Drive-Resource-Keys': `${fileId}/${resourceKey}`
+          }
+        })
+        console.log('Fetched file:', response.body)
+        setFileData(response.body)
+      } catch (error) {
+        console.error('Error fetching file:', error)
+      }
     }
   }
 

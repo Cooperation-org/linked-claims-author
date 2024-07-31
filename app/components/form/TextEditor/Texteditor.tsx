@@ -1,16 +1,22 @@
 import { useTheme } from '@mui/material/styles'
 import React from 'react'
-import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { Box, FormLabel } from '@mui/material'
 import './TextEditor.css'
 import Quill from 'quill'
+import dynamic from 'next/dynamic'
+
 const Delta = Quill.import('delta')
 
 interface TextEditorProps {
   value: any
   onChange: (value: any) => void
 }
+
+const ReactQuill = dynamic(() => import('react-quill'), {
+  ssr: false,
+  loading: () => <p>Loading...</p>
+})
 const Clipboard = Quill.import('modules/clipboard') as any
 
 class PlainClipboard extends Clipboard {
@@ -31,7 +37,9 @@ class PlainClipboard extends Clipboard {
   }
 }
 
-Quill.register('modules/clipboard', PlainClipboard, true)
+if (typeof window !== 'undefined') {
+  Quill.register('modules/clipboard', PlainClipboard, true)
+}
 
 function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
   const theme = useTheme()
