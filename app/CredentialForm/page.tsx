@@ -8,7 +8,13 @@ import vector from '../Assets/Images/Vector 145.png'
 import img3 from '../Assets/Images/Tessa Persona large sceens.png'
 import { SVGLargeScreen } from '../Assets/SVGs'
 import { StepTrackShape } from '../components/form/fromTexts & stepTrack/StepTrackShape'
-import Form from '../components/form/Form'
+import dynamic from 'next/dynamic'
+
+
+const DynamicForm = dynamic(() => import('../components/form/Form'), {
+  ssr: false,
+  loading: () => <p>Loading...</p>,
+})
 
 const FormComponent = () => {
   const [activStep, setactivStep] = useState(0)
@@ -66,7 +72,7 @@ const FormComponent = () => {
           </Box>
         </Box>
       </Box>
-      <Form
+      <DynamicForm
         onStepChange={handleScrollToTop}
         setactivStep={setactivStep}
       />
