@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 export const textGuid = [
   <>
@@ -51,10 +51,12 @@ interface FormTextStepsProps {
 
 export function FormTextSteps({ activeStep, activeText }: Readonly<FormTextStepsProps>) {
   return (
-    <Typography variant='formTextStep'>
-      {activeText}
-      {activeStep === 0 && <span style={{ color: 'red' }}>*</span>}
-    </Typography>
+    <Box sx={{ ml: '20px',textAlign: 'center' }}>
+      <Typography variant='formTextStep'>
+        {activeText}
+        {activeStep === 0 && <span style={{ color: 'red' }}>*</span>}
+      </Typography>
+    </Box>
   )
 }
 

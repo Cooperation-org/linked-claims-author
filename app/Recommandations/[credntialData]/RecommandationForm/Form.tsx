@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Typography } from '@mui/material'
 import { FormData } from '../../../components/form/types/Types'
@@ -20,7 +20,7 @@ import useLocalStorage from '../../../hooks/useLocalStorage'
 
 const Form = ({ activeStep, setActiveStep }: any) => {
   const savedFormData = localStorage.getItem('formData')
-  console.log(":  Form  savedFormData", savedFormData)
+  console.log(':  Form  savedFormData', savedFormData)
   const defaultValues: FormData = savedFormData
     ? JSON.parse(savedFormData)
     : {
@@ -60,10 +60,12 @@ const Form = ({ activeStep, setActiveStep }: any) => {
   const { removeItem } = useLocalStorage('formData', formData, watch)
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    removeItem()
-    reset()
+    setTimeout(() => {
+      removeItem()
+      reset(defaultValues)
+    }, 1000)
     setActiveStep(1)
-  })  
+  })
 
   return (
     <FormProvider {...methods}>
@@ -73,10 +75,9 @@ const Form = ({ activeStep, setActiveStep }: any) => {
           flexDirection: 'column',
           gap: '30px',
           alignItems: 'center',
-          marginTop: '30px',
+          marginTop: '5px',
           padding: '0 0 30px',
-          overflow: 'auto',
-          width: '100%'
+          overflow: 'auto'
         }}
         onSubmit={handleFormSubmit}
       >
