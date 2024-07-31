@@ -101,4 +101,6 @@ const TextEditor = forwardRef(
   }
 )
 
+TextEditor.displayName = 'TextEditor';
+
 export default TextEditor
