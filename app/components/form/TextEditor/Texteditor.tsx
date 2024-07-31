@@ -17,6 +17,7 @@ const ReactQuill = dynamic(() => import('react-quill'), {
   ssr: false,
   loading: () => <p>Loading...</p>
 })
+
 const Clipboard = Quill.import('modules/clipboard') as any
 
 class PlainClipboard extends Clipboard {
@@ -37,6 +38,7 @@ class PlainClipboard extends Clipboard {
   }
 }
 
+// Register the PlainClipboard module only in the client-side environment
 if (typeof window !== 'undefined') {
   Quill.register('modules/clipboard', PlainClipboard, true)
 }
@@ -89,16 +91,18 @@ function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
         Earning Criteria
       </FormLabel>
       <Box className='text-editor-container' sx={{ borderRadius: '8px' }}>
-        <ReactQuill
-          theme='snow'
-          value={value}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          modules={modules}
-          formats={formats}
-          style={{ marginTop: '4px', borderRadius: '8px' }}
-          placeholder='e.g., Managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative'
-        />
+        {typeof window !== 'undefined' && (
+          <ReactQuill
+            theme='snow'
+            value={value}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            modules={modules}
+            formats={formats}
+            style={{ marginTop: '4px', borderRadius: '8px' }}
+            placeholder='e.g., Managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative'
+          />
+        )}
       </Box>
     </Box>
   )

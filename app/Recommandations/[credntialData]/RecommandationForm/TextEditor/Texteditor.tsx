@@ -13,7 +13,6 @@ interface TextEditorProps {
   placeholder?: string
 }
 
-// Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(() => import('react-quill'), {
   ssr: false,
   loading: () => <p>Loading...</p>
