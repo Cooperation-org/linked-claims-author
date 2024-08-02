@@ -156,7 +156,7 @@ const Step3: React.FC<Step3Props> = ({
               onClick={() => append({ name: '', url: '' })}
               sx={addAnotherButtonStyles(theme)}
               endIcon={
-                <Box sx={addAnotherIconStyles(theme)}>
+                <Box >
                   <AddIcon />
                 </Box>
               }
