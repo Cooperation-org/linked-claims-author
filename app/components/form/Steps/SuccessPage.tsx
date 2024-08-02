@@ -1,6 +1,4 @@
-'use client'
-
-import React, { useState } from 'react'
+import React from 'react'
 import Image from 'next/image'
 
 import {
@@ -19,7 +17,6 @@ import {
   MailSVG,
   MessageCircleSVG
 } from '../../../Assets/SVGs'
-import image from '../../../Assets/Images/nathan-dumlao-zUNs99PGDg0-unsplash 1.png'
 import copy from '../../../Assets/SVGs/copy.svg'
 import {
   successPageContainerStyles,
@@ -37,18 +34,37 @@ import {
 } from '../../Styles/appStyles'
 import { FormData } from '../types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
+
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
   formData: FormData | null
   reset: () => void
   link: string
 }
+
 const SuccessPage: React.FC<SuccessPageProps> = ({
   setActiveStep,
   formData,
   reset,
   link
 }) => {
+  // Function to generate LinkedIn URL
+  const generateLinkedInUrl = () => {
+    const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
+    const params = new URLSearchParams({
+      startTask: 'CERTIFICATION_NAME',
+      name: formData?.credentialName || 'Certification Name',
+      organizationId: '1337', // Replace with your actual organization ID
+      issueYear: '2024', 
+      issueMonth: '8', 
+      expirationYear: '2025', 
+      expirationMonth: '8',
+      certUrl: link,
+      certId: '1234' 
+    })
+    return `${baseLinkedInUrl}?${params.toString()}`
+  }
+
   return (
     <>
       <Box sx={successPageContainerStyles}>
@@ -57,7 +73,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             style={{
               width: '100px',
               height: '100px',
-              borderTopLeftRadius: '15px',
+              borderTopLeftRadius: '15px'
             }}
             src={formData?.evidenceLink || 'not Valid image'}
             alt='logo'
@@ -81,7 +97,16 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           <Typography sx={successPageShareTextStyles}>Share on:</Typography>
           {[TwitterSVG, LinkedinSVG, InstagramSVG, MailSVG, MessageCircleSVG].map(
             (IconComponent, index) => (
-              <Button key={index} sx={successPageIconContainerStyles}>
+              <Button
+                key={index}
+                sx={successPageIconContainerStyles}
+                onClick={() => {
+                  if (IconComponent === LinkedinSVG) {
+                    const linkedInUrl = generateLinkedInUrl()
+                    window.open(linkedInUrl, '_blank', 'noopener noreferrer')
+                  }
+                }}
+              >
                 <IconComponent />
               </Button>
             )
