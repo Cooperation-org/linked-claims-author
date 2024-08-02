@@ -1,22 +1,26 @@
 'use client'
 
-import React from 'react' //{ useState }
-// import Image from 'next/image'
+import React, { useState } from 'react'
+import Image from 'next/image'
+
 import {
-  Box,
-  Button,
   Typography,
   TextField,
   InputAdornment,
-  Divider
+  Divider,
+  Box,
+  Button
 } from '@mui/material'
-import { SVGDate } from '../../../Assets/SVGs'
-import TwitterIcon from '../../../Assets/SVGs/twitter.svg'
-import InstagramIcon from '../../../Assets/SVGs/instagram.svg'
-import LinkedinIcon from '../../../Assets/SVGs/linkedin.svg'
-import MailIcon from '../../../Assets/SVGs/mail.svg'
-import MessageCircleIcon from '../../../Assets/SVGs/message-circle.svg'
-import CopyIcon from '../../../Assets/SVGs/copy.svg'
+import {
+  SVGDate,
+  TwitterSVG,
+  InstagramSVG,
+  LinkedinSVG,
+  MailSVG,
+  MessageCircleSVG
+} from '../../../Assets/SVGs'
+import image from '../../../Assets/Images/nathan-dumlao-zUNs99PGDg0-unsplash 1.png'
+import copy from '../../../Assets/SVGs/copy.svg'
 import {
   successPageContainerStyles,
   successPageHeaderStyles,
@@ -33,44 +37,41 @@ import {
 } from '../../Styles/appStyles'
 import { FormData } from '../types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
-
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
   formData: FormData | null
   reset: () => void
   link: string
 }
-
 const SuccessPage: React.FC<SuccessPageProps> = ({
   setActiveStep,
   formData,
   reset,
   link
 }) => {
-  const imageUrl = formData?.evidenceLink ?? ''
   return (
     <>
       <Box sx={successPageContainerStyles}>
         <Box sx={successPageHeaderStyles}>
-          {imageUrl && (
-            <img
-              style={{ width: '69px', height: '69px', objectFit: 'cover' }}
-              src={imageUrl}
-              alt='User Provided'
-            />
-          )}
+          <img
+            style={{
+              width: '100px',
+              height: '100px',
+              borderTopLeftRadius: '15px',
+            }}
+            src={formData?.evidenceLink || 'not Valid image'}
+            alt='logo'
+          />
           <Box sx={{ flex: 1 }}>
             <Typography sx={successPageTitleStyles}>
               {formData?.credentialName}
             </Typography>
-            {formData?.credentialDuration && (
-              <Box sx={successPageInfoStyles}>
-                <SVGDate />
-                <Typography sx={successPageDateStyles}>
-                  {formData?.credentialDuration}
-                </Typography>
-              </Box>
-            )}
+            <Box sx={successPageInfoStyles}>
+              <SVGDate />
+              <Typography sx={successPageDateStyles}>
+                {formData?.credentialDuration}
+              </Typography>
+            </Box>
           </Box>
         </Box>
 
@@ -78,21 +79,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
         <Box sx={successPageShareStyles}>
           <Typography sx={successPageShareTextStyles}>Share on:</Typography>
-          <Box sx={successPageIconContainerStyles}>
-            <TwitterIcon width={24} height={24} />
-          </Box>
-          <Box sx={successPageIconContainerStyles}>
-            <InstagramIcon width={24} height={24} />
-          </Box>
-          <Box sx={successPageIconContainerStyles}>
-            <LinkedinIcon width={24} height={24} />
-          </Box>
-          <Box sx={successPageIconContainerStyles}>
-            <MailIcon width={24} height={24} />
-          </Box>
-          <Box sx={successPageIconContainerStyles}>
-            <MessageCircleIcon width={24} height={24} />
-          </Box>
+          {[TwitterSVG, LinkedinSVG, InstagramSVG, MailSVG, MessageCircleSVG].map(
+            (IconComponent, index) => (
+              <Button key={index} sx={successPageIconContainerStyles}>
+                <IconComponent />
+              </Button>
+            )
+          )}
         </Box>
 
         <Divider sx={{ width: '100%' }} />
@@ -107,7 +100,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
               endAdornment: (
                 <InputAdornment position='end'>
                   <Button onClick={() => copyFormValuesToClipboard(link)}>
-                    <CopyIcon width={24} height={24} />
+                    <Image src={copy} alt='copyIcon' />
                   </Button>
                 </InputAdornment>
               ),
@@ -116,7 +109,6 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           />
         </Box>
       </Box>
-
       <Button
         variant='contained'
         onClick={() => {
@@ -130,5 +122,4 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     </>
   )
 }
-
 export default SuccessPage

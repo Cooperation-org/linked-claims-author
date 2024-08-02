@@ -472,3 +472,147 @@ export const DigitalWallet = () => {
     </Box>
   )
 }
+export const MailSVG = () => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        width='24'
+        height='24'
+        viewBox='0 0 24 24'
+        fill='none'
+      >
+        <path
+          d='M20 4H4C2.89543 4 2 4.89543 2 6V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V6C22 4.89543 21.1046 4 20 4Z'
+          stroke='black'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+        <path
+          d='M22 7L13.03 12.7C12.7213 12.8934 12.3643 12.996 12 12.996C11.6357 12.996 11.2787 12.8934 10.97 12.7L2 7'
+          stroke='black'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+      </svg>
+    </Box>
+  )
+}
+
+export const TwitterSVG = () => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <svg
+        width='24'
+        height='24'
+        viewBox='0 0 24 24'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <g id='twitter'>
+          <path
+            id='Vector'
+            d='M22 4.00002C22 4.00002 21.3 6.10002 20 7.40002C21.6 17.4 10.6 24.7 2 19C4.2 19.1 6.4 18.4 8 17C3 15.5 0.5 9.60002 3 5.00002C5.2 7.60002 8.6 9.10002 12 9.00002C11.1 4.80002 16 2.40002 19 5.20002C20.1 5.20002 22 4.00002 22 4.00002Z'
+            stroke='black'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+          />
+        </g>
+      </svg>
+    </Box>
+  )
+}
+export const InstagramSVG = () => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <svg
+        width='24'
+        height='24'
+        viewBox='0 0 24 24'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <g id='instagram'>
+          <path
+            id='Vector'
+            d='M17 2H7C4.23858 2 2 4.23858 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V7C22 4.23858 19.7614 2 17 2Z'
+            stroke='black'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+          />
+          <path
+            id='Vector_2'
+            d='M15.9997 11.3701C16.1231 12.2023 15.981 13.0523 15.5935 13.7991C15.206 14.5459 14.5929 15.1515 13.8413 15.5297C13.0898 15.908 12.2382 16.0397 11.4075 15.906C10.5768 15.7723 9.80947 15.3801 9.21455 14.7852C8.61962 14.1903 8.22744 13.4229 8.09377 12.5923C7.96011 11.7616 8.09177 10.91 8.47003 10.1584C8.84829 9.40691 9.45389 8.7938 10.2007 8.4063C10.9475 8.0188 11.7975 7.87665 12.6297 8.00006C13.4786 8.12594 14.2646 8.52152 14.8714 9.12836C15.4782 9.73521 15.8738 10.5211 15.9997 11.3701Z'
+            stroke='black'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+          />
+          <path
+            id='Vector_3'
+            d='M17.5 6.5H17.51'
+            stroke='black'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+          />
+        </g>
+      </svg>
+    </Box>
+  )
+}
+export const LinkedinSVG = () => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <svg
+        width='24'
+        height='24'
+        viewBox='0 0 24 24'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <g id='linkedin'>
+          <path
+            id='Vector'
+            d='M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z'
+            stroke='black'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+          />
+          <path
+            id='Vector_2'
+            d='M6 9H2V21H6V9Z'
+            stroke='black'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+          />
+          <path
+            id='Vector_3'
+            d='M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z'
+            stroke='black'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+          />
+        </g>
+      </svg>
+    </Box>
+  )
+}
+export const MessageCircleSVG = () => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <svg
+        width='24'
+        height='24'
+        viewBox='0 0 24 24'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path
+          d='M3 21L4.9 15.3C3.99713 13.4948 3.76612 11.4272 4.2483 9.46722C4.73049 7.50725 5.8944 5.78282 7.53176 4.60254C9.16911 3.42226 11.173 2.86316 13.1849 3.02528C15.1968 3.1874 17.0854 4.06017 18.5126 5.48741C19.9398 6.91464 20.8126 8.80319 20.9747 10.8151C21.1369 12.827 20.5777 14.8309 19.3975 16.4683C18.2172 18.1056 16.4928 19.2695 14.5328 19.7517C12.5728 20.2339 10.5052 20.0029 8.7 19.1L3 21Z'
+          stroke='black'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+      </svg>
+    </Box>
+  )
+}
