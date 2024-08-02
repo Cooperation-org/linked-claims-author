@@ -2,7 +2,7 @@
 
 import { useTheme } from '@mui/material/styles'
 import React, { useState } from 'react'
-import { FormLabel, TextField, Box, Theme, Typography } from '@mui/material'
+import { FormLabel, TextField, Box, Theme, Typography, Button } from '@mui/material'
 import {
   formLabelStyles,
   TextFieldStyles,
@@ -10,10 +10,12 @@ import {
   portfolioTypographyStyles,
   addAnotherButtonStyles,
   addAnotherBoxStyles,
+  addAnotherIconStyles,
   skipButtonBoxStyles,
   formBoxStyles,
   formBoxStylesUrl
 } from '../../Styles/appStyles'
+import AddIcon from '@mui/icons-material/Add'
 import ClearIcon from '@mui/icons-material/Clear'
 import { UseFormRegister, FieldErrors, UseFieldArrayAppend } from 'react-hook-form'
 import { FormData } from '../types/Types'
@@ -101,13 +103,18 @@ export function Step4({
       ))}
       {fields.length < 5 && (
         <Box sx={addAnotherBoxStyles}>
-          <button
+          <Button
             type='button'
             onClick={() => append({ name: '', url: '' })}
-            style={addAnotherBoxStyles}
+            sx={addAnotherButtonStyles(theme)}
+            endIcon={
+              <Box sx={addAnotherIconStyles(theme)}>
+                <AddIcon />
+              </Box>
+            }
           >
             Add another
-          </button>
+          </Button>
         </Box>
       )}
       <Box sx={skipButtonBoxStyles}>

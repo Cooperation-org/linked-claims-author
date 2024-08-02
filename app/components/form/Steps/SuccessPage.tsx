@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import Image from 'next/image'
+import React from 'react' //{ useState }
+// import Image from 'next/image'
 import {
   Box,
   Button,
@@ -11,13 +11,12 @@ import {
   Divider
 } from '@mui/material'
 import { SVGDate } from '../../../Assets/SVGs'
-import image from '../../../Assets/Images/nathan-dumlao-zUNs99PGDg0-unsplash 1.png'
-import twitter from '../../../Assets/SVGs/twitter.svg'
-import instagram from '../../../Assets/SVGs/instagram.svg'
-import linkedin from '../../../Assets/SVGs/linkedin.svg'
-import mail from '../../../Assets/SVGs/mail.svg'
-import messageCircle from '../../../Assets/SVGs/message-circle.svg'
-import copy from '../../../Assets/SVGs/copy.svg'
+import TwitterIcon from '../../../Assets/SVGs/twitter.svg'
+import InstagramIcon from '../../../Assets/SVGs/instagram.svg'
+import LinkedinIcon from '../../../Assets/SVGs/linkedin.svg'
+import MailIcon from '../../../Assets/SVGs/mail.svg'
+import MessageCircleIcon from '../../../Assets/SVGs/message-circle.svg'
+import CopyIcon from '../../../Assets/SVGs/copy.svg'
 import {
   successPageContainerStyles,
   successPageHeaderStyles,
@@ -49,8 +48,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   reset,
   link
 }) => {
-
-  // comment the fetch data function 
+  const imageUrl = formData?.evidenceLink ?? ''
+  // comment the fetch data function
 
   // const { fetchFile, fileData } = useGoogleDrive()
   // const [viewingFile, setViewingFile] = useState(false)
@@ -66,17 +65,25 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     <>
       <Box sx={successPageContainerStyles}>
         <Box sx={successPageHeaderStyles}>
-          <Image style={{ width: '69px', height: '69px' }} src={image} alt='logo' />
+          {imageUrl && (
+            <img
+              style={{ width: '69px', height: '69px', objectFit: 'cover' }}
+              src={imageUrl}
+              alt='User Provided'
+            />
+          )}
           <Box sx={{ flex: 1 }}>
             <Typography sx={successPageTitleStyles}>
               {formData?.credentialName}
             </Typography>
-            <Box sx={successPageInfoStyles}>
-              <SVGDate />
-              <Typography sx={successPageDateStyles}>
-                {formData?.credentialDuration}
-              </Typography>
-            </Box>
+            {formData?.credentialDuration && (
+              <Box sx={successPageInfoStyles}>
+                <SVGDate />
+                <Typography sx={successPageDateStyles}>
+                  {formData?.credentialDuration}
+                </Typography>
+              </Box>
+            )}
           </Box>
         </Box>
 
@@ -84,11 +91,21 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
         <Box sx={successPageShareStyles}>
           <Typography sx={successPageShareTextStyles}>Share on:</Typography>
-          {[twitter, linkedin, instagram, mail, messageCircle].map((icon, index) => (
-            <Box key={index} sx={successPageIconContainerStyles}>
-              <Image src={icon} alt={`${icon}Icon`} />
-            </Box>
-          ))}
+          <Box sx={successPageIconContainerStyles}>
+            <TwitterIcon width={24} height={24} />
+          </Box>
+          <Box sx={successPageIconContainerStyles}>
+            <InstagramIcon width={24} height={24} />
+          </Box>
+          <Box sx={successPageIconContainerStyles}>
+            <LinkedinIcon width={24} height={24} />
+          </Box>
+          <Box sx={successPageIconContainerStyles}>
+            <MailIcon width={24} height={24} />
+          </Box>
+          <Box sx={successPageIconContainerStyles}>
+            <MessageCircleIcon width={24} height={24} />
+          </Box>
         </Box>
 
         <Divider sx={{ width: '100%' }} />
@@ -103,7 +120,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
               endAdornment: (
                 <InputAdornment position='end'>
                   <Button onClick={() => copyFormValuesToClipboard(link)}>
-                    <Image src={copy} alt='copyIcon' />
+                    <CopyIcon width={24} height={24} />
                   </Button>
                 </InputAdornment>
               ),

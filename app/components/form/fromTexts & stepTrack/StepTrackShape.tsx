@@ -19,7 +19,7 @@ export function StepTrackShape({ activeStep }: Readonly<StepTrackShapeProps>) {
         bgcolor:
           activeStep === step ? '#003fe0' : activeStep > step ? '#14b8a6' : '#d1d5db',
         borderRadius: '3px',
-        mt:'20px'
+        mt: '20px'
       }}
     />
   )

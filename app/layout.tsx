@@ -1,10 +1,10 @@
-"use client";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import NavBar from "./components/navbar/NavBar";
-import Providers from "./components/signing/Providers";
-import { CssBaseline, ThemeProvider, Box } from "@mui/material";
-import Footer from "./components/footer/Footer";
+'use client'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import NavBar from './components/navbar/NavBar'
+import Providers from './components/signing/Providers'
+import { CssBaseline, ThemeProvider, Box } from '@mui/material'
+import Footer from './components/footer/Footer'
 import Theme from './theme'
 import Head from 'next/head'
 

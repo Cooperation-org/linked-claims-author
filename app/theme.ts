@@ -138,7 +138,7 @@ const Theme = createTheme({
       fontSize: '24px',
       fontStyle: 'normal',
       fontWeight: 400,
-      lineHeight: 'normal',
+      lineHeight: 'normal'
     },
     successText: {
       color: palette.t3BodyText,
@@ -158,9 +158,7 @@ const Theme = createTheme({
       lineHeight: 'normal'
     }
   }),
-  components: {
-   
-  },
+  components: {},
   breakpoints: {
     values: {
       xs: 0,

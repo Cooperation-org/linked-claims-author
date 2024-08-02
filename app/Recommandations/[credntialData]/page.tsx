@@ -37,7 +37,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
           textAlign: 'center',
           width: '100%',
           overflow: 'hidden',
-          mb:'20px'
+          mb: '20px'
         }}
       >
         <StepTrackShape activeStep={activeStep} />

@@ -1,4 +1,3 @@
-
 import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography } from '@mui/material'
@@ -107,7 +106,7 @@ const NavBar = () => {
           />
         </svg>
       </Box>
-        <SigninButton/>
+      <SigninButton />
     </Box>
   )
 }
