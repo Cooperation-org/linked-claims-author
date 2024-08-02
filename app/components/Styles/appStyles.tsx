@@ -1,8 +1,5 @@
-import { useTheme } from '@mui/material/styles'
 import { styled, TextField, Theme } from '@mui/material'
 import { SxProps } from '@mui/material/styles'
-
-const theme: Theme = useTheme()
 
 export const StyledButton = {
   padding: '10px 24px',
@@ -235,7 +232,7 @@ export const addAnotherIconStyles = {
   width: '24px',
   height: '24px',
   borderRadius: '50%',
-  border: `1px solid ${theme.palette.text.primary}`,
+  border: `1px solid #2563EB`,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
