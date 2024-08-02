@@ -8,7 +8,6 @@ import {
   TextFieldStyles,
   buttonLinkStyles,
   portfolioTypographyStyles,
-  addAnotherButtonStyles,
   addAnotherBoxStyles,
   addAnotherIconStyles,
   skipButtonBoxStyles,
@@ -106,7 +105,22 @@ export function Step4({
           <Button
             type='button'
             onClick={() => append({ name: '', url: '' })}
-            sx={addAnotherButtonStyles(theme)}
+            sx={{
+              textTransform: 'none',
+              width: '100%',
+              fontWeight: 'bold',
+              color: theme.palette.primary.main,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              '& .MuiButton-endIcon': {
+                marginRight: '0'
+              },
+              '&:hover': {
+                backgroundColor: 'transparent',
+                textDecoration: 'underline'
+              }
+            }}
             endIcon={
               <Box sx={addAnotherIconStyles(theme)}>
                 <AddIcon />
