@@ -13,14 +13,12 @@ import {
   skipButtonBoxStyles,
   formBoxStyles,
   formBoxStylesUrl,
-  addAnotherIconStyles
 } from '../../Styles/appStyles'
 import AddIcon from '@mui/icons-material/Add'
 import ClearIcon from '@mui/icons-material/Clear'
 import { UseFormRegister, FieldErrors, UseFieldArrayAppend } from 'react-hook-form'
 import { FormData } from '../types/Types'
 import { handleUrlValidation } from '../../../utils/urlValidation'
-import AddIcon from '@mui/icons-material/Add'
 
 interface Step4Props {
   errors: FieldErrors<FormData>
@@ -124,7 +122,7 @@ export function Step4({
               }
             }}
             endIcon={
-              <Box sx={addAnotherIconStyles(theme)}>
+              <Box sx={addAnotherIconStyles}>
                 <AddIcon />
               </Box>
             }

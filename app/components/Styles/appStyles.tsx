@@ -1,5 +1,8 @@
+import { useTheme } from '@mui/material/styles'
 import { styled, TextField, Theme } from '@mui/material'
 import { SxProps } from '@mui/material/styles'
+
+const theme: Theme = useTheme()
 
 export const StyledButton = {
   padding: '10px 24px',
@@ -228,7 +231,7 @@ export const addAnotherButtonStyles = (theme: Theme) => ({
   }
 })
 
-export const addAnotherIconStyles = (theme: Theme): SxProps<Theme> => ({
+export const addAnotherIconStyles = {
   width: '24px',
   height: '24px',
   borderRadius: '50%',
@@ -240,7 +243,7 @@ export const addAnotherIconStyles = (theme: Theme): SxProps<Theme> => ({
   '& .MuiSvgIcon-root': {
     fontSize: '16px'
   }
-})
+}
 
 export const addAnotherBoxStyles = {
   width: '100%',
