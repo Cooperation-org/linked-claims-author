@@ -1,10 +1,8 @@
 import React from 'react'
 import { useTheme } from '@mui/material/styles'
-import Image from 'next/image'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
 import { SVGDate } from '../../../Assets/SVGs'
 import { FormData } from '../types/Types'
-import test from '../../../Assets/Images/test.png'
 import {
   boxStyles,
   commonTypographyStyles,
@@ -13,6 +11,7 @@ import {
   credentialBoxStyles,
   imageBoxStyles
 } from '../../Styles/appStyles'
+import Image from 'next/image'
 
 interface DataPreviewProps {
   formData: FormData
@@ -26,6 +25,9 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
     window.location.href = url
   }
 
+  const imageUrl = formData.evidenceLink || 'not Valid image'
+  const hasValidEvidence =
+    formData.portfolio && formData.portfolio.some(porto => porto.name && porto.url)
   return (
     <Box
       sx={{
@@ -43,13 +45,17 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           mb: '10px'
         }}
       >
-        <Box sx={imageBoxStyles}>
-            {/* <Image
-              style={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }}
-              src={test}
-              alt='testImage'
-            /> */}
-        </Box>
+        {imageUrl && (
+          <img
+            style={{
+              borderRadius: '20px',
+              width: !isLargeScreen ? '100%' : '179px',
+              height: '100%'
+            }}
+            src={imageUrl}
+            alt='User Provided'
+          />
+        )}
         <Box sx={commonBoxStyles}>
           <Typography
             sx={{
@@ -60,41 +66,51 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           >
             {formData.credentialName}
           </Typography>
-          <Box
-            sx={{
-              ...credentialBoxStyles,
-              bgcolor: theme.palette.t3LightGray
-            }}
-          >
-            <Box sx={{ mt: '2px' }}>
-              <SVGDate />
+          {formData.credentialDuration && (
+            <Box
+              sx={{
+                ...credentialBoxStyles,
+                bgcolor: theme.palette.t3LightGray
+              }}
+            >
+              <Box sx={{ mt: '2px' }}>
+                <SVGDate />
+              </Box>
+              <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
+                {formData.credentialDuration}
+              </Typography>
             </Box>
-            <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
-              {formData.credentialDuration}
-            </Typography>
-          </Box>
+          )}
         </Box>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <Typography sx={commonTypographyStyles}>{formData.description}</Typography>
-        <Box sx={commonTypographyStyles}>
-          <span style={{ display: 'block' }}>Earning criteria:</span>
-          {formData.credentialDescription.replace(/<[^>]+>/g, '')}
-        </Box>
-        <Box sx={commonTypographyStyles}>
-          Evidence:
-          <ul style={evidenceListStyles}>
-            {formData?.portfolio?.map(porto => (
-              <li
-                style={{ cursor: 'pointer', width: 'fit-content' }}
-                key={porto.url}
-                onClick={() => handleNavigate(porto.url)}
-              >
-                {porto.name}
-              </li>
-            ))}
-          </ul>
-        </Box>
+        {formData.credentialDescription && (
+          <Box sx={commonTypographyStyles}>
+            <span style={{ display: 'block' }}>Earning criteria:</span>
+            {formData.credentialDescription.replace(/<[^>]+>/g, '')}
+          </Box>
+        )}
+        {hasValidEvidence && (
+          <Box sx={commonTypographyStyles}>
+            <Typography sx={{ display: 'block' }}>Evidence:</Typography>
+            <ul style={evidenceListStyles}>
+              {formData.portfolio.map(
+                porto =>
+                  porto.name &&
+                  porto.url && (
+                    <li
+                      style={{ cursor: 'pointer', width: 'fit-content' }}
+                      key={porto.url}
+                      onClick={() => handleNavigate(porto.url)}
+                    >
+                      {porto.name}
+                    </li>
+                  )
+              )}
+            </ul>
+          </Box>
+        )}
       </Box>
     </Box>
   )

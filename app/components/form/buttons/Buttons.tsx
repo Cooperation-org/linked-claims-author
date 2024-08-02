@@ -45,7 +45,7 @@ export function Buttons({
         <Button
           sx={{
             ...nextButtonStyle,
-            maxWidth: '355px',
+            maxWidth: '355px'
           }}
           onClick={handleNext}
           color='primary'

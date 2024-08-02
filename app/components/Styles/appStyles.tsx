@@ -228,11 +228,11 @@ export const addAnotherButtonStyles = (theme: Theme) => ({
   }
 })
 
-export const addAnotherIconStyles = (theme: Theme): SxProps<Theme> => ({
+export const addAnotherIconStyles = {
   width: '24px',
   height: '24px',
   borderRadius: '50%',
-  border: `1px solid ${theme.palette.text.primary}`,
+  border: `1px solid #2563EB`,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -240,7 +240,7 @@ export const addAnotherIconStyles = (theme: Theme): SxProps<Theme> => ({
   '& .MuiSvgIcon-root': {
     fontSize: '16px'
   }
-})
+}
 
 export const addAnotherBoxStyles = {
   width: '100%',
@@ -275,7 +275,7 @@ export const successPageContainerStyles = {
   flexShrink: 0,
   background: '#e5e7ebb2',
   width: '100%',
-  borderRadius: '20px'
+  borderRadius: '20px',
 }
 
 export const successPageHeaderStyles = {
@@ -285,8 +285,8 @@ export const successPageHeaderStyles = {
   alignItems: 'center',
   gap: '20px',
   backgroundColor: '#e5e7eb',
-  borderRadius: '8px 8px 0 0',
-  padding: '0 15px'
+  borderRadius: '15px',
+  padding: '0 15px 0 0'
 }
 
 export const successPageImageStyles = {

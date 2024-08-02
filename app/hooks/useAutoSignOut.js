@@ -6,13 +6,13 @@ const useAutoSignOut = () => {
 
   useEffect(() => {
     if (session && session.expires) {
-      const expiresAt = new Date(session.expires * 1000) 
+      const expiresAt = new Date(session.expires * 1000)
       const now = new Date()
       const timeToExpire = expiresAt - now
-      const signOutTimeout = Math.max(timeToExpire - 60000, 0) 
+      const signOutTimeout = Math.max(timeToExpire - 60000, 0)
 
       const timer = setTimeout(() => {
-        signOut({ redirect: false }) 
+        signOut({ redirect: false })
       }, signOutTimeout)
 
       return () => clearTimeout(timer)

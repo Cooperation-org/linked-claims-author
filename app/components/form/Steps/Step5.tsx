@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react' // , { useState }
 import { FormLabel, TextField, Box } from '@mui/material'
 import {
   buttonLinkStyles,
@@ -11,7 +11,7 @@ import {
 } from '../../Styles/appStyles'
 import { UseFormRegister } from 'react-hook-form'
 import { FormData } from '../types/Types'
-import {handleUrlValidation} from '../../../utils/urlValidation'
+// import { handleUrlValidation } from '../../../utils/urlValidation'
 
 interface Step5Props {
   register: UseFormRegister<FormData>
@@ -19,7 +19,6 @@ interface Step5Props {
 }
 
 export function Step5({ register, handleNext }: Readonly<Step5Props>) {
-
   return (
     <Box>
       <FormLabel sx={formLabelStyles} id='image-url-label'>

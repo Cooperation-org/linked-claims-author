@@ -2,21 +2,24 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
+
 import {
-  Box,
-  Button,
   Typography,
   TextField,
   InputAdornment,
-  Divider
+  Divider,
+  Box,
+  Button
 } from '@mui/material'
-import { SVGDate } from '../../../Assets/SVGs'
+import {
+  SVGDate,
+  TwitterSVG,
+  InstagramSVG,
+  LinkedinSVG,
+  MailSVG,
+  MessageCircleSVG
+} from '../../../Assets/SVGs'
 import image from '../../../Assets/Images/nathan-dumlao-zUNs99PGDg0-unsplash 1.png'
-import twitter from '../../../Assets/SVGs/twitter.svg'
-import instagram from '../../../Assets/SVGs/instagram.svg'
-import linkedin from '../../../Assets/SVGs/linkedin.svg'
-import mail from '../../../Assets/SVGs/mail.svg'
-import messageCircle from '../../../Assets/SVGs/message-circle.svg'
 import copy from '../../../Assets/SVGs/copy.svg'
 import {
   successPageContainerStyles,
@@ -34,26 +37,31 @@ import {
 } from '../../Styles/appStyles'
 import { FormData } from '../types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
-
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
   formData: FormData | null
   reset: () => void
   link: string
 }
-
 const SuccessPage: React.FC<SuccessPageProps> = ({
   setActiveStep,
   formData,
   reset,
   link
 }) => {
-
   return (
     <>
       <Box sx={successPageContainerStyles}>
         <Box sx={successPageHeaderStyles}>
-          {/* <Image style={{ width: '69px', height: '69px' }} src={image} alt='logo' /> */}
+          <img
+            style={{
+              width: '100px',
+              height: '100px',
+              borderTopLeftRadius: '15px',
+            }}
+            src={formData?.evidenceLink || 'not Valid image'}
+            alt='logo'
+          />
           <Box sx={{ flex: 1 }}>
             <Typography sx={successPageTitleStyles}>
               {formData?.credentialName}
@@ -71,11 +79,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
         <Box sx={successPageShareStyles}>
           <Typography sx={successPageShareTextStyles}>Share on:</Typography>
-          {[twitter, linkedin, instagram, mail, messageCircle].map((icon, index) => (
-            <Box key={index} sx={successPageIconContainerStyles}>
-              <Image src={icon} alt={`${icon}Icon`} />
-            </Box>
-          ))}
+          {[TwitterSVG, LinkedinSVG, InstagramSVG, MailSVG, MessageCircleSVG].map(
+            (IconComponent, index) => (
+              <Button key={index} sx={successPageIconContainerStyles}>
+                <IconComponent />
+              </Button>
+            )
+          )}
         </Box>
 
         <Divider sx={{ width: '100%' }} />
@@ -99,7 +109,6 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           />
         </Box>
       </Box>
-
       <Button
         variant='contained'
         onClick={() => {
@@ -113,5 +122,4 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     </>
   )
 }
-
 export default SuccessPage
