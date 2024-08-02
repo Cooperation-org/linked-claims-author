@@ -6,7 +6,6 @@ export async function GET(request: Request) {
   if (typeof url !== 'string') {
     return NextResponse.json({ error: 'Invalid URL' }, { status: 400 })
   }
-
   try {
     const response = await fetch(url, {
       method: 'GET',
