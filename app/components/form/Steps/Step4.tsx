@@ -8,18 +8,19 @@ import {
   TextFieldStyles,
   buttonLinkStyles,
   portfolioTypographyStyles,
-  addAnotherButtonStyles,
   addAnotherBoxStyles,
   addAnotherIconStyles,
   skipButtonBoxStyles,
   formBoxStyles,
-  formBoxStylesUrl
+  formBoxStylesUrl,
+  addAnotherIconStyles
 } from '../../Styles/appStyles'
 import AddIcon from '@mui/icons-material/Add'
 import ClearIcon from '@mui/icons-material/Clear'
 import { UseFormRegister, FieldErrors, UseFieldArrayAppend } from 'react-hook-form'
 import { FormData } from '../types/Types'
 import { handleUrlValidation } from '../../../utils/urlValidation'
+import AddIcon from '@mui/icons-material/Add'
 
 interface Step4Props {
   errors: FieldErrors<FormData>
@@ -106,7 +107,22 @@ export function Step4({
           <Button
             type='button'
             onClick={() => append({ name: '', url: '' })}
-            sx={addAnotherButtonStyles(theme)}
+            sx={{
+              textTransform: 'none',
+              width: '100%',
+              fontWeight: 'bold',
+              color: theme.palette.primary.main,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              '& .MuiButton-endIcon': {
+                marginRight: '0'
+              },
+              '&:hover': {
+                backgroundColor: 'transparent',
+                textDecoration: 'underline'
+              }
+            }}
             endIcon={
               <Box sx={addAnotherIconStyles(theme)}>
                 <AddIcon />

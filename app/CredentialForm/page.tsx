@@ -12,7 +12,7 @@ import dynamic from 'next/dynamic'
 
 const DynamicForm = dynamic(() => import('../components/form/Form'), {
   ssr: false,
-  loading: () => <p>Loading...</p>
+  loading: () => <p></p>
 })
 
 const FormComponent = () => {
