@@ -13,7 +13,16 @@ const createDID = async () => {
 }
 
 const signCred = async (data: any, issuerDid: string, keyPair: string) => {
-  const unsignedVC = await credentialEngine.createUnsignedVC(data, issuerDid)
+  const formData = {
+    expirationDate: new Date(
+      new Date().setFullYear(new Date().getFullYear() + 1)
+    ).toISOString(),
+    fullname: data.fullName,
+    criteriaNarrative: data.credentialDescription,
+    achievementDescription: data.credentialDescription,
+    achievementName: data.credentialName
+  }
+  const unsignedVC = await credentialEngine.createUnsignedVC(formData, issuerDid)
   await saveToGoogleDrive(storage, unsignedVC, 'UnsignedVC')
   console.log('Unsigned VC:', unsignedVC)
 
@@ -21,6 +30,7 @@ const signCred = async (data: any, issuerDid: string, keyPair: string) => {
     const signedVC = await credentialEngine.signVC(unsignedVC, keyPair)
     await saveToGoogleDrive(storage, signedVC, 'VC')
     console.log('Signed VC:', signedVC)
+    return signedVC
   } catch (error) {
     console.error('Error during VC signing:', error)
   }

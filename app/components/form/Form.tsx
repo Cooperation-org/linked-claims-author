@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box } from '@mui/material'
 import { FormData } from './types/Types'
@@ -26,6 +26,9 @@ import {
   handleSign,
   handleBack
 } from '../../utils/formUtils'
+import { createDID, signCred } from '../../utils/signCred'
+import { storage } from '../../config/storage'
+import { saveToGoogleDrive } from 'trust_storage'
 
 const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -66,13 +69,30 @@ const Form = ({ onStepChange, setactivStep }: any) => {
   useEffect(() => {
     setactivStep(activeStep)
     onStepChange()
-  }, [activeStep, onStepChange])
+  }, [activeStep, onStepChange, setactivStep])
 
-  const handleFormSubmit = handleSubmit((data: FormData) => {
+  const handleFormSubmit = handleSubmit(async (data: FormData) => {
+    console.log('🚀 ~ handleFormSubmit ~ data:', data)
+
     if (data.storageOption === 'Google Drive') {
-      createFolderAndUploadFile(data, accessToken, setLink)
+      await sign(data)
     }
   })
+
+  const sign = async (data: any) => {
+    const newDid = await createDID()
+    const { didDocument, keyPair, issuerId } = newDid
+    await saveToGoogleDrive(
+      storage,
+      {
+        didDocument,
+        keyPair
+      },
+      'DID'
+    )
+    const res = await signCred(data, issuerId, keyPair)
+    console.log('🚀 ~ handleFormSubmit ~ res:', res)
+  }
 
   return (
     <form
