@@ -19,6 +19,7 @@ import useAutoSignOut from './hooks/useAutoSignOut'
 
 const Page = () => {
   const theme = useTheme()
+  const accessToken = localStorage.getItem('accessToken')
   useAutoSignOut()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'))
@@ -149,21 +150,19 @@ const Page = () => {
               Create a Credential
             </Button>
           </Link>
-          <Link href='/CredentialForm'>
-            <Button
-              sx={{
-                fontFamily: 'Lato',
-                fontSize: '18px',
-                fontWeight: 500,
-                lineHeight: '20px',
-                borderRadius: '100px',
-                color: theme.palette.t3ButtonBlue,
-                textTransform: 'none'
-              }}
-            >
-              Resume Previous Session
-            </Button>
-          </Link>
+          {accessToken && (
+            <Link href='/claims'>
+              <Button
+                sx={{
+                  fontSize: '1.1rem',
+                  color: theme.palette.t3ButtonBlue,
+                  mt: 1
+                }}
+              >
+                View Your Claims
+              </Button>
+            </Link>
+          )}
         </Box>
       </Box>
 
