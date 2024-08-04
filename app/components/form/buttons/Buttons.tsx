@@ -49,7 +49,7 @@ export function Buttons({
           }}
           onClick={handleNext}
           color='primary'
-          disabled={!isValid}
+          disabled={!isValid && activeStep !== 0}
           variant='contained'
         >
           Next
