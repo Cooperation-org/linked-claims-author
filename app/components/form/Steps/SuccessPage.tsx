@@ -54,13 +54,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     const params = new URLSearchParams({
       startTask: 'CERTIFICATION_NAME',
       name: formData?.credentialName || 'Certification Name',
-      organizationId: '1337', // Replace with your actual organization ID
+      organizationName: 'LinkedTrust', // Updated to use organization name
       issueYear: '2024',
       issueMonth: '8',
       expirationYear: '2025',
       expirationMonth: '8',
-      certUrl: link,
-      certId: '1234'
+      certUrl: link
     })
     return `${baseLinkedInUrl}?${params.toString()}`
   }
@@ -147,4 +146,5 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     </>
   )
 }
+
 export default SuccessPage
