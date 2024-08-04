@@ -21,7 +21,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.51.1",
     "react-quill": "^2.0.0",
-    "trust_storage": "1.0.1"
+    "trust_storage": "^1.0.5"
   },
   "devDependencies": {
     "@types/node": "^20",
