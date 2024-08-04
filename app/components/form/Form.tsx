@@ -32,7 +32,7 @@ import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage
 const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
   const [link, setLink] = useState<string>('')
-  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [errorMessage, setErrorMessage] = useState<string>('Sign in first')
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { data: session } = useSession()
@@ -67,16 +67,28 @@ const Form = ({ onStepChange, setactivStep }: any) => {
   })
 
   useEffect(() => {
+    if (!accessToken) {
+      setErrorMessage('Make sure you sign in')
+      console.log('🚀 ~ useEffect ~ accessToken:', accessToken)
+      return
+    }
+  }, [accessToken])
+
+  useEffect(() => {
     setactivStep(activeStep)
     onStepChange()
-  }, [activeStep, onStepChange, setactivStep])
+  }, [accessToken, activeStep, onStepChange, setactivStep])
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
       console.log('🚀 ~ handleFormSubmit ~ data:', data)
 
       if (data.storageOption === 'Google Drive') {
-        await sign(data)
+        const result = await sign(data)
+        if (!!result) {
+          setErrorMessage('Error during VC signing')
+          return
+        }
       }
     } catch (error) {
       console.error('Error during VC signing:', error)
@@ -102,13 +114,28 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       const res = await signCred(accessToken, data, issuerId, keyPair)
       setLink(`https://drive.google.com/file/d/${res.id}/view`)
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
+      return res
     } catch (error) {
       console.error('Error during VC signing:', error)
-      setErrorMessage('make sure you sign in')
+      setErrorMessage('Please SignIn First')
     }
   }
 
-  return true ? (
+  if (!accessToken) {
+    return (
+      <div
+        style={{
+          color: 'red',
+          textAlign: 'center',
+          marginTop: '30px'
+        }}
+      >
+        {errorMessage}
+      </div>
+    )
+  }
+
+  return (
     <form
       style={{
         display: 'flex',
@@ -196,8 +223,6 @@ const Form = ({ onStepChange, setactivStep }: any) => {
         />
       )}
     </form>
-  ) : (
-    <div>{errorMessage}</div>
   )
 }
 

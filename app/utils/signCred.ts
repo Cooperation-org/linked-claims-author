@@ -18,6 +18,9 @@ const signCred = async (
   issuerDid: string,
   keyPair: string
 ) => {
+  if (!accessToken) {
+    throw new Error('Access token is not provided')
+  }
   const formData = {
     expirationDate: new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
