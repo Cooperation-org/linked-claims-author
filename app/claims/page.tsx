@@ -44,6 +44,7 @@ const ClaimsPage: React.FC = () => {
   const [openClaim, setOpenClaim] = useState<string | null>(null)
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [storage, setStorage] = useState<StorageContext | null>(null)
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
@@ -73,8 +74,8 @@ const ClaimsPage: React.FC = () => {
     const claimsNames: Claim[] = await Promise.all(
       claimsData.files.map(async (claim: any) => {
         const content = await getContent(claim.id)
-        const achievement = content.credentialSubject.achievement
-        const achievementName = achievement?.[0]?.name || 'Unnamed Achievement'
+        const achievementName =
+          content.credentialSubject.achievement?.[0]?.name || 'Unnamed Achievement'
         return { id: claim.id, achievementName }
       })
     )
@@ -83,6 +84,8 @@ const ClaimsPage: React.FC = () => {
 
   useEffect(() => {
     if (!accessToken || !storage) {
+      setErrorMessage('Please sign in to view your claims')
+      setLoading(false)
       return
     }
     const fetchClaims = async () => {
@@ -123,60 +126,38 @@ const ClaimsPage: React.FC = () => {
     )
   }
 
-  return (
+  return errorMessage ? (
     <Container>
       <List>
-        {claims.length > 0 ? (
-          <>
-            <Typography
-              variant='h4'
-              sx={{
-                mt: 5
-              }}
-            >
-              Previous Claims
-            </Typography>
-            {claims.map(claim => (
-              <div key={claim.id}>
-                <ListItem button onClick={() => handleClaimClick(claim.id)}>
-                  <ListItemText primary={claim.achievementName} />
-                  {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={openClaim === claim.id} timeout='auto' unmountOnExit>
-                  <Container>
-                    {loadingClaims[claim.id] ? (
-                      <div>
-                        <CircularProgress />
-                      </div>
-                    ) : (
-                      <pre>
-                        {JSON.stringify(
-                          detailedClaim?.credentialSubject.achievement[0],
-                          null,
-                          2
-                        )}
-                      </pre>
-                    )}
-                  </Container>
-                </Collapse>
-              </div>
-            ))}
-          </>
-        ) : (
-          <h1 style={{ marginTop: '3rem' }}>
-            You dont have any claims!{' '}
-            <Link
-              style={{
-                textDecoration: 'underline',
-                color: 'red',
-                marginInline: '0.7rem'
-              }}
-              href='/CredentialForm'
-            >
-              click here to get started
-            </Link>{' '}
-          </h1>
-        )}
+        <>
+          <Typography
+            variant='h4'
+            sx={{
+              mt: 5
+            }}
+          >
+            Previous Claims
+          </Typography>
+          {claims.map(claim => (
+            <div key={claim.id}>
+              <ListItem button onClick={() => handleClaimClick(claim.id)}>
+                <ListItemText primary={claim.achievementName} />
+                {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse in={openClaim === claim.id} timeout='auto' unmountOnExit>
+                <Container>
+                  {loadingClaims[claim.id] ? (
+                    <div>
+                      <CircularProgress />
+                    </div>
+                  ) : (
+                    <pre>{JSON.stringify(detailedClaim, null, 2)}</pre>
+                  )}
+                </Container>
+              </Collapse>
+            </div>
+          ))}
+        </>
       </List>
       <Link href='/CredentialForm'>
         <Button
@@ -193,6 +174,8 @@ const ClaimsPage: React.FC = () => {
         </Button>
       </Link>
     </Container>
+  ) : (
+    <h1>{errorMessage}</h1>
   )
 }
 

@@ -32,6 +32,7 @@ import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage
 const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
   const [link, setLink] = useState<string>('')
+  const [errorMessage, setErrorMessage] = useState<string>('')
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { data: session } = useSession()
@@ -47,7 +48,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
     formState: { errors, isValid }
   } = useForm<FormData>({
     defaultValues: {
-      storageOption: 'Device',
+      storageOption: 'Google Drive',
       fullName: '',
       persons: '',
       credentialName: '',
@@ -71,10 +72,15 @@ const Form = ({ onStepChange, setactivStep }: any) => {
   }, [activeStep, onStepChange, setactivStep])
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
-    console.log('🚀 ~ handleFormSubmit ~ data:', data)
+    try {
+      console.log('🚀 ~ handleFormSubmit ~ data:', data)
 
-    if (data.storageOption === 'Google Drive') {
-      await sign(data)
+      if (data.storageOption === 'Google Drive') {
+        await sign(data)
+      }
+    } catch (error) {
+      console.error('Error during VC signing:', error)
+      setErrorMessage('make sure you sign in')
     }
   })
   const storage = new StorageContext(
@@ -82,21 +88,27 @@ const Form = ({ onStepChange, setactivStep }: any) => {
   )
 
   const sign = async (data: any) => {
-    const newDid = await createDID(accessToken)
-    const { didDocument, keyPair, issuerId } = newDid
-    await saveToGoogleDrive(
-      storage,
-      {
-        didDocument,
-        keyPair
-      },
-      'DID'
-    )
-    const res = await signCred(accessToken, data, issuerId, keyPair)
-    console.log('🚀 ~ handleFormSubmit ~ res:', res)
+    try {
+      const newDid = await createDID(accessToken)
+      const { didDocument, keyPair, issuerId } = newDid
+      await saveToGoogleDrive(
+        storage,
+        {
+          didDocument,
+          keyPair
+        },
+        'DID'
+      )
+      const res = await signCred(accessToken, data, issuerId, keyPair)
+      setLink(`https://drive.google.com/file/d/${res.id}/view`)
+      console.log('🚀 ~ handleFormSubmit ~ res:', res)
+    } catch (error) {
+      console.error('Error during VC signing:', error)
+      setErrorMessage('make sure you sign in')
+    }
   }
 
-  return (
+  return true ? (
     <form
       style={{
         display: 'flex',
@@ -184,6 +196,8 @@ const Form = ({ onStepChange, setactivStep }: any) => {
         />
       )}
     </form>
+  ) : (
+    <div>{errorMessage}</div>
   )
 }
 

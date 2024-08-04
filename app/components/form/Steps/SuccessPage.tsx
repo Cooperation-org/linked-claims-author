@@ -55,12 +55,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       startTask: 'CERTIFICATION_NAME',
       name: formData?.credentialName || 'Certification Name',
       organizationId: '1337', // Replace with your actual organization ID
-      issueYear: '2024', 
-      issueMonth: '8', 
-      expirationYear: '2025', 
+      issueYear: '2024',
+      issueMonth: '8',
+      expirationYear: '2025',
       expirationMonth: '8',
       certUrl: link,
-      certId: '1234' 
+      certId: '1234'
     })
     return `${baseLinkedInUrl}?${params.toString()}`
   }
@@ -119,9 +119,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           <Typography sx={successPageCopyLinkTextStyles}>Copy link:</Typography>
           <TextField
             sx={successPageTextFieldStyles}
-            value={link}
+            value={link || 'loading...'}
             InputProps={{
-              startAdornment: <InputAdornment position='start'>http://</InputAdornment>,
+              startAdornment: <InputAdornment position='start'></InputAdornment>,
               endAdornment: (
                 <InputAdornment position='end'>
                   <Button onClick={() => copyFormValuesToClipboard(link)}>

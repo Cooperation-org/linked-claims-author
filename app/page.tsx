@@ -155,7 +155,7 @@ const Page = () => {
               Create a Credential
             </Button>
           </Link>
-          {accessToken && (
+          {
             <Link href='/claims'>
               <Button
                 sx={{
@@ -167,7 +167,7 @@ const Page = () => {
                 View Your Claims
               </Button>
             </Link>
-          )}
+          }
         </Box>
       </Box>
 
