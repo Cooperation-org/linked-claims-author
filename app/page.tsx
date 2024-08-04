@@ -1,6 +1,6 @@
 'use client'
 import { useTheme } from '@mui/material/styles'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Typography, useMediaQuery, Avatar, Button } from '@mui/material'
 import ProfileImageWithLabels from './CredentialForm/ProfileImageWithLabels'
 import SVGDesign, { SVGCheckMarks } from './Assets/SVGs'
@@ -19,7 +19,12 @@ import useAutoSignOut from './hooks/useAutoSignOut'
 
 const Page = () => {
   const theme = useTheme()
-  const accessToken = localStorage.getItem('accessToken')
+  const [accessToken, setAccessToken] = React.useState<string | null>(null)
+  useEffect(() => {
+    if (window !== undefined) {
+      setAccessToken(localStorage.getItem('accessToken'))
+    }
+  }, [])
   useAutoSignOut()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'))

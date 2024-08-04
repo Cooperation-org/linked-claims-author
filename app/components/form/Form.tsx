@@ -27,8 +27,7 @@ import {
   handleBack
 } from '../../utils/formUtils'
 import { createDID, signCred } from '../../utils/signCred'
-import { storage } from '../../config/storage'
-import { saveToGoogleDrive } from 'trust_storage'
+import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage'
 
 const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -78,9 +77,12 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       await sign(data)
     }
   })
+  const storage = new StorageContext(
+    StorageFactory.getStorageStrategy('googleDrive', { accessToken })
+  )
 
   const sign = async (data: any) => {
-    const newDid = await createDID()
+    const newDid = await createDID(accessToken)
     const { didDocument, keyPair, issuerId } = newDid
     await saveToGoogleDrive(
       storage,
@@ -90,7 +92,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       },
       'DID'
     )
-    const res = await signCred(data, issuerId, keyPair)
+    const res = await signCred(accessToken, data, issuerId, keyPair)
     console.log('🚀 ~ handleFormSubmit ~ res:', res)
   }
 

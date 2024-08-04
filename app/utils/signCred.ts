@@ -4,15 +4,20 @@ import {
   StorageContext,
   StorageFactory
 } from 'trust_storage'
-import { credentialEngine, storage } from '../config/storage'
 
-const createDID = async () => {
+const createDID = async (accessToken: string) => {
+  const credentialEngine = new CredentialEngine(accessToken)
   const { didDocument, keyPair } = await credentialEngine.createDID()
   console.log('DID:', didDocument)
   return { didDocument, keyPair, issuerId: didDocument.id }
 }
 
-const signCred = async (data: any, issuerDid: string, keyPair: string) => {
+const signCred = async (
+  accessToken: string,
+  data: any,
+  issuerDid: string,
+  keyPair: string
+) => {
   const formData = {
     expirationDate: new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
@@ -22,6 +27,10 @@ const signCred = async (data: any, issuerDid: string, keyPair: string) => {
     achievementDescription: data.credentialDescription,
     achievementName: data.credentialName
   }
+  const credentialEngine = new CredentialEngine(accessToken)
+  const storage = new StorageContext(
+    StorageFactory.getStorageStrategy('googleDrive', { accessToken })
+  )
   const unsignedVC = await credentialEngine.createUnsignedVC(formData, issuerDid)
   await saveToGoogleDrive(storage, unsignedVC, 'UnsignedVC')
   console.log('Unsigned VC:', unsignedVC)

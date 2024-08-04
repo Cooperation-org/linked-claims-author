@@ -1,4 +1,3 @@
-// pages/claims.tsx
 'use client'
 import React, { useCallback, useEffect, useState } from 'react'
 import {
@@ -12,9 +11,9 @@ import {
   Button
 } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import { storage } from '../config/storage'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { StorageContext, StorageFactory } from 'trust_storage'
 
 // Define types
 interface Claim {
@@ -45,15 +44,30 @@ const ClaimsPage: React.FC = () => {
   const [openClaim, setOpenClaim] = useState<string | null>(null)
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
+  const [storage, setStorage] = useState<StorageContext | null>(null)
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
 
-  const getContent = async (fileId: string): Promise<ClaimDetail> => {
-    const file = await storage.getFileContent(fileId)
-    return file as ClaimDetail
-  }
+  useEffect(() => {
+    if (accessToken) {
+      const storageInstance = new StorageContext(
+        StorageFactory.getStorageStrategy('googleDrive', { accessToken })
+      )
+      setStorage(storageInstance)
+    }
+  }, [accessToken])
+
+  const getContent = useCallback(
+    async (fileId: string): Promise<ClaimDetail> => {
+      if (!storage) throw new Error('Storage is not initialized')
+      const file = await storage.getFileContent(fileId)
+      return file as ClaimDetail
+    },
+    [storage]
+  )
 
   const getAllClaims = useCallback(async (): Promise<Claim[]> => {
+    if (!storage) throw new Error('Storage is not initialized')
     const claimsData = (await storage.getAllClaims()) as any
     if (!claimsData.files) return []
     const claimsNames: Claim[] = await Promise.all(
@@ -65,10 +79,10 @@ const ClaimsPage: React.FC = () => {
       })
     )
     return claimsNames
-  }, [])
+  }, [getContent, storage])
 
   useEffect(() => {
-    if (!accessToken) {
+    if (!accessToken || !storage) {
       return
     }
     const fetchClaims = async () => {
@@ -79,7 +93,7 @@ const ClaimsPage: React.FC = () => {
     }
 
     fetchClaims()
-  }, [accessToken, getAllClaims])
+  }, [accessToken, storage, getAllClaims])
 
   const handleClaimClick = async (claimId: string) => {
     if (openClaim === claimId) {
