@@ -27,19 +27,20 @@ const signCred = async (
     achievementDescription: data.credentialDescription,
     achievementName: data.credentialName
   }
-  const credentialEngine = new CredentialEngine(accessToken)
-  const storage = new StorageContext(
-    StorageFactory.getStorageStrategy('googleDrive', { accessToken })
-  )
-  const unsignedVC = await credentialEngine.createUnsignedVC(formData, issuerDid)
-  await saveToGoogleDrive(storage, unsignedVC, 'UnsignedVC')
-  console.log('Unsigned VC:', unsignedVC)
-
   try {
+    const credentialEngine = new CredentialEngine(accessToken)
+    const storage = new StorageContext(
+      StorageFactory.getStorageStrategy('googleDrive', { accessToken })
+    )
+    const unsignedVC = await credentialEngine.createUnsignedVC(formData, issuerDid)
+    await saveToGoogleDrive(storage, unsignedVC, 'UnsignedVC')
+    console.log('Unsigned VC:', unsignedVC)
+
     const signedVC = await credentialEngine.signVC(unsignedVC, keyPair)
-    await saveToGoogleDrive(storage, signedVC, 'VC')
+    const signedVCFile = await saveToGoogleDrive(storage, signedVC, 'VC')
+    console.log('🚀 ~ signedVCFile:', signedVCFile)
     console.log('Signed VC:', signedVC)
-    return signedVC
+    return signedVCFile
   } catch (error) {
     console.error('Error during VC signing:', error)
   }

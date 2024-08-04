@@ -17,14 +17,16 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
       sx={radioGroupStyles}
       aria-labelledby='form-type-label'
       name='controlled-radio-buttons-group'
-      value={watch('storageOption')}
+      value={watch('storageOption') || 'Google Drive'}
       onChange={e => setValue('storageOption', e.target.value)}
+      defaultValue='Google Drive'
     >
       <FormControlLabel
         value='Device'
         sx={boxStyles}
         control={<Radio sx={radioCheckedStyles} />}
         label='Save to My Device'
+        disabled
       />
       <FormControlLabel
         value='Google Drive'
@@ -45,6 +47,7 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
             <DigitalWallet /> Your Digital Wallet (e.g. Corner Pocket)
           </Box>
         }
+        disabled
       />
       <FormControlLabel
         value='Dropbox'
@@ -55,6 +58,7 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
             <Dropbox /> Dropbox
           </Box>
         }
+        disabled
       />
     </RadioGroup>
   )

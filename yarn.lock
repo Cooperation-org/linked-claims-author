@@ -5240,10 +5240,10 @@ toidentifier@1.0.1:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
-trust_storage@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/trust_storage/-/trust_storage-1.0.4.tgz#24d650b8b29a7c595937d4a3e49b2f2b3fd7fe37"
-  integrity sha512-Pm5Xq9gi/6th4LJGZlUsOiHEfvCIPGzN0fH5q0VzVkXYsllc2NsvSod2p/PH5SwdDV1aGSFNsq19+V5NVYWu2Q==
+trust_storage@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/trust_storage/-/trust_storage-1.0.6.tgz#c43b166d96636ac4febf497c554634a2547b61c7"
+  integrity sha512-xkabSylswkpDHqjes8yLmoS5IMDVdARVOurUiImAMy3QEECnntnRKu74+Oc4B8TBQsJ4rXlA+7XVGiv2eLQJCg==
   dependencies:
     "@digitalbazaar/did-method-key" "^5.2.0"
     "@digitalbazaar/ed25519-signature-2020" "^5.3.0"
