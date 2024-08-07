@@ -5,6 +5,9 @@ import { Box, Typography, useMediaQuery, Button, TextField, Autocomplete, Chip }
 import SVGDesign from './Assets/SVGs'
 import Link from 'next/link'
 import useAutoSignOut from './hooks/useAutoSignOut'
+import { useSession } from 'next-auth/react'
+import { createDID, signCred } from './utils/signCred'
+import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage'
 
 const interests = [
   'Digital Badges', 'Blockchain', 'Education Technology', 'Credential Innovation',
@@ -12,6 +15,11 @@ const interests = [
 ];
 
 const Page = () => {
+  const { data: session } = useSession()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
+  const [link, setLink] = useState('')
   const theme = useTheme()
   const [accessToken, setAccessToken] = useState(null)
   const [formData, setFormData] = useState({
@@ -42,11 +50,44 @@ const Page = () => {
     setFormData(prevData => ({ ...prevData, interests: newValue }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('Form submitted:', formData);
-    // Here you would typically send the data to your backend
-  };
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+      setIsSubmitting(true);
+      setErrorMessage('');
+      setSuccessMessage('');
+
+      try {
+        if (!session?.accessToken) {
+          throw new Error('You must be signed in to submit the form');
+        }
+
+        const storage = new StorageContext(
+          StorageFactory.getStorageStrategy('googleDrive', { accessToken: session.accessToken })
+        );
+
+        const newDid = await createDID(session.accessToken);
+        const { didDocument, keyPair, issuerId } = newDid;
+        await saveToGoogleDrive(
+          storage,
+          {
+            didDocument,
+            keyPair
+          },
+          'DID'
+        );
+
+
+        const signedCred = await signCred(session.accessToken, formData, issuerId, keyPair);
+        const driveLink = `https://drive.google.com/file/d/${signedCred.id}/view`;
+        setLink(driveLink);
+        setSuccessMessage('Registration successful! Your credential has been signed and saved.');
+      } catch (error) {
+        console.error('Error during form submission:', error);
+        setErrorMessage(error.message || 'An error occurred during submission. Please try again.');
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
 
   return (
     <Box
@@ -174,16 +215,46 @@ const Page = () => {
         <Button
           type="submit"
           variant="contained"
-          sx={{
-            backgroundColor: theme.palette.t3ButtonBlue,
-            color: 'white',
-            '&:hover': {
-              backgroundColor: theme.palette.t3ButtonBlue
-            }
-          }}
+          disabled={isSubmitting}
+  sx={{
+    backgroundColor: theme.palette.t3ButtonBlue,
+    color: 'white',
+    '&:hover': {
+      backgroundColor: theme.palette.t3ButtonBlue
+    }
+  }}
         >
           Self-Issue Attendance Badge
         </Button>
+
+{errorMessage && (
+  <Typography color="error" sx={{ mt: 2 }}>
+    {errorMessage}
+  </Typography>
+)}
+
+{successMessage && (
+  <Typography color="success" sx={{ mt: 2 }}>
+    {successMessage}
+  </Typography>
+)}
+
+{link && (
+  <>
+    <Link href={link} target="_blank" rel="noopener noreferrer">
+      <Button variant="outlined" sx={{ mt: 2 }}>
+        View Your Signed Credential
+      </Button>
+    </Link>
+    <Link href={link} target="_blank" rel="noopener noreferrer">
+      <Button variant="outlined" sx={{ mt: 2 }}>
+        Request Endorsement from Badge Summit 2025 Staff
+      </Button>
+    </Link>
+  </>
+)}
+
+
       </Box>
 
       {/* Building Section Component */}
