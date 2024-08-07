@@ -50,6 +50,19 @@ const Page = () => {
     setFormData(prevData => ({ ...prevData, interests: newValue }));
   };
 
+const transformFormDataForCredential = (formData) => {
+  return {
+    fullName: formData.name,
+    credentialName: `${formData.name}'s BadgeSummit 2025 Participation`,
+    credentialDescription: `${formData.name} from ${formData.organization} participated in BadgeSummit 2025. Key interests: ${formData.interests.join(', ')}. ${formData.description}`,
+    achievementDescription: formData.learnedContent,
+    expirationDate: new Date(
+      new Date().setFullYear(new Date().getFullYear() + 1)
+    ).toISOString(),
+  };
+};
+
+
     const handleSubmit = async (event) => {
       event.preventDefault();
       setIsSubmitting(true);
@@ -76,8 +89,10 @@ const Page = () => {
           'DID'
         );
 
+// Transform the form data
+    const credentialData = transformFormDataForCredential(formData);
 
-        const signedCred = await signCred(session.accessToken, formData, issuerId, keyPair);
+        const signedCred = await signCred(session.accessToken, credentialData, issuerId, keyPair);
         const driveLink = `https://drive.google.com/file/d/${signedCred.id}/view`;
         setLink(driveLink);
         setSuccessMessage('Registration successful! Your credential has been signed and saved.');
