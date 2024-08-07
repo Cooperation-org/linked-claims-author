@@ -1,45 +1,52 @@
 'use client'
 import { useTheme } from '@mui/material/styles'
-import React, { useEffect } from 'react'
-import { Box, Typography, useMediaQuery, Avatar, Button } from '@mui/material'
-import ProfileImageWithLabels from './CredentialForm/ProfileImageWithLabels'
-import SVGDesign, { SVGCheckMarks } from './Assets/SVGs'
-import Image from 'next/image'
-import AddIcon from './Assets/Images/Add_icon.png'
-import TwoPhonesM from './Assets/SVGs/TwoPhonesMobile.svg'
-import TwoPhonesT from './Assets/SVGs/TwoPhonesTablet.svg'
-import TwoPhonesD from './Assets/SVGs/TwoPhonesDesktop.svg'
-import {
-  testimonials,
-  featuresSmallScreen,
-  featuresLargeScreen
-} from './CredentialForm/landingPageVariables'
+import React, { useState, useEffect } from 'react'
+import { Box, Typography, useMediaQuery, Button, TextField, Autocomplete, Chip } from '@mui/material'
+import SVGDesign from './Assets/SVGs'
 import Link from 'next/link'
 import useAutoSignOut from './hooks/useAutoSignOut'
 
+const interests = [
+  'Digital Badges', 'Blockchain', 'Education Technology', 'Credential Innovation',
+  'Open Badges', 'Learning Analytics', 'Microcredentials', 'Skill Verification'
+];
+
 const Page = () => {
   const theme = useTheme()
-  const [accessToken, setAccessToken] = React.useState<string | null>(null)
+  const [accessToken, setAccessToken] = useState(null)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    organization: '',
+    interests: [],
+    description: '',
+    learnedContent: ''
+  });
+
   useEffect(() => {
-    if (window !== undefined) {
+    if (typeof window !== 'undefined') {
       setAccessToken(localStorage.getItem('accessToken'))
     }
   }, [])
+
   useAutoSignOut()
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'))
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
 
-  const features = isSmallScreen ? featuresSmallScreen : featuresLargeScreen
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData(prevData => ({ ...prevData, [name]: value }));
+  };
 
-  let selectedImage
-  if (isSmallScreen) {
-    selectedImage = TwoPhonesM
-  } else if (isMediumScreen) {
-    selectedImage = TwoPhonesT
-  } else if (isLargeScreen) {
-    selectedImage = TwoPhonesD
-  }
+  const handleInterestsChange = (event, newValue) => {
+    setFormData(prevData => ({ ...prevData, interests: newValue }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log('Form submitted:', formData);
+    // Here you would typically send the data to your backend
+  };
 
   return (
     <Box
@@ -47,151 +54,158 @@ const Page = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: '37px',
-        alignItems: 'center'
+        alignItems: 'center',
+        padding: { xs: '20px', md: '40px' },
+        maxWidth: '800px',
+        margin: 'auto'
       }}
     >
       {/* Header Component */}
       <Box
         sx={{
           display: 'flex',
-          height: { xs: '360px', md: '441px' },
           flexDirection: 'column',
-          gap: '37px',
+          gap: '30px',
           alignItems: 'center',
           textAlign: 'center',
-          mt: { xs: '37px', md: '148px' },
           position: 'relative'
         }}
       >
-        <Box
+        <Typography
           sx={{
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: { xs: '37px', md: '30px' },
-            position: 'relative'
+            color: theme.palette.t3DarkSlateBlue,
+            fontFamily: 'Poppins',
+            fontSize: { xs: '30px', md: '48px' },
+            fontWeight: 600,
+            lineHeight: '110%'
           }}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              width: { xs: '92.308vw', md: '712px' },
-              maxWidth: { xs: '360px', md: '712px' },
-              height: { xs: '60px', md: '154px' }
-            }}
-          >
-            <Typography
-              sx={{
-                color: theme.palette.t3DarkSlateBlue,
-                fontFamily: 'Poppins',
-                fontSize: { xs: '30px', md: '70px' },
-                fontWeight: 600,
-                lineHeight: '110%',
-                textAlign: 'center',
-                mb: { xs: '15px', md: '30px' }
-              }}
-            >
-              Verified Skills For Your Resume
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              width: '325px',
-              height: '44px'
-            }}
-          >
-            <Typography
-              sx={{
-                color: theme.palette.t3DarkSlateBlue,
-                fontFamily: 'Lato',
-                fontSize: { xs: '16px', md: '18px' },
-                fontWeight: 400,
-                lineHeight: 'normal',
-                textAlign: 'center'
-              }}
-            >
-              Sign up in seconds. Let your true skills shine. Stand out from the crowd.
-            </Typography>
-          </Box>
-        </Box>
-        <Box
+          BadgeSummit 2025 Attendee Badge
+        </Typography>
+        <Typography
           sx={{
-            marginTop: { xs: '37px', md: '45px' }
+            color: theme.palette.t3DarkSlateBlue,
+            fontFamily: 'Lato',
+            fontSize: { xs: '16px', md: '18px' },
+            fontWeight: 400,
+            lineHeight: 'normal',
+            maxWidth: '600px'
           }}
         >
-          <ProfileImageWithLabels />
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            mt: { xs: '37px', md: '36px' }
-          }}
-        >
-          <Link href='/CredentialForm'>
-            <Button
-              sx={{
-                width: '200px',
-                height: '40px',
-                fontFamily: 'Lato',
-                fontSize: '16px',
-                fontWeight: 600,
-                lineHeight: '20px',
-                borderRadius: '100px',
-                backgroundColor: theme.palette.t3ButtonBlue,
-                color: 'white',
-                textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: theme.palette.t3ButtonBlue
-                }
-              }}
-            >
-              Create a Credential
-            </Button>
-          </Link>
-          {
-            <Link href='/claims'>
-              <Button
-                sx={{
-                  fontSize: '1.1rem',
-                  color: theme.palette.t3ButtonBlue,
-                  mt: 1
-                }}
-              >
-                View Your Claims
-              </Button>
-            </Link>
-          }
-        </Box>
+          Are you attending badge summit? Create your personalized credential for endorsement!
+        </Typography>
       </Box>
 
-      {/*Building Section Component */}
+      {/* Registration Form */}
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          width: '100%',
+          maxWidth: '600px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px'
+        }}
+      >
+        <TextField
+          fullWidth
+          label="Name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+        <TextField
+          fullWidth
+          label="Email"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <TextField
+          fullWidth
+          label="Organization"
+          name="organization"
+          value={formData.organization}
+          onChange={handleChange}
+        />
+        <Autocomplete
+          multiple
+          options={interests}
+          value={formData.interests}
+          onChange={handleInterestsChange}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              label="Interests"
+              placeholder="Select your interests"
+            />
+          )}
+          renderTags={(value, getTagProps) =>
+            value.map((option, index) => (
+              <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+            ))
+          }
+        />
+        <TextField
+          fullWidth
+          label="Brief Description"
+          name="description"
+          multiline
+          rows={3}
+          value={formData.description}
+          onChange={handleChange}
+          helperText="Describe yourself or key interests that brought you to the BadgeSummit 2025"
+        />
+        <TextField
+          fullWidth
+          label="Learned Content"
+          name="learnedContent"
+          multiline
+          rows={3}
+          value={formData.learnedContent}
+          onChange={handleChange}
+          helperText="Describe something you learned or appreciated from a presentation (for LinkedClaims credential)"
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            backgroundColor: theme.palette.t3ButtonBlue,
+            color: 'white',
+            '&:hover': {
+              backgroundColor: theme.palette.t3ButtonBlue
+            }
+          }}
+        >
+          Self-Issue Attendance Badge
+        </Button>
+      </Box>
+
+      {/* Building Section Component */}
       <Box
         sx={{
           display: 'inline-flex',
-          height: 'auto',
           flexDirection: 'column',
           alignItems: 'center',
           gap: '15px',
-          flexShrink: 0,
           textAlign: 'center',
           position: 'relative',
-          width: { xs: '360px', md: '437px' },
-          marginTop: { xs: '90px', md: '160px' }
+          width: '100%',
+          maxWidth: '600px',
+          marginTop: { xs: '40px', md: '60px' }
         }}
       >
         <Box
           sx={{
             position: 'absolute',
             zIndex: 3,
-            left: { xs: 'calc(50% - 189px)', md: 'calc(50% - 193px)' },
-            top: { xs: 'calc(50% - 98px)', md: 'calc(50% - 108px)' }
+            left: 'calc(50% - 193px)',
+            top: 'calc(50% - 108px)'
           }}
         >
           <SVGDesign />
@@ -206,7 +220,7 @@ const Page = () => {
             padding: { xs: '0 20px', md: '0 50px' }
           }}
         >
-          Building your story in the age of AI.
+          Create your story.  Control your credentials.
         </Typography>
         <Typography
           sx={{
@@ -218,201 +232,29 @@ const Page = () => {
             padding: { xs: '0 10px', md: '0 30px' }
           }}
         >
-          No more cut and paste. No more re-doing your resume. Add your skills once, then
-          mix and match them for each job.
         </Typography>
       </Box>
 
-      {/* Two Phones Section Component */}
+      {/* Links */}
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          width: { xs: '321px', md: 'auto' },
-          maxWidth: '898.22px',
-          justifyContent: 'center',
+          flexDirection: 'column',
           alignItems: 'center',
-          marginTop: { xs: '20px', md: '40px' },
-          gap: { xs: '33px', md: '60px' }
+          gap: '10px',
+          marginTop: '20px'
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '2px',
-            maxWidth: { xs: '318px', md: '515px' }
-          }}
-        >
-          <Image src={selectedImage} alt='two phones' />
-        </Box>
-        <Box
-          sx={{
-            display: 'inline-flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            gap: '15px',
-            alignItems: 'center',
-            width: '321px',
-            textAlign: 'start'
-          }}
-        >
-          {features.map(feature => (
-            <Box
-              key={feature.id}
-              sx={{ display: 'flex', gap: '15px', width: '100%', maxWidth: '321px' }}
-            >
-              <SVGCheckMarks />
-              <Typography
-                sx={{
-                  color: theme.palette.t3BodyText,
-                  flexShrink: 0,
-                  fontFamily: 'Lato',
-                  fontSize: '18px',
-                  fontWeight: '400',
-                  lineHeight: 'normal'
-                }}
-              >
-                {feature.name}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-      </Box>
-
-      {/* Testimonial Component */}
-      <Box
-        sx={{
-          position: 'relative',
-          width: '100%',
-          backgroundColor: theme.palette.t3Whitesmoke,
-          textAlign: 'left'
-        }}
-      >
-        <Box
-          sx={{
-            width: '100%',
-            backgroundColor: theme.palette.t3Whitesmoke,
-            textAlign: 'center',
-            mb: { xs: '0px', md: '55px' }
-          }}
-        >
-          <Typography
+        <Link href='/claims'>
+          <Button
             sx={{
-              lineHeight: '125%',
-              fontWeight: 600,
-              mt: { xs: '53px', md: '40px' },
-              display: 'flex',
-              flexDirection: 'column',
-              flexShrink: 0,
-              textAlign: 'center',
-              mx: 'auto',
-              fontSize: { xs: '24px', md: '36px' }
+              fontSize: '1.1rem',
+              color: theme.palette.t3ButtonBlue
             }}
           >
-            Your data. Your stories.
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'flex-end',
-            justifyContent: 'flex-start',
-            gap: '30px',
-            overflowX: 'auto',
-            paddingLeft: '40px',
-            paddingTop: { xs: '33px', md: '44px' },
-            paddingBottom: { xs: '38px', md: '44px' },
-            '&::-webkit-scrollbar': {
-              height: '8px'
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: theme.palette.t3YellowAccent,
-              borderRadius: '10px'
-            }
-          }}
-        >
-          {testimonials.map(testimonial => (
-            <Box
-              key={testimonial.id}
-              sx={{
-                flex: '0 0 auto',
-                width: '328px',
-                height: '192px',
-                backgroundColor: theme.palette.t3YellowAccent,
-                borderRadius: '10px',
-                opacity: 0.9,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                padding: '25px 17px',
-                gap: '16px',
-                position: 'relative',
-                mb: { xs: '0px', md: '54px' }
-              }}
-            >
-              {testimonial.id === 1 && (
-                <Image
-                  priority
-                  src={AddIcon.src}
-                  width={40}
-                  height={40}
-                  alt='Add Icon'
-                  style={{
-                    width: '40px',
-                    display: 'block',
-                    position: 'absolute',
-                    top: '-30px',
-                    left: 'calc(50% - 194px)'
-                  }}
-                />
-              )}
-              <Avatar
-                alt={testimonial.name}
-                src={testimonial.image.src}
-                sx={{ width: 57, height: 57, mb: '100px' }}
-              />
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  gap: '9px'
-                }}
-              >
-                <Typography
-                  sx={{
-                    width: '212px',
-                    color: theme.palette.t3BodyText,
-                    fontFamily: 'Lato',
-                    fontSize: '13px',
-                    fontWeight: '700',
-                    lineHeight: 'normal',
-                    mb: '15px'
-                  }}
-                >
-                  {testimonial.name}
-                </Typography>
-                <Typography
-                  sx={{
-                    width: '212px',
-                    color: theme.palette.t3BodyText,
-                    fontFamily: 'Lato',
-                    fontSize: '16px',
-                    fontWeight: '400',
-                    lineHeight: 'normal'
-                  }}
-                >
-                  {testimonial.text}
-                </Typography>
-              </Box>
-            </Box>
-          ))}
-        </Box>
+            View Your Claims
+          </Button>
+        </Link>
       </Box>
     </Box>
   )
