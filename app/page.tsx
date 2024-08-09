@@ -62,6 +62,10 @@ const transformFormDataForCredential = (formData) => {
   };
 };
 
+const getFileIdFromLink = (link) => {
+  const match = link.match(/\/d\/(.+?)\/view/);
+  return match ? match[1] : null;
+};
 
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -258,9 +262,15 @@ const transformFormDataForCredential = (formData) => {
   <>
     <Link href={link} target="_blank" rel="noopener noreferrer">
       <Button variant="outlined" sx={{ mt: 2 }}>
-        View Your Signed Credential
+        View Raw Signed Credential
       </Button>
     </Link>
+<Link href={`/badges?id=${getFileIdFromLink(link)}`} passHref>
+    <Button variant="outlined" sx={{ mt: 2 }}>
+      View Your Credential Badge
+    </Button>
+  </Link>
+
     <Link href={link} target="_blank" rel="noopener noreferrer">
       <Button variant="outlined" sx={{ mt: 2 }}>
         Request Endorsement from Badge Summit 2025 Staff
