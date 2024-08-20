@@ -363,8 +363,8 @@ export const successPageCopyLinkStyles = {
   display: 'flex',
   alignItems: 'center',
   gap: '6px',
-  padding: '15px 21px',
-  bgcolor: '#FBFBFB'
+  bgcolor: '#FBFBFB',
+  mt: '6px'
 }
 
 export const successPageCopyLinkTextStyles = {

@@ -1,14 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 
-import {
-  Typography,
-  TextField,
-  InputAdornment,
-  Divider,
-  Box,
-  Button
-} from '@mui/material'
+import { Typography, TextField, InputAdornment, Box, Button } from '@mui/material'
 import {
   SVGDate,
   TwitterSVG,
@@ -25,15 +18,13 @@ import {
   successPageInfoStyles,
   successPageDateStyles,
   successPageShareStyles,
-  successPageShareTextStyles,
   successPageIconContainerStyles,
   successPageCopyLinkStyles,
-  successPageCopyLinkTextStyles,
-  successPageTextFieldStyles,
-  successPageButtonStyles
+  successPageTextFieldStyles
 } from '../../Styles/appStyles'
 import { FormData } from '../types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
+import { useTheme } from '@mui/material/styles'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
@@ -48,6 +39,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   reset,
   link
 }) => {
+  const theme = useTheme()
+
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
@@ -119,7 +112,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
           <Box sx={successPageCopyLinkStyles}>
             <TextField
-              sx={successPageTextFieldStyles}
+              sx={{
+                ...successPageTextFieldStyles,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '10px'
+                }
+              }}
               value={link || 'loading...'}
               InputProps={{
                 endAdornment: <InputAdornment position='start'></InputAdornment>,
@@ -137,16 +135,40 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             />
           </Box>
         </Box>
+        <Button
+          variant='contained'
+          onClick={() => {
+            setActiveStep(0)
+            reset()
+          }}
+          sx={{
+            borderRadius: '100px',
+            backgroundColor: '#003FE0',
+            textTransform: 'none',
+            fontFamily: 'Roboto, sans-serif',
+            boxShadow: '0px 0px 2px 2px #F7BC00'
+          }}
+        >
+          <Typography>Ask for a Recommendation</Typography>
+        </Button>
       </Box>
       <Button
-        variant='contained'
+        sx={{
+          color: theme.palette.t3TitleText,
+          textTransform: 'capitalize',
+          m: '20px 0',
+          fontFamily: 'Roboto',
+          fontSize: '14px',
+          fontWeight: 600,
+          lineHeight: '20px'
+        }}
+        variant='text'
         onClick={() => {
           setActiveStep(0)
           reset()
         }}
-        sx={successPageButtonStyles}
       >
-        Add Another
+        Claim Another Skill
       </Button>
     </>
   )
