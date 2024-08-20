@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 export const textGuid = [
   <>
@@ -22,8 +22,30 @@ export const textGuid = [
 
 export const note =
   'Please note, all fields marked with an asterisk are required and must be completed.'
-export const successNote =
-  'Congratulations on your achievement. Tell the world what you’ve accomplished!'
+export const successNote = (
+  <Typography variant='h6'>
+    <Box
+      component='span'
+      sx={{ backgroundColor: '#ffe592', borderRadius: '6px', padding: '0 6px' }}
+    >
+      Congratulations on your
+      <br />
+    </Box>{' '}
+    <Box
+      component='span'
+      sx={{ backgroundColor: '#ffe592', borderRadius: '6px', padding: '0 6px' }}
+    >
+      achievement. Tell the world what
+      <br />
+    </Box>
+    <Box
+      component='span'
+      sx={{ backgroundColor: '#ffe592', borderRadius: '6px', padding: '0 6px' }}
+    >
+      you’ve accomplished!
+    </Box>
+  </Typography>
+)
 
 export const CredentialViewText =
   'Hi, I’m Tessa! I’ll help you with Alice’s recommendation.'

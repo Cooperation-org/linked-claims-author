@@ -53,7 +53,7 @@ const FetchedData = () => {
           >
             <SVGBadge />
             <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
-              {driveData?.fullName}’s has claimed:
+              Amr Nabel’s has claimed:
             </Typography>
           </Box>
           <Box>
@@ -93,12 +93,18 @@ const FetchedData = () => {
                   lineHeight: '24px'
                 }}
               >
-                This credential certifies about {driveData?.credentialName}.
+                This credential certifies about{' '}
+                {driveData?.credentialSubject?.achievement[0]?.name}.
               </Typography>
               <Box>
                 <Typography>Earning criteria:</Typography>
                 <ul style={{ marginLeft: '25px' }}>
-                  <li>{driveData?.credentialDescription?.replace(/<\/?[^>]+>/gi, '')}</li>
+                  <li>
+                    {driveData?.credentialSubject?.achievement[0]?.description?.replace(
+                      /<\/?[^>]+>/gi,
+                      ''
+                    )}
+                  </li>
                 </ul>
               </Box>
               <Box>

@@ -67,33 +67,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   return (
     <>
       <Box sx={successPageContainerStyles}>
-        <Box sx={successPageHeaderStyles}>
-          <img
-            style={{
-              width: '100px',
-              height: '100px',
-              borderTopLeftRadius: '15px'
-            }}
-            src={formData?.evidenceLink || 'not Valid image'}
-            alt='logo'
-          />
-          <Box sx={{ flex: 1 }}>
-            <Typography sx={successPageTitleStyles}>
-              {formData?.credentialName}
-            </Typography>
-            <Box sx={successPageInfoStyles}>
-              <SVGDate />
-              <Typography sx={successPageDateStyles}>
-                {formData?.credentialDuration}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        <Divider sx={{ width: '100%' }} />
-
         <Box sx={successPageShareStyles}>
-          <Typography sx={successPageShareTextStyles}>Share on:</Typography>
           {[TwitterSVG, LinkedinSVG, InstagramSVG, MailSVG, MessageCircleSVG].map(
             (IconComponent, index) => (
               <Button
@@ -111,26 +85,57 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             )
           )}
         </Box>
+        <Box sx={{ width: '100%' }}>
+          <Box sx={successPageHeaderStyles}>
+            <Box
+              sx={{
+                borderRadius: '20px 0px 0px 20px',
+                width: '100px',
+                height: '100px'
+              }}
+            >
+              <img
+                style={{
+                  borderRadius: '20px 0px 0px 20px',
+                  width: '100px',
+                  height: '100px'
+                }}
+                src={formData?.evidenceLink || 'not Valid image'}
+                alt='logo'
+              />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={successPageTitleStyles}>
+                {formData?.credentialName}
+              </Typography>
+              <Box sx={successPageInfoStyles}>
+                <SVGDate />
+                <Typography sx={successPageDateStyles}>
+                  {formData?.credentialDuration}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
 
-        <Divider sx={{ width: '100%' }} />
-
-        <Box sx={successPageCopyLinkStyles}>
-          <Typography sx={successPageCopyLinkTextStyles}>Copy link:</Typography>
-          <TextField
-            sx={successPageTextFieldStyles}
-            value={link || 'loading...'}
-            InputProps={{
-              startAdornment: <InputAdornment position='start'></InputAdornment>,
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <Button onClick={() => copyFormValuesToClipboard(link)}>
-                    <Image src={copy} alt='copyIcon' />
-                  </Button>
-                </InputAdornment>
-              ),
-              readOnly: true
-            }}
-          />
+          <Box sx={successPageCopyLinkStyles}>
+            <TextField
+              sx={successPageTextFieldStyles}
+              value={link || 'loading...'}
+              InputProps={{
+                endAdornment: <InputAdornment position='start'></InputAdornment>,
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <Box>
+                      <Button onClick={() => copyFormValuesToClipboard(link)}>
+                        <Image src={copy} alt='copyIcon' />
+                      </Button>
+                    </Box>
+                  </InputAdornment>
+                ),
+                readOnly: true
+              }}
+            />
+          </Box>
         </Box>
       </Box>
       <Button
