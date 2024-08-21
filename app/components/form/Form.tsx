@@ -67,13 +67,6 @@ const Form = ({ onStepChange, setactivStep }: any) => {
     onStepChange()
   }, [activeStep, onStepChange, setactivStep])
 
-  useEffect(() => {
-    if (session?.accessToken && activeStep === 0 && !hasSignedIn) {
-      handleNext(0, setActiveStep)
-      setHasSignedIn(true)
-    }
-  }, [session?.accessToken, activeStep, hasSignedIn])
-
   const costumedHandleNextStep = async () => {
     if (
       activeStep === 0 &&
@@ -84,8 +77,10 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       const signInSuccess = await handleSignIn()
       if (!signInSuccess || !session?.accessToken) return
       setHasSignedIn(true)
+      handleNext(activeStep, setActiveStep)
+    } else {
+      handleNext(activeStep, setActiveStep)
     }
-    handleNext(activeStep, setActiveStep)
   }
 
   const costumedHandleBackStep = async () => {
