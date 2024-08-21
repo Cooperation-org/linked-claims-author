@@ -11,6 +11,13 @@ interface StoringMethodRadiosProps {
   activeStep: number
 }
 
+export const options = {
+  GoogleDrive: 'Google Drive',
+  Device: 'Device',
+  DigitalWallet: 'Digital Wallet',
+  Dropbox: 'Dropbox'
+}
+
 export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
   return (
     <RadioGroup
@@ -22,14 +29,14 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
       defaultValue='Google Drive'
     >
       <FormControlLabel
-        value='Device'
+        value={options.Device}
         sx={boxStyles}
         control={<Radio sx={radioCheckedStyles} />}
         label='Save to My Device'
         disabled
       />
       <FormControlLabel
-        value='Google Drive'
+        value={options.GoogleDrive}
         sx={boxStyles}
         control={<Radio sx={radioCheckedStyles} />}
         label={
@@ -39,7 +46,7 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
         }
       />
       <FormControlLabel
-        value='Digital Wallet'
+        value={options.DigitalWallet}
         sx={boxStyles}
         control={<Radio sx={radioCheckedStyles} />}
         label={
@@ -47,10 +54,9 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
             <DigitalWallet /> Your Digital Wallet (e.g. Corner Pocket)
           </Box>
         }
-        disabled
       />
       <FormControlLabel
-        value='Dropbox'
+        value={options.Dropbox}
         sx={boxStyles}
         control={<Radio sx={radioCheckedStyles} />}
         label={

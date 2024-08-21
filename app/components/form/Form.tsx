@@ -10,7 +10,7 @@ import {
   SuccessText,
   FormTextSteps
 } from './fromTexts & stepTrack/FormTextSteps'
-import { Step0 } from './Steps/Step0'
+import { options, Step0 } from './Steps/Step0'
 import { Buttons } from './buttons/Buttons'
 import { Step1 } from './Steps/Step1'
 import { Step2 } from './Steps/Step2'
@@ -26,7 +26,7 @@ import {
   handleSign,
   handleBack
 } from '../../utils/formUtils'
-import { createDID, signCred } from '../../utils/signCred'
+import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage'
 
 const Form = ({ onStepChange, setactivStep }: any) => {
@@ -81,9 +81,10 @@ const Form = ({ onStepChange, setactivStep }: any) => {
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
-      console.log('🚀 ~ handleFormSubmit ~ data:', data)
-
-      if (data.storageOption === 'Google Drive') {
+      if (
+        data.storageOption === options.GoogleDrive ||
+        data.storageOption === options.DigitalWallet
+      ) {
         const result = await sign(data)
         if (!!result) {
           setErrorMessage('Error during VC signing')
@@ -101,7 +102,10 @@ const Form = ({ onStepChange, setactivStep }: any) => {
 
   const sign = async (data: any) => {
     try {
-      const newDid = await createDID(accessToken)
+      let newDid
+      if (data.storageOption === options.DigitalWallet) {
+        newDid = await createDIDWithMetaMask(accessToken)
+      } else newDid = await createDID(accessToken)
       const { didDocument, keyPair, issuerId } = newDid
       await saveToGoogleDrive(
         storage,
