@@ -40,13 +40,15 @@ interface SuccessPageProps {
   formData: FormData | null
   reset: () => void
   link: string
+  setLink: (link: string) => void
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
   setActiveStep,
   formData,
   reset,
-  link
+  link,
+  setLink
 }) => {
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
@@ -137,6 +139,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         variant='contained'
         onClick={() => {
           setActiveStep(0)
+          setLink('')
           reset()
         }}
         sx={successPageButtonStyles}

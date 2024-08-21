@@ -54,11 +54,12 @@ const signCred = async (
   if (!accessToken) {
     throw new Error('Access token is not provided')
   }
+  console.log('🚀 ~ data:', data)
   const formData = {
     expirationDate: new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
     ).toISOString(),
-    fullname: data.fullName,
+    fullName: data.fullName,
     criteriaNarrative: data.credentialDescription,
     achievementDescription: data.credentialDescription,
     achievementName: data.credentialName

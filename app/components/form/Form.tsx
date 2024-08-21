@@ -20,12 +20,7 @@ import { Step5 } from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { useSession } from 'next-auth/react'
-import {
-  createFolderAndUploadFile,
-  handleNext,
-  handleSign,
-  handleBack
-} from '../../utils/formUtils'
+import { handleNext, handleSign, handleBack } from '../../utils/formUtils'
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage'
 
@@ -115,6 +110,8 @@ const Form = ({ onStepChange, setactivStep }: any) => {
         },
         'DID'
       )
+      console.log('🚀 ~ newDid:', newDid)
+      console.log('🚀 ~ data.fullname:', data.fullName)
       const res = await signCred(accessToken, data, issuerId, keyPair)
       setLink(`https://drive.google.com/file/d/${res.id}/view`)
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
@@ -212,6 +209,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               setActiveStep={setActiveStep}
               reset={reset}
               link={link}
+              setLink={setLink}
             />
           )}
         </FormControl>
