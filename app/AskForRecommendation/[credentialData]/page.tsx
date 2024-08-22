@@ -70,7 +70,7 @@ export default function HorizontalLinearStepper() {
     driveData?.credentialSubject?.achievement[0]?.name || ''
   }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me! 
               
-Credential Public Link:   ${params.credentialData}
+Credential Public Link:   http://localhost:3000/Recommendations/${params.credentialData}
 `
       })
     }
@@ -102,7 +102,7 @@ Credential Public Link:   ${params.credentialData}
     driveData?.credentialSubject?.achievement[0]?.name || ''
   }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me! 
               
-Credential Public Link:   ${params.credentialData}
+Credential Public Link:   http://localhost:3000/Recommendations/${params.credentialData}
 `
     },
     mode: 'onChange'
