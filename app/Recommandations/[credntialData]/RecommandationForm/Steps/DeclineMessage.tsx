@@ -47,7 +47,7 @@ const DeclineMessage = ({
         }}
       >
         No further action is required. However, it would be helpful to {fullName} if you
-        could send a note and an explanation letting them know why you can't make a
+        could send a note and an explanation letting them know why you can&apos;t make a
         recommendation at this time.
       </Typography>
       <Button onClick={handleSendEmailClick} sx={{ width: '100%' }}>
