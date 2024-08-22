@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Typography } from '@mui/material'
 import { FormData } from '../../../components/form/types/Types'
@@ -17,8 +17,16 @@ import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import { handleNext, handleBack, handleSign } from '../../../utils/formUtils'
 import useLocalStorage from '../../../hooks/useLocalStorage'
+import DeclineMessage from './Steps/DeclineMessage'
+import FetchedData from '../viewCredential/FetchedData'
+import { useSession } from 'next-auth/react'
 
 const Form = ({ activeStep, setActiveStep }: any) => {
+  const [fullName, setFullName] = useState('Alice')
+  const [recipientEmail, setRecipientEmail] = useState('')
+  const { data: session } = useSession()
+  const userName = session?.user?.name ?? 'Your Name'
+
   const savedFormData = localStorage.getItem('formData')
   console.log(':  Form  savedFormData', savedFormData)
   const defaultValues: FormData = savedFormData
@@ -88,6 +96,14 @@ const Form = ({ activeStep, setActiveStep }: any) => {
           </Typography>
         )}
         {activeStep === 7 && <SuccessText />}
+        {activeStep === 8 && (
+          <DeclineMessage
+            setactivStep={setActiveStep}
+            fullName={fullName}
+            recipientEmail={recipientEmail}
+            userName={userName}
+          />
+        )}
         <Box sx={{ width: { xs: '100%', md: '50%' } }}>
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 1 && (
@@ -139,7 +155,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
             )}
           </FormControl>
         </Box>
-        {activeStep !== 7 && activeStep !== 1 && activeStep !== 0 && (
+        {activeStep !== 7 && activeStep !== 1 && activeStep !== 0 && activeStep !== 8 && (
           <Buttons
             activeStep={activeStep}
             maxSteps={textGuid.length}
@@ -159,6 +175,9 @@ const Form = ({ activeStep, setActiveStep }: any) => {
             isValid={isValid}
           />
         )}
+        <Box sx={{ display: 'none' }}>
+          <FetchedData setFullName={setFullName} setEmail={setRecipientEmail} />
+        </Box>
       </form>
     </FormProvider>
   )

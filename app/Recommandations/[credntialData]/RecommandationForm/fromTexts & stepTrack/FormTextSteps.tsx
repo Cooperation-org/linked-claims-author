@@ -41,7 +41,8 @@ export const StorageText =
 export const featuresRecommentations = [
   { id: 1, name: 'How you know Alice' },
   { id: 2, name: 'Proof of your qualifications' },
-  { id: 3, name: 'Evidence of Alice’s skills' }
+  { id: 3, name: 'Comment on Alice’s skills' },
+  { id: 4, name: 'Any additional evidence, if available' }
 ]
 
 interface FormTextStepsProps {
@@ -51,7 +52,7 @@ interface FormTextStepsProps {
 
 export function FormTextSteps({ activeStep, activeText }: Readonly<FormTextStepsProps>) {
   return (
-    <Box sx={{ ml: '20px',textAlign: 'center' }}>
+    <Box sx={{ ml: '20px', textAlign: 'center' }}>
       <Typography variant='formTextStep'>
         {activeText}
         {activeStep === 0 && <span style={{ color: 'red' }}>*</span>}
