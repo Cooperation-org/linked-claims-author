@@ -8,10 +8,8 @@ import {
   commonTypographyStyles,
   commonBoxStyles,
   evidenceListStyles,
-  credentialBoxStyles,
-  imageBoxStyles
+  credentialBoxStyles
 } from '../../Styles/appStyles'
-import Image from 'next/image'
 
 interface DataPreviewProps {
   formData: FormData
@@ -25,9 +23,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
     window.location.href = url
   }
 
-  const imageUrl = formData.evidenceLink || 'not Valid image'
-  const hasValidEvidence =
-    formData.portfolio && formData.portfolio.some(porto => porto.name && porto.url)
+  const imageUrl = formData.evidenceLink || ''
+  const hasValidEvidence = formData.portfolio?.some(porto => porto.name && porto.url)
   return (
     <Box
       sx={{
@@ -45,7 +42,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           mb: '10px'
         }}
       >
-        {imageUrl && (
+        {imageUrl ? (
           <img
             style={{
               borderRadius: '20px',
@@ -53,8 +50,10 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
               height: '100%'
             }}
             src={imageUrl}
-            alt='User Provided'
+            alt='Certification Evidence'
           />
+        ) : (
+          <Box sx={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }} />
         )}
         <Box sx={commonBoxStyles}>
           <Typography

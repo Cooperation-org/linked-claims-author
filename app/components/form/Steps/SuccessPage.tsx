@@ -1,8 +1,16 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
-import { Typography, TextField, InputAdornment, Box, Button } from '@mui/material'
+import {
+  Typography,
+  TextField,
+  InputAdornment,
+  Divider,
+  Box,
+  Button,
+  Snackbar
+} from '@mui/material'
 import {
   SVGDate,
   TwitterSVG,
@@ -41,6 +49,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   reset,
   link
 }) => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
   const theme = useTheme()
   const encodedLink = encodeURIComponent(link)
 
@@ -49,7 +58,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
     const params = new URLSearchParams({
       startTask: 'CERTIFICATION_NAME',
-      name: formData?.credentialName || 'Certification Name',
+      name: formData?.credentialName ?? 'Certification Name',
       organizationName: 'LinkedTrust', // Updated to use organization name
       issueYear: '2024',
       issueMonth: '8',
@@ -60,21 +69,71 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     return `${baseLinkedInUrl}?${params.toString()}`
   }
 
+  const handleShare = (IconComponent: any) => {
+    if (IconComponent === LinkedinSVG) {
+      const linkedInUrl = generateLinkedInUrl()
+      window.open(linkedInUrl, '_blank', 'noopener noreferrer')
+    } else if (IconComponent === TwitterSVG) {
+      const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+        link
+      )}&text=Check out my new certification!`
+      window.open(twitterUrl, '_blank', 'noopener noreferrer')
+    } else if (IconComponent === MailSVG) {
+      const mailUrl = `mailto:?subject=Check%20out%20my%20new%20certification&body=You%20can%20view%20my%20certification%20here:%20${encodeURIComponent(
+        link
+      )}`
+      window.location.href = mailUrl
+    } else if (IconComponent === MessageCircleSVG) {
+      const smsUrl = `sms:?&body=Check%20out%20my%20new%20certification:%20${encodeURIComponent(
+        link
+      )}`
+      window.location.href = smsUrl
+    } else if (IconComponent === InstagramSVG) {
+      const instagramText = `Check out my new certification! ${link}`
+      copyFormValuesToClipboard(instagramText)
+      setSnackbarOpen(true)
+    }
+  }
+
   return (
     <>
       <Box sx={successPageContainerStyles}>
+        <Box sx={successPageHeaderStyles}>
+          {formData?.evidenceLink ? (
+            <img
+              style={{
+                width: '100px',
+                height: '100px',
+                borderTopLeftRadius: '15px'
+              }}
+              src={formData.evidenceLink}
+              alt='Certification Evidence'
+            />
+          ) : (
+            <Box sx={{ width: '100px', height: '100px' }} />
+          )}
+          <Box sx={{ flex: 1 }}>
+            <Typography sx={successPageTitleStyles}>
+              {formData?.credentialName}
+            </Typography>
+            <Box sx={successPageInfoStyles}>
+              <SVGDate />
+              <Typography sx={successPageDateStyles}>
+                {formData?.credentialDuration}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+
+        <Divider sx={{ width: '100%' }} />
+
         <Box sx={successPageShareStyles}>
           {[TwitterSVG, LinkedinSVG, InstagramSVG, MailSVG, MessageCircleSVG].map(
             (IconComponent, index) => (
               <Button
                 key={index}
                 sx={successPageIconContainerStyles}
-                onClick={() => {
-                  if (IconComponent === LinkedinSVG) {
-                    const linkedInUrl = generateLinkedInUrl()
-                    window.open(linkedInUrl, '_blank', 'noopener noreferrer')
-                  }
-                }}
+                onClick={() => handleShare(IconComponent)}
               >
                 <IconComponent />
               </Button>
@@ -171,6 +230,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       >
         Claim Another Skill
       </Button>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message='Text copied to clipboard. Ready to paste in Instagram!'
+      />
     </>
   )
 }
