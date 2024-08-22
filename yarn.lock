@@ -794,6 +794,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@metamask/detect-provider@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/detect-provider/-/detect-provider-2.0.0.tgz#4bc2795e5e6f7d8b84b2e845058d2f222c99917d"
+  integrity sha512-sFpN+TX13E9fdBDh9lvQeZdJn4qYoRb/6QF2oZZK/Pn559IhCFacPMU1rMuqyXoFQF3JSJfii2l98B87QDPeCQ==
+
 "@mui/core-downloads-tracker@^5.16.6":
   version "5.16.6"
   resolved "https://registry.yarnpkg.com/@mui/core-downloads-tracker/-/core-downloads-tracker-5.16.6.tgz#f029e12ffda8eb79838cc85897f03a628010037c"
@@ -5280,19 +5285,21 @@ toidentifier@1.0.1:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
-trust_storage@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/trust_storage/-/trust_storage-1.0.6.tgz#c43b166d96636ac4febf497c554634a2547b61c7"
-  integrity sha512-xkabSylswkpDHqjes8yLmoS5IMDVdARVOurUiImAMy3QEECnntnRKu74+Oc4B8TBQsJ4rXlA+7XVGiv2eLQJCg==
+trust_storage@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/trust_storage/-/trust_storage-1.0.7.tgz#d912ee7ff4547cf4f77f17c4c0140fbf98ea51b8"
+  integrity sha512-VUbfMB74ES/SzSz3nXDvSl5nRIk6nwDXv8WbXC/zOQlGGhJSBCgs/5aVkHnw/+NmsbJNUH/iBWJwuE7oWWUVBA==
   dependencies:
     "@digitalbazaar/did-method-key" "^5.2.0"
     "@digitalbazaar/ed25519-signature-2020" "^5.3.0"
     "@digitalbazaar/ed25519-verification-key-2020" "^4.1.0"
     "@digitalbazaar/vc" "^6.3.0"
+    "@metamask/detect-provider" "^2.0.0"
     "@types/express" "^4.17.21"
     "@types/node" "^22.1.0"
     "@types/uuid" "^10.0.0"
     did-method-key "^0.7.0"
+    ethers "^6.13.2"
     express "^4.19.2"
     fs-extra "^11.2.0"
     jest "^29.7.0"

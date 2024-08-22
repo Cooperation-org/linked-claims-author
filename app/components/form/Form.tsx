@@ -91,13 +91,13 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       setErrorMessage('make sure you sign in')
     }
   })
-  const storage = new StorageContext(
-    StorageFactory.getStorageStrategy('googleDrive', { accessToken })
-  )
 
   const sign = async (data: any) => {
     try {
       let newDid
+      const storage = new StorageContext(
+        StorageFactory.getStorageStrategy('googleDrive', { accessToken })
+      )
       if (data.storageOption === options.DigitalWallet) {
         newDid = await createDIDWithMetaMask(accessToken)
       } else newDid = await createDID(accessToken)

@@ -60,9 +60,14 @@ const signCred = async (
       new Date().setFullYear(new Date().getFullYear() + 1)
     ).toISOString(),
     fullName: data.fullName,
+    duration: data.credentialDuration,
     criteriaNarrative: data.credentialDescription,
     achievementDescription: data.credentialDescription,
-    achievementName: data.credentialName
+    achievementName: data.credentialName,
+    portfolio: data.portfolio,
+    evidenceLink: data.evidenceLink,
+    evidenceDescription: data.description,
+    credentialType: data.persons
   }
   try {
     const credentialEngine = new CredentialEngine(accessToken)
