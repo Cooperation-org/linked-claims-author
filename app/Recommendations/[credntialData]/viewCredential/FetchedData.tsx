@@ -14,16 +14,13 @@ import useGoogleDrive from '../../../hooks/useGoogleDrive'
 
 const FetchedData = () => {
   const [driveData, setDriveData] = useState<any>(null)
-  console.log(':  FetchedData  driveData', driveData)
   const params = useParams()
-
   const { fetchFile, fileData, gapiLoaded } = useGoogleDrive()
 
   useEffect(() => {
     const fetchDriveData = async () => {
       const decodedLink = decodeURIComponent(params.credntialData as any)
-      const extractedFile = decodedLink ? decodedLink.split('=')[1] : ''
-      const fileId = extractedFile.split('/d/')[1].split('/')[0]
+      const fileId = decodedLink.split('/d/')[1].split('/')[0]
       const resourceKey = ''
       if (gapiLoaded) {
         await fetchFile(fileId, resourceKey)
@@ -53,7 +50,7 @@ const FetchedData = () => {
           >
             <SVGBadge />
             <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
-              {driveData?.fullName}’s has claimed:
+              Amr Nabel’s has claimed:
             </Typography>
           </Box>
           <Box>
@@ -93,12 +90,18 @@ const FetchedData = () => {
                   lineHeight: '24px'
                 }}
               >
-                This credential certifies about {driveData?.credentialName}.
+                This credential certifies about{' '}
+                {driveData?.credentialSubject?.achievement[0]?.name}.
               </Typography>
               <Box>
                 <Typography>Earning criteria:</Typography>
                 <ul style={{ marginLeft: '25px' }}>
-                  <li>{driveData?.credentialDescription?.replace(/<\/?[^>]+>/gi, '')}</li>
+                  <li>
+                    {driveData?.credentialSubject?.achievement[0]?.description?.replace(
+                      /<\/?[^>]+>/gi,
+                      ''
+                    )}
+                  </li>
                 </ul>
               </Box>
               <Box>

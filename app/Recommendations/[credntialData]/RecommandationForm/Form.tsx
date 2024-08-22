@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Typography } from '@mui/material'
 import { FormData } from '../../../components/form/types/Types'
@@ -19,22 +19,20 @@ import { handleNext, handleBack, handleSign } from '../../../utils/formUtils'
 import useLocalStorage from '../../../hooks/useLocalStorage'
 
 const Form = ({ activeStep, setActiveStep }: any) => {
-  const savedFormData = localStorage.getItem('formData')
-  console.log(':  Form  savedFormData', savedFormData)
-  const defaultValues: FormData = savedFormData
-    ? JSON.parse(savedFormData)
-    : {
-        storageOption: 'Google Drive',
-        fullName: '',
-        howKnow: '',
-        RecommendationText: '',
-        evidence: [{ name: '', url: '' }],
-        qualifications: '',
-        communicationRating: 0,
-        dependabilityRating: 0,
-        explainAnswer: '',
-        isRecommand: 'yes'
-      }
+  const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
+    storageOption: 'Google Drive',
+    fullName: '',
+    howKnow: '',
+    RecommendationText: '',
+    evidence: [{ name: '', url: '' }],
+    qualifications: '',
+    communicationRating: 0,
+    dependabilityRating: 0,
+    explainAnswer: '',
+    isRecommand: 'yes'
+  })
+
+  const defaultValues: FormData = storedValue
 
   const methods = useForm<FormData>({
     defaultValues,
@@ -57,13 +55,25 @@ const Form = ({ activeStep, setActiveStep }: any) => {
   })
 
   const formData = watch()
-  const { removeItem } = useLocalStorage('formData', formData, watch)
+
+  useEffect(() => {
+    setStoreNewValue(formData)
+  }, [formData])
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    setTimeout(() => {
-      removeItem()
-      reset(defaultValues)
-    }, 1000)
+    clearValue()
+    reset({
+      storageOption: 'Google Drive',
+      fullName: '',
+      howKnow: '',
+      RecommendationText: '',
+      evidence: [{ name: '', url: '' }],
+      qualifications: '',
+      communicationRating: 0,
+      dependabilityRating: 0,
+      explainAnswer: '',
+      isRecommand: 'yes'
+    })
     setActiveStep(1)
   })
 

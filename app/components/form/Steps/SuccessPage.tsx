@@ -1,14 +1,8 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
-
-import {
-  Typography,
-  TextField,
-  InputAdornment,
-  Divider,
-  Box,
-  Button
-} from '@mui/material'
+import { Typography, TextField, InputAdornment, Box, Button } from '@mui/material'
 import {
   SVGDate,
   TwitterSVG,
@@ -25,15 +19,14 @@ import {
   successPageInfoStyles,
   successPageDateStyles,
   successPageShareStyles,
-  successPageShareTextStyles,
   successPageIconContainerStyles,
   successPageCopyLinkStyles,
-  successPageCopyLinkTextStyles,
-  successPageTextFieldStyles,
-  successPageButtonStyles
+  successPageTextFieldStyles
 } from '../../Styles/appStyles'
 import { FormData } from '../types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
+import { useTheme } from '@mui/material/styles'
+import Link from 'next/link'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
@@ -48,6 +41,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   reset,
   link
 }) => {
+  const theme = useTheme()
+  const encodedLink = encodeURIComponent(link)
+
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
@@ -67,33 +63,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   return (
     <>
       <Box sx={successPageContainerStyles}>
-        <Box sx={successPageHeaderStyles}>
-          <img
-            style={{
-              width: '100px',
-              height: '100px',
-              borderTopLeftRadius: '15px'
-            }}
-            src={formData?.evidenceLink || 'not Valid image'}
-            alt='logo'
-          />
-          <Box sx={{ flex: 1 }}>
-            <Typography sx={successPageTitleStyles}>
-              {formData?.credentialName}
-            </Typography>
-            <Box sx={successPageInfoStyles}>
-              <SVGDate />
-              <Typography sx={successPageDateStyles}>
-                {formData?.credentialDuration}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        <Divider sx={{ width: '100%' }} />
-
         <Box sx={successPageShareStyles}>
-          <Typography sx={successPageShareTextStyles}>Share on:</Typography>
           {[TwitterSVG, LinkedinSVG, InstagramSVG, MailSVG, MessageCircleSVG].map(
             (IconComponent, index) => (
               <Button
@@ -111,37 +81,95 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             )
           )}
         </Box>
+        <Box sx={{ width: '100%' }}>
+          <Box sx={successPageHeaderStyles}>
+            <Box
+              sx={{
+                borderRadius: '20px 0px 0px 20px',
+                width: '100px',
+                height: '100px'
+              }}
+            >
+              <img
+                style={{
+                  borderRadius: '20px 0px 0px 20px',
+                  width: '100px',
+                  height: '100px'
+                }}
+                src={formData?.evidenceLink || 'not Valid image'}
+                alt='logo'
+              />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={successPageTitleStyles}>
+                {formData?.credentialName}
+              </Typography>
+              <Box sx={successPageInfoStyles}>
+                <SVGDate />
+                <Typography sx={successPageDateStyles}>
+                  {formData?.credentialDuration}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
 
-        <Divider sx={{ width: '100%' }} />
-
-        <Box sx={successPageCopyLinkStyles}>
-          <Typography sx={successPageCopyLinkTextStyles}>Copy link:</Typography>
-          <TextField
-            sx={successPageTextFieldStyles}
-            value={link || 'loading...'}
-            InputProps={{
-              startAdornment: <InputAdornment position='start'></InputAdornment>,
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <Button onClick={() => copyFormValuesToClipboard(link)}>
-                    <Image src={copy} alt='copyIcon' />
-                  </Button>
-                </InputAdornment>
-              ),
-              readOnly: true
-            }}
-          />
+          <Box sx={successPageCopyLinkStyles}>
+            <TextField
+              sx={{
+                ...successPageTextFieldStyles,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '10px'
+                }
+              }}
+              value={link || 'loading...'}
+              InputProps={{
+                endAdornment: <InputAdornment position='start'></InputAdornment>,
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <Box>
+                      <Button onClick={() => copyFormValuesToClipboard(link)}>
+                        <Image src={copy} alt='copyIcon' />
+                      </Button>
+                    </Box>
+                  </InputAdornment>
+                ),
+                readOnly: true
+              }}
+            />
+          </Box>
         </Box>
+        <Link href={`/AskForRecommendation/${encodedLink}`}>
+          <Button
+            variant='contained'
+            sx={{
+              borderRadius: '100px',
+              backgroundColor: '#003FE0',
+              textTransform: 'none',
+              fontFamily: 'Roboto, sans-serif',
+              boxShadow: '0px 0px 2px 2px #F7BC00'
+            }}
+          >
+            <Typography>Ask for a Recommendation</Typography>
+          </Button>
+        </Link>
       </Box>
       <Button
-        variant='contained'
+        sx={{
+          color: theme.palette.t3TitleText,
+          textTransform: 'capitalize',
+          m: '20px 0',
+          fontFamily: 'Roboto',
+          fontSize: '14px',
+          fontWeight: 600,
+          lineHeight: '20px'
+        }}
+        variant='text'
         onClick={() => {
           setActiveStep(0)
           reset()
         }}
-        sx={successPageButtonStyles}
       >
-        Add Another
+        Claim Another Skill
       </Button>
     </>
   )
