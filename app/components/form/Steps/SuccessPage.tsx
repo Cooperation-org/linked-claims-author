@@ -1,6 +1,7 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
-
 import { Typography, TextField, InputAdornment, Box, Button } from '@mui/material'
 import {
   SVGDate,
@@ -25,6 +26,7 @@ import {
 import { FormData } from '../types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useTheme } from '@mui/material/styles'
+import Link from 'next/link'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
@@ -40,6 +42,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   link
 }) => {
   const theme = useTheme()
+  const encodedLink = encodeURIComponent(link)
 
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
@@ -135,22 +138,20 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             />
           </Box>
         </Box>
-        <Button
-          variant='contained'
-          onClick={() => {
-            setActiveStep(0)
-            reset()
-          }}
-          sx={{
-            borderRadius: '100px',
-            backgroundColor: '#003FE0',
-            textTransform: 'none',
-            fontFamily: 'Roboto, sans-serif',
-            boxShadow: '0px 0px 2px 2px #F7BC00'
-          }}
-        >
-          <Typography>Ask for a Recommendation</Typography>
-        </Button>
+        <Link href={`/AskForRecommendation/${encodedLink}`}>
+          <Button
+            variant='contained'
+            sx={{
+              borderRadius: '100px',
+              backgroundColor: '#003FE0',
+              textTransform: 'none',
+              fontFamily: 'Roboto, sans-serif',
+              boxShadow: '0px 0px 2px 2px #F7BC00'
+            }}
+          >
+            <Typography>Ask for a Recommendation</Typography>
+          </Button>
+        </Link>
       </Box>
       <Button
         sx={{

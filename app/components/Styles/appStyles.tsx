@@ -193,7 +193,8 @@ export const formLabelSpanStyles = {
 
 export const customTextFieldStyles = {
   width: '100%',
-  marginBottom: '3px'
+  marginBottom: '3px',
+  textAlign: 'left'
 }
 
 export const aiBoxStyles = {

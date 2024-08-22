@@ -14,16 +14,13 @@ import useGoogleDrive from '../../../hooks/useGoogleDrive'
 
 const FetchedData = () => {
   const [driveData, setDriveData] = useState<any>(null)
-  console.log(':  FetchedData  driveData', driveData)
   const params = useParams()
-
   const { fetchFile, fileData, gapiLoaded } = useGoogleDrive()
 
   useEffect(() => {
     const fetchDriveData = async () => {
       const decodedLink = decodeURIComponent(params.credntialData as any)
-      const extractedFile = decodedLink ? decodedLink.split('=')[1] : ''
-      const fileId = extractedFile.split('/d/')[1].split('/')[0]
+      const fileId = decodedLink.split('/d/')[1].split('/')[0]
       const resourceKey = ''
       if (gapiLoaded) {
         await fetchFile(fileId, resourceKey)
