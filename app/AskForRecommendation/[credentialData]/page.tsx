@@ -301,7 +301,7 @@ Credential Public Link:   http://localhost:3000/Recommendations/${params.credent
                 height: '40px',
                 display: 'flex',
                 gap: '15px',
-                justifyContent: activeStep !== 0 ? 'space-between' : 'center',
+                justifyContent: 'space-between',
                 p: '0 10px'
               }}
             >
@@ -313,9 +313,7 @@ Credential Public Link:   http://localhost:3000/Recommendations/${params.credent
               >
                 Back
               </Button>
-              <Button sx={StyledButton} type='submit' color='secondary'>
-                Save & Exit
-              </Button>
+
               {activeStep === 0 && (
                 <Button
                   sx={{
@@ -331,23 +329,23 @@ Credential Public Link:   http://localhost:3000/Recommendations/${params.credent
                 </Button>
               )}
               {activeStep === 1 && (
-                <Link
-                  href={`mailto:${watch('email')}?subject=Support Request: ${
-                    driveData?.credentialSubject?.achievement[0]?.name || ''
-                  }&body=${encodeURIComponent(watch('reference'))}`}
+                <Button
+                  sx={{
+                    ...nextButtonStyle,
+                    maxWidth: '355px'
+                  }}
+                  onClick={reset}
+                  color='primary'
+                  variant='contained'
                 >
-                  <Button
-                    sx={{
-                      ...nextButtonStyle,
-                      maxWidth: '355px'
-                    }}
-                    onClick={reset}
-                    color='primary'
-                    variant='contained'
+                  <Link
+                    href={`mailto:${watch('email')}?subject=Support Request: ${
+                      driveData?.credentialSubject?.achievement[0]?.name || ''
+                    }&body=${encodeURIComponent(watch('reference'))}`}
                   >
                     Open Mail
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               )}
             </Box>
           </React.Fragment>
