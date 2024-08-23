@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { nextButtonStyle } from '../../../components/Styles/appStyles'
@@ -9,8 +9,9 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { featuresRecommentations } from '../RecommandationForm/fromTexts & stepTrack/FormTextSteps'
 import FetchedData from './FetchedData'
 
-const Credential = ({ setactivStep }: { setactivStep: any }) => {
+const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) => {
   const theme = useTheme()
+  const [fullName, setFullName] = useState('Alice')
 
   const handleClick = () => {
     setactivStep(1)
@@ -43,7 +44,7 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
         Here’s what you may need before getting started:
       </Typography>
       <Box>
-        {featuresRecommentations.map((feature: { id: any; name: any }) => (
+        {featuresRecommentations(fullName).map((feature: { id: any; name: any }) => (
           <Box
             key={feature.id}
             sx={{ display: 'flex', width: '100%', maxWidth: '321px', ml: '30px' }}
@@ -66,7 +67,7 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
           </Box>
         ))}
       </Box>
-      <FetchedData />
+      <FetchedData setFullName={setFullName} />
     </Box>
   )
 }
