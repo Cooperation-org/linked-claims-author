@@ -38,13 +38,6 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         If everything looks good, select Finish & Sign to complete your recommendation.
       </Typography>
 
-      <Box display='flex' justifyContent='space-between' mb={2}>
-        <Button variant='outlined'>Preview</Button>
-        <Button variant='contained' color='primary'>
-          Finish & Sign
-        </Button>
-      </Box>
-
       {/* Credential Details from Google Drive */}
       <FetchedData
         setFullName={name => console.log('Full Name:', name)}
@@ -80,7 +73,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           <FormatQuote fontSize='large' />
           <Typography variant='body2' ml={1}>
             {formData.explainAnswer ||
-              'I worked with Alice for about two years, managing her work at the community garden. She was an excellent worker, prompt, and friendly.'}
+              'I worked with Golda for about two years, managing her work at the community garden. She was an excellent worker, prompt, and friendly.'}
           </Typography>
         </Box>
       </Card>
@@ -92,7 +85,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         </Typography>
         <Typography variant='body2'>
           {formData.howKnow ||
-            'I was Alice’s manager for about two years, but I have known her in total about 5 years.'}
+            'I was Golda’s manager for about two years, but I have known her in total about 5 years.'}
         </Typography>
       </Card>
 
@@ -103,7 +96,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         </Typography>
         <Rating value={formData.communicationRating} readOnly sx={{ mb: 1 }} />
         <Typography variant='body2'>
-          I gave Alice 4 stars because she doesn’t like to speak in front of a group of
+          I gave Golda 4 stars because she doesn’t like to speak in front of a group of
           people and this sometimes made it challenging for her to lead groups in
           volunteer activities.
         </Typography>
@@ -128,16 +121,6 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           </Link>
         ))}
       </Card>
-
-      {/* Bottom Action Buttons */}
-      <Box display='flex' justifyContent='center' mt={3}>
-        <Button variant='outlined' sx={{ mr: 2 }}>
-          Preview
-        </Button>
-        <Button variant='contained' color='primary'>
-          Finish & Sign
-        </Button>
-      </Box>
     </Container>
   )
 }

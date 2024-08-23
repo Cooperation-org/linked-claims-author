@@ -42,7 +42,7 @@ const Step4: React.FC<Step4Props> = ({ register, watch, setValue, errors }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
-        <Typography sx={{ fontWeight: 'bold' }}>Would you recommend Alice?</Typography>
+        <Typography sx={{ fontWeight: 'bold' }}>Would you recommend Golda?</Typography>
         <RadioGroup row value={recommend} onChange={handleChange}>
           <FormControlLabel
             value='yes'
@@ -73,7 +73,7 @@ const Step4: React.FC<Step4Props> = ({ register, watch, setValue, errors }) => {
         <TextEditor
           value={watch('explainAnswer')}
           onChange={value => setValue('explainAnswer', value ?? '')}
-          placeholder='I worked with Alice for about two years managing her work at the community garden. She was an excellent worker, prompt, and friendly.'
+          placeholder='I worked with Golda for about two years managing her work at the community garden. She was an excellent worker, prompt, and friendly.'
         />
         {errors.explainAnswer && (
           <Typography color='error'>{errors.explainAnswer.message}</Typography>
@@ -81,7 +81,7 @@ const Step4: React.FC<Step4Props> = ({ register, watch, setValue, errors }) => {
       </Box>
 
       <Box>
-        <Typography sx={{ fontWeight: 'bold' }}>Rate Alice’s Communication</Typography>
+        <Typography sx={{ fontWeight: 'bold' }}>Rate Golda’s Communication</Typography>
         <Rating
           sx={{ fontSize: '37px' }}
           name='communicationRating'
@@ -92,7 +92,7 @@ const Step4: React.FC<Step4Props> = ({ register, watch, setValue, errors }) => {
         />
       </Box>
       <Box>
-        <Typography sx={{ fontWeight: 'bold' }}>Rate Alice’s Dependability</Typography>
+        <Typography sx={{ fontWeight: 'bold' }}>Rate Golda’s Dependability</Typography>
         <Rating
           sx={{ fontSize: '37px' }}
           name='dependabilityRating'
