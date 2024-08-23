@@ -44,6 +44,8 @@ export default function HorizontalLinearStepper() {
   console.log(':  FetchedData  driveData', driveData)
   const params = useParams()
   const { fetchFileContent, fileContent, gapiLoaded } = useGoogleDrive()
+  const imageLink =
+    'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg'
 
   React.useEffect(() => {
     const fetchDriveData = async () => {
@@ -232,7 +234,7 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                         width: '100px',
                         height: '100px'
                       }}
-                      src={'formData?.evidenceLink' || 'not Valid image'}
+                      src={imageLink}
                       alt='logo'
                     />
                   </Box>
