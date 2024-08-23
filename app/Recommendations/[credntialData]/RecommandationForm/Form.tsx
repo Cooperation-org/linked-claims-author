@@ -152,14 +152,8 @@ const Form = ({ activeStep, setActiveStep }: any) => {
                 errors={errors}
               />
             )}
-            {activeStep === 5 && <DataPreview formData={watch()} />}
-            {activeStep === 6 && (
-              <SuccessPage
-                formData={watch()}
-                setActiveStep={setActiveStep}
-                reset={() => setValue('credentialDescription', '')}
-              />
-            )}
+            {activeStep === 5 && <DataPreview formData={watch() as any} />}
+            {activeStep === 6 && <SuccessPage />}
           </FormControl>
         </Box>
         {activeStep !== 6 && activeStep !== 1 && activeStep !== 0 && (
@@ -177,7 +171,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
             activeStep={activeStep}
             maxSteps={textGuid.length}
             handleNext={() => handleNext(activeStep, setActiveStep)}
-            handleSign={handleSign}
+            handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
             handleBack={undefined}
             isValid={isValid}
           />
