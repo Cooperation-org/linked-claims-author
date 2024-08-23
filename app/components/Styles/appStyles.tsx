@@ -193,7 +193,8 @@ export const formLabelSpanStyles = {
 
 export const customTextFieldStyles = {
   width: '100%',
-  marginBottom: '3px'
+  marginBottom: '3px',
+  textAlign: 'left'
 }
 
 export const aiBoxStyles = {
@@ -272,10 +273,11 @@ export const successPageContainerStyles = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  justifyContent: 'center',
   flexShrink: 0,
-  background: '#e5e7ebb2',
   width: '100%',
   borderRadius: '20px',
+  gap: '30px'
 }
 
 export const successPageHeaderStyles = {
@@ -284,8 +286,8 @@ export const successPageHeaderStyles = {
   display: 'flex',
   alignItems: 'center',
   gap: '20px',
-  backgroundColor: '#e5e7eb',
-  borderRadius: '15px',
+  backgroundColor: '#e6f0fd',
+  borderRadius: '20px',
   padding: '0 15px 0 0'
 }
 
@@ -332,12 +334,10 @@ export const successPageDateStyles = {
 }
 
 export const successPageShareStyles = {
-  width: '100%',
   display: 'flex',
   alignItems: 'center',
   gap: '5px',
-  padding: '10px 21px',
-  bgcolor: '#FBFBFB'
+  padding: '10px 21px'
 }
 
 export const successPageShareTextStyles = {
@@ -350,7 +350,7 @@ export const successPageShareTextStyles = {
 }
 
 export const successPageIconContainerStyles = {
-  backgroundColor: '#e5e7eb',
+  backgroundColor: '#e6f0fd',
   borderRadius: '20px',
   height: '40px',
   width: '40px',
@@ -364,8 +364,8 @@ export const successPageCopyLinkStyles = {
   display: 'flex',
   alignItems: 'center',
   gap: '6px',
-  padding: '15px 21px',
-  bgcolor: '#FBFBFB'
+  bgcolor: '#FBFBFB',
+  mt: '6px'
 }
 
 export const successPageCopyLinkTextStyles = {
@@ -379,6 +379,7 @@ export const successPageCopyLinkTextStyles = {
 
 export const successPageTextFieldStyles = {
   flex: 1,
+  borderRadius: '5px',
   '& .MuiInputBase-root': {
     color: '#6B7280',
     fontSize: '15px',

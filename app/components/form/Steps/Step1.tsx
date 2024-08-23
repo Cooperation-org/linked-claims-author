@@ -28,7 +28,18 @@ interface Step1Props {
 }
 
 export function Step1({ register, watch, setValue, errors }: Readonly<Step1Props>) {
-  const [inputNamevalue, setNameInputvalue] = useState('Full Name or Business Name')
+  const [inputNamevalue, setInputNamevalue] = useState('Full Name or Business Name')
+
+  function getLabel(inputNamevalue: string) {
+    if (inputNamevalue === 'Individual') {
+      return 'Full Name'
+    } else if (inputNamevalue === 'Business') {
+      return 'Business Name'
+    } else {
+      return inputNamevalue
+    }
+  }
+
   return (
     <>
       <FormLabel sx={formLabelStyles} id='form-type-label'>
@@ -41,7 +52,7 @@ export function Step1({ register, watch, setValue, errors }: Readonly<Step1Props
         value={watch('persons')}
         onChange={e => {
           setValue('persons', e.target.value)
-          setNameInputvalue(e.target.value)
+          setInputNamevalue(e.target.value)
         }}
       >
         <FormControlLabel
@@ -71,12 +82,7 @@ export function Step1({ register, watch, setValue, errors }: Readonly<Step1Props
       </RadioGroup>
       <Box sx={{ mt: '20px' }}>
         <FormLabel sx={formLabelStyles} id='name-label'>
-          {inputNamevalue === 'Individual'
-            ? 'Full Name'
-            : inputNamevalue === 'Business'
-            ? 'Business Name'
-            : inputNamevalue}{' '}
-          <span style={{ color: 'red' }}>*</span>
+          {getLabel(inputNamevalue)} <span style={{ color: 'red' }}>*</span>
         </FormLabel>
         <TextField
           {...register('fullName', {
