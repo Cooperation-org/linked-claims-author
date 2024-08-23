@@ -10,7 +10,7 @@ import {
   SuccessText,
   FormTextSteps
 } from './fromTexts & stepTrack/FormTextSteps'
-import { Step0 } from './Steps/Step0'
+import { options, Step0 } from './Steps/Step0'
 import { Buttons } from './buttons/Buttons'
 import { Step1 } from './Steps/Step1'
 import { Step2 } from './Steps/Step2'
@@ -19,9 +19,11 @@ import { Step4 } from './Steps/Step4'
 import { Step5 } from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
+import { useSession } from 'next-auth/react'
+import { handleNext, handleSign, handleBack } from '../../utils/formUtils'
+import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { handleNext, handleSign } from '../../utils/formUtils'
 import { useGoogleSignIn } from '../signing/useGoogleSignIn'
-import { createDID, signCred } from '../../utils/signCred'
 import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage'
 
 const Form = ({ onStepChange, setactivStep }: any) => {
@@ -92,14 +94,10 @@ const Form = ({ onStepChange, setactivStep }: any) => {
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
-      if (data.storageOption === 'Google Drive' && !session?.accessToken) {
-        setErrorMessage('Please sign in to use Google Drive')
-        return
-      }
-
-      console.log('🚀 ~ handleFormSubmit ~ data:', data)
-
-      if (data.storageOption === 'Google Drive') {
+      if (
+        data.storageOption === options.GoogleDrive ||
+        data.storageOption === options.DigitalWallet
+      ) {
         const result = await sign(data)
         if (!result) {
           setErrorMessage('Error during VC signing')
@@ -114,15 +112,14 @@ const Form = ({ onStepChange, setactivStep }: any) => {
 
   const sign = async (data: any) => {
     try {
-      const accessToken = session?.accessToken
-      if (!accessToken) {
-        setErrorMessage('An error occurred: Access token is missing.')
-        return
-      }
-
-      const newDid = await createDID(accessToken)
+      let newDid
+      const storage = new StorageContext(
+        StorageFactory.getStorageStrategy('googleDrive', { accessToken })
+      )
+      if (data.storageOption === options.DigitalWallet) {
+        newDid = await createDIDWithMetaMask(accessToken)
+      } else newDid = await createDID(accessToken)
       const { didDocument, keyPair, issuerId } = newDid
-
       const storageStrategy = StorageFactory.getStorageStrategy('googleDrive', {
         accessToken
       })
@@ -135,6 +132,8 @@ const Form = ({ onStepChange, setactivStep }: any) => {
         },
         'DID'
       )
+      console.log('🚀 ~ newDid:', newDid)
+      console.log('🚀 ~ data.fullname:', data.fullName)
       const res = await signCred(accessToken, data, issuerId, keyPair)
       setLink(`https://drive.google.com/file/d/${res.id}/view`)
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
@@ -218,6 +217,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               setActiveStep={setActiveStep}
               reset={reset}
               link={link}
+              setLink={setLink}
             />
           )}
         </FormControl>

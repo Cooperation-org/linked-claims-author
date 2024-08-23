@@ -11,6 +11,13 @@ interface StoringMethodRadiosProps {
   activeStep: number
 }
 
+export const options = {
+  GoogleDrive: 'Google Drive',
+  Device: 'Device',
+  DigitalWallet: 'Digital Wallet',
+  Dropbox: 'Dropbox'
+}
+
 export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === 'Google Drive') {
@@ -27,6 +34,13 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
       onChange={handleChange}
       defaultValue='Google Drive'
     >
+      <FormControlLabel
+        value={options.Device}
+        sx={boxStyles}
+        control={<Radio sx={radioCheckedStyles} />}
+        label='Save to My Device'
+        disabled
+      />
       <Tooltip title='Under Development' arrow>
         <FormControlLabel
           value='Device'
@@ -36,7 +50,7 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
         />
       </Tooltip>
       <FormControlLabel
-        value='Google Drive'
+        value={options.GoogleDrive}
         sx={boxStyles}
         control={<Radio sx={radioCheckedStyles} />}
         label={
@@ -44,6 +58,27 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
             <GoogleDrive /> Google Drive
           </Box>
         }
+      />
+      <FormControlLabel
+        value={options.DigitalWallet}
+        sx={boxStyles}
+        control={<Radio sx={radioCheckedStyles} />}
+        label={
+          <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <DigitalWallet /> Your Digital Wallet (e.g. Corner Pocket)
+          </Box>
+        }
+      />
+      <FormControlLabel
+        value={options.Dropbox}
+        sx={boxStyles}
+        control={<Radio sx={radioCheckedStyles} />}
+        label={
+          <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <Dropbox /> Dropbox
+          </Box>
+        }
+        disabled
       />
       <Tooltip title='Under Development' arrow>
         <FormControlLabel

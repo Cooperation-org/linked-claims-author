@@ -5,6 +5,39 @@ import {
   StorageFactory
 } from 'trust_storage'
 
+import { ethers } from 'ethers'
+
+export async function getMetaMaskAddress(): Promise<string | null> {
+  if (typeof window.ethereum !== 'undefined') {
+    try {
+      // Request MetaMask account access
+      await window.ethereum.request({ method: 'eth_requestAccounts' })
+      const provider = new ethers.BrowserProvider(window.ethereum)
+      const signer = await provider.getSigner()
+      // Get the user's MetaMask address
+      const address = await signer.getAddress()
+      return address
+    } catch (error) {
+      console.error('MetaMask error:', error)
+      return null
+    }
+  } else {
+    console.error('MetaMask not installed')
+    return null
+  }
+}
+
+export async function createDIDWithMetaMask(accessToken: string) {
+  const metaMaskAddress = await getMetaMaskAddress()
+  if (!metaMaskAddress) {
+    throw new Error('MetaMask address could not be retrieved')
+  }
+
+  const credentialEngine = new CredentialEngine(accessToken)
+  const { didDocument, keyPair } = await credentialEngine.createWalletDID(metaMaskAddress)
+  return { didDocument, keyPair, issuerId: didDocument.id }
+}
+
 const createDID = async (accessToken: string) => {
   const credentialEngine = new CredentialEngine(accessToken)
   const { didDocument, keyPair } = await credentialEngine.createDID()
@@ -21,14 +54,20 @@ const signCred = async (
   if (!accessToken) {
     throw new Error('Access token is not provided')
   }
+  console.log('🚀 ~ data:', data)
   const formData = {
     expirationDate: new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
     ).toISOString(),
-    fullname: data.fullName,
+    fullName: data.fullName,
+    duration: data.credentialDuration,
     criteriaNarrative: data.credentialDescription,
     achievementDescription: data.credentialDescription,
-    achievementName: data.credentialName
+    achievementName: data.credentialName,
+    portfolio: data.portfolio,
+    evidenceLink: data.evidenceLink,
+    evidenceDescription: data.description,
+    credentialType: data.persons
   }
   try {
     const credentialEngine = new CredentialEngine(accessToken)

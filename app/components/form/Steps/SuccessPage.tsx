@@ -41,13 +41,15 @@ interface SuccessPageProps {
   formData: FormData | null
   reset: () => void
   link: string
+  setLink: (link: string) => void
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
   setActiveStep,
   formData,
   reset,
-  link
+  link,
+  setLink
 }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const theme = useTheme()
@@ -196,6 +198,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         variant='text'
         onClick={() => {
           setActiveStep(0)
+          setLink('')
           reset()
         }}
       >
