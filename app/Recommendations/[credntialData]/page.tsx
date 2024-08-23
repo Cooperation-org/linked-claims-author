@@ -1,27 +1,26 @@
-'use client'
+'use client';
 
-import React from 'react'
-import { Typography, Box, useMediaQuery, Theme } from '@mui/material'
-import Image from 'next/image'
-import { useTheme } from '@mui/material/styles'
-import { StepTrackShape } from '../../components/form/fromTexts & stepTrack/StepTrackShape'
-import { SVGLargeScreen } from '../../Assets/SVGs'
-import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
-import fram from '../../Assets/Images/Frame 35278.png'
-import vector from '../../Assets/Images/Vector 145.png'
+import { Typography, Box, useMediaQuery, Theme } from '@mui/material';
+import Image from 'next/image';
+import { useTheme } from '@mui/material/styles';
+import { StepTrackShape } from '../../components/form/fromTexts & stepTrack/StepTrackShape';
+import { SVGLargeScreen } from '../../Assets/SVGs';
+import img3 from '../../Assets/Images/Tessa Persona large sceens.png';
+import fram from '../../Assets/Images/Frame 35278.png';
+import vector from '../../Assets/Images/Vector 145.png';
 import {
   FormTextSteps,
-  textGuid
-} from './RecommandationForm/fromTexts & stepTrack/FormTextSteps'
-import { useState } from 'react'
-import Credential from './viewCredential/Credential'
-import TabsComponent from '../../components/Tabs/Tabs'
+  textGuid,
+} from './RecommandationForm/fromTexts & stepTrack/FormTextSteps';
+import { useState } from 'react';
+import Credential from './viewCredential/Credential';
+import TabsComponent from '../../components/Tabs/Tabs';
 
-const CredntialData = ({ params }: { params: { credntialData: any } }) => {
-  const theme = useTheme<Theme>()
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  const [activeStep, setActiveStep] = useState(0)
-  const [fullName, setFullName] = useState('Golda')
+const CredentialData = ({ params }: { params: { credentialData: any } }) => {
+  const theme = useTheme<Theme>();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'));
+  const [activeStep, setActiveStep] = useState(0);
+  const [fullName, setFullName] = useState('Golda');
 
   return (
     <Box
@@ -30,7 +29,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        overflow: 'auto'
+        overflow: 'auto',
       }}
     >
       <Box
@@ -39,7 +38,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
           textAlign: 'center',
           width: '100%',
           overflow: 'hidden',
-          mb: '20px'
+          mb: '20px',
         }}
       >
         <StepTrackShape activeStep={activeStep} />
@@ -48,7 +47,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
             position: 'relative',
             width: '100%',
             height: '100px',
-            mt: '30px'
+            mt: '30px',
           }}
         >
           <SVGLargeScreen />
@@ -57,18 +56,17 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
               position: 'absolute',
               left: '50%',
               top: '50%',
-              transform: 'translate(-50%, -50%)'
+              transform: 'translate(-50%, -50%)',
             }}
           >
-            <Image src={img3} alt='logo' style={{ width: '100px', height: '100px' }} />
+            <Image src={img3} alt="logo" width={100} height={100} />
           </Box>
         </Box>
       </Box>
       <Box sx={{ height: '100%' }}>
-        {activeStep === 0 && (
+        {activeStep === 0 ? (
           <Credential setactivStep={setActiveStep} setFullName={setFullName} />
-        )}
-        {activeStep !== 0 && (
+        ) : (
           <>
             <FormTextSteps
               activeStep={activeStep}
@@ -94,11 +92,11 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            bottom: 0
+            bottom: 0,
           }}
         >
           <Box>
-            <Image src={fram} alt='fram' />
+            <Image src={fram} alt="frame" width={50} height={50} />
           </Box>
           <Box>
             <Typography
@@ -109,17 +107,17 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
                 fontSize: '18px',
                 fontStyle: 'normal',
                 fontWeight: 400,
-                lineHeight: 'normal'
+                lineHeight: 'normal',
               }}
             >
               Learn how this data is used & protected.
-              <Image style={{ marginLeft: '10px' }} src={vector} alt='logo' />
+              <Image style={{ marginLeft: '10px' }} src={vector} alt="logo" width={20} height={20} />
             </Typography>
           </Box>
         </Box>
       )}
     </Box>
-  )
-}
+  );
+};
 
-export default CredntialData
+export default CredentialData;

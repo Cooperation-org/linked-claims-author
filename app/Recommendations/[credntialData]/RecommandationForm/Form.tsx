@@ -1,27 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, Typography } from '@mui/material'
-import { FormData } from '../../../components/form/types/Types'
+import React, { useEffect, useState } from 'react';
+import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
+import { FormControl, Box, Typography } from '@mui/material';
+import { FormData } from '../../../components/form/types/Types';
 import {
   textGuid,
   NoteText,
   SuccessText,
   StorageText,
-  FormTextSteps
-} from './fromTexts & stepTrack/FormTextSteps'
-import Step1 from './Steps/Step1'
-import Step2 from './Steps/Step2'
-import Step3 from './Steps/Step3'
-import Step4 from './Steps/Step4'
-import DataPreview from './Steps/dataPreview'
-import SuccessPage from './Steps/SuccessPage'
-import { Buttons } from './buttons/Buttons'
-import { handleNext, handleBack, handleSign } from '../../../utils/formUtils'
-import useLocalStorage from '../../../hooks/useLocalStorage'
-import FetchedData from '../viewCredential/FetchedData'
+} from './fromTexts & stepTrack/FormTextSteps';
+import Step1 from './Steps/Step1';
+import Step2 from './Steps/Step2';
+import Step3 from './Steps/Step3';
+import Step4 from './Steps/Step4';
+import DataPreview from './Steps/dataPreview';
+import SuccessPage from './Steps/SuccessPage';
+import { Buttons } from './buttons/Buttons';
+import { handleNext, handleBack, handleSign } from '../../../utils/formUtils';
+import useLocalStorage from '../../../hooks/useLocalStorage';
+import FetchedData from '../viewCredential/FetchedData';
 
-const Form = ({ activeStep, setActiveStep }: any) => {
-  const [fullName, setFullName] = useState('Golda')
+interface FormProps {
+  activeStep: number;
+  setActiveStep: (step: number) => void;
+}
+
+const Form: React.FC<FormProps> = ({ activeStep, setActiveStep }) => {
+  const [fullName, setFullName] = useState('Golda');
+
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
     fullName: '',
@@ -32,15 +37,17 @@ const Form = ({ activeStep, setActiveStep }: any) => {
     communicationRating: 0,
     dependabilityRating: 0,
     explainAnswer: '',
-    isRecommand: 'yes'
-  })
+    isRecommend: 'yes',
+    credentialDescription: '',
+  });
 
-  const defaultValues: FormData = storedValue
+
+  const defaultValues: FormData = storedValue;
 
   const methods = useForm<FormData>({
     defaultValues,
-    mode: 'onChange'
-  })
+    mode: 'onChange',
+  });
 
   const {
     register,
@@ -49,22 +56,22 @@ const Form = ({ activeStep, setActiveStep }: any) => {
     setValue,
     control,
     reset,
-    formState: { errors, isValid }
-  } = methods
+    formState: { errors, isValid },
+  } = methods;
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'portfolio'
-  })
+    name: 'portfolio',
+  });
 
-  const formData = watch()
+  const formData = watch();
 
   useEffect(() => {
-    setStoreNewValue(formData)
-  }, [formData])
+    setStoreNewValue(formData);
+  }, [formData, setStoreNewValue]);
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    clearValue()
+    clearValue();
     reset({
       storageOption: 'Google Drive',
       fullName: '',
@@ -75,10 +82,11 @@ const Form = ({ activeStep, setActiveStep }: any) => {
       communicationRating: 0,
       dependabilityRating: 0,
       explainAnswer: '',
-      isRecommand: 'yes'
-    })
-    setActiveStep(1)
-  })
+      isRecommend: 'yes',
+      credentialDescription: '',
+    });
+    setActiveStep(1);
+  });
 
   return (
     <FormProvider {...methods}>
@@ -90,16 +98,17 @@ const Form = ({ activeStep, setActiveStep }: any) => {
           alignItems: 'center',
           marginTop: '5px',
           padding: '0 0 30px',
-          overflow: 'auto'
+          overflow: 'auto',
         }}
         onSubmit={handleFormSubmit}
       >
         <Box sx={{ display: 'none' }}>
           <FetchedData setFullName={setFullName} />
         </Box>
+
         {activeStep === 2 && <NoteText />}
         {activeStep === 1 && (
-          <Typography sx={{ fontWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>
+          <Typography sx={{ fontWeight: 400, fontSize: '16px', fontFamily: 'Lato' }}>
             {StorageText}
           </Typography>
         )}
@@ -119,7 +128,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
                 register={register}
                 watch={watch}
                 errors={errors}
-                handleTextEditorChange={value => setValue('howKnow', value ?? '')}
+                handleTextEditorChange={(value) => setValue('howKnow', value ?? '')}
               />
             )}
             {activeStep === 3 && (
@@ -146,10 +155,17 @@ const Form = ({ activeStep, setActiveStep }: any) => {
                 errors={errors}
               />
             )}
-            {activeStep === 5 && <DataPreview formData={watch() as any} />}
-            {activeStep === 6 && <SuccessPage />}
+            {activeStep === 5 && <DataPreview formData={formData} />}
+            {activeStep === 6 && (
+              <SuccessPage
+                formData={formData}
+                setActiveStep={setActiveStep}
+                reset={() => setValue('credentialDescription', '')}
+              />
+            )}
           </FormControl>
         </Box>
+
         {activeStep !== 6 && activeStep !== 1 && activeStep !== 0 && (
           <Buttons
             activeStep={activeStep}
@@ -163,7 +179,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
         {activeStep === 1 && (
           <Buttons
             activeStep={activeStep}
-            maxSteps={textGuid.length}
+            maxSteps={textGuid(fullName).length}
             handleNext={() => handleNext(activeStep, setActiveStep)}
             handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
             handleBack={undefined}
@@ -172,7 +188,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
         )}
       </form>
     </FormProvider>
-  )
-}
+  );
+};
 
-export default Form
+export default Form;

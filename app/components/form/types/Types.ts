@@ -39,27 +39,43 @@ export interface Credential {
   credentialSubject: CredentialSubject
 }
 
-interface Portfolio {
+export interface Portfolio {
   name: string
   url: string
 }
 
-// Interfaces for the form fields
+export interface Evidence {
+  name: string
+  url: string
+}
+
 export interface FormData {
   storageOption: string
   fullName: string
-  persons: string
-  credentialName: string
-  credentialDuration: string
-  credentialDescription: string
-  portfolio: Portfolio[]
-  evidenceLink: string
-  evidenceDescription: string
+  howKnow: string
+  RecommendationText: string
+  evidence: Evidence[]
+  qualifications: string
   communicationRating: number
   dependabilityRating: number
-  [key: string]: string | number | Portfolio[] | undefined
+  explainAnswer: string
+  isRecommend: string
+  credentialDescription?: string
+  persons?: string
+  credentialName?: string
+  credentialDuration?: string
+  portfolio: Portfolio[]
+  evidenceLink?: string
+  evidenceDescription?: string
+  [key: string]: string | number | Portfolio[] | Evidence[] | undefined
 }
 
+// Update the props for components that require formData
+export interface SuccessPageProps {
+  formData: FormData
+  setActiveStep: (step: number) => void
+  reset: () => void
+}
 // Component Props for the form
 export interface FormProps {
   formData: FormData

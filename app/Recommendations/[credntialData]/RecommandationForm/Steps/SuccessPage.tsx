@@ -1,9 +1,10 @@
 import React from 'react'
 import { Box, Typography, Button } from '@mui/material'
 import Image from 'next/image'
-import BadgeIcon from '../../../../Assets/SVGs/badge.svg'
+import { SuccessPageProps } from '../../../../components/form/types/Types'
+import BadgeIcon from '../../../../Assets/SVGs/Badge.svg'
 
-const SuccessPage = () => {
+const SuccessPage: React.FC<SuccessPageProps> = ({ formData, setActiveStep, reset }) => {
   return (
     <Box
       sx={{

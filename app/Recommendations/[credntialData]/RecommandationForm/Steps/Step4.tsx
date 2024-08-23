@@ -36,7 +36,7 @@ const Step4: React.FC<Step4Props> = ({ register, watch, setValue, errors }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setRecommend(value)
-    setValue('isRecommand', value)
+    setValue('isRecommend', value)
   }
 
   return (
