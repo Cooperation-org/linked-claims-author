@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Typography, useMediaQuery } from '@mui/material'
+import { Box, CircularProgress, Typography, useMediaQuery } from '@mui/material'
 import Link from 'next/link'
 import fram from '../../Assets/Images/Frame 35278.png'
 import Image from 'next/image'
@@ -20,7 +20,7 @@ const page = () => {
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
   console.log(':  page  params', params)
-  const { fetchFileContent, fileContent, gapiLoaded } = useGoogleDrive()
+  const { fetchFileContent, fileContent, gapiLoaded, fileMetadata } = useGoogleDrive()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
 
   useEffect(() => {
@@ -56,157 +56,164 @@ const page = () => {
         pt: '50px'
       }}
     >
-      <Box
-        sx={{
-          flex: 1,
-          width: { xs: '90%', md: '60%' },
-          m: '0 auto'
-        }}
-      >
+      {driveData ? (
         <Box
           sx={{
-            height: 'fit-content',
-            border: '1px solid #003FE0',
-            borderRadius: '10px',
-            p: '15px'
+            flex: 1,
+            width: { xs: '90%', md: '60%' },
+            m: '0 auto'
           }}
         >
           <Box
             sx={{
-              display: 'flex',
-              gap: '5px',
-              alignItems: 'center'
+              height: 'fit-content',
+              border: '1px solid #003FE0',
+              borderRadius: '10px',
+              p: '15px'
             }}
           >
-            <SVGBadge />
-            <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
-              Amr Nabel’s has claimed:
-            </Typography>
-          </Box>
-          <Box sx={{ width: '100%' }}>
-            <Typography
-              sx={{
-                color: '#202E5B',
-                fontFamily: 'Inter',
-                fontSize: '24px',
-                fontWeight: 700,
-                letterSpacing: '0.075px',
-                mb: '10px'
-              }}
-            >
-              Management Skills
-            </Typography>
             <Box
               sx={{
-                ...credentialBoxStyles,
-                bgcolor: '#d5e1fb'
+                display: 'flex',
+                gap: '5px',
+                alignItems: 'center'
               }}
             >
-              <Box sx={{ mt: '2px' }}>
-                <SVGDate />
-              </Box>
-              <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
-                5 Days
+              <SVGBadge />
+              <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
+                {driveData?.credentialSubject?.name || fileMetadata?.name} has claimed:
               </Typography>
             </Box>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '20px',
-              width: '100%'
-            }}
-          >
-            <Typography
+            <Box sx={{ width: '100%' }}>
+              <Typography
+                sx={{
+                  color: '#202E5B',
+                  fontFamily: 'Inter',
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  letterSpacing: '0.075px',
+                  mb: '10px'
+                }}
+              >
+                Management Skills
+              </Typography>
+              <Box
+                sx={{
+                  ...credentialBoxStyles,
+                  bgcolor: '#d5e1fb'
+                }}
+              >
+                <Box sx={{ mt: '2px' }}>
+                  <SVGDate />
+                </Box>
+                <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
+                  {driveData?.credentialSubject?.duration}
+                </Typography>
+              </Box>
+            </Box>
+            <Box
               sx={{
-                fontFamily: 'Lato',
-                fontSize: '17px',
-                letterSpacing: '0.075px',
-                lineHeight: '24px'
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '20px',
+                width: '100%'
               }}
             >
-              {driveData?.credentialSubject?.achievement[0]?.description.replace(
-                /<\/?[^>]+>/gi,
-                ''
-              )}
-            </Typography>
-            <Box>
-              <Typography>Earning criteria:</Typography>
-              <ul style={{ marginLeft: '25px' }}>
-                <li>
-                  {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
-                    /<\/?[^>]+>/gi,
-                    ''
+              <Typography
+                sx={{
+                  fontFamily: 'Lato',
+                  fontSize: '17px',
+                  letterSpacing: '0.075px',
+                  lineHeight: '24px'
+                }}
+              >
+                This credential certifies about{' '}
+                {driveData?.credentialSubject?.achievement[0]?.name}
+              </Typography>
+              <Box>
+                <Typography>Earning criteria:</Typography>
+                <ul style={{ marginLeft: '25px' }}>
+                  <li>
+                    {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
+                      /<\/?[^>]+>/gi,
+                      ''
+                    )}
+                  </li>
+                </ul>
+              </Box>
+              <Box>
+                <Typography>Supporting Evidence:</Typography>
+                <ul style={evidenceListStyles}>
+                  {driveData?.credentialSubject?.portfolio?.map(
+                    (porto: { url: any; name: any }) => (
+                      <li key={porto.url}>
+                        <Link href={porto.url}>{porto.name}</Link>
+                      </li>
+                    )
                   )}
-                </li>
-              </ul>
+                </ul>
+              </Box>
             </Box>
-            <Box>
-              <Typography>Supporting Evidence:</Typography>
-              <ul style={evidenceListStyles}>
-                <li>
-                  <Link href=''>The website of the w3schools</Link>
-                </li>
-                <li>
-                  <Link href=''>youtube clone</Link>
-                </li>
-              </ul>
-            </Box>
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <Typography
-              sx={{
-                fontSize: '13px',
-                fontWeight: 700,
-                color: '#000E40',
-                fontFamily: 'Arial'
-              }}
+            <Box
+              sx={{ display: 'flex', flexDirection: 'column', gap: '4px', mt: '20px' }}
             >
-              Credential Details
-            </Typography>
-            <Box sx={{ display: 'flex', gap: '5px', mt: '10px', alignItems: 'center' }}>
-              <Box
+              <Typography
                 sx={{
-                  borderRadius: '4px',
-                  bgcolor: '#C2F1BE',
-
-                  p: '4px'
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  color: '#000E40',
+                  fontFamily: 'Arial'
                 }}
               >
-                <CheckMarkSVG />
-              </Box>
-              <Typography>Has a valid digital signature</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-              <Box
-                sx={{
-                  borderRadius: '4px',
-                  bgcolor: '#C2F1BE',
+                Credential Details
+              </Typography>
+              <Box sx={{ display: 'flex', gap: '5px', mt: '10px', alignItems: 'center' }}>
+                <Box
+                  sx={{
+                    borderRadius: '4px',
+                    bgcolor: '#C2F1BE',
 
-                  p: '4px'
-                }}
-              >
-                <CheckMarkSVG />
+                    p: '4px'
+                  }}
+                >
+                  <CheckMarkSVG />
+                </Box>
+                <Typography>Has a valid digital signature</Typography>
               </Box>
-              <Typography>Has not expired</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-              <Box
-                sx={{
-                  borderRadius: '4px',
-                  bgcolor: '#C2F1BE',
+              <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                <Box
+                  sx={{
+                    borderRadius: '4px',
+                    bgcolor: '#C2F1BE',
 
-                  p: '4px'
-                }}
-              >
-                <CheckMarkSVG />
+                    p: '4px'
+                  }}
+                >
+                  <CheckMarkSVG />
+                </Box>
+                <Typography>Has not expired</Typography>
               </Box>
-              <Typography>Has not been revoked by issuer</Typography>
+              <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                <Box
+                  sx={{
+                    borderRadius: '4px',
+                    bgcolor: '#C2F1BE',
+
+                    p: '4px'
+                  }}
+                >
+                  <CheckMarkSVG />
+                </Box>
+                <Typography>Has not been revoked by issuer</Typography>
+              </Box>
             </Box>
           </Box>
         </Box>
-      </Box>
+      ) : (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <CircularProgress />
+        </Box>
+      )}
       {!isLargeScreen && (
         <Box
           sx={{

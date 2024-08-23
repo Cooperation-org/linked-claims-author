@@ -335,7 +335,6 @@ Credential Public Link:   http://localhost:3000/Recommendations/${params.credent
                     ...nextButtonStyle,
                     maxWidth: '355px'
                   }}
-                  onClick={reset}
                   color='primary'
                   variant='contained'
                 >
