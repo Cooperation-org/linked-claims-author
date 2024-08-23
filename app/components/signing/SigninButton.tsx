@@ -24,7 +24,7 @@ const SigninButton = () => {
   if (session?.user) {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px', mt: '20px' }}>
-        <Typography>Hi, {session.user.name}</Typography>
+        {/* <Typography>Hi, {session.user.name}</Typography> */}
         <Button sx={buttonStyle} onClick={handleSignOut}>
           Sign Out
         </Button>
