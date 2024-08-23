@@ -94,7 +94,9 @@ const Form = ({ activeStep, setActiveStep }: any) => {
         }}
         onSubmit={handleFormSubmit}
       >
-        <FetchedData setFullName={setFullName} />
+        <Box sx={{ display: 'none' }}>
+          <FetchedData setFullName={setFullName} />
+        </Box>
         {activeStep === 2 && <NoteText />}
         {activeStep === 1 && (
           <Typography sx={{ fontWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>

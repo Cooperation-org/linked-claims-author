@@ -10,16 +10,28 @@ function a11yProps(index: number) {
   }
 }
 
-const TabsComponent = ({
+interface TabPanelProps {
+  children: React.ReactNode
+  value: number
+  index: number
+}
+
+interface TabsComponentProps {
+  setactivStep: (step: number) => void
+  activeStep: number
+  fullName: string
+  setFullName: (name: string) => void
+}
+
+const TabsComponent: React.FC<TabsComponentProps> = ({
   setactivStep,
-  activeStep
-}: {
-  setactivStep: any
-  activeStep: any
+  activeStep,
+  fullName,
+  setFullName
 }) => {
   const [value, setValue] = useState(0)
 
-  const handleChange = (event: any, newValue: React.SetStateAction<number>) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
 
@@ -38,7 +50,7 @@ const TabsComponent = ({
         />
         <Tab
           sx={{ textTransform: 'capitalize' }}
-          label='View Alice’s Credential'
+          label={`View ${fullName}’s Credential`}
           {...a11yProps(1)}
         />
       </Tabs>
@@ -46,17 +58,13 @@ const TabsComponent = ({
         <Form activeStep={activeStep} setActiveStep={setactivStep} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <FetchedData />
+        <FetchedData setFullName={setFullName} />
       </TabPanel>
     </Box>
   )
 }
 
-function TabPanel(
-  props: Readonly<{ [x: string]: any; children: any; value: any; index: any }>
-) {
-  const { children, value, index, ...other } = props
-
+const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other }) => {
   return (
     <div
       role='tabpanel'
