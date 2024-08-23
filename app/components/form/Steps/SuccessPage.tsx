@@ -98,35 +98,6 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   return (
     <>
       <Box sx={successPageContainerStyles}>
-        <Box sx={successPageHeaderStyles}>
-          {formData?.evidenceLink ? (
-            <img
-              style={{
-                width: '100px',
-                height: '100px',
-                borderTopLeftRadius: '15px'
-              }}
-              src={formData.evidenceLink}
-              alt='Certification Evidence'
-            />
-          ) : (
-            <Box sx={{ width: '100px', height: '100px' }} />
-          )}
-          <Box sx={{ flex: 1 }}>
-            <Typography sx={successPageTitleStyles}>
-              {formData?.credentialName}
-            </Typography>
-            <Box sx={successPageInfoStyles}>
-              <SVGDate />
-              <Typography sx={successPageDateStyles}>
-                {formData?.credentialDuration}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        <Divider sx={{ width: '100%' }} />
-
         <Box sx={successPageShareStyles}>
           {[TwitterSVG, LinkedinSVG, InstagramSVG, MailSVG, MessageCircleSVG].map(
             (IconComponent, index) => (
