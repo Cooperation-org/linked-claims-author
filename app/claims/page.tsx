@@ -42,6 +42,8 @@ interface ClaimDetail {
     type: string[]
     name: string
     achievement: any
+    duration: string
+    portfolio: any
   }
 }
 
@@ -74,7 +76,7 @@ const ClaimsPage: React.FC = () => {
     [storage]
   )
 
-  const getAllClaims = useCallback(async (): Promise<Claim[]> => {
+  const getAllClaims = useCallback(async (): Promise<any> => {
     if (!storage) throw new Error('Storage is not initialized')
     const claimsData = (await storage.getAllClaims()) as any
     if (!claimsData.files) return []
@@ -190,7 +192,7 @@ const ClaimsPage: React.FC = () => {
                             <Typography
                               sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}
                             >
-                              Amr Nabel’s has claimed:
+                              {detailedClaim?.credentialSubject?.name || ''} has claimed:
                             </Typography>
                           </Box>
                           <Box>
@@ -219,7 +221,7 @@ const ClaimsPage: React.FC = () => {
                                 <Typography
                                   sx={{ ...commonTypographyStyles, fontSize: '13px' }}
                                 >
-                                  5 Days
+                                  {detailedClaim?.credentialSubject?.duration}
                                 </Typography>
                               </Box>
                             </Box>
@@ -255,14 +257,15 @@ const ClaimsPage: React.FC = () => {
                                 </ul>
                               </Box>
                               <Box>
-                                <Typography>Evidence:</Typography>
+                                <Typography>Supporting Evidence:</Typography>
                                 <ul style={evidenceListStyles}>
-                                  <li>
-                                    <Link href=''>The website of the w3schools</Link>
-                                  </li>
-                                  <li>
-                                    <Link href=''>youtube clone</Link>
-                                  </li>
+                                  {detailedClaim?.credentialSubject?.portfolio?.map(
+                                    (porto: { url: any; name: any }) => (
+                                      <li key={porto.url}>
+                                        <Link href={porto.url}>{porto.name}</Link>
+                                      </li>
+                                    )
+                                  )}
                                 </ul>
                               </Box>
                             </Box>
