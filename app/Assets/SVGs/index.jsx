@@ -616,3 +616,24 @@ export const MessageCircleSVG = () => {
     </Box>
   )
 }
+export const CheckMarkSVG = () => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        width='12'
+        height='13'
+        viewBox='0 0 12 13'
+        fill='none'
+      >
+        <path
+          d='M10 3.625L4.5 9.125L2 6.625'
+          stroke='black'
+          stroke-width='0.7'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+        />
+      </svg>
+    </Box>
+  )
+}

@@ -61,6 +61,7 @@ export default function HorizontalLinearStepper() {
   React.useEffect(() => {
     if (fileData) {
       const parsedData = JSON.parse(fileData)
+      console.log(':  React.useEffect  parsedData', parsedData)
       setDriveData(parsedData)
       localStorage.setItem('parsedData', JSON.stringify(parsedData))
       reset({
