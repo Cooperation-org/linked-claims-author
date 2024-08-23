@@ -73,7 +73,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           <FormatQuote fontSize='large' />
           <Typography variant='body2' ml={1}>
             {formData.explainAnswer ||
-              'I worked with Golda for about two years, managing her work at the community garden. She was an excellent worker, prompt, and friendly.'}
+              'I worked with Alice for about two years, managing her work at the community garden. She was an excellent worker, prompt, and friendly.'}
+
           </Typography>
         </Box>
       </Card>
@@ -85,7 +86,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         </Typography>
         <Typography variant='body2'>
           {formData.howKnow ||
-            'I was Golda’s manager for about two years, but I have known her in total about 5 years.'}
+            'I was Alice’s manager for about two years, but I have known her in total about 5 years.'}
+
         </Typography>
       </Card>
 
@@ -96,7 +98,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         </Typography>
         <Rating value={formData.communicationRating} readOnly sx={{ mb: 1 }} />
         <Typography variant='body2'>
-          I gave Golda 4 stars because she doesn’t like to speak in front of a group of
+          I gave Alice 4 stars because she doesn’t like to speak in front of a group of
+
           people and this sometimes made it challenging for her to lead groups in
           volunteer activities.
         </Typography>

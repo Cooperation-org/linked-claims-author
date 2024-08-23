@@ -41,7 +41,7 @@ export function Buttons({
           </Button>
         </>
       )}
-      {activeStep !== 5 && activeStep !== 6 && (
+      {activeStep !== 4 && activeStep !== 5 && (
         <Button
           sx={{
             ...nextButtonStyle,
@@ -55,12 +55,12 @@ export function Buttons({
           Next
         </Button>
       )}
-      {activeStep === 6 && handleSign && (
+      {activeStep === 5 && handleSign && (
         <Button sx={nextButtonStyle} onClick={handleSign} color='primary'>
           Finish & Sign
         </Button>
       )}
-      {activeStep === 5 && (
+      {activeStep === 4 && (
         <Button
           sx={nextButtonStyle}
           onClick={handleNext}

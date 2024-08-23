@@ -81,7 +81,6 @@ const FetchedData: React.FC<FetchedDataProps> = ({
             <SVGBadge />
             <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
               {driveData.credentialSubject?.name || fileMetadata?.name} has claimed:
-
             </Typography>
           </Box>
           <Box>
@@ -109,7 +108,6 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                 </Box>
                 <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
                   {driveData.credentialSubject?.duration}
-
                 </Typography>
               </Box>
             </Box>
@@ -123,18 +121,14 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                 }}
               >
                 This credential certifies about{' '}
-                {driveData.credentialSubject?.achievement[0]?.description?.replace(
-                  /<[^>]+>/g,
-                  ''
-                ) || ''}
-                .
+                {driveData.credentialSubject?.achievement[0]?.description || ''}.
+
               </Typography>
               <Box>
                 <Typography>Earning criteria:</Typography>
                 <ul style={{ marginLeft: '25px' }}>
                   <li>
                     {driveData.credentialSubject?.achievement[0]?.criteria?.narrative?.replace(
-
                       /<\/?[^>]+>/gi,
                       ''
                     )}

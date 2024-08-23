@@ -146,8 +146,9 @@ const Form = ({ activeStep, setActiveStep }: any) => {
                 errors={errors}
               />
             )}
-            {activeStep === 6 && <DataPreview formData={watch() as any} />}
-            {activeStep === 7 && (
+            {activeStep === 5 && <DataPreview formData={watch()} />}
+            {activeStep === 6 && (
+
               <SuccessPage
                 formData={watch()}
                 setActiveStep={setActiveStep}
@@ -156,7 +157,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
             )}
           </FormControl>
         </Box>
-        {activeStep !== 7 && activeStep !== 1 && activeStep !== 0 && (
+        {activeStep !== 6 && activeStep !== 1 && activeStep !== 0 && (
           <Buttons
             activeStep={activeStep}
             maxSteps={textGuid(fullName).length}
@@ -171,7 +172,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
             activeStep={activeStep}
             maxSteps={textGuid.length}
             handleNext={() => handleNext(activeStep, setActiveStep)}
-            handleSign={undefined}
+            handleSign={handleSign}
             handleBack={undefined}
             isValid={isValid}
           />
