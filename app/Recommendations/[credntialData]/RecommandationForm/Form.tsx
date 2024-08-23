@@ -21,7 +21,7 @@ import useLocalStorage from '../../../hooks/useLocalStorage'
 import FetchedData from '../viewCredential/FetchedData'
 
 const Form = ({ activeStep, setActiveStep }: any) => {
-  const [fullName, setFullName] = useState('Alice')
+  const [fullName, setFullName] = useState('Golda')
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
     fullName: '',
@@ -104,12 +104,6 @@ const Form = ({ activeStep, setActiveStep }: any) => {
           </Typography>
         )}
         {activeStep === 7 && <SuccessText />}
-        {activeStep === 3 && (
-          <FormTextSteps
-            activeStep={activeStep}
-            activeText={textGuid(fullName)[activeStep]}
-          />
-        )}
 
         <Box sx={{ width: { xs: '100%', md: '50%' } }}>
           <FormControl sx={{ width: '100%' }}>

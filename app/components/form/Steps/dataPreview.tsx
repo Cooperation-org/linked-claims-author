@@ -18,6 +18,7 @@ interface DataPreviewProps {
 }
 
 const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
+  console.log(':  formData', formData)
   const theme: Theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
 
@@ -85,7 +86,9 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        {/* <Typography sx={commonTypographyStyles}>{formData?.description}</Typography> */}
+        <Typography sx={commonTypographyStyles}>
+          {formData?.description as any}
+        </Typography>
         {formData.credentialDescription && (
           <Box sx={commonTypographyStyles}>
             <span style={{ display: 'block' }}>Earning criteria:</span>

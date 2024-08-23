@@ -70,7 +70,7 @@ const Step3: React.FC<Step3Props> = ({
         <TextEditor
           value={watch('recommendationText')}
           onChange={value => handleTextEditorChange('RecommendationText', value ?? '')}
-          placeholder='e.g., Alice managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative'
+          placeholder='e.g., Golda managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative'
         />
         {errors.recommendationText && (
           <Typography color='error'>{errors.recommendationText.message}</Typography>
@@ -87,7 +87,7 @@ const Step3: React.FC<Step3Props> = ({
         <TextEditor
           value={watch('qualifications')}
           onChange={value => handleTextEditorChange('qualifications', value ?? '')}
-          placeholder='e.g., I managed Alice at a local garden for 2 years where she coordinated weekly gardening workshops and lead a community clean-up initiative.'
+          placeholder='e.g., I managed Golda at a local garden for 2 years where she coordinated weekly gardening workshops and lead a community clean-up initiative.'
         />
         {errors.qualifications && (
           <Typography color='error'>{errors.qualifications.message}</Typography>

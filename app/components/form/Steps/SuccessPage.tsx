@@ -6,7 +6,6 @@ import {
   Typography,
   TextField,
   InputAdornment,
-  Divider,
   Box,
   Button,
   Snackbar
