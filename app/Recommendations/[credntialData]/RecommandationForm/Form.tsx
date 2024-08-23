@@ -13,7 +13,7 @@ import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
 import Step3 from './Steps/Step3'
 import Step4 from './Steps/Step4'
-import DataComponent from './Steps/dataPreview'
+import DataPreview from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import { handleNext, handleBack, handleSign } from '../../../utils/formUtils'
@@ -152,7 +152,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
                 errors={errors}
               />
             )}
-            {activeStep === 6 && <DataComponent formData={watch()} />}
+            {activeStep === 6 && <DataPreview formData={watch()} />}
             {activeStep === 7 && (
               <SuccessPage
                 formData={watch()}
