@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { Box, Typography, FormLabel, TextField, Button } from '@mui/material'
 import {
@@ -56,6 +56,12 @@ const Step3: React.FC<Step3Props> = ({
 }) => {
   const theme = useTheme()
   const [urlError, setUrlError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (fields.length === 0) {
+      append({ name: '', url: '' })
+    }
+  }, [append, fields.length])
 
   const handleUrlChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     handleUrlValidation(event, setUrlError)
