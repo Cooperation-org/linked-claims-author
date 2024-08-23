@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box } from '@mui/material'
 import { FormData } from './types/Types'
@@ -22,16 +22,18 @@ import SuccessPage from './Steps/SuccessPage'
 import { useSession } from 'next-auth/react'
 import { handleNext, handleSign, handleBack } from '../../utils/formUtils'
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
+import { handleNext, handleSign } from '../../utils/formUtils'
+import { useGoogleSignIn } from '../signing/useGoogleSignIn'
 import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage'
 
 const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
   const [link, setLink] = useState<string>('')
-  const [errorMessage, setErrorMessage] = useState<string>('Sign in first')
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [hasSignedIn, setHasSignedIn] = useState(false)
   const characterLimit = 294
   const maxSteps = textGuid.length
-  const { data: session } = useSession()
-  const accessToken = session?.accessToken as string
+  const { session, handleSignIn } = useGoogleSignIn()
 
   const {
     register,
@@ -40,6 +42,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
     reset,
     setValue,
     control,
+    trigger,
     formState: { errors, isValid }
   } = useForm<FormData>({
     defaultValues: {
@@ -62,17 +65,32 @@ const Form = ({ onStepChange, setactivStep }: any) => {
   })
 
   useEffect(() => {
-    if (!accessToken) {
-      setErrorMessage('Make sure you sign in')
-      console.log('🚀 ~ useEffect ~ accessToken:', accessToken)
-      return
-    }
-  }, [accessToken])
-
-  useEffect(() => {
     setactivStep(activeStep)
     onStepChange()
-  }, [accessToken, activeStep, onStepChange, setactivStep])
+  }, [activeStep, onStepChange, setactivStep])
+
+  const costumedHandleNextStep = async () => {
+    if (
+      activeStep === 0 &&
+      watch('storageOption') === 'Google Drive' &&
+      !session?.accessToken &&
+      !hasSignedIn
+    ) {
+      const signInSuccess = await handleSignIn()
+      if (!signInSuccess || !session?.accessToken) return
+      setHasSignedIn(true)
+      handleNext(activeStep, setActiveStep)
+    } else {
+      handleNext(activeStep, setActiveStep)
+    }
+  }
+
+  const costumedHandleBackStep = async () => {
+    if (activeStep > 0) {
+      setActiveStep(activeStep - 1)
+      await trigger()
+    }
+  }
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
@@ -81,14 +99,14 @@ const Form = ({ onStepChange, setactivStep }: any) => {
         data.storageOption === options.DigitalWallet
       ) {
         const result = await sign(data)
-        if (!!result) {
+        if (!result) {
           setErrorMessage('Error during VC signing')
           return
         }
       }
     } catch (error) {
       console.error('Error during VC signing:', error)
-      setErrorMessage('make sure you sign in')
+      setErrorMessage('An error occurred during the signing process.')
     }
   })
 
@@ -102,8 +120,12 @@ const Form = ({ onStepChange, setactivStep }: any) => {
         newDid = await createDIDWithMetaMask(accessToken)
       } else newDid = await createDID(accessToken)
       const { didDocument, keyPair, issuerId } = newDid
+      const storageStrategy = StorageFactory.getStorageStrategy('googleDrive', {
+        accessToken
+      })
+
       await saveToGoogleDrive(
-        storage,
+        new StorageContext(storageStrategy),
         {
           didDocument,
           keyPair
@@ -118,22 +140,8 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       return res
     } catch (error) {
       console.error('Error during VC signing:', error)
-      setErrorMessage('Please SignIn First')
+      setErrorMessage('An error occurred during the signing process.')
     }
-  }
-
-  if (!accessToken) {
-    return (
-      <div
-        style={{
-          color: 'red',
-          textAlign: 'center',
-          marginTop: '30px'
-        }}
-      >
-        {errorMessage}
-      </div>
-    )
   }
 
   return (
@@ -218,11 +226,26 @@ const Form = ({ onStepChange, setactivStep }: any) => {
         <Buttons
           activeStep={activeStep}
           maxSteps={maxSteps}
-          handleNext={() => handleNext(activeStep, setActiveStep)}
+          handleNext={
+            activeStep === 0
+              ? costumedHandleNextStep
+              : () => handleNext(activeStep, setActiveStep)
+          }
           handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
-          handleBack={() => handleBack(activeStep, setActiveStep)}
+          handleBack={costumedHandleBackStep}
           isValid={isValid}
         />
+      )}
+      {errorMessage && (
+        <div
+          style={{
+            color: 'red',
+            textAlign: 'center',
+            marginTop: '20px'
+          }}
+        >
+          {errorMessage}
+        </div>
       )}
     </form>
   )

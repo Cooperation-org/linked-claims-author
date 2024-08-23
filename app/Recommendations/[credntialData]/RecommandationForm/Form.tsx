@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Typography } from '@mui/material'
 import { FormData } from '../../../components/form/types/Types'
@@ -6,7 +6,8 @@ import {
   textGuid,
   NoteText,
   SuccessText,
-  StorageText
+  StorageText,
+  FormTextSteps
 } from './fromTexts & stepTrack/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
@@ -17,24 +18,24 @@ import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import { handleNext, handleBack, handleSign } from '../../../utils/formUtils'
 import useLocalStorage from '../../../hooks/useLocalStorage'
+import FetchedData from '../viewCredential/FetchedData'
 
 const Form = ({ activeStep, setActiveStep }: any) => {
-  const savedFormData = localStorage.getItem('formData')
-  console.log(':  Form  savedFormData', savedFormData)
-  const defaultValues: FormData = savedFormData
-    ? JSON.parse(savedFormData)
-    : {
-        storageOption: 'Google Drive',
-        fullName: '',
-        howKnow: '',
-        RecommendationText: '',
-        evidence: [{ name: '', url: '' }],
-        qualifications: '',
-        communicationRating: 0,
-        dependabilityRating: 0,
-        explainAnswer: '',
-        isRecommand: 'yes'
-      }
+  const [fullName, setFullName] = useState('Alice')
+  const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
+    storageOption: 'Google Drive',
+    fullName: '',
+    howKnow: '',
+    RecommendationText: '',
+    evidence: [{ name: '', url: '' }],
+    qualifications: '',
+    communicationRating: 0,
+    dependabilityRating: 0,
+    explainAnswer: '',
+    isRecommand: 'yes'
+  })
+
+  const defaultValues: FormData = storedValue
 
   const methods = useForm<FormData>({
     defaultValues,
@@ -57,13 +58,25 @@ const Form = ({ activeStep, setActiveStep }: any) => {
   })
 
   const formData = watch()
-  const { removeItem } = useLocalStorage('formData', formData, watch)
+
+  useEffect(() => {
+    setStoreNewValue(formData)
+  }, [formData])
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
-    setTimeout(() => {
-      removeItem()
-      reset(defaultValues)
-    }, 1000)
+    clearValue()
+    reset({
+      storageOption: 'Google Drive',
+      fullName: '',
+      howKnow: '',
+      RecommendationText: '',
+      evidence: [{ name: '', url: '' }],
+      qualifications: '',
+      communicationRating: 0,
+      dependabilityRating: 0,
+      explainAnswer: '',
+      isRecommand: 'yes'
+    })
     setActiveStep(1)
   })
 
@@ -81,6 +94,9 @@ const Form = ({ activeStep, setActiveStep }: any) => {
         }}
         onSubmit={handleFormSubmit}
       >
+        <Box sx={{ display: 'none' }}>
+          <FetchedData setFullName={setFullName} />
+        </Box>
         {activeStep === 2 && <NoteText />}
         {activeStep === 1 && (
           <Typography sx={{ fontWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>
@@ -88,6 +104,13 @@ const Form = ({ activeStep, setActiveStep }: any) => {
           </Typography>
         )}
         {activeStep === 7 && <SuccessText />}
+        {activeStep === 3 && (
+          <FormTextSteps
+            activeStep={activeStep}
+            activeText={textGuid(fullName)[activeStep]}
+          />
+        )}
+
         <Box sx={{ width: { xs: '100%', md: '50%' } }}>
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 1 && (
@@ -142,7 +165,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
         {activeStep !== 7 && activeStep !== 1 && activeStep !== 0 && (
           <Buttons
             activeStep={activeStep}
-            maxSteps={textGuid.length}
+            maxSteps={textGuid(fullName).length}
             handleNext={() => handleNext(activeStep, setActiveStep)}
             handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
             handleBack={() => handleBack(activeStep, setActiveStep)}

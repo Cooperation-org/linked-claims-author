@@ -1,13 +1,7 @@
 'use client'
-import React, { useEffect } from 'react'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import { DefaultSession } from 'next-auth'
-
-interface ExtendedSession extends DefaultSession {
-  accessToken?: string
-  idToken?: string
-}
+import { useGoogleSignIn } from './useGoogleSignIn'
 
 const buttonStyle = {
   padding: '10px 20px',
@@ -25,30 +19,20 @@ const buttonStyle = {
 }
 
 const SigninButton = () => {
-  const { data: session } = useSession()
-  console.log('SigninButton data:', session)
+  const { session, handleSignIn, handleSignOut } = useGoogleSignIn()
 
-  useEffect(() => {
-    const extendedSession = session as ExtendedSession
-    if (extendedSession?.accessToken) {
-      localStorage.setItem('accessToken', extendedSession.accessToken)
-    } else {
-      localStorage.removeItem('accessToken')
-    }
-  }, [session])
-
-  if (session && session.user) {
+  if (session?.user) {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px', mt: '20px' }}>
         <Typography>Hi, {session.user.name}</Typography>
-        <Button sx={buttonStyle} onClick={() => signOut()}>
+        <Button sx={buttonStyle} onClick={handleSignOut}>
           Sign Out
         </Button>
       </Box>
     )
   }
   return (
-    <Button sx={{ ...buttonStyle, mt: '20px' }} onClick={() => signIn()}>
+    <Button sx={{ ...buttonStyle, mt: '20px' }} onClick={handleSignIn}>
       Sign In
     </Button>
   )
