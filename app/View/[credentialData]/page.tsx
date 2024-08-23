@@ -16,7 +16,7 @@ import {
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import theme from '../../theme'
 
-const page = () => {
+const Page = () => {
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
   console.log(':  page  params', params)
@@ -252,4 +252,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
