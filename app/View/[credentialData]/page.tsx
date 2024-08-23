@@ -20,7 +20,7 @@ const page = () => {
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
   console.log(':  page  params', params)
-  const { fetchFile, fileData, gapiLoaded } = useGoogleDrive()
+  const { fetchFileContent, fileContent, gapiLoaded } = useGoogleDrive()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const page = () => {
       const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
       const resourceKey = ''
       if (gapiLoaded) {
-        await fetchFile(fileId, resourceKey)
+        await fetchFileContent(fileId, resourceKey)
       }
     }
 
@@ -37,13 +37,13 @@ const page = () => {
   }, [gapiLoaded])
 
   useEffect(() => {
-    if (fileData) {
-      const parsedData = JSON.parse(fileData)
+    if (fileContent) {
+      const parsedData = JSON.parse(fileContent)
       console.log(':  useEffect  parsedData', parsedData)
       setDriveData(parsedData)
       localStorage.setItem('parsedData', JSON.stringify(parsedData))
     }
-  }, [fileData])
+  }, [fileContent])
   return (
     <Box
       sx={{

@@ -121,7 +121,11 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                 }}
               >
                 This credential certifies about{' '}
-                {driveData.credentialSubject?.achievement[0]?.description || ''}.
+                {driveData.credentialSubject?.achievement[0]?.description?.replace(
+                  /<[^>]+>/g,
+                  ''
+                ) || ''}
+                .
               </Typography>
               <Box>
                 <Typography>Earning criteria:</Typography>
