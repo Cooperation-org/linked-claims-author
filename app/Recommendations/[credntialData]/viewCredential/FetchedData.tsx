@@ -45,6 +45,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
       if (fileId && gapiLoaded) {
         console.log('Google API loaded, proceeding to fetch file content and metadata')
         const resourceKey = ''
+
         await fetchFileContent(fileId, resourceKey)
         await fetchFileMetadata(fileId, resourceKey)
       } else {
@@ -54,7 +55,6 @@ const FetchedData: React.FC<FetchedDataProps> = ({
 
     fetchDriveData()
   }, [gapiLoaded])
-
   useEffect(() => {
     if (fileContent) {
       const parsedData = JSON.parse(fileContent)
@@ -81,6 +81,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
             <SVGBadge />
             <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
               {driveData.credentialSubject?.name || fileMetadata?.name} has claimed:
+
             </Typography>
           </Box>
           <Box>
@@ -108,6 +109,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                 </Box>
                 <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
                   {driveData.credentialSubject?.duration}
+
                 </Typography>
               </Box>
             </Box>
@@ -128,6 +130,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                 <ul style={{ marginLeft: '25px' }}>
                   <li>
                     {driveData.credentialSubject?.achievement[0]?.criteria?.narrative?.replace(
+
                       /<\/?[^>]+>/gi,
                       ''
                     )}
@@ -135,7 +138,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                 </ul>
               </Box>
               <Box>
-                <Typography>Evidence:</Typography>
+                <Typography>Supporting Evidence:</Typography>
                 <ul style={evidenceListStyles}>
                   {driveData.credentialSubject?.portfolio?.map(
                     (porto: { url: string; name: string }) => (

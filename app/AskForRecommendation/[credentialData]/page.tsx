@@ -43,7 +43,7 @@ export default function HorizontalLinearStepper() {
   const [driveData, setDriveData] = React.useState<any>(null)
   console.log(':  FetchedData  driveData', driveData)
   const params = useParams()
-  const { fetchFile, fileData, gapiLoaded } = useGoogleDrive()
+  const { fetchFileContent, fileContent, gapiLoaded } = useGoogleDrive()
 
   React.useEffect(() => {
     const fetchDriveData = async () => {
@@ -51,7 +51,7 @@ export default function HorizontalLinearStepper() {
       const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
       const resourceKey = ''
       if (gapiLoaded) {
-        await fetchFile(fileId, resourceKey)
+        await fetchFileContent(fileId, resourceKey)
       }
     }
 
@@ -59,8 +59,8 @@ export default function HorizontalLinearStepper() {
   }, [gapiLoaded])
 
   React.useEffect(() => {
-    if (fileData) {
-      const parsedData = JSON.parse(fileData)
+    if (fileContent) {
+      const parsedData = JSON.parse(fileContent)
       console.log(':  React.useEffect  parsedData', parsedData)
       setDriveData(parsedData)
       localStorage.setItem('parsedData', JSON.stringify(parsedData))
@@ -75,7 +75,7 @@ Credential Public Link:   http://localhost:3000/Recommendations/${params.credent
 `
       })
     }
-  }, [fileData])
+  }, [fileContent])
 
   const handleNext = () => {
     if (activeStep === 0) {
@@ -335,7 +335,6 @@ Credential Public Link:   http://localhost:3000/Recommendations/${params.credent
                     ...nextButtonStyle,
                     maxWidth: '355px'
                   }}
-                  onClick={reset}
                   color='primary'
                   variant='contained'
                 >

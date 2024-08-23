@@ -85,7 +85,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <Typography sx={commonTypographyStyles}>{formData.description}</Typography>
+        {/* <Typography sx={commonTypographyStyles}>{formData?.description}</Typography> */}
         {formData.credentialDescription && (
           <Box sx={commonTypographyStyles}>
             <span style={{ display: 'block' }}>Earning criteria:</span>
