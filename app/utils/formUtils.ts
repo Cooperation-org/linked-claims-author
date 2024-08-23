@@ -44,6 +44,8 @@ export const copyFormValuesToClipboard = (codeToCopy: string) => {
 
 export const handleStepChange = (step: number, setActiveStep: (step: number) => void) => {
   setActiveStep(step)
+  console.log('Current activeStep:', setActiveStep)
+  console.log('Current step:', step)
 }
 
 export const handleNext = (activeStep: number, setActiveStep: (step: number) => void) => {

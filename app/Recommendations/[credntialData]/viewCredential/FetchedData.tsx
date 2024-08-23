@@ -36,22 +36,30 @@ const FetchedData: React.FC<FetchedDataProps> = ({
   useEffect(() => {
     const fetchDriveData = async () => {
       const decodedLink = decodeURIComponent(params.credntialData as any)
-      const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
-      const resourceKey = ''
-      if (gapiLoaded) {
+      console.log('Decoded Link:', decodedLink) // Log the decoded link
+
+      const fileIdMatch = decodedLink.match(/\/d\/([a-zA-Z0-9_-]+)/)
+      const fileId = fileIdMatch ? fileIdMatch[1] : null
+      console.log('Extracted File ID:', fileId) // Log the extracted file ID
+
+      if (fileId && gapiLoaded) {
+        console.log('Google API loaded, proceeding to fetch file content and metadata')
+        const resourceKey = ''
+
         await fetchFileContent(fileId, resourceKey)
         await fetchFileMetadata(fileId, resourceKey)
+      } else {
+        console.error('Invalid file ID or gapi not loaded')
       }
     }
 
     fetchDriveData()
   }, [gapiLoaded])
-
   useEffect(() => {
     if (fileContent) {
       const parsedData = JSON.parse(fileContent)
       setDriveData(parsedData)
-      setFullName(parsedData.fullName)
+      setFullName(parsedData.credentialSubject?.name)
       localStorage.setItem('parsedData', JSON.stringify(parsedData))
     }
     if (ownerEmail) {
@@ -72,7 +80,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
           >
             <SVGBadge />
             <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
-              {driveData?.credentialSubject?.name || fileMetadata?.name} has claimed:
+              {driveData.credentialSubject?.name || fileMetadata?.name} has claimed:
             </Typography>
           </Box>
           <Box>
@@ -87,7 +95,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                   mb: '10px'
                 }}
               >
-                Management Skills
+                {driveData.credentialSubject?.achievement[0]?.name || 'Management Skills'}
               </Typography>
               <Box
                 sx={{
@@ -99,7 +107,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                   <SVGDate />
                 </Box>
                 <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
-                  {driveData?.credentialSubject?.duration}
+                  {driveData.credentialSubject?.duration}
                 </Typography>
               </Box>
             </Box>
@@ -113,13 +121,13 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                 }}
               >
                 This credential certifies about{' '}
-                {driveData?.credentialSubject?.achievement[0]?.name}.
+                {driveData.credentialSubject?.achievement[0]?.description || ''}.
               </Typography>
               <Box>
                 <Typography>Earning criteria:</Typography>
                 <ul style={{ marginLeft: '25px' }}>
                   <li>
-                    {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative?.replace(
+                    {driveData.credentialSubject?.achievement[0]?.criteria?.narrative?.replace(
                       /<\/?[^>]+>/gi,
                       ''
                     )}
@@ -129,8 +137,8 @@ const FetchedData: React.FC<FetchedDataProps> = ({
               <Box>
                 <Typography>Supporting Evidence:</Typography>
                 <ul style={evidenceListStyles}>
-                  {driveData?.credentialSubject?.portfolio?.map(
-                    (porto: { url: any; name: any }) => (
+                  {driveData.credentialSubject?.portfolio?.map(
+                    (porto: { url: string; name: string }) => (
                       <li key={porto.url}>
                         <Link href={porto.url}>{porto.name}</Link>
                       </li>
