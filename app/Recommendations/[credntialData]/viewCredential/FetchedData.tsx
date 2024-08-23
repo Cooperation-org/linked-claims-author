@@ -12,18 +12,36 @@ import {
 } from '../../../components/Styles/appStyles'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
 
-const FetchedData = () => {
+interface FetchedDataProps {
+  setFullName: (name: string) => void
+  setEmail?: (email: string) => void
+}
+
+const FetchedData: React.FC<FetchedDataProps> = ({
+  setFullName,
+  setEmail = () => {}
+}) => {
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
-  const { fetchFile, fileData, gapiLoaded } = useGoogleDrive()
+
+  const {
+    gapiLoaded,
+    fetchFileContent,
+    fetchFileMetadata,
+    fileContent,
+    fileMetadata,
+    ownerEmail
+  } = useGoogleDrive()
 
   useEffect(() => {
     const fetchDriveData = async () => {
       const decodedLink = decodeURIComponent(params.credntialData as any)
-      const fileId = decodedLink.split('/d/')[1].split('/')[0]
+      const extractedFile = decodedLink ? decodedLink.split('=')[1] : ''
+      const fileId = extractedFile.split('/d/')[1].split('/')[0]
       const resourceKey = ''
       if (gapiLoaded) {
-        await fetchFile(fileId, resourceKey)
+        await fetchFileContent(fileId, resourceKey)
+        await fetchFileMetadata(fileId, resourceKey)
       }
     }
 
@@ -31,12 +49,17 @@ const FetchedData = () => {
   }, [gapiLoaded])
 
   useEffect(() => {
-    if (fileData) {
-      const parsedData = JSON.parse(fileData)
+    if (fileContent) {
+      const parsedData = JSON.parse(fileContent)
       setDriveData(parsedData)
+      setFullName(parsedData.fullName)
       localStorage.setItem('parsedData', JSON.stringify(parsedData))
     }
-  }, [fileData])
+    if (ownerEmail) {
+      setEmail(ownerEmail)
+    }
+  }, [fileContent, ownerEmail])
+
   return (
     <Box sx={{ border: '1px solid #003FE0', borderRadius: '10px', p: '15px' }}>
       {driveData ? (
@@ -50,7 +73,7 @@ const FetchedData = () => {
           >
             <SVGBadge />
             <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
-              Amr Nabel’s has claimed:
+              {driveData?.fullName || fileMetadata?.name} has claimed:
             </Typography>
           </Box>
           <Box>
@@ -90,18 +113,12 @@ const FetchedData = () => {
                   lineHeight: '24px'
                 }}
               >
-                This credential certifies about{' '}
-                {driveData?.credentialSubject?.achievement[0]?.name}.
+                This credential certifies about {driveData?.credentialName}.
               </Typography>
               <Box>
                 <Typography>Earning criteria:</Typography>
                 <ul style={{ marginLeft: '25px' }}>
-                  <li>
-                    {driveData?.credentialSubject?.achievement[0]?.description?.replace(
-                      /<\/?[^>]+>/gi,
-                      ''
-                    )}
-                  </li>
+                  <li>{driveData?.credentialDescription?.replace(/<\/?[^>]+>/gi, '')}</li>
                 </ul>
               </Box>
               <Box>

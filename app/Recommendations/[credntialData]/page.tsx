@@ -20,6 +20,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const [activeStep, setActiveStep] = useState(0)
+  const [fullName, setFullName] = useState('Alice')
 
   return (
     <Box
@@ -63,11 +64,21 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
         </Box>
       </Box>
       <Box sx={{ height: '100%' }}>
-        {activeStep === 0 && <Credential setactivStep={setActiveStep} />}
+        {activeStep === 0 && (
+          <Credential setactivStep={setActiveStep} setFullName={setFullName} />
+        )}
         {activeStep !== 0 && (
           <>
-            <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-            <TabsComponent setactivStep={setActiveStep} activeStep={activeStep} />
+            <FormTextSteps
+              activeStep={activeStep}
+              activeText={textGuid(fullName)[activeStep]}
+            />
+            <TabsComponent
+              setFullName={setFullName}
+              fullName={fullName}
+              setactivStep={setActiveStep}
+              activeStep={activeStep}
+            />
           </>
         )}
       </Box>
