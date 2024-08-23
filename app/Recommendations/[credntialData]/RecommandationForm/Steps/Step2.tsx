@@ -49,12 +49,12 @@ const Step2: React.FC<Step2Props> = ({
       </Box>
       <Box>
         <FormLabel sx={formLabelStyles} id='qualifications-label'>
-          How do you know Alice? <span style={formLabelSpanStyles}> *</span>
+          How do you know Golda? <span style={formLabelSpanStyles}> *</span>
         </FormLabel>
         <TextEditor
           value={watch('howKnow')}
           onChange={handleTextEditorChange}
-          placeholder='e.g., I am Alice’s former supervisor. I’ve known her for 5 years.'
+          placeholder='e.g., I am Golda’s former supervisor. I’ve known her for 5 years.'
         />
       </Box>
     </Box>

@@ -11,7 +11,7 @@ import FetchedData from './FetchedData'
 
 const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) => {
   const theme = useTheme()
-  const [fullName, setFullName] = useState('Alice')
+  const [fullName, setFullName] = useState('Golda')
 
   const handleClick = () => {
     setactivStep(1)
