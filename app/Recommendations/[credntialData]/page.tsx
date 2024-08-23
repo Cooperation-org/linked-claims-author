@@ -20,7 +20,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const [activeStep, setActiveStep] = useState(0)
-  const [fullName, setFullName] = useState('Alice')
+  const [fullName, setFullName] = useState('Golda')
 
   return (
     <Box
