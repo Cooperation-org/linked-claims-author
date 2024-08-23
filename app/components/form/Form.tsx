@@ -19,10 +19,9 @@ import { Step4 } from './Steps/Step4'
 import { Step5 } from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
-import { useSession } from 'next-auth/react'
+// import { useSession } from 'next-auth/react'
 import { handleNext, handleSign, handleBack } from '../../utils/formUtils'
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
-import { handleNext, handleSign } from '../../utils/formUtils'
 import { useGoogleSignIn } from '../signing/useGoogleSignIn'
 import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage'
 
@@ -34,6 +33,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { session, handleSignIn } = useGoogleSignIn()
+  const accessToken = session?.accessToken
 
   const {
     register,
@@ -112,13 +112,17 @@ const Form = ({ onStepChange, setactivStep }: any) => {
 
   const sign = async (data: any) => {
     try {
+      if (!accessToken) {
+        setErrorMessage('Access token is missing')
+        return
+      }
+
       let newDid
-      const storage = new StorageContext(
-        StorageFactory.getStorageStrategy('googleDrive', { accessToken })
-      )
       if (data.storageOption === options.DigitalWallet) {
         newDid = await createDIDWithMetaMask(accessToken)
-      } else newDid = await createDID(accessToken)
+      } else {
+        newDid = await createDID(accessToken)
+      }
       const { didDocument, keyPair, issuerId } = newDid
       const storageStrategy = StorageFactory.getStorageStrategy('googleDrive', {
         accessToken

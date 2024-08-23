@@ -20,9 +20,7 @@ export const options = {
 
 export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === 'Google Drive') {
-      setValue('storageOption', e.target.value)
-    }
+    setValue('storageOption', e.target.value)
   }
 
   return (
@@ -30,25 +28,21 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
       sx={radioGroupStyles}
       aria-labelledby='form-type-label'
       name='controlled-radio-buttons-group'
-      value={watch('storageOption') || 'Google Drive'}
+      value={watch('storageOption') || options.GoogleDrive}
       onChange={handleChange}
-      defaultValue='Google Drive'
     >
-      <FormControlLabel
-        value={options.Device}
-        sx={boxStyles}
-        control={<Radio sx={radioCheckedStyles} />}
-        label='Save to My Device'
-        disabled
-      />
+      {/* Device Option */}
       <Tooltip title='Under Development' arrow>
         <FormControlLabel
-          value='Device'
+          value={options.Device}
           sx={boxStyles}
           control={<Radio sx={radioCheckedStyles} />}
           label='Save to My Device'
+          disabled
         />
       </Tooltip>
+
+      {/* Google Drive Option */}
       <FormControlLabel
         value={options.GoogleDrive}
         sx={boxStyles}
@@ -59,30 +53,11 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
           </Box>
         }
       />
-      <FormControlLabel
-        value={options.DigitalWallet}
-        sx={boxStyles}
-        control={<Radio sx={radioCheckedStyles} />}
-        label={
-          <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <DigitalWallet /> Your Digital Wallet (e.g. Corner Pocket)
-          </Box>
-        }
-      />
-      <FormControlLabel
-        value={options.Dropbox}
-        sx={boxStyles}
-        control={<Radio sx={radioCheckedStyles} />}
-        label={
-          <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <Dropbox /> Dropbox
-          </Box>
-        }
-        disabled
-      />
+
+      {/* Digital Wallet Option */}
       <Tooltip title='Under Development' arrow>
         <FormControlLabel
-          value='Digital Wallet'
+          value={options.DigitalWallet}
           sx={boxStyles}
           control={<Radio sx={radioCheckedStyles} />}
           label={
@@ -90,11 +65,14 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
               <DigitalWallet /> Your Digital Wallet (e.g. Corner Pocket)
             </Box>
           }
+          disabled
         />
       </Tooltip>
+
+      {/* Dropbox Option */}
       <Tooltip title='Under Development' arrow>
         <FormControlLabel
-          value='Dropbox'
+          value={options.Dropbox}
           sx={boxStyles}
           control={<Radio sx={radioCheckedStyles} />}
           label={
@@ -102,6 +80,7 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
               <Dropbox /> Dropbox
             </Box>
           }
+          disabled
         />
       </Tooltip>
     </RadioGroup>
