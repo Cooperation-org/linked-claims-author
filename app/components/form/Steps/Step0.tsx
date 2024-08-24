@@ -55,16 +55,19 @@ export function Step0({ watch, setValue }: Readonly<StoringMethodRadiosProps>) {
       />
 
       {/* Digital Wallet Option */}
-      <FormControlLabel
-        value={options.DigitalWallet}
-        sx={boxStyles}
-        control={<Radio sx={radioCheckedStyles} />}
-        label={
-          <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <DigitalWallet /> Your Digital Wallet (e.g. Corner Pocket)
-          </Box>
-        }
-      />
+      <Tooltip title='Under Development' arrow>
+        <FormControlLabel
+          value={options.DigitalWallet}
+          sx={boxStyles}
+          control={<Radio sx={radioCheckedStyles} />}
+          label={
+            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <DigitalWallet /> Your Digital Wallet (e.g. Corner Pocket)
+            </Box>
+          }
+          disabled
+        />
+      </Tooltip>
 
       {/* Dropbox Option */}
       <Tooltip title='Under Development' arrow>
