@@ -142,9 +142,14 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       setLink(`https://drive.google.com/file/d/${res.id}/view`)
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res
-    } catch (error) {
-      console.error('Error during VC signing:', error)
-      setErrorMessage('An error occurred during the signing process.')
+    } catch (error: any) {
+      if (error.message === 'MetaMask address could not be retrieved') {
+        setErrorMessage('Please make sure you have MetaMask installed and connected.')
+        return
+      } else {
+        console.error('Error during VC signing:', error)
+        setErrorMessage('An error occurred during the signing process.')
+      }
     }
   }
 
