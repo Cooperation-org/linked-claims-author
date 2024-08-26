@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { FormControl, Box } from '@mui/material'
+import { FormControl, Box, Button } from '@mui/material'
 import { FormData } from './types/Types'
 import {
   textGuid,
@@ -21,15 +21,25 @@ import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 // import { useSession } from 'next-auth/react'
 import { handleNext, handleSign, handleBack } from '../../utils/formUtils'
-import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
+import {
+  createDID,
+  createDIDWithMetaMask,
+  getMetaMaskAddress,
+  signCred
+} from '../../utils/signCred'
 import { useGoogleSignIn } from '../signing/useGoogleSignIn'
 import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage'
+import Link from 'next/link'
 
 const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
   const [link, setLink] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
+  const [finalData, setFinalData] = useState<FormData>()
+  const [metamaskAdress, setMetamaskAdress] = useState<string>('')
+  const [disabled0, setDisabled0] = React.useState(false)
+
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { session, handleSignIn } = useGoogleSignIn()
@@ -98,6 +108,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
         data.storageOption === options.GoogleDrive ||
         data.storageOption === options.DigitalWallet
       ) {
+        setFinalData(data)
         const result = await sign(data)
       }
     } catch (error: any) {
@@ -120,7 +131,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
 
       let newDid
       if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(accessToken)
+        newDid = await createDIDWithMetaMask(accessToken, metamaskAdress)
       } else {
         newDid = await createDID(accessToken)
       }
@@ -169,7 +180,15 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       <Box sx={{ width: { xs: '100%', md: '50%' } }}>
         <FormControl sx={{ width: '100%' }}>
           {activeStep === 0 && (
-            <Step0 activeStep={activeStep} watch={watch} setValue={setValue} />
+            <Step0
+              activeStep={activeStep}
+              watch={watch}
+              setValue={setValue}
+              setMetaMaskAddres={setMetamaskAdress}
+              setErrorMessage={setErrorMessage}
+              disabled0={disabled0}
+              setDisabled0={setDisabled0}
+            />
           )}
           {activeStep === 1 && (
             <Step1
@@ -238,17 +257,29 @@ const Form = ({ onStepChange, setactivStep }: any) => {
           handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
           handleBack={costumedHandleBackStep}
           isValid={isValid}
+          errorMessage={errorMessage}
+          disabled0={disabled0}
         />
       )}
       {errorMessage && (
         <div
           style={{
-            color: 'red',
+            color: errorMessage.includes('MetaMask') ? 'red' : 'black',
             textAlign: 'center',
             marginTop: '20px'
           }}
         >
           {errorMessage}
+          {errorMessage.includes('MetaMask') && (
+            <Link
+              href={
+                'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'
+              }
+              style={{ cursor: 'pointer', color: 'blue', marginInline: '5px' }}
+            >
+              Click here
+            </Link>
+          )}
         </div>
       )}
     </form>

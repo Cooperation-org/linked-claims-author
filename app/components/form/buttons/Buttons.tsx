@@ -3,6 +3,7 @@
 import React from 'react'
 import { Box, Button } from '@mui/material'
 import { StyledButton, nextButtonStyle } from '../../Styles/appStyles'
+import { getMetaMaskAddress } from '../../../utils/signCred'
 
 interface ButtonsProps {
   activeStep: number
@@ -11,6 +12,8 @@ interface ButtonsProps {
   handleSign: React.MouseEventHandler<HTMLButtonElement> | undefined
   maxSteps: number
   isValid: boolean
+  errorMessage?: string
+  disabled0: boolean
 }
 
 export function Buttons({
@@ -19,7 +22,9 @@ export function Buttons({
   handleNext,
   handleSign,
   maxSteps,
-  isValid
+  isValid,
+  errorMessage,
+  disabled0
 }: Readonly<ButtonsProps>) {
   return (
     <Box
@@ -31,6 +36,20 @@ export function Buttons({
         justifyContent: activeStep !== 0 ? 'space-between' : 'center'
       }}
     >
+      {activeStep === 0 && (
+        <Button
+          sx={{
+            ...nextButtonStyle,
+            maxWidth: '355px'
+          }}
+          onClick={handleNext}
+          color='primary'
+          disabled={disabled0}
+          variant='contained'
+        >
+          Next
+        </Button>
+      )}
       {activeStep !== 0 && (
         <>
           <Button sx={StyledButton} onClick={handleBack} color='secondary'>
@@ -41,7 +60,7 @@ export function Buttons({
           </Button>
         </>
       )}
-      {activeStep !== 5 && activeStep !== 6 && (
+      {activeStep !== 5 && activeStep !== 6 && activeStep !== 0 && (
         <Button
           sx={{
             ...nextButtonStyle,

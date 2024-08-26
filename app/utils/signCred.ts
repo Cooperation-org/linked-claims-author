@@ -19,7 +19,7 @@ export async function getMetaMaskAddress(): Promise<string | null> {
       return address
     } catch (error) {
       console.error('MetaMask error:', error)
-      return null
+      throw new Error('MetaMask address could not be retrieved')
     }
   } else {
     console.error('MetaMask not installed')
@@ -27,12 +27,10 @@ export async function getMetaMaskAddress(): Promise<string | null> {
   }
 }
 
-export async function createDIDWithMetaMask(accessToken: string) {
-  const metaMaskAddress = await getMetaMaskAddress()
-  if (!metaMaskAddress) {
-    throw new Error('MetaMask address could not be retrieved')
-  }
-
+export async function createDIDWithMetaMask(
+  accessToken: string,
+  metaMaskAddress: string
+) {
   const credentialEngine = new CredentialEngine(accessToken)
   const { didDocument, keyPair } = await credentialEngine.createWalletDID(metaMaskAddress)
   return { didDocument, keyPair, issuerId: didDocument.id }
