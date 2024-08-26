@@ -85,6 +85,7 @@ const signCred = async (
     return signedVCFile
   } catch (error) {
     console.error('Error during VC signing:', error)
+    throw error
   }
 }
 

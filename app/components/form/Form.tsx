@@ -99,14 +99,15 @@ const Form = ({ onStepChange, setactivStep }: any) => {
         data.storageOption === options.DigitalWallet
       ) {
         const result = await sign(data)
-        if (!result) {
-          setErrorMessage('Error during VC signing')
-          return
-        }
       }
-    } catch (error) {
-      console.error('Error during VC signing:', error)
-      setErrorMessage('An error occurred during the signing process.')
+    } catch (error: any) {
+      if (error.message === 'MetaMask address could not be retrieved') {
+        setErrorMessage('Please make sure you have MetaMask installed and connected.')
+        return
+      } else {
+        console.error('Error during VC signing:', error)
+        setErrorMessage('An error occurred during the signing process.')
+      }
     }
   })
 
@@ -143,13 +144,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res
     } catch (error: any) {
-      if (error.message === 'MetaMask address could not be retrieved') {
-        setErrorMessage('Please make sure you have MetaMask installed and connected.')
-        return
-      } else {
-        console.error('Error during VC signing:', error)
-        setErrorMessage('An error occurred during the signing process.')
-      }
+      throw error
     }
   }
 
