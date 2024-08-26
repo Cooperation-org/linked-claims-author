@@ -23,8 +23,7 @@ const handler = NextAuth({
       authorization: {
         params: {
           scope:
-            'openid email profile https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file',
-          access_type: 'offline' // Add this line
+            'openid email profile https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file'
         }
       }
     })
@@ -33,23 +32,21 @@ const handler = NextAuth({
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token
-        token.refreshToken = account.refresh_token // Ensure refresh token is included
-        token.expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 2 // Access token expires in 2 days
-        token.refreshTokenExpires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 // Refresh token expires in 7 days
+        token.refreshToken = account.refresh_token
+        token.expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 // 30 days
       }
       return token
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken as string
       session.refreshToken = token.refreshToken as string
-      session.expires = token.expires as number // Use number for expiration time
-      console.log('🚀 ~ session ~ session:', session)
+      session.expires = token.expires as number
       return session
     }
   },
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60 * 24 * 7 // 7 days
+    maxAge: 60 * 60 * 24 * 2 // Session expires in 2 days
   }
 })
 
