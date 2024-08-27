@@ -5,28 +5,6 @@ import {
   StorageFactory
 } from 'trust_storage'
 
-import { ethers } from 'ethers'
-
-export async function getMetaMaskAddress(): Promise<string | null> {
-  if (typeof window.ethereum !== 'undefined') {
-    try {
-      // Request MetaMask account access
-      await window.ethereum.request({ method: 'eth_requestAccounts' })
-      const provider = new ethers.BrowserProvider(window.ethereum)
-      const signer = await provider.getSigner()
-      // Get the user's MetaMask address
-      const address = await signer.getAddress()
-      return address
-    } catch (error) {
-      console.error('MetaMask error:', error)
-      throw new Error('MetaMask address could not be retrieved')
-    }
-  } else {
-    console.error('MetaMask not installed')
-    return null
-  }
-}
-
 export async function createDIDWithMetaMask(
   accessToken: string,
   metaMaskAddress: string

@@ -21,15 +21,9 @@ import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 // import { useSession } from 'next-auth/react'
 import { handleNext, handleSign, handleBack } from '../../utils/formUtils'
-import {
-  createDID,
-  createDIDWithMetaMask,
-  getMetaMaskAddress,
-  signCred
-} from '../../utils/signCred'
+import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { useGoogleSignIn } from '../signing/useGoogleSignIn'
 import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage'
-import Link from 'next/link'
 
 const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -186,7 +180,6 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               setValue={setValue}
               setMetaMaskAddres={setMetamaskAdress}
               setErrorMessage={setErrorMessage}
-              disabled0={disabled0}
               setDisabled0={setDisabled0}
             />
           )}
@@ -257,7 +250,6 @@ const Form = ({ onStepChange, setactivStep }: any) => {
           handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
           handleBack={costumedHandleBackStep}
           isValid={isValid}
-          errorMessage={errorMessage}
           disabled0={disabled0}
         />
       )}
@@ -270,16 +262,6 @@ const Form = ({ onStepChange, setactivStep }: any) => {
           }}
         >
           {errorMessage}
-          {errorMessage.includes('MetaMask') && (
-            <Link
-              href={
-                'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'
-              }
-              style={{ cursor: 'pointer', color: 'blue', marginInline: '5px' }}
-            >
-              Click here
-            </Link>
-          )}
         </div>
       )}
     </form>

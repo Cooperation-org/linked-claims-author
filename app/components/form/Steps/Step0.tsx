@@ -1,11 +1,9 @@
 'use client'
-
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Radio, RadioGroup, FormControlLabel, Box, Tooltip } from '@mui/material'
 import { boxStyles, radioCheckedStyles, radioGroupStyles } from '../../Styles/appStyles'
 import { Dropbox, GoogleDrive, DigitalWallet } from '../../../Assets/SVGs'
-import { getMetaMaskAddress } from '../../../utils/signCred'
-import { set } from 'react-hook-form'
+import { useMetaMask } from '../../../hooks/useMetaMask'
 
 interface StoringMethodRadiosProps {
   watch: (arg: string) => any
@@ -13,7 +11,6 @@ interface StoringMethodRadiosProps {
   activeStep: number
   setMetaMaskAddres: (address: string) => void
   setErrorMessage: (message: string) => void
-  disabled0: boolean
   setDisabled0: (value: boolean) => void
 }
 
@@ -29,33 +26,42 @@ export function Step0({
   setValue,
   setMetaMaskAddres,
   setErrorMessage,
-  disabled0,
   setDisabled0
 }: Readonly<StoringMethodRadiosProps>) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setErrorMessage('')
-    setDisabled0(false)
-    setValue('storageOption', e.target.value)
-  }
+  const { address, error, loading, getMetaMaskAddress, reset } = useMetaMask()
+  const [selectedOption, setSelectedOption] = useState<string>(
+    watch('storageOption') || options.GoogleDrive
+  )
 
-  const handleMetaMaskAddress = async () => {
-    try {
-      const address = await getMetaMaskAddress()
-      if (address) {
-        setMetaMaskAddres(address)
-      }
-    } catch (error: any) {
+  useEffect(() => {
+    if (address) {
+      setMetaMaskAddres(address)
+      setDisabled0(false)
+    } else if (loading) {
       setDisabled0(true)
-      if (error.message === 'MetaMask address could not be retrieved') {
-        setErrorMessage('Please make sure you have MetaMask installed and connected.')
-        return
-      }
-      setValue('storageOption', options.GoogleDrive)
-      console.error('MetaMask error:', error)
-      setErrorMessage(
-        'MetaMask address could not be retrieved, please use another option'
-      )
+    } else if (selectedOption === options.DigitalWallet && !address) {
+      setDisabled0(true)
     }
+  }, [address, selectedOption, setMetaMaskAddres, setDisabled0, loading])
+
+  useEffect(() => {
+    if (error) {
+      setErrorMessage(error)
+      setDisabled0(true)
+      reset()
+    }
+  }, [error, setErrorMessage, setDisabled0, reset])
+
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSelectedOption(value)
+    setErrorMessage('')
+    if (value === options.DigitalWallet) {
+      await getMetaMaskAddress()
+    } else {
+      setDisabled0(false) // Enable the Next button for non-Digital Wallet options
+    }
+    setValue('storageOption', value)
   }
 
   return (
@@ -63,7 +69,7 @@ export function Step0({
       sx={radioGroupStyles}
       aria-labelledby='form-type-label'
       name='controlled-radio-buttons-group'
-      value={watch('storageOption') || options.GoogleDrive}
+      value={selectedOption}
       onChange={handleChange}
     >
       {/* Device Option */}
@@ -99,7 +105,6 @@ export function Step0({
             <DigitalWallet /> Your Digital Wallet (With MetaMask)
           </Box>
         }
-        onClick={handleMetaMaskAddress}
       />
 
       {/* Dropbox Option */}
