@@ -11,6 +11,7 @@ interface ButtonsProps {
   handleSign: React.MouseEventHandler<HTMLButtonElement> | undefined
   maxSteps: number
   isValid: boolean
+  disabled0: boolean
 }
 
 export function Buttons({
@@ -19,7 +20,8 @@ export function Buttons({
   handleNext,
   handleSign,
   maxSteps,
-  isValid
+  isValid,
+  disabled0
 }: Readonly<ButtonsProps>) {
   return (
     <Box
@@ -31,6 +33,20 @@ export function Buttons({
         justifyContent: activeStep !== 0 ? 'space-between' : 'center'
       }}
     >
+      {activeStep === 0 && (
+        <Button
+          sx={{
+            ...nextButtonStyle,
+            maxWidth: '355px'
+          }}
+          onClick={handleNext}
+          color='primary'
+          variant='contained'
+          disabled={disabled0}
+        >
+          Next
+        </Button>
+      )}
       {activeStep !== 0 && (
         <>
           <Button sx={StyledButton} onClick={handleBack} color='secondary'>
@@ -41,7 +57,7 @@ export function Buttons({
           </Button>
         </>
       )}
-      {activeStep !== 5 && activeStep !== 6 && (
+      {activeStep !== 5 && activeStep !== 6 && activeStep !== 0 && (
         <Button
           sx={{
             ...nextButtonStyle,
