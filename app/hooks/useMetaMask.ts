@@ -9,7 +9,6 @@ export const useMetaMask = () => {
 
   const getMetaMaskAddress = async () => {
     setLoading(true)
-    setError('Check your metamask...')
     try {
       if (typeof window.ethereum !== 'undefined') {
         // Request MetaMask account access

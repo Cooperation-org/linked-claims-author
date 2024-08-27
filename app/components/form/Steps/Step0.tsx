@@ -37,27 +37,26 @@ export function Step0({
     if (address) {
       setMetaMaskAddres(address)
       setDisabled0(false)
-    } else if (loading) {
-      setDisabled0(true)
     } else if (selectedOption === options.DigitalWallet && !address) {
       setDisabled0(true)
     }
-  }, [address, selectedOption, setMetaMaskAddres, setDisabled0, loading])
+  }, [address, selectedOption, setMetaMaskAddres, setDisabled0])
 
   useEffect(() => {
     if (error) {
       setErrorMessage(error)
       setDisabled0(true)
-      reset()
+      reset() // Reset the MetaMask hook state
     }
   }, [error, setErrorMessage, setDisabled0, reset])
 
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSelectedOption(value)
     setErrorMessage('')
     if (value === options.DigitalWallet) {
-      await getMetaMaskAddress()
+      setDisabled0(true)
+      getMetaMaskAddress() // Trigger MetaMask connection
     } else {
       setDisabled0(false) // Enable the Next button for non-Digital Wallet options
     }
@@ -121,6 +120,11 @@ export function Step0({
           disabled
         />
       </Tooltip>
+
+      {/* Display loading message if MetaMask is connecting */}
+      {loading && (
+        <Box sx={{ mt: 2, color: 'blue' }}>Check your MetaMask to proceed...</Box>
+      )}
     </RadioGroup>
   )
 }
