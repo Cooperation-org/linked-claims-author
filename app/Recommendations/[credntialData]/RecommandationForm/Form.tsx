@@ -7,7 +7,6 @@ import {
   NoteText,
   SuccessText,
   StorageText,
-  FormTextSteps
 } from './fromTexts & stepTrack/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
@@ -26,8 +25,8 @@ const Form = ({ activeStep, setActiveStep }: any) => {
     storageOption: 'Google Drive',
     fullName: '',
     howKnow: '',
-    RecommendationText: '',
-    evidence: [{ name: '', url: '' }],
+    recommendationText: '',
+    portfolio: [{ name: '', url: '' }],
     qualifications: '',
     communicationRating: 0,
     dependabilityRating: 0,
@@ -60,8 +59,10 @@ const Form = ({ activeStep, setActiveStep }: any) => {
   const formData = watch()
 
   useEffect(() => {
-    setStoreNewValue(formData)
-  }, [formData])
+    if (JSON.stringify(formData) !== JSON.stringify(storedValue)) {
+      setStoreNewValue(formData);
+    }
+  }, [formData, storedValue, setStoreNewValue]);
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     clearValue()
@@ -69,8 +70,8 @@ const Form = ({ activeStep, setActiveStep }: any) => {
       storageOption: 'Google Drive',
       fullName: '',
       howKnow: '',
-      RecommendationText: '',
-      evidence: [{ name: '', url: '' }],
+      recommendationText: '',
+      portfolio: [{ name: '', url: '' }],
       qualifications: '',
       communicationRating: 0,
       dependabilityRating: 0,

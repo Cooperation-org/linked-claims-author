@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const useLocalStorage = (key, initialValue) => {
-  const [storeNewValue, setStoreNewValue] = useState()
   const [storedValue, setStoredValue] = useState(() => {
     try {
       // Check for item in local storage with key
@@ -9,27 +8,27 @@ const useLocalStorage = (key, initialValue) => {
         const item = window.localStorage.getItem(key)
         return item ? JSON.parse(item) : initialValue
       }
+      return initialValue
     } catch (error) {
-      console.log(':  const[storedValue,setStoredValue]=useState  error', error)
+      console.error('Error accessing localStorage:', error)
       return initialValue
     }
   })
 
-  useEffect(() => {
-    if (storeNewValue) {
-      try {
+  const setValue = value => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value
+      console.log('Setting value:', valueToStore)
+      if (JSON.stringify(valueToStore) !== JSON.stringify(storedValue)) {
+        setStoredValue(valueToStore)
         if (typeof window !== 'undefined') {
-          const valueToStore =
-            storeNewValue instanceof Function ? storeNewValue(storedValue) : storeNewValue
-          setStoreNewValue(null)
-          setStoredValue(valueToStore)
           window.localStorage.setItem(key, JSON.stringify(valueToStore))
         }
-      } catch (error) {
-        console.log(':  useEffect  error', error)
       }
+    } catch (error) {
+      console.error('Error setting value in localStorage:', error)
     }
-  }, [storeNewValue, key, storedValue])
+  }
 
   const clearValue = () => {
     if (typeof window !== 'undefined') {
@@ -40,9 +39,10 @@ const useLocalStorage = (key, initialValue) => {
         window.localStorage.clear()
       }
     }
+    setStoredValue(initialValue)
   }
 
-  return [storedValue, setStoreNewValue, clearValue]
+  return [storedValue, setValue, clearValue]
 }
 
 export default useLocalStorage

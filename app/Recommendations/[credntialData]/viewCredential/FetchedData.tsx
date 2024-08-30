@@ -19,7 +19,7 @@ interface FetchedDataProps {
 
 const FetchedData: React.FC<FetchedDataProps> = ({
   setFullName,
-  setEmail = () => {}
+  setEmail = () => { }
 }) => {
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
@@ -38,7 +38,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
       const decodedLink = decodeURIComponent(params.credntialData as any)
       console.log('Decoded Link:', decodedLink) // Log the decoded link
 
-      const fileIdMatch = decodedLink.match(/\/d\/([a-zA-Z0-9_-]+)/)
+      const fileIdMatch = RegExp(/\/d\/([a-zA-Z0-9_-]+)/).exec(decodedLink)
       const fileId = fileIdMatch ? fileIdMatch[1] : null
       console.log('Extracted File ID:', fileId) // Log the extracted file ID
 
@@ -143,7 +143,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                   {driveData.credentialSubject?.portfolio?.map(
                     (porto: { url: string; name: string }) => (
                       <li key={porto.url}>
-                        <Link href={porto.url}>{porto.name}</Link>
+                        <Link href={porto.url} target='_blank'>{porto.name}</Link>
                       </li>
                     )
                   )}
