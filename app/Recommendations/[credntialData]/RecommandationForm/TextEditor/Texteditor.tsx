@@ -1,8 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { Box, FormLabel } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
+import { Box } from '@mui/material'
 import './TextEditor.css'
 import Quill from 'quill'
 const Delta = Quill.import('delta')
@@ -12,7 +11,7 @@ interface TextEditorProps {
   onChange: (value: any) => void
   placeholder?: string
 }
-
+// ignore this warning "This assertion is unnecessary since it does not change the type of the expression."
 const Clipboard = Quill.import('modules/clipboard') as any
 
 class PlainClipboard extends Clipboard {
@@ -37,7 +36,6 @@ Quill.register('modules/clipboard', PlainClipboard, true)
 
 const TextEditor = forwardRef(
   ({ value, onChange, placeholder }: TextEditorProps, ref) => {
-    const theme = useTheme()
     const quillRef = useRef<ReactQuill>(null)
 
     const handleChange = (content: string) => {
