@@ -6,7 +6,7 @@ import { useTheme } from '@mui/material/styles'
 import { nextButtonStyle } from '../../../components/Styles/appStyles'
 import { SVGCheckMarks } from '../../../Assets/SVGs'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import { featuresRecommentations } from '../RecommandationForm/fromTexts & stepTrack/FormTextSteps'
+import { featuresRecommentations } from '../RecommandationForm/fromTexts/FormTextSteps'
 import FetchedData from './FetchedData'
 
 const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) => {

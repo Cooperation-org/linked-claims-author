@@ -16,7 +16,8 @@ import {
   InstagramSVG,
   LinkedinSVG,
   MailSVG,
-  MessageCircleSVG
+  MessageCircleSVG,
+  CopySVG
 } from '../../../Assets/SVGs'
 import copy from '../../../Assets/SVGs/copy.svg'
 
@@ -160,7 +161,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                   <InputAdornment position='start'>
                     <Box>
                       <Button onClick={() => copyFormValuesToClipboard(link)}>
-                        <Image src={copy} alt='copyIcon' />
+                        <CopySVG />
                       </Button>
                     </Box>
                   </InputAdornment>
