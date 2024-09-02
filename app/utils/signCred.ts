@@ -1,21 +1,26 @@
-import {
-  saveToGoogleDrive,
-  CredentialEngine,
-  StorageContext,
-  StorageFactory
-} from 'trust_storage'
+import { saveToGoogleDrive, CredentialEngine, GoogleDriveStorage } from 'trust_storage'
 
-export async function createDIDWithMetaMask(
-  accessToken: string,
-  metaMaskAddress: string
-) {
-  const credentialEngine = new CredentialEngine(accessToken)
+interface FormDataI {
+  expirationDate: string
+  fullName: string
+  duration: string
+  criteriaNarrative: string
+  achievementDescription: string
+  achievementName: string
+  portfolio: { name: string; url: string }[]
+  evidenceLink: string
+  evidenceDescription: string
+  credentialType: string
+}
+
+export async function createDIDWithMetaMask(metaMaskAddress: string) {
+  const credentialEngine = new CredentialEngine()
   const { didDocument, keyPair } = await credentialEngine.createWalletDID(metaMaskAddress)
   return { didDocument, keyPair, issuerId: didDocument.id }
 }
 
-const createDID = async (accessToken: string) => {
-  const credentialEngine = new CredentialEngine(accessToken)
+const createDID = async () => {
+  const credentialEngine = new CredentialEngine()
   const { didDocument, keyPair } = await credentialEngine.createDID()
   console.log('DID:', didDocument)
   return { didDocument, keyPair, issuerId: didDocument.id }
@@ -31,7 +36,7 @@ const signCred = async (
     throw new Error('Access token is not provided')
   }
   console.log('🚀 ~ data:', data)
-  const formData = {
+  const formData: FormDataI = {
     expirationDate: new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
     ).toISOString(),
@@ -45,11 +50,10 @@ const signCred = async (
     evidenceDescription: data.description,
     credentialType: data.persons
   }
+  console.log('🚀 ~ formData:', formData)
   try {
-    const credentialEngine = new CredentialEngine(accessToken)
-    const storage = new StorageContext(
-      StorageFactory.getStorageStrategy('googleDrive', { accessToken })
-    )
+    const credentialEngine = new CredentialEngine()
+    const storage = new GoogleDriveStorage(accessToken)
     const unsignedVC = await credentialEngine.createUnsignedVC(formData, issuerDid)
     await saveToGoogleDrive(storage, unsignedVC, 'UnsignedVC')
     console.log('Unsigned VC:', unsignedVC)

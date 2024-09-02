@@ -23,14 +23,13 @@ import SuccessPage from './Steps/SuccessPage'
 import { handleNext, handleSign, handleBack } from '../../utils/formUtils'
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { useGoogleSignIn } from '../signing/useGoogleSignIn'
-import { saveToGoogleDrive, StorageContext, StorageFactory } from 'trust_storage'
+import { GoogleDriveStorage, saveToGoogleDrive } from 'trust_storage'
 
 const Form = ({ onStepChange, setactivStep }: any) => {
   const [activeStep, setActiveStep] = useState(0)
   const [link, setLink] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
-  const [finalData, setFinalData] = useState<FormData>()
   const [metamaskAdress, setMetamaskAdress] = useState<string>('')
   const [disabled0, setDisabled0] = React.useState(false)
 
@@ -101,16 +100,14 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       if (
         data.storageOption === options.GoogleDrive ||
         data.storageOption === options.DigitalWallet
-      ) {
-        setFinalData(data)
-        const result = await sign(data)
-      }
+      )
+        await sign(data)
     } catch (error: any) {
       if (error.message === 'MetaMask address could not be retrieved') {
         setErrorMessage('Please make sure you have MetaMask installed and connected.')
         return
       } else {
-        console.error('Error during VC signing:', error)
+        console.log('Error during VC signing:', error)
         setErrorMessage('An error occurred during the signing process.')
       }
     }
@@ -125,17 +122,15 @@ const Form = ({ onStepChange, setactivStep }: any) => {
 
       let newDid
       if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(accessToken, metamaskAdress)
+        newDid = await createDIDWithMetaMask(metamaskAdress)
       } else {
-        newDid = await createDID(accessToken)
+        newDid = await createDID()
       }
       const { didDocument, keyPair, issuerId } = newDid
-      const storageStrategy = StorageFactory.getStorageStrategy('googleDrive', {
-        accessToken
-      })
+      const storage = new GoogleDriveStorage(accessToken)
 
       await saveToGoogleDrive(
-        new StorageContext(storageStrategy),
+        storage,
         {
           didDocument,
           keyPair
