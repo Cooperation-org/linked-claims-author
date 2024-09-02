@@ -13,14 +13,17 @@ interface FormDataI {
   credentialType: string
 }
 
-export async function createDIDWithMetaMask(metaMaskAddress: string) {
-  const credentialEngine = new CredentialEngine()
+export async function createDIDWithMetaMask(
+  metaMaskAddress: string,
+  accessToken: string
+) {
+  const credentialEngine = new CredentialEngine(accessToken)
   const { didDocument, keyPair } = await credentialEngine.createWalletDID(metaMaskAddress)
   return { didDocument, keyPair, issuerId: didDocument.id }
 }
 
-const createDID = async () => {
-  const credentialEngine = new CredentialEngine()
+const createDID = async (accessToken: string) => {
+  const credentialEngine = new CredentialEngine(accessToken)
   const { didDocument, keyPair } = await credentialEngine.createDID()
   console.log('DID:', didDocument)
   return { didDocument, keyPair, issuerId: didDocument.id }
@@ -52,7 +55,7 @@ const signCred = async (
   }
   console.log('🚀 ~ formData:', formData)
   try {
-    const credentialEngine = new CredentialEngine()
+    const credentialEngine = new CredentialEngine(accessToken)
     const storage = new GoogleDriveStorage(accessToken)
     const unsignedVC = await credentialEngine.createUnsignedVC(formData, issuerDid)
     await saveToGoogleDrive(storage, unsignedVC, 'UnsignedVC')

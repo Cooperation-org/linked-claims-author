@@ -122,9 +122,9 @@ const Form = ({ onStepChange }: any) => {
 
       let newDid
       if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(metamaskAdress)
+        newDid = await createDIDWithMetaMask(metamaskAdress, accessToken)
       } else {
-        newDid = await createDID()
+        newDid = await createDID(accessToken)
       }
       const { didDocument, keyPair, issuerId } = newDid
       const storage = new GoogleDriveStorage(accessToken)
