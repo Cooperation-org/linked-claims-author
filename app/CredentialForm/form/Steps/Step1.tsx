@@ -16,7 +16,7 @@ import {
   radioGroupStep1Styles,
   TextFieldStyles,
   textFieldInputProps
-} from '../../Styles/appStyles'
+} from '../../../components/Styles/appStyles'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
 import { FormData } from '../types/Types'
 

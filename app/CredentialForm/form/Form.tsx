@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, Button } from '@mui/material'
+import { FormControl, Box } from '@mui/material'
 import { FormData } from './types/Types'
 import {
   textGuid,
@@ -20,13 +20,14 @@ import { Step5 } from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 // import { useSession } from 'next-auth/react'
-import { handleNext, handleSign, handleBack } from '../../utils/formUtils'
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
-import { useGoogleSignIn } from '../signing/useGoogleSignIn'
 import { GoogleDriveStorage, saveToGoogleDrive } from 'trust_storage'
+import { useGoogleSignIn } from '../../components/signing/useGoogleSignIn'
+import { useStepContext } from './StepContext'
+import { handleSign } from '../../utils/formUtils'
 
-const Form = ({ onStepChange, setactivStep }: any) => {
-  const [activeStep, setActiveStep] = useState(0)
+const Form = ({ onStepChange }: any) => {
+  const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [link, setLink] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
@@ -68,9 +69,8 @@ const Form = ({ onStepChange, setactivStep }: any) => {
   })
 
   useEffect(() => {
-    setactivStep(activeStep)
     onStepChange()
-  }, [activeStep, onStepChange, setactivStep])
+  }, [activeStep])
 
   const costumedHandleNextStep = async () => {
     if (
@@ -82,15 +82,15 @@ const Form = ({ onStepChange, setactivStep }: any) => {
       const signInSuccess = await handleSignIn()
       if (!signInSuccess || !session?.accessToken) return
       setHasSignedIn(true)
-      handleNext(activeStep, setActiveStep)
+      handleNext()
     } else {
-      handleNext(activeStep, setActiveStep)
+      handleNext()
     }
   }
 
   const costumedHandleBackStep = async () => {
     if (activeStep > 0) {
-      setActiveStep(activeStep - 1)
+      handleBack()
       await trigger()
     }
   }
@@ -122,9 +122,9 @@ const Form = ({ onStepChange, setactivStep }: any) => {
 
       let newDid
       if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(metamaskAdress)
+        newDid = await createDIDWithMetaMask(metamaskAdress, accessToken)
       } else {
-        newDid = await createDID()
+        newDid = await createDID(accessToken)
       }
       const { didDocument, keyPair, issuerId } = newDid
       const storage = new GoogleDriveStorage(accessToken)
@@ -210,17 +210,12 @@ const Form = ({ onStepChange, setactivStep }: any) => {
               register={register}
               fields={fields}
               append={append}
-              handleNext={() => handleNext(activeStep, setActiveStep)}
+              handleNext={handleNext}
               errors={errors}
               remove={remove}
             />
           )}
-          {activeStep === 5 && (
-            <Step5
-              register={register}
-              handleNext={() => handleNext(activeStep, setActiveStep)}
-            />
-          )}
+          {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}
           {activeStep === 6 && <DataComponent formData={watch()} />}
           {activeStep === 7 && (
             <SuccessPage
@@ -237,11 +232,7 @@ const Form = ({ onStepChange, setactivStep }: any) => {
         <Buttons
           activeStep={activeStep}
           maxSteps={maxSteps}
-          handleNext={
-            activeStep === 0
-              ? costumedHandleNextStep
-              : () => handleNext(activeStep, setActiveStep)
-          }
+          handleNext={activeStep === 0 ? costumedHandleNextStep : () => handleNext()}
           handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
           handleBack={costumedHandleBackStep}
           isValid={isValid}

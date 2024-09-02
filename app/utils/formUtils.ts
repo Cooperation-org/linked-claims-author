@@ -1,5 +1,6 @@
 'use client'
 
+import { setDefaultHighWaterMark } from 'stream'
 import { GoogleDriveStorage } from 'trust_storage'
 // import { signIn } from 'next-auth/react'  // will use later
 
@@ -42,25 +43,11 @@ export const copyFormValuesToClipboard = (codeToCopy: string) => {
     })
 }
 
-export const handleStepChange = (step: number, setActiveStep: (step: number) => void) => {
-  setActiveStep(step)
-  console.log('Current activeStep:', setActiveStep)
-  console.log('Current step:', step)
-}
-
-export const handleNext = (activeStep: number, setActiveStep: (step: number) => void) => {
-  handleStepChange(activeStep + 1, setActiveStep)
-}
-
 export const handleSign = (
   activeStep: number,
   setActiveStep: (step: number) => void,
   handleFormSubmit: () => void
 ) => {
-  handleStepChange(activeStep + 1, setActiveStep)
+  setActiveStep(activeStep + 1)
   handleFormSubmit()
-}
-
-export const handleBack = (activeStep: number, setActiveStep: (step: number) => void) => {
-  handleStepChange(activeStep - 1, setActiveStep)
 }

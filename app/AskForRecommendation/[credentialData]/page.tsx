@@ -6,7 +6,6 @@ import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
-import { useTheme } from '@mui/material/styles'
 import { styled } from '@mui/material/styles'
 import { FormLabel, TextField, Typography, Checkbox } from '@mui/material'
 import Image from 'next/image'
@@ -28,6 +27,7 @@ import {
 import { useParams } from 'next/navigation'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Link from 'next/link'
+import { useStepContext } from '../../CredentialForm/form/StepContext'
 
 const steps = ['Message', 'Invite', '']
 
@@ -38,7 +38,7 @@ const CustomStep = styled(Step)(({ theme, completed, active }) => ({
 }))
 
 export default function HorizontalLinearStepper() {
-  const [activeStep, setActiveStep] = React.useState(0)
+  const { activeStep, handleNext, handleBack } = useStepContext()
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const [driveData, setDriveData] = React.useState<any>(null)
   console.log(':  FetchedData  driveData', driveData)
@@ -78,16 +78,6 @@ Credential Public Link:   http://localhost:3000/Recommendations/${params.credent
       })
     }
   }, [fileContent])
-
-  const handleNext = () => {
-    if (activeStep === 0) {
-      setActiveStep(prevActiveStep => prevActiveStep + 1)
-    }
-  }
-
-  const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1)
-  }
 
   const {
     reset,
