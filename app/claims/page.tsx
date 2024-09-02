@@ -14,13 +14,13 @@ import {
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { StorageContext, StorageFactory } from 'trust_storage'
 import { SVGBadge, SVGDate } from '../Assets/SVGs'
 import {
   credentialBoxStyles,
   commonTypographyStyles,
   evidenceListStyles
 } from '../components/Styles/appStyles'
+import { GoogleDriveStorage } from 'trust_storage'
 
 // Define types
 interface Claim {
@@ -54,15 +54,13 @@ const ClaimsPage: React.FC = () => {
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [storage, setStorage] = useState<StorageContext | null>(null)
+  const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
 
   useEffect(() => {
     if (accessToken) {
-      const storageInstance = new StorageContext(
-        StorageFactory.getStorageStrategy('googleDrive', { accessToken })
-      )
+      const storageInstance = new GoogleDriveStorage(accessToken)
       setStorage(storageInstance)
     }
   }, [accessToken])
@@ -70,7 +68,7 @@ const ClaimsPage: React.FC = () => {
   const getContent = useCallback(
     async (fileId: string): Promise<ClaimDetail> => {
       if (!storage) throw new Error('Storage is not initialized')
-      const file = await storage.getFileContent(fileId)
+      const file = await storage.retrieve(fileId)
       return file as ClaimDetail
     },
     [storage]
