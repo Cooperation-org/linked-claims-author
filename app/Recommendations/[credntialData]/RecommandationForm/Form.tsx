@@ -22,8 +22,8 @@ const Form = () => {
     storageOption: 'Google Drive',
     fullName: '',
     howKnow: '',
-    RecommendationText: '',
-    evidence: [{ name: '', url: '' }],
+    recommendationText: '',
+    portfolio: [{ name: '', url: '' }],
     qualifications: '',
     communicationRating: 0,
     dependabilityRating: 0,
@@ -56,8 +56,10 @@ const Form = () => {
   const formData = watch()
 
   useEffect(() => {
-    setStoreNewValue(formData)
-  }, [formData])
+    if (JSON.stringify(formData) !== JSON.stringify(storedValue)) {
+      setStoreNewValue(formData);
+    }
+  }, [formData, storedValue, setStoreNewValue]);
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     clearValue()
@@ -65,8 +67,8 @@ const Form = () => {
       storageOption: 'Google Drive',
       fullName: '',
       howKnow: '',
-      RecommendationText: '',
-      evidence: [{ name: '', url: '' }],
+      recommendationText: '',
+      portfolio: [{ name: '', url: '' }],
       qualifications: '',
       communicationRating: 0,
       dependabilityRating: 0,
