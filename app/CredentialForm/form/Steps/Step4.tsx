@@ -12,8 +12,8 @@ import {
   addAnotherIconStyles,
   skipButtonBoxStyles,
   formBoxStyles,
-  formBoxStylesUrl,
-} from '../../Styles/appStyles'
+  formBoxStylesUrl
+} from '../../../components/Styles/appStyles'
 import AddIcon from '@mui/icons-material/Add'
 import ClearIcon from '@mui/icons-material/Clear'
 import { UseFormRegister, FieldErrors, UseFieldArrayAppend } from 'react-hook-form'

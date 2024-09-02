@@ -4,7 +4,6 @@ import React from 'react'
 import { Typography, Box, useMediaQuery, Theme } from '@mui/material'
 import Image from 'next/image'
 import { useTheme } from '@mui/material/styles'
-import { StepTrackShape } from '../../components/form/fromTexts & stepTrack/StepTrackShape'
 import { SVGLargeScreen } from '../../Assets/SVGs'
 import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
 import fram from '../../Assets/Images/Frame 35278.png'
@@ -16,11 +15,13 @@ import {
 import { useState } from 'react'
 import Credential from './viewCredential/Credential'
 import TabsComponent from '../../components/Tabs/Tabs'
+import { StepTrackShape } from '../../CredentialForm/form/fromTexts & stepTrack/StepTrackShape'
+import { useStepContext } from '../../CredentialForm/form/StepContext'
 
 const CredntialData = ({ params }: { params: { credntialData: any } }) => {
+  const { activeStep, setActiveStep } = useStepContext()
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  const [activeStep, setActiveStep] = useState(0)
   const [fullName, setFullName] = useState('Golda')
 
   return (
@@ -42,7 +43,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
           mb: '20px'
         }}
       >
-        <StepTrackShape activeStep={activeStep} />
+        <StepTrackShape />
         <Box
           sx={{
             position: 'relative',
@@ -74,12 +75,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
               activeStep={activeStep}
               activeText={textGuid(fullName)[activeStep]}
             />
-            <TabsComponent
-              setFullName={setFullName}
-              fullName={fullName}
-              setactivStep={setActiveStep}
-              activeStep={activeStep}
-            />
+            <TabsComponent setFullName={setFullName} fullName={fullName} />
           </>
         )}
       </Box>

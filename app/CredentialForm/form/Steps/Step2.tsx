@@ -7,7 +7,7 @@ import {
   TextFieldStyles,
   formLabelStyles,
   formLabelSpanStyles
-} from '../../Styles/appStyles'
+} from '../../../components/Styles/appStyles'
 import TextEditor from '../TextEditor/Texteditor'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
 import { FormData } from '../types/Types'

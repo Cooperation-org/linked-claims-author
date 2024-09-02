@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Typography } from '@mui/material'
-import { FormData } from '../../../components/form/types/Types'
+import { FormData } from '../../../CredentialForm/form/types/Types'
 import {
   textGuid,
   NoteText,
   SuccessText,
-  StorageText,
-  FormTextSteps
+  StorageText
 } from './fromTexts & stepTrack/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
@@ -16,11 +15,13 @@ import Step4 from './Steps/Step4'
 import DataPreview from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
-import { handleNext, handleBack, handleSign } from '../../../utils/formUtils'
 import useLocalStorage from '../../../hooks/useLocalStorage'
 import FetchedData from '../viewCredential/FetchedData'
+import { useStepContext } from '../../../CredentialForm/form/StepContext'
+import { handleSign } from '../../../utils/formUtils'
 
-const Form = ({ activeStep, setActiveStep }: any) => {
+const Form = () => {
+  const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [fullName, setFullName] = useState('Golda')
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
@@ -108,11 +109,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
         <Box sx={{ width: { xs: '100%', md: '50%' } }}>
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 1 && (
-              <Step1
-                watch={watch}
-                setValue={setValue}
-                handleNext={() => handleNext(activeStep, setActiveStep)}
-              />
+              <Step1 watch={watch} setValue={setValue} handleNext={handleNext} />
             )}
             {activeStep === 2 && (
               <Step2
@@ -134,8 +131,8 @@ const Form = ({ activeStep, setActiveStep }: any) => {
                 handleTextEditorChange={(field: string, value: any) =>
                   setValue(field, value)
                 }
-                handleNext={() => handleNext(activeStep, setActiveStep)}
-                handleBack={() => handleBack(activeStep, setActiveStep)}
+                handleNext={handleNext}
+                handleBack={handleBack}
               />
             )}
             {activeStep === 4 && (
@@ -154,9 +151,9 @@ const Form = ({ activeStep, setActiveStep }: any) => {
           <Buttons
             activeStep={activeStep}
             maxSteps={textGuid(fullName).length}
-            handleNext={() => handleNext(activeStep, setActiveStep)}
+            handleNext={handleNext}
             handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
-            handleBack={() => handleBack(activeStep, setActiveStep)}
+            handleBack={handleBack}
             isValid={isValid}
           />
         )}
@@ -164,7 +161,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
           <Buttons
             activeStep={activeStep}
             maxSteps={textGuid.length}
-            handleNext={() => handleNext(activeStep, setActiveStep)}
+            handleNext={handleNext}
             handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
             handleBack={undefined}
             isValid={isValid}

@@ -11,7 +11,7 @@ import {
   commonBoxStyles,
   evidenceListStyles,
   credentialBoxStyles
-} from '../../Styles/appStyles'
+} from '../../../components/Styles/appStyles'
 
 interface DataPreviewProps {
   formData: FormData

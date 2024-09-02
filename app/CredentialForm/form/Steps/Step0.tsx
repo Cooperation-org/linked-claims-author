@@ -1,7 +1,11 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { Radio, RadioGroup, FormControlLabel, Box, Tooltip } from '@mui/material'
-import { boxStyles, radioCheckedStyles, radioGroupStyles } from '../../Styles/appStyles'
+import {
+  boxStyles,
+  radioCheckedStyles,
+  radioGroupStyles
+} from '../../../components/Styles/appStyles'
 import { Dropbox, GoogleDrive, DigitalWallet } from '../../../Assets/SVGs'
 import { useMetaMask } from '../../../hooks/useMetaMask'
 
