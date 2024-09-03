@@ -23,7 +23,7 @@ import {
   skipButtonStyles
 } from '../../../../components/Styles/appStyles'
 import TextEditor from '../TextEditor/Texteditor'
-import { FormData } from '../../../../components/form/types/Types'
+import { FormData } from '../../../../CredentialForm/form/types/Types'
 import ClearIcon from '@mui/icons-material/Clear'
 import AddIcon from '@mui/icons-material/Add'
 
@@ -145,16 +145,24 @@ const Step3: React.FC<Step3Props> = ({
                 helperText={urlError}
               />
             </Box>
-            <Box sx={{ bgcolor: theme.palette.t3LightGray }} width={'100%'} height={'1px'}></Box>
+            <Box
+              sx={{ bgcolor: theme.palette.t3LightGray }}
+              width={'100%'}
+              height={'1px'}
+            ></Box>
           </React.Fragment>
         ))}
         {fields.length < 5 && (
           <Box sx={addAnotherBoxStyles}>
             <Button
               type='button'
-              onClick={() => append({ name: '', url: '' })}  // Appending a new empty object for additional fields
+              onClick={() => append({ name: '', url: '' })} // Appending a new empty object for additional fields
               sx={addAnotherButtonStyles(theme)}
-              endIcon={<Box sx={addAnotherIconStyles}><AddIcon /></Box>}
+              endIcon={
+                <Box sx={addAnotherIconStyles}>
+                  <AddIcon />
+                </Box>
+              }
             >
               Add another
             </Button>

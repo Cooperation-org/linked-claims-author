@@ -1,11 +1,7 @@
 'use client'
 
 import React from 'react'
-import {
-  Box,
-  Typography,
-  FormLabel,
-} from '@mui/material'
+import { Box, Typography, FormLabel } from '@mui/material'
 import {
   UseFormRegister,
   FieldErrors,
@@ -13,7 +9,7 @@ import {
   UseFormSetValue
 } from 'react-hook-form'
 import TextEditor from '../TextEditor/Texteditor'
-import { FormData } from '../../../../components/form/types/Types'
+import { FormData } from '../../../../CredentialForm/form/types/Types'
 
 interface Step4Props {
   register: UseFormRegister<FormData>
