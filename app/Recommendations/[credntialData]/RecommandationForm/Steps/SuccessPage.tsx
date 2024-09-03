@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, Typography, Button } from '@mui/material'
-import Image from 'next/image'
-import BadgeIcon from '../../../../Assets/SVGs/Badge.svg'
+import { SVGBadge } from '../../../../Assets/SVGs'
 
 const SuccessPage = () => {
   return (
@@ -67,7 +66,7 @@ const SuccessPage = () => {
             zIndex: 1
           }}
         >
-          <Image src={BadgeIcon} alt='Badge' layout='fill' objectFit='contain' />
+          <SVGBadge />
         </Box>
         <Typography sx={{ position: 'relative', letterSpacing: '0.06px', zIndex: 1 }}>
           Carol Taylor vouched for Alice Parker.
