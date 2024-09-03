@@ -1,4 +1,8 @@
-import { saveToGoogleDrive, CredentialEngine, GoogleDriveStorage } from 'trust_storage'
+import {
+  saveToGoogleDrive,
+  CredentialEngine,
+  GoogleDriveStorage
+} from '@cooperation/vc-storage'
 
 interface FormDataI {
   expirationDate: string
@@ -13,17 +17,14 @@ interface FormDataI {
   credentialType: string
 }
 
-export async function createDIDWithMetaMask(
-  metaMaskAddress: string,
-  accessToken: string
-) {
-  const credentialEngine = new CredentialEngine(accessToken)
+export async function createDIDWithMetaMask(metaMaskAddress: string) {
+  const credentialEngine = new CredentialEngine()
   const { didDocument, keyPair } = await credentialEngine.createWalletDID(metaMaskAddress)
   return { didDocument, keyPair, issuerId: didDocument.id }
 }
 
-const createDID = async (accessToken: string) => {
-  const credentialEngine = new CredentialEngine(accessToken)
+const createDID = async () => {
+  const credentialEngine = new CredentialEngine()
   const { didDocument, keyPair } = await credentialEngine.createDID()
   console.log('DID:', didDocument)
   return { didDocument, keyPair, issuerId: didDocument.id }
@@ -55,7 +56,7 @@ const signCred = async (
   }
   console.log('🚀 ~ formData:', formData)
   try {
-    const credentialEngine = new CredentialEngine(accessToken)
+    const credentialEngine = new CredentialEngine()
     const storage = new GoogleDriveStorage(accessToken)
     const unsignedVC = await credentialEngine.createUnsignedVC(formData, issuerDid)
     await saveToGoogleDrive(storage, unsignedVC, 'UnsignedVC')

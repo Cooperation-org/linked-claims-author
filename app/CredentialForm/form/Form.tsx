@@ -21,7 +21,7 @@ import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 // import { useSession } from 'next-auth/react'
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
-import { GoogleDriveStorage, saveToGoogleDrive } from 'trust_storage'
+import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { useGoogleSignIn } from '../../components/signing/useGoogleSignIn'
 import { useStepContext } from './StepContext'
 import { handleSign } from '../../utils/formUtils'
@@ -122,9 +122,9 @@ const Form = ({ onStepChange }: any) => {
 
       let newDid
       if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(metamaskAdress, accessToken)
+        newDid = await createDIDWithMetaMask(metamaskAdress)
       } else {
-        newDid = await createDID(accessToken)
+        newDid = await createDID()
       }
       const { didDocument, keyPair, issuerId } = newDid
       const storage = new GoogleDriveStorage(accessToken)
