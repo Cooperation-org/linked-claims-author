@@ -262,7 +262,12 @@ const Page = () => {
           {features.map(feature => (
             <Box
               key={feature.id}
-              sx={{ display: 'flex', gap: '15px', width: '100%', maxWidth: '321px' }}
+              sx={{
+                display: 'flex',
+                gap: '15px',
+                width: '100%',
+                maxWidth: '321px'
+              }}
             >
               <SVGCheckMarks />
               <Typography
