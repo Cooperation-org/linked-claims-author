@@ -8,7 +8,7 @@ import {
   TextFieldStyles,
   formLabelStyles,
   skipButtonBoxStyles
-} from '../../Styles/appStyles'
+} from '../../../components/Styles/appStyles'
 import { UseFormRegister } from 'react-hook-form'
 import { FormData } from '../types/Types'
 // import { handleUrlValidation } from '../../../utils/urlValidation'

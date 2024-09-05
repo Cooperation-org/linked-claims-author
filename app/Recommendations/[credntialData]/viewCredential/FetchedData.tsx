@@ -19,7 +19,7 @@ interface FetchedDataProps {
 
 const FetchedData: React.FC<FetchedDataProps> = ({
   setFullName,
-  setEmail = () => {}
+  setEmail = () => { }
 }) => {
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
@@ -146,6 +146,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                         <Link href={porto.url} target='_blank'>
                           {porto.name}
                         </Link>
+
                       </li>
                     )
                   )}

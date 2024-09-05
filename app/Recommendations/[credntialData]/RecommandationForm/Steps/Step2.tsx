@@ -4,7 +4,7 @@ import React from 'react'
 import { Box, FormLabel, TextField } from '@mui/material'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
 import TextEditor from '../TextEditor/Texteditor'
-import { FormData } from '../../../../components/form/types/Types'
+import { FormData } from '../../../../CredentialForm/form/types/Types'
 import {
   formLabelStyles,
   formLabelSpanStyles,

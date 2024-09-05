@@ -20,7 +20,7 @@ import {
   commonTypographyStyles,
   evidenceListStyles
 } from '../components/Styles/appStyles'
-import { GoogleDriveStorage } from 'trust_storage'
+import { GoogleDriveStorage } from '@cooperation/vc-storage'
 
 // Define types
 interface Claim {

@@ -16,24 +16,26 @@ import {
   InstagramSVG,
   LinkedinSVG,
   MailSVG,
-  MessageCircleSVG
+  MessageCircleSVG,
+  CopySVG
 } from '../../../Assets/SVGs'
 import copy from '../../../Assets/SVGs/copy.svg'
-import {
-  successPageContainerStyles,
-  successPageHeaderStyles,
-  successPageTitleStyles,
-  successPageInfoStyles,
-  successPageDateStyles,
-  successPageShareStyles,
-  successPageIconContainerStyles,
-  successPageCopyLinkStyles,
-  successPageTextFieldStyles
-} from '../../Styles/appStyles'
+
 import { FormData } from '../types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
+import {
+  successPageContainerStyles,
+  successPageShareStyles,
+  successPageIconContainerStyles,
+  successPageHeaderStyles,
+  successPageTitleStyles,
+  successPageInfoStyles,
+  successPageDateStyles,
+  successPageCopyLinkStyles,
+  successPageTextFieldStyles
+} from '../../../components/Styles/appStyles'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
@@ -159,7 +161,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                   <InputAdornment position='start'>
                     <Box>
                       <Button onClick={() => copyFormValuesToClipboard(link)}>
-                        <Image src={copy} alt='copyIcon' />
+                        <CopySVG />
                       </Button>
                     </Box>
                   </InputAdornment>

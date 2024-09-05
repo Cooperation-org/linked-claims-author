@@ -7,16 +7,15 @@ import fram from '../Assets/Images/Frame 35278.png'
 import vector from '../Assets/Images/Vector 145.png'
 import img3 from '../Assets/Images/Tessa Persona large sceens.png'
 import { SVGLargeScreen } from '../Assets/SVGs'
-import { StepTrackShape } from '../components/form/fromTexts & stepTrack/StepTrackShape'
+import { StepTrackShape } from '../CredentialForm/form/fromTexts & stepTrack/StepTrackShape'
 import dynamic from 'next/dynamic'
 
-const DynamicForm = dynamic(() => import('../components/form/Form'), {
+const DynamicForm = dynamic(() => import('../CredentialForm/form/Form'), {
   ssr: false,
   loading: () => <p></p>
 })
 
 const FormComponent = () => {
-  const [activStep, setactivStep] = useState(0)
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const formRef = useRef<HTMLDivElement>(null)
@@ -49,7 +48,7 @@ const FormComponent = () => {
           overflow: 'hidden'
         }}
       >
-        <StepTrackShape activeStep={activStep} />
+        <StepTrackShape />
         <Box
           sx={{
             position: 'relative',
@@ -71,7 +70,7 @@ const FormComponent = () => {
           </Box>
         </Box>
       </Box>
-      <DynamicForm onStepChange={handleScrollToTop} setactivStep={setactivStep} />
+      <DynamicForm onStepChange={handleScrollToTop} />
       {!isLargeScreen && (
         <Box
           sx={{

@@ -7,6 +7,7 @@ import { CssBaseline, ThemeProvider, Box } from '@mui/material'
 import Footer from './components/footer/Footer'
 import Theme from './theme'
 import Head from 'next/head'
+import { StepProvider } from './CredentialForm/form/StepContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,9 +25,11 @@ export default function RootLayout({
         </Head>
         <body>
           <Providers>
-            <NavBar />
+            <StepProvider>
+              <NavBar />
             <Box sx={{ minHeight: 'calc(100vh - 190px)' }}>{children}</Box>
-            <Footer />
+              <Footer />
+            </StepProvider>
           </Providers>
         </body>
       </html>

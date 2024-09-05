@@ -1,10 +1,7 @@
 import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography } from '@mui/material'
-import Image from 'next/image'
-import LinkedinImage from '../../Assets/SVGs/linkedin.svg'
-import TwitterImage from '../../Assets/SVGs/twitter.svg'
-import InstagramImage from '../../Assets/SVGs/instagram.svg'
+import { InstagramSVG, TwitterSVG, LinkedinSVG } from '../../Assets/SVGs'
 
 const Footer = () => {
   const theme = useTheme()
@@ -47,7 +44,7 @@ const Footer = () => {
               alignItems: 'center'
             }}
           >
-            <Image src={TwitterImage} alt='TwitterImage' />
+            <TwitterSVG />
           </Box>
           <Box
             sx={{
@@ -60,7 +57,7 @@ const Footer = () => {
               alignItems: 'center'
             }}
           >
-            <Image src={LinkedinImage} alt='LinkedinImage' />
+            <LinkedinSVG />
           </Box>
           <Box
             sx={{
@@ -73,7 +70,7 @@ const Footer = () => {
               alignItems: 'center'
             }}
           >
-            <Image src={InstagramImage} alt='InstagramImage' />
+            <InstagramSVG />
           </Box>
         </Box>
         <Box sx={{ display: 'flex', gap: '28px' }}>

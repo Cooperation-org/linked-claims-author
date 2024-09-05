@@ -1,4 +1,8 @@
-import { saveToGoogleDrive, CredentialEngine, GoogleDriveStorage } from 'trust_storage'
+import {
+  saveToGoogleDrive,
+  CredentialEngine,
+  GoogleDriveStorage
+} from '@cooperation/vc-storage'
 
 interface FormDataI {
   expirationDate: string
