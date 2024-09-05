@@ -19,12 +19,13 @@ import { Step4 } from './Steps/Step4'
 import { Step5 } from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
-// import { useSession } from 'next-auth/react'
+
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { useGoogleSignIn } from '../../components/signing/useGoogleSignIn'
 import { useStepContext } from './StepContext'
 import { handleSign } from '../../utils/formUtils'
+import { signAndSaveOnDevice } from '../../utils/saveOnDevice'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
@@ -102,6 +103,9 @@ const Form = ({ onStepChange }: any) => {
         data.storageOption === options.DigitalWallet
       )
         await sign(data)
+      else if (data.storageOption === options.Device) {
+        signAndSaveOnDevice(data)
+      }
     } catch (error: any) {
       if (error.message === 'MetaMask address could not be retrieved') {
         setErrorMessage('Please make sure you have MetaMask installed and connected.')
@@ -224,6 +228,7 @@ const Form = ({ onStepChange }: any) => {
               reset={reset}
               link={link}
               setLink={setLink}
+              storageOption={watch('storageOption')}
             />
           )}
         </FormControl>
