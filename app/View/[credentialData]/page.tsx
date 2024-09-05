@@ -47,7 +47,7 @@ const Page = () => {
   return (
     <Box
       sx={{
-        minHeight: 'calc(100vh - 153px)',
+        minHeight: 'calc(100vh - 190px)',
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',

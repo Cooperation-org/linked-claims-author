@@ -6,8 +6,7 @@ import {
   textGuid,
   NoteText,
   SuccessText,
-  StorageText,
-  FormTextSteps
+  StorageText
 } from './fromTexts & stepTrack/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
@@ -139,12 +138,7 @@ const Form = ({ activeStep, setActiveStep }: any) => {
               />
             )}
             {activeStep === 4 && (
-              <Step4
-                register={register}
-                watch={watch}
-                setValue={setValue}
-                errors={errors}
-              />
+              <Step4 watch={watch} setValue={setValue} errors={errors} />
             )}
             {activeStep === 5 && <DataPreview formData={watch() as any} />}
             {activeStep === 6 && <SuccessPage />}

@@ -6,7 +6,7 @@ import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
-import { useTheme } from '@mui/material/styles'
+import { useSession } from 'next-auth/react'
 import { styled } from '@mui/material/styles'
 import { FormLabel, TextField, Typography, Checkbox } from '@mui/material'
 import Image from 'next/image'
@@ -27,7 +27,6 @@ import {
 } from '../../components/Styles/appStyles'
 import { useParams } from 'next/navigation'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
-import Link from 'next/link'
 
 const steps = ['Message', 'Invite', '']
 
@@ -42,6 +41,8 @@ export default function HorizontalLinearStepper() {
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const [driveData, setDriveData] = React.useState<any>(null)
   console.log(':  FetchedData  driveData', driveData)
+  const { data: session } = useSession()
+  const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
   const params = useParams()
   const { fetchFileContent, fileContent, gapiLoaded } = useGoogleDrive()
   const imageLink =
@@ -113,11 +114,19 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
     mode: 'onChange'
   })
 
+  const handleCheckboxChange = (event: any) => {
+    setSendCopyToSelf(event.target.checked)
+  }
+  const mailToLink = `mailto:${watch('email')}${
+    sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
+  }?subject=Support Request: ${
+    driveData?.credentialSubject?.achievement[0]?.name || ''
+  }&body=${encodeURIComponent(watch('reference'))}`
+
   return (
     <Box
       sx={{
-        minHeight: 'calc(100vh - 153px)',
-
+        minHeight: 'calc(100vh - 190px)',
         overflow: 'auto',
         mb: '30px'
       }}
@@ -205,7 +214,7 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
             {activeStep === 0 && (
               <Box position='relative' width='100%'>
                 <FormLabel sx={formLabelStyles} id='description-label'>
-                  Write a message asking for a reference:
+                  Write a message asking for a reference:{' '}
                   <span style={{ color: 'red' }}>*</span>
                 </FormLabel>
                 <CustomTextField
@@ -221,32 +230,43 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                   error={!!errors.reference}
                 />
                 <Box sx={{ ...successPageHeaderStyles, mt: '30px' }}>
-                  <Box
-                    sx={{
-                      borderRadius: '20px 0px 0px 20px',
-                      width: '100px',
-                      height: '100px'
-                    }}
-                  >
-                    <img
-                      style={{
-                        borderRadius: '20px 0px 0px 20px',
-                        width: '100px',
-                        height: '100px'
-                      }}
-                      src={imageLink}
-                      alt='logo'
-                    />
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography sx={successPageTitleStyles}>
-                      {driveData?.credentialSubject?.achievement[0]?.name}
-                    </Typography>
-                    <Box sx={successPageInfoStyles}>
-                      <SVGDate />
-                      <Typography sx={successPageDateStyles}>{'4 Days'}</Typography>
+                  {driveData?.credentialSubject?.evidenceLink && (
+                    <Box sx={{ display: 'flex' }}>
+                      <Box
+                        sx={{
+                          borderRadius: '20px 0px 0px 20px',
+                          width: '100px',
+                          height: '100px'
+                        }}
+                      >
+                        <img
+                          style={{
+                            borderRadius: '20px 0px 0px 20px',
+                            width: '100px',
+                            height: '100px',
+                            objectFit: 'cover'
+                          }}
+                          src={driveData?.credentialSubject?.evidenceLink || imageLink}
+                          alt={driveData?.credentialSubject?.name || 'Evidence Image'}
+                        />
+                      </Box>
+                      <Box sx={{ flex: 1, ml: 2, mt: 1 }}>
+                        <Typography sx={successPageTitleStyles}>
+                          {driveData?.credentialSubject?.name || 'Unknown Name'}
+                        </Typography>
+                        <Typography sx={successPageTitleStyles}>
+                          {driveData?.credentialSubject?.achievement[0]?.name ||
+                            'Unknown Achievement'}
+                        </Typography>
+                        <Box sx={successPageInfoStyles}>
+                          <SVGDate />
+                          <Typography sx={successPageDateStyles}>
+                            {driveData?.credentialSubject?.duration || 'Unknown Duration'}
+                          </Typography>
+                        </Box>
+                      </Box>
                     </Box>
-                  </Box>
+                  )}
                 </Box>
               </Box>
             )}
@@ -257,10 +277,9 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                 width='100%'
               >
                 <FormLabel sx={formLabelStyles} id='description-label'>
-                  Who would you like to send this to?
+                  Who would you like to send this to?{' '}
                   <span style={{ color: 'red' }}>*</span>
                 </FormLabel>
-
                 <TextField
                   {...register('firstName')}
                   sx={TextFieldStyles}
@@ -272,7 +291,7 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                   {...register('lastName')}
                   sx={TextFieldStyles}
                   id='outlined-basic'
-                  label='Second Nam'
+                  label='Second Name'
                   variant='outlined'
                 />
                 <TextField
@@ -283,7 +302,11 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                   variant='outlined'
                 />
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Checkbox {...label} />
+                  <Checkbox
+                    {...label}
+                    checked={sendCopyToSelf}
+                    onChange={handleCheckboxChange}
+                  />
                   <Typography
                     sx={{
                       color: '#000',
@@ -299,60 +322,53 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
               </Box>
             )}
           </form>
-          <React.Fragment>
-            <Box
-              sx={{
-                width: { xs: '100%' },
-                height: '40px',
-                display: 'flex',
-                gap: '15px',
-                justifyContent: 'space-between',
-                p: '0 10px'
-              }}
+          <Box
+            sx={{
+              width: { xs: '100%' },
+              height: '40px',
+              display: 'flex',
+              gap: '15px',
+              justifyContent: 'space-between',
+              p: '0 10px'
+            }}
+          >
+            <Button
+              sx={StyledButton}
+              onClick={handleBack}
+              disabled={activeStep === 0}
+              color='secondary'
             >
-              <Button
-                sx={StyledButton}
-                onClick={handleBack}
-                disabled={activeStep === 0}
-                color='secondary'
-              >
-                Back
-              </Button>
+              Back
+            </Button>
 
-              {activeStep === 0 && (
-                <Button
-                  sx={{
-                    ...nextButtonStyle,
-                    maxWidth: '355px'
-                  }}
-                  onClick={handleNext}
-                  color='primary'
-                  disabled={activeStep !== 0}
-                  variant='contained'
-                >
-                  Next
-                </Button>
-              )}
-              {activeStep === 1 && (
-                <Button
-                  sx={{
-                    ...nextButtonStyle,
-                    maxWidth: '355px'
-                  }}
-                  color='primary'
-                  variant='contained'
-                >
-                  <Link
-                    href={`mailto:${watch('email')}?subject=Support Request: ${
-                      driveData?.credentialSubject?.achievement[0]?.name || ''
-                    }&body=${encodeURIComponent(watch('reference'))}`}
-                  >
-                    Open Mail
-                  </Link>
-                </Button>
-              )}
-            </Box>
-          </React.Fragment>
+            {activeStep === 0 && (
+              <Button
+                sx={{
+                  ...nextButtonStyle,
+                  maxWidth: '355px'
+                }}
+                onClick={handleNext}
+                color='primary'
+                disabled={activeStep !== 0}
+                variant='contained'
+              >
+                Next
+              </Button>
+            )}
+            {activeStep === 1 && (
+              <Button
+                sx={{
+                  ...nextButtonStyle,
+                  maxWidth: '355px'
+                }}
+                color='primary'
+                variant='contained'
+                onClick={() => (window.location.href = mailToLink)}
+              >
+                Open Mail
+              </Button>
+            )}
+          </Box>
         </Box>
       </Box>
     </Box>

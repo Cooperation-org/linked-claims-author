@@ -43,17 +43,22 @@ const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) =
       >
         Here’s what you may need before getting started:
       </Typography>
-      <Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: '210px' }}>
         {featuresRecommentations(fullName).map((feature: { id: any; name: any }) => (
           <Box
             key={feature.id}
-            sx={{ display: 'flex', width: '100%', maxWidth: '321px', ml: '30px' }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              width: '100%'
+            }}
           >
             <SVGCheckMarks />
             <Typography
               sx={{
                 color: theme.palette.t3BodyText,
-                flexShrink: 0,
+                flexShrink: 1,
                 fontFamily: 'Lato',
                 fontSize: '18px',
                 fontWeight: '400',
