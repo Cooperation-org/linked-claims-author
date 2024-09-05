@@ -1,6 +1,6 @@
 'use client'
 import { useTheme } from '@mui/material/styles'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useRef } from 'react'
 import Image from 'next/image'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
 import fram from '../Assets/Images/Frame 35278.png'
@@ -33,7 +33,7 @@ const FormComponent = () => {
     <Box
       ref={formRef}
       sx={{
-        minHeight: 'calc(100vh - 153px)',
+        minHeight: 'calc(100vh - 190px)',
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',

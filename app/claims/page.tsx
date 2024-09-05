@@ -76,7 +76,7 @@ const ClaimsPage: React.FC = () => {
 
   const getAllClaims = useCallback(async (): Promise<any> => {
     if (!storage) throw new Error('Storage is not initialized')
-    const claimsData = (await storage.getAllClaims()) as any
+    const claimsData = await storage.getAllClaims()
     if (!claimsData.files) return []
     const claimsNames: Claim[] = await Promise.all(
       claimsData.files.map(async (claim: any) => {
@@ -142,7 +142,7 @@ const ClaimsPage: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        minHeight: 'calc(100vh - 153px)'
+        minHeight: 'calc(100vh - 190px)'
       }}
     >
       <List>
@@ -190,7 +190,7 @@ const ClaimsPage: React.FC = () => {
                             <Typography
                               sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}
                             >
-                              {detailedClaim?.credentialSubject?.name || ''} has claimed:
+                              {detailedClaim?.credentialSubject?.name ?? ''} has claimed:
                             </Typography>
                           </Box>
                           <Box>
@@ -267,6 +267,26 @@ const ClaimsPage: React.FC = () => {
                                 </ul>
                               </Box>
                             </Box>
+                          </Box>
+                          <Box
+                            sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}
+                          >
+                            <Link
+                              href={`/AskForRecommendation/${encodeURIComponent(
+                                `https://drive.google.com/file/d/${claim.id}/view`
+                              )}`}
+                            >
+                              <Button
+                                variant='contained'
+                                sx={{
+                                  backgroundColor: '#003FE0',
+                                  textTransform: 'none',
+                                  borderRadius: '100px'
+                                }}
+                              >
+                                Ask for a Recommendation
+                              </Button>
+                            </Link>
                           </Box>
                         </>
                       ) : (

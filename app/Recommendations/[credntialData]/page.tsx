@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Typography, Box, useMediaQuery, Theme } from '@mui/material'
 import Image from 'next/image'
 import { useTheme } from '@mui/material/styles'
@@ -9,7 +9,6 @@ import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
 import fram from '../../Assets/Images/Frame 35278.png'
 import vector from '../../Assets/Images/Vector 145.png'
 import { FormTextSteps, textGuid } from './RecommandationForm/fromTexts/FormTextSteps'
-import { useState } from 'react'
 import Credential from './viewCredential/Credential'
 import TabsComponent from '../../components/Tabs/Tabs'
 import { StepTrackShape } from '../../CredentialForm/form/fromTexts & stepTrack/StepTrackShape'
@@ -24,7 +23,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   return (
     <Box
       sx={{
-        minHeight: 'calc(100vh - 153px)',
+        minHeight: 'calc(100vh - 190px)',
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',

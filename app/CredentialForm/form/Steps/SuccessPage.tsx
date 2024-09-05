@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import Image from 'next/image'
 import {
   Typography,
   TextField,
@@ -19,7 +18,6 @@ import {
   MessageCircleSVG,
   CopySVG
 } from '../../../Assets/SVGs'
-import copy from '../../../Assets/SVGs/copy.svg'
 
 import { FormData } from '../types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
@@ -129,7 +127,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                   width: '100px',
                   height: '100px'
                 }}
-                src={formData?.evidenceLink || 'not Valid image'}
+                src={formData?.evidenceLink ?? 'not Valid image'}
                 alt='logo'
               />
             </Box>

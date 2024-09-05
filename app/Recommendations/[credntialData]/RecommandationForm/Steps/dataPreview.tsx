@@ -1,41 +1,35 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Card,
-  Container,
-  Link,
-  Typography,
-} from '@mui/material';
-import { SVGBadge, QuoteSVG } from '../../../../Assets/SVGs';
-import FetchedData from '../../viewCredential/FetchedData';
+import React, { useState } from 'react'
+import { Box, Card, Container, Link, Typography } from '@mui/material'
+import { SVGBadge, QuoteSVG } from '../../../../Assets/SVGs'
+import FetchedData from '../../viewCredential/FetchedData'
 
 interface Evidence {
-  name: string;
-  url: string;
+  name: string
+  url: string
 }
 
 interface FormData {
-  fullName: string;
-  isRecommand: string;
-  explainAnswer: string;
-  howKnow: string;
-  communicationRating: number;
-  dependabilityRating: number;
-  portfolio: Evidence[];
+  fullName: string
+  isRecommand: string
+  explainAnswer: string
+  howKnow: string
+  communicationRating: number
+  dependabilityRating: number
+  portfolio: Evidence[]
 }
 
 interface DataPreviewProps {
-  formData: FormData;
+  formData: FormData
 }
 
 const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
-  const [fetchedName, setFetchedName] = useState<string | null>(null);
+  const [fetchedName, setFetchedName] = useState<string | null>(null)
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth='sm' sx={{ mt: 4, mb: 4 }}>
       <Typography
-        variant="body1"
-        align="center"
+        variant='body1'
+        align='center'
         gutterBottom
         sx={{ fontSize: '16px', letterSpacing: '0.01em', fontFamily: 'Lato' }}
       >
@@ -44,26 +38,26 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
 
       {/* Credential Details from Google Drive */}
       <FetchedData
-        setFullName={(name) => {
-          console.log('Full Name:', name);
-          setFetchedName(name);
+        setFullName={name => {
+          console.log('Full Name:', name)
+          setFetchedName(name)
         }}
-        setEmail={(email) => console.log('Email:', email)}
+        setEmail={email => console.log('Email:', email)}
       />
 
       {/* Vouch Confirmation */}
       {formData.fullName && fetchedName && (
         <Card
-          variant="outlined"
+          variant='outlined'
           sx={{
             p: '10px',
             mb: '10px',
             mt: '10px',
             border: '1px solid #003fe0',
-            borderRadius: '10px',
+            borderRadius: '10px'
           }}
         >
-          <Box display="flex" alignItems="center">
+          <Box display='flex' alignItems='center'>
             <SVGBadge />
             <Typography
               sx={{
@@ -71,7 +65,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
                 fontWeight: '700',
                 ml: '5px',
                 letterSpacing: '0.01em',
-                position: 'relative',
+                position: 'relative'
               }}
             >
               {formData.fullName} vouched for {fetchedName}.
@@ -83,24 +77,24 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
       {/* Quote Section */}
       {formData.explainAnswer && (
         <Card
-          variant="outlined"
+          variant='outlined'
           sx={{
             p: '10px',
             mb: '10px',
             border: '1px solid #003fe0',
-            borderRadius: '10px',
+            borderRadius: '10px'
           }}
         >
-          <Box display="flex" alignItems="center">
+          <Box display='flex' alignItems='center'>
             <QuoteSVG />
             <Typography
-              variant="body2"
+              variant='body2'
               sx={{
                 ml: 1,
                 fontSize: '15px',
                 lineHeight: '24px',
                 color: '#202e5b',
-                letterSpacing: '0.01em',
+                letterSpacing: '0.01em'
               }}
             >
               {formData.explainAnswer.replace(/<\/?[^>]+>/gi, '')}
@@ -112,32 +106,32 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
       {/* How They Know Each Other */}
       {formData.howKnow && (
         <Card
-          variant="outlined"
+          variant='outlined'
           sx={{
             p: '10px',
             mb: '10px',
             border: '1px solid #003fe0',
-            borderRadius: '10px',
+            borderRadius: '10px'
           }}
         >
           <Typography
-            variant="subtitle1"
+            variant='subtitle1'
             sx={{
               fontWeight: 'bold',
               fontSize: '15px',
               letterSpacing: '0.01em',
-              mb: 1,
+              mb: 1
             }}
           >
             How They Know Each Other
           </Typography>
           <Typography
-            variant="body2"
+            variant='body2'
             sx={{
               fontSize: '15px',
               lineHeight: '24px',
               color: '#000e40',
-              letterSpacing: '0.01em',
+              letterSpacing: '0.01em'
             }}
           >
             {formData.howKnow.replace(/<\/?[^>]+>/gi, '')}
@@ -148,20 +142,20 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
       {/* Supporting Evidence */}
       {formData.portfolio && formData.portfolio.length > 0 && (
         <Card
-          variant="outlined"
+          variant='outlined'
           sx={{
             p: '10px',
             border: '1px solid #003fe0',
-            borderRadius: '10px',
+            borderRadius: '10px'
           }}
         >
           <Typography
-            variant="subtitle1"
+            variant='subtitle1'
             sx={{
               fontWeight: 'bold',
               fontSize: '15px',
               letterSpacing: '0.01em',
-              mb: 1,
+              mb: 1
             }}
           >
             Supporting Evidence
@@ -170,14 +164,14 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
             <Box key={item.url} sx={{ mt: 1 }}>
               <Link
                 href={item.url}
-                underline="hover"
-                color="primary"
+                underline='hover'
+                color='primary'
                 sx={{
                   fontSize: '15px',
                   textDecoration: 'underline',
-                  color: '#003fe0',
+                  color: '#003fe0'
                 }}
-                target="_blank"
+                target='_blank'
               >
                 {item.name}
               </Link>
@@ -186,7 +180,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         </Card>
       )}
     </Container>
-  );
-};
+  )
+}
 
-export default DataPreview;
+export default DataPreview

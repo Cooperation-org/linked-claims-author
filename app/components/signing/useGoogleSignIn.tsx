@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
-import { DefaultSession } from 'next-auth'
 
 interface ExtendedSession {
   accessToken?: string
