@@ -272,7 +272,7 @@ const ClaimsPage: React.FC = () => {
                             sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}
                           >
                             <Link
-                              href={`/AskForRecommendation/${encodeURIComponent(
+                              href={`/View/${encodeURIComponent(
                                 `https://drive.google.com/file/d/${claim.id}/view`
                               )}`}
                             >
@@ -284,7 +284,7 @@ const ClaimsPage: React.FC = () => {
                                   borderRadius: '100px'
                                 }}
                               >
-                                Ask for a Recommendation
+                                View Credential
                               </Button>
                             </Link>
                           </Box>
