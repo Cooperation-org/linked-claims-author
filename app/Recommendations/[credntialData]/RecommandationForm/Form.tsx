@@ -57,9 +57,9 @@ const Form = () => {
 
   useEffect(() => {
     if (JSON.stringify(formData) !== JSON.stringify(storedValue)) {
-      setStoreNewValue(formData);
+      setStoreNewValue(formData)
     }
-  }, [formData, storedValue, setStoreNewValue]);
+  }, [formData, storedValue, setStoreNewValue])
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     clearValue()
@@ -133,12 +133,7 @@ const Form = () => {
               />
             )}
             {activeStep === 4 && (
-              <Step4
-                register={register}
-                watch={watch}
-                setValue={setValue}
-                errors={errors}
-              />
+              <Step4 watch={watch} setValue={setValue} errors={errors} />
             )}
             {activeStep === 5 && <DataPreview formData={watch() as any} />}
             {activeStep === 6 && <SuccessPage />}

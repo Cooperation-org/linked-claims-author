@@ -19,7 +19,7 @@ interface FetchedDataProps {
 
 const FetchedData: React.FC<FetchedDataProps> = ({
   setFullName,
-  setEmail = () => { }
+  setEmail = () => {}
 }) => {
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
@@ -143,7 +143,9 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                   {driveData.credentialSubject?.portfolio?.map(
                     (porto: { url: string; name: string }) => (
                       <li key={porto.url}>
-                        <Link href={porto.url} target='_blank'>{porto.name}</Link>
+                        <Link href={porto.url} target='_blank'>
+                          {porto.name}
+                        </Link>
                       </li>
                     )
                   )}

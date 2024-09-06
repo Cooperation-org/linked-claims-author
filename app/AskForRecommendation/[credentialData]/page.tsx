@@ -26,7 +26,7 @@ import {
 } from '../../components/Styles/appStyles'
 import { useParams } from 'next/navigation'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
-import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 import { useStepContext } from '../../CredentialForm/form/StepContext'
 
 const steps = ['Message', 'Invite', '']
@@ -42,6 +42,8 @@ export default function HorizontalLinearStepper() {
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const [driveData, setDriveData] = React.useState<any>(null)
   console.log(':  FetchedData  driveData', driveData)
+  const { data: session } = useSession()
+  const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
   const params = useParams()
   const { fetchFileContent, fileContent, gapiLoaded } = useGoogleDrive()
   const imageLink =
@@ -102,12 +104,19 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
     },
     mode: 'onChange'
   })
+  const handleCheckboxChange = (event: any) => {
+    setSendCopyToSelf(event.target.checked)
+  }
+  const mailToLink = `mailto:${watch('email')}${
+    sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
+  }?subject=Support Request: ${
+    driveData?.credentialSubject?.achievement[0]?.name || ''
+  }&body=${encodeURIComponent(watch('reference'))}`
 
   return (
     <Box
       sx={{
-        minHeight: 'calc(100vh - 153px)',
-
+        minHeight: 'calc(100vh - 190px)',
         overflow: 'auto',
         mb: '30px'
       }}
@@ -195,7 +204,7 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
             {activeStep === 0 && (
               <Box position='relative' width='100%'>
                 <FormLabel sx={formLabelStyles} id='description-label'>
-                  Write a message asking for a reference:
+                  Write a message asking for a reference:{' '}
                   <span style={{ color: 'red' }}>*</span>
                 </FormLabel>
                 <CustomTextField
@@ -211,32 +220,43 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                   error={!!errors.reference}
                 />
                 <Box sx={{ ...successPageHeaderStyles, mt: '30px' }}>
-                  <Box
-                    sx={{
-                      borderRadius: '20px 0px 0px 20px',
-                      width: '100px',
-                      height: '100px'
-                    }}
-                  >
-                    <img
-                      style={{
-                        borderRadius: '20px 0px 0px 20px',
-                        width: '100px',
-                        height: '100px'
-                      }}
-                      src={imageLink}
-                      alt='logo'
-                    />
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography sx={successPageTitleStyles}>
-                      {driveData?.credentialSubject?.achievement[0]?.name}
-                    </Typography>
-                    <Box sx={successPageInfoStyles}>
-                      <SVGDate />
-                      <Typography sx={successPageDateStyles}>{'4 Days'}</Typography>
+                  {driveData?.credentialSubject?.evidenceLink && (
+                    <Box sx={{ display: 'flex' }}>
+                      <Box
+                        sx={{
+                          borderRadius: '20px 0px 0px 20px',
+                          width: '100px',
+                          height: '100px'
+                        }}
+                      >
+                        <img
+                          style={{
+                            borderRadius: '20px 0px 0px 20px',
+                            width: '100px',
+                            height: '100px',
+                            objectFit: 'cover'
+                          }}
+                          src={driveData?.credentialSubject?.evidenceLink || imageLink}
+                          alt={driveData?.credentialSubject?.name || 'Evidence Image'}
+                        />
+                      </Box>
+                      <Box sx={{ flex: 1, ml: 2, mt: 1 }}>
+                        <Typography sx={successPageTitleStyles}>
+                          {driveData?.credentialSubject?.name || 'Unknown Name'}
+                        </Typography>
+                        <Typography sx={successPageTitleStyles}>
+                          {driveData?.credentialSubject?.achievement[0]?.name ||
+                            'Unknown Achievement'}
+                        </Typography>
+                        <Box sx={successPageInfoStyles}>
+                          <SVGDate />
+                          <Typography sx={successPageDateStyles}>
+                            {driveData?.credentialSubject?.duration || 'Unknown Duration'}
+                          </Typography>
+                        </Box>
+                      </Box>
                     </Box>
-                  </Box>
+                  )}
                 </Box>
               </Box>
             )}
@@ -247,10 +267,9 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                 width='100%'
               >
                 <FormLabel sx={formLabelStyles} id='description-label'>
-                  Who would you like to send this to?
+                  Who would you like to send this to?{' '}
                   <span style={{ color: 'red' }}>*</span>
                 </FormLabel>
-
                 <TextField
                   {...register('firstName')}
                   sx={TextFieldStyles}
@@ -262,7 +281,7 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                   {...register('lastName')}
                   sx={TextFieldStyles}
                   id='outlined-basic'
-                  label='Second Nam'
+                  label='Second Name'
                   variant='outlined'
                 />
                 <TextField
@@ -273,7 +292,11 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                   variant='outlined'
                 />
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Checkbox {...label} />
+                  <Checkbox
+                    {...label}
+                    checked={sendCopyToSelf}
+                    onChange={handleCheckboxChange}
+                  />
                   <Typography
                     sx={{
                       color: '#000',
@@ -331,14 +354,9 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                   }}
                   color='primary'
                   variant='contained'
+                  onClick={() => (window.location.href = mailToLink)}
                 >
-                  <Link
-                    href={`mailto:${watch('email')}?subject=Support Request: ${
-                      driveData?.credentialSubject?.achievement[0]?.name || ''
-                    }&body=${encodeURIComponent(watch('reference'))}`}
-                  >
-                    Open Mail
-                  </Link>
+                  Open Mail
                 </Button>
               )}
             </Box>

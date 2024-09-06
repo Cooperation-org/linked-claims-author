@@ -3,14 +3,15 @@ import { useTheme } from '@mui/material/styles'
 import React, { useEffect } from 'react'
 import { Box, Typography, useMediaQuery, Avatar, Button } from '@mui/material'
 import ProfileImageWithLabels from './CredentialForm/ProfileImageWithLabels'
-import SVGDesign, { SVGCheckMarks } from './Assets/SVGs'
-import Image from 'next/image'
-import AddIcon from './Assets/Images/Add_icon.png'
-import {
+import SVGDesign, {
+  SVGCheckMarks,
   TwoPhonesMobileSVG,
   TwoPhonesTabletSVG,
   TwoPhonesDesktopSVG
 } from './Assets/SVGs'
+import Image from 'next/image'
+import AddIcon from './Assets/Images/Add_icon.png'
+
 import {
   testimonials,
   featuresSmallScreen,

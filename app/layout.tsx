@@ -23,11 +23,11 @@ export default function RootLayout({
         <Head>
           <script src='https://accounts.google.com/gsi/client' async defer></script>
         </Head>
-        <body style={{ minHeight: '100vh' }}>
+        <body>
           <Providers>
             <StepProvider>
               <NavBar />
-              <Box sx={{ minHeight: 'calc(100vh - 153px)' }}>{children}</Box>
+              <Box sx={{ minHeight: 'calc(100vh - 190px)' }}>{children}</Box>
               <Footer />
             </StepProvider>
           </Providers>
