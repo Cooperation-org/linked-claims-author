@@ -23,7 +23,7 @@ import {
   skipButtonStyles
 } from '../../../../components/Styles/appStyles'
 import TextEditor from '../TextEditor/Texteditor'
-import { FormData } from '../../../../components/form/types/Types'
+import { FormData } from '../../../../CredentialForm/form/types/Types'
 import ClearIcon from '@mui/icons-material/Clear'
 import AddIcon from '@mui/icons-material/Add'
 
@@ -61,6 +61,11 @@ const Step3: React.FC<Step3Props> = ({
     handleUrlValidation(event, setUrlError)
   }
 
+  const handleEditorChange = (field: string) => (value: string) => {
+    setValue(field, value)
+    handleTextEditorChange(field, value)
+  }
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
@@ -68,8 +73,8 @@ const Step3: React.FC<Step3Props> = ({
           Recommendation Text <span style={{ color: 'red' }}>*</span>
         </FormLabel>
         <TextEditor
-          value={watch('recommendationText')}
-          onChange={value => handleTextEditorChange('RecommendationText', value ?? '')}
+          value={watch('recommendationText') || ''}
+          onChange={handleEditorChange('recommendationText')}
           placeholder='e.g., Golda managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative'
         />
         {errors.recommendationText && (
@@ -85,9 +90,9 @@ const Step3: React.FC<Step3Props> = ({
           qualifications will further increase the value of this recommendation.
         </Typography>
         <TextEditor
-          value={watch('qualifications')}
-          onChange={value => handleTextEditorChange('qualifications', value ?? '')}
-          placeholder='e.g., I managed Golda at a local garden for 2 years where she coordinated weekly gardening workshops and lead a community clean-up initiative.'
+          value={watch('qualifications') || ''}
+          onChange={handleEditorChange('qualifications')}
+          placeholder='e.g., I managed Golda at a local garden for 2 years where she coordinated weekly gardening workshops and led a community clean-up initiative.'
         />
         {errors.qualifications && (
           <Typography color='error'>{errors.qualifications.message}</Typography>
@@ -141,9 +146,7 @@ const Step3: React.FC<Step3Props> = ({
               />
             </Box>
             <Box
-              sx={{
-                bgcolor: theme.palette.t3LightGray
-              }}
+              sx={{ bgcolor: theme.palette.t3LightGray }}
               width={'100%'}
               height={'1px'}
             ></Box>
@@ -153,7 +156,7 @@ const Step3: React.FC<Step3Props> = ({
           <Box sx={addAnotherBoxStyles}>
             <Button
               type='button'
-              onClick={() => append({ name: '', url: '' })}
+              onClick={() => append({ name: '', url: '' })} // Appending a new empty object for additional fields
               sx={addAnotherButtonStyles(theme)}
               endIcon={
                 <Box sx={addAnotherIconStyles}>

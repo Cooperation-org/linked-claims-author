@@ -6,9 +6,11 @@ import ProfileImageWithLabels from './CredentialForm/ProfileImageWithLabels'
 import SVGDesign, { SVGCheckMarks } from './Assets/SVGs'
 import Image from 'next/image'
 import AddIcon from './Assets/Images/Add_icon.png'
-import TwoPhonesM from './Assets/SVGs/TwoPhonesMobile.svg'
-import TwoPhonesT from './Assets/SVGs/TwoPhonesTablet.svg'
-import TwoPhonesD from './Assets/SVGs/TwoPhonesDesktop.svg'
+import {
+  TwoPhonesMobileSVG,
+  TwoPhonesTabletSVG,
+  TwoPhonesDesktopSVG
+} from './Assets/SVGs'
 import {
   testimonials,
   featuresSmallScreen,
@@ -27,19 +29,18 @@ const Page = () => {
   }, [])
   useAutoSignOut()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'))
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
+  const isMediumScreen = useMediaQuery(theme.breakpoints.between('md', 'xl'))
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('xl'))
 
   const features = isSmallScreen ? featuresSmallScreen : featuresLargeScreen
 
-  let selectedImage
-  if (isSmallScreen) {
-    selectedImage = TwoPhonesM
-  } else if (isMediumScreen) {
-    selectedImage = TwoPhonesT
-  } else if (isLargeScreen) {
-    selectedImage = TwoPhonesD
-  }
+  const SelectedImage = isSmallScreen
+    ? TwoPhonesMobileSVG
+    : isMediumScreen
+    ? TwoPhonesTabletSVG
+    : isLargeScreen
+    ? TwoPhonesDesktopSVG
+    : TwoPhonesMobileSVG
 
   return (
     <Box
@@ -229,7 +230,7 @@ const Page = () => {
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
           width: { xs: '321px', md: 'auto' },
-          maxWidth: '898.22px',
+          // maxWidth: '898.22px',
           justifyContent: 'center',
           alignItems: 'center',
           marginTop: { xs: '20px', md: '40px' },
@@ -246,7 +247,7 @@ const Page = () => {
             maxWidth: { xs: '318px', md: '515px' }
           }}
         >
-          <Image src={selectedImage} alt='two phones' />
+          <SelectedImage />
         </Box>
         <Box
           sx={{

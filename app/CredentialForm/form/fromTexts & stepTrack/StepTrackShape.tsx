@@ -2,14 +2,12 @@
 
 import React from 'react'
 import { Box } from '@mui/material'
-
-interface StepTrackShapeProps {
-  activeStep: number
-}
+import { useStepContext } from '../StepContext'
 
 const TOTAL_STEPS = 8
 
-export function StepTrackShape({ activeStep }: Readonly<StepTrackShapeProps>) {
+export function StepTrackShape() {
+  const { activeStep } = useStepContext()
   const renderStepBox = (step: number) => (
     <Box
       key={step}
@@ -19,7 +17,7 @@ export function StepTrackShape({ activeStep }: Readonly<StepTrackShapeProps>) {
         bgcolor:
           activeStep === step ? '#003fe0' : activeStep > step ? '#14b8a6' : '#d1d5db',
         borderRadius: '3px',
-        mt:'20px'
+        mt: '20px'
       }}
     />
   )

@@ -17,18 +17,11 @@ interface TabPanelProps {
 }
 
 interface TabsComponentProps {
-  setactivStep: (step: number) => void
-  activeStep: number
   fullName: string
   setFullName: (name: string) => void
 }
 
-const TabsComponent: React.FC<TabsComponentProps> = ({
-  setactivStep,
-  activeStep,
-  fullName,
-  setFullName
-}) => {
+const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) => {
   const [value, setValue] = useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -55,7 +48,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({
         />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <Form activeStep={activeStep} setActiveStep={setactivStep} />
+        <Form />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <FetchedData setFullName={setFullName} />
