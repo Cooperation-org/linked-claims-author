@@ -2,80 +2,74 @@ export const testimonials = [
   {
     id: 1,
     name: 'Dheepthi Ravikumar',
-    text: '“LinkedClaims helped me see that I had way more skills than I realized. It gave me the confidence I needed to apply for a job I never would have applied for otherwise.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    text: '“LinkedClaims helped me see that I had far more skills than I realized. It gave me the confidence to apply for a management role, something I wouldn’t have done before.”',
+    image: require('../Assets/SVGs/Testmonials/Dheepthi Ravikumar.svg').default
   },
   {
     id: 2,
     name: 'Emily Johnson',
-    text: '“With LinkedClaims, I discovered strengths I didn’t know I had. It pushed me to aim higher and apply for positions I previously thought were out of reach.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    text: '“With LinkedClaims, I discovered strengths I didn’t know I had. It pushed me to aim higher and apply for roles that were previously out of reach.”',
+    image: require('../Assets/SVGs/Testmonials/Emily Johnson.svg').default
   },
   {
     id: 3,
     name: 'Sophia Martinez',
-    text: '“Thanks to LinkedClaims, I could see a clear picture of my skills and how they match job requirements. It was a game-changer for my job search.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    text: '“Thanks to LinkedClaims, I could see a clear picture of my skills and how they match job requirements. It was a game-changer in helping me secure the right job.”',
+    image: require('../Assets/SVGs/Testmonials/Sophia Martinez.svg').default
   },
   {
     id: 4,
     name: 'Olivia Brown',
-    text: '“LinkedClaims made it so easy to highlight my skills effectively. I feel much more confident in my job applications now.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    text: '“LinkedClaims made it so easy to highlight my skills effectively. Now, I feel much more confident when applying for jobs.”',
+    image: require('../Assets/SVGs/Testmonials/Olivia Brown.svg').default
   },
   {
     id: 5,
-    name: 'Dheepthi Ravikumar',
-    text: '“LinkedClaims helped me see that I had way more skills than I realized. It gave me the confidence I needed to apply for a job I never would have applied for otherwise.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    name: 'Ava Wilson',
+    text: '“I was able to apply for jobs with a tailored resume, thanks to LinkedClaims. It helped me present my strengths in the best way possible.”',
+    image: require('../Assets/SVGs/Testmonials/Ava Wilson.svg').default
   },
   {
     id: 6,
-    name: 'Emily Johnson',
-    text: '“With LinkedClaims, I discovered strengths I didn’t know I had. It pushed me to aim higher and apply for positions I previously thought were out of reach.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    name: 'Daniel Thompson',
+    text: '“As someone transitioning careers, LinkedClaims allowed me to see how my past experience translated into new opportunities. It made all the difference in my job hunt.”',
+    image: require('../Assets/SVGs/Testmonials/Daniel Thompson.svg').default
   },
   {
     id: 7,
-    name: 'Sophia Martinez',
-    text: '“Thanks to LinkedClaims, I could see a clear picture of my skills and how they match job requirements. It was a game-changer for my job search.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    name: 'Laura Nguyen',
+    text: '“With LinkedClaims, I learned to value the skills I had gained over the years. It gave me the confidence to apply for a leadership role I never thought possible.”',
+    image: require('../Assets/SVGs/Testmonials/Laura Nguyen.svg').default
   },
   {
     id: 8,
-    name: 'Olivia Brown',
-    text: '“LinkedClaims made it so easy to highlight my skills effectively. I feel much more confident in my job applications now.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    name: 'Mark Richards',
+    text: '“LinkedClaims transformed my job search. The AI-generated skill descriptions really captured my experience, making me feel more confident in each application.”',
+    image: require('../Assets/SVGs/Testmonials/Mark Richards.svg').default
   },
   {
     id: 9,
-    name: 'Ava Wilson',
-    text: '“I was able to apply for jobs with a tailored resume, thanks to LinkedClaims. It really showcased my strengths to potential employers.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    name: 'Nina Patel',
+    text: '“LinkedClaims simplified my resume-building process. I no longer had to worry about editing every job application – it made tailoring my resume quick and easy.”',
+    image: require('../Assets/SVGs/Testmonials/Nina Patel.svg').default
   },
   {
     id: 10,
-    name: 'Emily Johnson',
-    text: '“With LinkedClaims, I discovered strengths I didn’t know I had. It pushed me to aim higher and apply for positions I previously thought were out of reach.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    name: 'Annika Rangarajan',
+    text: '“The instant insights I got from LinkedClaims helped me identify strengths I had overlooked. Now I apply for jobs with renewed confidence.”',
+    image: require('../Assets/SVGs/Testmonials/Annika Rangarajan.svg').default
   },
   {
     id: 11,
-    name: 'Sophia Martinez',
-    text: '“Thanks to LinkedClaims, I could see a clear picture of my skills and how they match job requirements. It was a game-changer for my job search.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    name: 'Fatima Khalid',
+    text: '“Seeing my skills mapped out so clearly with LinkedClaims made me realize how much I had grown. It motivated me to apply for more senior positions, and it paid off!”',
+    image: require('../Assets/SVGs/Testmonials/Fatima Khalid.svg').default
   },
   {
     id: 12,
-    name: 'Olivia Brown',
-    text: '“LinkedClaims made it so easy to highlight my skills effectively. I feel much more confident in my job applications now.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
-  },
-  {
-    id: 13,
-    name: 'Ava Wilson',
-    text: '“I was able to apply for jobs with a tailored resume, thanks to LinkedClaims. It really showcased my strengths to potential employers.”',
-    image: require('../Assets/SVGs/Annika Rangarajan.svg').default
+    name: 'Zoe Williams',
+    text: '“The dynamic resume builder allowed me to customize my applications for each job. I felt more in control, and I saw a real difference in my results.”',
+    image: require('../Assets/SVGs/Testmonials/Zoe Williams.svg').default
   }
 ]
 
