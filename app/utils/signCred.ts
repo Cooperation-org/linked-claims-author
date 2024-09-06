@@ -40,21 +40,7 @@ const signCred = async (
     throw new Error('Access token is not provided')
   }
   console.log('🚀 ~ data:', data)
-  const formData: FormDataI = {
-    expirationDate: new Date(
-      new Date().setFullYear(new Date().getFullYear() + 1)
-    ).toISOString(),
-    fullName: data.fullName,
-    duration: data.credentialDuration,
-    criteriaNarrative: data.credentialDescription,
-    achievementDescription: data.credentialDescription,
-    achievementName: data.credentialName,
-    portfolio: data.portfolio,
-    evidenceLink: data.evidenceLink,
-    evidenceDescription: data.description,
-    credentialType: data.persons
-  }
-  console.log('🚀 ~ formData:', formData)
+  const formData: FormDataI = generateCredentialData(data)
   try {
     const credentialEngine = new CredentialEngine()
     const storage = new GoogleDriveStorage(accessToken)
@@ -70,6 +56,23 @@ const signCred = async (
   } catch (error) {
     console.error('Error during VC signing:', error)
     throw error
+  }
+}
+
+export const generateCredentialData = (data: any): FormDataI => {
+  return {
+    expirationDate: new Date(
+      new Date().setFullYear(new Date().getFullYear() + 1)
+    ).toISOString(),
+    fullName: data.fullName,
+    duration: data.credentialDuration,
+    criteriaNarrative: data.credentialDescription,
+    achievementDescription: data.credentialDescription,
+    achievementName: data.credentialName,
+    portfolio: data.portfolio,
+    evidenceLink: data.evidenceLink,
+    evidenceDescription: data.description,
+    credentialType: data.persons
   }
 }
 

@@ -36,6 +36,7 @@ import {
   successPageCopyLinkStyles,
   successPageTextFieldStyles
 } from '../../../components/Styles/appStyles'
+import { options } from './Step0'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
@@ -43,6 +44,7 @@ interface SuccessPageProps {
   reset: () => void
   link: string
   setLink: (link: string) => void
+  storageOption: string
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
@@ -50,7 +52,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   formData,
   reset,
   link,
-  setLink
+  setLink,
+  storageOption
 }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const theme = useTheme()
@@ -146,45 +149,49 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             </Box>
           </Box>
 
-          <Box sx={successPageCopyLinkStyles}>
-            <TextField
-              sx={{
-                ...successPageTextFieldStyles,
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px'
-                }
-              }}
-              value={link || 'loading...'}
-              InputProps={{
-                endAdornment: <InputAdornment position='start'></InputAdornment>,
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <Box>
-                      <Button onClick={() => copyFormValuesToClipboard(link)}>
-                        <CopySVG />
-                      </Button>
-                    </Box>
-                  </InputAdornment>
-                ),
-                readOnly: true
-              }}
-            />
-          </Box>
+          {storageOption !== options.Device && (
+            <Box sx={successPageCopyLinkStyles}>
+              <TextField
+                sx={{
+                  ...successPageTextFieldStyles,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '10px'
+                  }
+                }}
+                value={link || 'loading...'}
+                InputProps={{
+                  endAdornment: <InputAdornment position='start'></InputAdornment>,
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <Box>
+                        <Button onClick={() => copyFormValuesToClipboard(link)}>
+                          <CopySVG />
+                        </Button>
+                      </Box>
+                    </InputAdornment>
+                  ),
+                  readOnly: true
+                }}
+              />
+            </Box>
+          )}
         </Box>
-        <Link href={`/AskForRecommendation/${encodedLink}`}>
-          <Button
-            variant='contained'
-            sx={{
-              borderRadius: '100px',
-              backgroundColor: '#003FE0',
-              textTransform: 'none',
-              fontFamily: 'Roboto, sans-serif',
-              boxShadow: '0px 0px 2px 2px #F7BC00'
-            }}
-          >
-            <Typography>Ask for a Recommendation</Typography>
-          </Button>
-        </Link>
+        {storageOption !== options.Device && (
+          <Link href={`/AskForRecommendation/${encodedLink}`}>
+            <Button
+              variant='contained'
+              sx={{
+                borderRadius: '100px',
+                backgroundColor: '#003FE0',
+                textTransform: 'none',
+                fontFamily: 'Roboto, sans-serif',
+                boxShadow: '0px 0px 2px 2px #F7BC00'
+              }}
+            >
+              <Typography>Ask for a Recommendation</Typography>
+            </Button>
+          </Link>
+        )}
       </Box>
       <Button
         sx={{

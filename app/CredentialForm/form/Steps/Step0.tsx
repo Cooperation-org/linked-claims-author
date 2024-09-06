@@ -75,16 +75,12 @@ export function Step0({
       value={selectedOption}
       onChange={handleChange}
     >
-      {/* Device Option */}
-      <Tooltip title='Under Development' arrow>
-        <FormControlLabel
-          value={options.Device}
-          sx={boxStyles}
-          control={<Radio sx={radioCheckedStyles} />}
-          label='Save to My Device'
-          disabled
-        />
-      </Tooltip>
+      <FormControlLabel
+        value={options.Device}
+        sx={boxStyles}
+        control={<Radio sx={radioCheckedStyles} />}
+        label='Save to My Device'
+      />
 
       {/* Google Drive Option */}
       <FormControlLabel
