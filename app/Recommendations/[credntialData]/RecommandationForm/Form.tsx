@@ -30,6 +30,7 @@ const Form = () => {
     explainAnswer: '',
     isRecommand: 'yes'
   })
+  const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
 
   const defaultValues: FormData = storedValue
 
@@ -65,6 +66,7 @@ const Form = () => {
   }, [activeStep])
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
+    setSubmittedFullName(data.fullName)
     clearValue()
     reset({
       storageOption: 'Google Drive',
@@ -138,30 +140,33 @@ const Form = () => {
             {activeStep === 4 && (
               <Step4 watch={watch} setValue={setValue} errors={errors} />
             )}
-            {activeStep === 5 && <DataPreview formData={watch() as any} />}
-            {activeStep === 6 && <SuccessPage formData={watch() as any} link={''} />}
+            {activeStep === 5 && (
+              <DataPreview
+                formData={formData}
+                handleNext={handleNext}
+                handleBack={handleBack}
+                handleSign={handleFormSubmit}
+              />
+            )}
+            {activeStep === 6 && (
+              <SuccessPage
+                formData={formData}
+                link={''}
+                submittedFullName={submittedFullName}
+                handleBack={handleBack}
+              />
+            )}
           </FormControl>
         </Box>
-        {activeStep !== 6 && activeStep !== 1 && activeStep !== 0 && (
-          <Buttons
-            activeStep={activeStep}
-            maxSteps={textGuid(fullName).length}
-            handleNext={handleNext}
-            handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
-            handleBack={handleBack}
-            isValid={isValid}
-          />
-        )}
-        {activeStep === 1 && (
-          <Buttons
-            activeStep={activeStep}
-            maxSteps={textGuid.length}
-            handleNext={handleNext}
-            handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
-            handleBack={undefined}
-            isValid={isValid}
-          />
-        )}
+
+        <Buttons
+          activeStep={activeStep}
+          maxSteps={textGuid(fullName).length}
+          handleNext={handleNext}
+          handleSign={handleFormSubmit}
+          handleBack={handleBack}
+          isValid={isValid}
+        />
       </form>
     </FormProvider>
   )

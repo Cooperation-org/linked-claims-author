@@ -57,6 +57,8 @@ export interface FormData {
   evidenceDescription: string
   communicationRating: number
   dependabilityRating: number
+  explainAnswer: string
+  howKnow: string
   [key: string]: string | number | Portfolio[] | undefined
 }
 

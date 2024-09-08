@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Box,
   Typography,
@@ -9,45 +9,47 @@ import {
 } from '@mui/material'
 import { SVGBadge, CopySVG } from '../../../../Assets/SVGs'
 import { copyFormValuesToClipboard } from '../../../../utils/formUtils'
+import { FormData } from '../../../../CredentialForm/form/types/Types'
 import FetchedData from '../../viewCredential/FetchedData'
-
-interface Evidence {
-  name: string
-  url: string
-}
-
-interface FormData {
-  fullName: string
-  vouchedFor: string
-  credentialName: string
-  credentialDuration: string
-  evidenceLink: string
-  portfolio: Evidence[]
-}
+import Link from 'next/link'
 
 interface SuccessPageProps {
   formData: FormData
   link: string
+  submittedFullName: string | null
+  handleBack: () => void
 }
 
-const SuccessPage: React.FC<SuccessPageProps> = ({ formData, link }) => {
+const SuccessPage: React.FC<SuccessPageProps> = ({
+  formData,
+  link,
+  submittedFullName,
+  handleBack
+}) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const [fetchedFullName, setFetchedFullName] = useState<string | null>(null) // Fetch full name
-  const [fetchedVouchedFor, setFetchedVouchedFor] = useState<string | null>(null) // Fetch vouched for
+  const [fetchedFullName, setFetchedFullName] = useState<string | null>(submittedFullName)
+  const [email, setEmail] = useState<string | null>(null)
 
-  // Message with fallback values using fetched names
-  const message = `Hi ${fetchedVouchedFor || formData?.vouchedFor || 'Recipient'},
+  useEffect(() => {
+    if (submittedFullName) {
+      setFetchedFullName(submittedFullName)
+    }
+  }, [submittedFullName])
 
-I’ve completed the recommendation you requested. You can view it by opening this URL:
-
-${link}
-
-- ${fetchedFullName || formData?.fullName || 'Your Name'}`
+  const message = fetchedFullName
+    ? `Hi ${fetchedFullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
+    : 'Loading...'
 
   const handleCopy = () => {
     copyFormValuesToClipboard(message)
     setSnackbarOpen(true)
   }
+
+  const mailtoLink = email
+    ? `mailto:${email}?subject=Recommendation Complete&body=${encodeURIComponent(
+        message
+      )}`
+    : '#'
 
   return (
     <>
@@ -63,22 +65,20 @@ ${link}
           gap: '30px'
         }}
       >
-        {/* Fetched Data */}
         <Box sx={{ display: 'none' }}>
           <FetchedData
-            setFullName={setFetchedFullName}
-            setVouchedFor={setFetchedVouchedFor} // Assuming there's a way to fetch this
+            setFullName={name => {
+              setFetchedFullName(name)
+            }}
+            setEmail={setEmail}
           />
         </Box>
 
-        {/* Header Text */}
         <Typography sx={{ fontSize: '16px', letterSpacing: '0.01em', textAlign: 'left' }}>
-          Now let {fetchedVouchedFor || formData?.vouchedFor || 'the recipient'} know that
-          you’ve completed a recommendation for{' '}
-          {fetchedFullName || formData?.fullName || 'the sender'}.
+          Now let {fetchedFullName ?? 'loading...'} know that you’ve completed the
+          recommendation.
         </Typography>
 
-        {/* Badge */}
         <Box
           sx={{
             alignSelf: 'stretch',
@@ -107,12 +107,10 @@ ${link}
             <SVGBadge />
           </Box>
           <Typography sx={{ position: 'relative', letterSpacing: '0.06px', zIndex: 1 }}>
-            {fetchedFullName || formData?.fullName || 'Name'} vouched for{' '}
-            {fetchedVouchedFor || formData?.vouchedFor || 'Recipient'}.
+            {submittedFullName} vouched for {fetchedFullName}.
           </Typography>
         </Box>
 
-        {/* Message Section */}
         <Box
           sx={{
             alignSelf: 'stretch',
@@ -126,7 +124,7 @@ ${link}
           <TextField
             fullWidth
             multiline
-            rows={4}
+            rows={10}
             value={message}
             InputProps={{
               readOnly: true,
@@ -140,20 +138,11 @@ ${link}
             }}
             sx={{ marginBottom: '10px', borderRadius: '10px' }}
           />
-          <Typography
-            sx={{
-              textAlign: 'center',
-              fontSize: '14px',
-              color: '#202e5b',
-              cursor: 'pointer'
-            }}
-          >
-            Copy this text
-          </Typography>
         </Box>
 
-        {/* Email and Claim Buttons */}
         <Button
+          href={mailtoLink}
+          target='_blank'
           variant='contained'
           sx={{
             width: '100%',
@@ -164,11 +153,14 @@ ${link}
             boxShadow: '0px 0px 2px 2px #F7BC00',
             marginTop: '15px'
           }}
+          disabled={!email}
         >
           Open email
         </Button>
 
         <Button
+          component={Link}
+          href='/CredentialForm'
           sx={{
             textTransform: 'capitalize',
             m: '20px 0',
@@ -183,8 +175,6 @@ ${link}
           Claim a Skill
         </Button>
       </Box>
-
-      {/* Snackbar for Copy Confirmation */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

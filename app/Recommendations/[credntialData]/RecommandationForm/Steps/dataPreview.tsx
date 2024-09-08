@@ -1,28 +1,22 @@
 import React, { useState } from 'react'
 import { Box, Card, Container, Link, Typography } from '@mui/material'
 import { SVGBadge, QuoteSVG } from '../../../../Assets/SVGs'
+import { FormData } from '../../../../CredentialForm/form/types/Types'
 import FetchedData from '../../viewCredential/FetchedData'
-
-interface Evidence {
-  name: string
-  url: string
-}
-
-interface FormData {
-  fullName: string
-  isRecommand: string
-  explainAnswer: string
-  howKnow: string
-  communicationRating: number
-  dependabilityRating: number
-  portfolio: Evidence[]
-}
 
 interface DataPreviewProps {
   formData: FormData
+  handleNext: () => void
+  handleBack: () => void
+  handleSign: () => void
 }
 
-const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
+const DataPreview: React.FC<DataPreviewProps> = ({
+  formData,
+  handleNext,
+  handleBack,
+  handleSign
+}) => {
   const [fetchedName, setFetchedName] = useState<string | null>(null)
 
   return (
@@ -38,11 +32,11 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
 
       {/* Credential Details from Google Drive */}
       <FetchedData
-        setFullName={name => {
+        setFullName={(name: string) => {
           console.log('Full Name:', name)
           setFetchedName(name)
         }}
-        setEmail={email => console.log('Email:', email)}
+        setEmail={(email: string) => console.log('Email:', email)}
       />
 
       {/* Vouch Confirmation */}
@@ -160,7 +154,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           >
             Supporting Evidence
           </Typography>
-          {formData.portfolio.map((item: Evidence) => (
+          {formData.portfolio.map(item => (
             <Box key={item.url} sx={{ mt: 1 }}>
               <Link
                 href={item.url}
