@@ -60,6 +60,9 @@ const Form = () => {
       setStoreNewValue(formData)
     }
   }, [formData, storedValue, setStoreNewValue])
+  useEffect(() => {
+    console.log('Active Step:', activeStep)
+  }, [activeStep])
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
     clearValue()
@@ -75,7 +78,7 @@ const Form = () => {
       explainAnswer: '',
       isRecommand: 'yes'
     })
-    setActiveStep(1)
+    setActiveStep(6)
   })
 
   return (
@@ -136,7 +139,7 @@ const Form = () => {
               <Step4 watch={watch} setValue={setValue} errors={errors} />
             )}
             {activeStep === 5 && <DataPreview formData={watch() as any} />}
-            {activeStep === 6 && <SuccessPage />}
+            {activeStep === 6 && <SuccessPage formData={watch() as any} link={''} />}
           </FormControl>
         </Box>
         {activeStep !== 6 && activeStep !== 1 && activeStep !== 0 && (

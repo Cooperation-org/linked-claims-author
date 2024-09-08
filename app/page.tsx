@@ -30,7 +30,7 @@ const Page = () => {
   }, [])
   useAutoSignOut()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isMediumScreen = useMediaQuery(theme.breakpoints.between('md', 'xl'))
+  const isMediumScreen = useMediaQuery(theme.breakpoints.up('md'))
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('xl'))
 
   const features = isSmallScreen ? featuresSmallScreen : featuresLargeScreen
