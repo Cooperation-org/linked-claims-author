@@ -26,6 +26,7 @@ import { useGoogleSignIn } from '../../components/signing/useGoogleSignIn'
 import { useStepContext } from './StepContext'
 import { handleSign } from '../../utils/formUtils'
 import { signAndSaveOnDevice } from '../../utils/saveOnDevice'
+import { saveSession } from '../../utils/saveSession'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
@@ -152,6 +153,21 @@ const Form = ({ onStepChange }: any) => {
     }
   }
 
+  const handleSaveSession = async () => {
+    try {
+      const formData = watch() // Get the current form data
+      if (!accessToken) {
+        setErrorMessage('Access token is missing')
+        return
+      }
+      await saveSession(formData, accessToken) // Save session data to Google Drive
+      setErrorMessage('Session saved successfully.')
+    } catch (error: any) {
+      console.error('Error saving session:', error)
+      setErrorMessage('An error occurred while saving the session.')
+    }
+  }
+
   return (
     <form
       style={{
@@ -242,6 +258,7 @@ const Form = ({ onStepChange }: any) => {
           handleBack={costumedHandleBackStep}
           isValid={isValid}
           disabled0={disabled0}
+          handleSaveSession={handleSaveSession}
         />
       )}
       {errorMessage && (

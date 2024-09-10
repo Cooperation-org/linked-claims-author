@@ -3,6 +3,7 @@
 import React from 'react'
 import { Box, Button } from '@mui/material'
 import { nextButtonStyle, StyledButton } from '../../../components/Styles/appStyles'
+import { saveSession } from '../../../utils/saveSession'
 
 interface ButtonsProps {
   activeStep: number
@@ -12,6 +13,7 @@ interface ButtonsProps {
   maxSteps: number
   isValid: boolean
   disabled0: boolean
+  handleSaveSession: () => void
 }
 
 export function Buttons({
@@ -21,7 +23,8 @@ export function Buttons({
   handleSign,
   maxSteps,
   isValid,
-  disabled0
+  disabled0,
+  handleSaveSession
 }: Readonly<ButtonsProps>) {
   return (
     <Box
@@ -52,7 +55,12 @@ export function Buttons({
           <Button sx={StyledButton} onClick={handleBack} color='secondary'>
             Back
           </Button>
-          <Button sx={StyledButton} type='submit' color='secondary'>
+          <Button
+            sx={StyledButton}
+            onClick={handleSaveSession}
+            type='submit'
+            color='secondary'
+          >
             Save & Exit
           </Button>
         </>
