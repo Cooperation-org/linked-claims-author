@@ -49,7 +49,7 @@ interface ClaimDetail {
 
 const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<Claim[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
+  console.log(':  claims', claims)
   const [openClaim, setOpenClaim] = useState<string | null>(null)
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
@@ -94,14 +94,12 @@ const ClaimsPage: React.FC = () => {
   useEffect(() => {
     if (!accessToken || !storage) {
       setErrorMessage('Please sign in to view your claims')
-      setLoading(false)
       return
     }
     const fetchClaims = async () => {
       const claimsData = await getAllClaims()
       console.log('🚀 ~ fetchClaims ~ claimsData:', claimsData)
       setClaims(claimsData)
-      setLoading(false)
     }
 
     fetchClaims()
@@ -119,21 +117,6 @@ const ClaimsPage: React.FC = () => {
       setOpenClaim(claimId)
       setLoadingClaims(prevState => ({ ...prevState, [claimId]: false }))
     }
-  }
-
-  if (loading) {
-    return (
-      <Container
-        sx={{
-          height: 300,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-        <CircularProgress />
-      </Container>
-    )
   }
 
   return errorMessage ? (
@@ -156,158 +139,182 @@ const ClaimsPage: React.FC = () => {
           >
             Previous Claims
           </Typography>
-          {claims.map(claim => (
-            <div key={claim.id}>
-              <ListItem button onClick={() => handleClaimClick(claim.id, claim)}>
-                <ListItemText primary={claim.achievementName} />
-                {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={openClaim === claim.id} timeout='auto' unmountOnExit>
-                <Container>
-                  {loadingClaims[claim.id] ? (
-                    <div>
-                      <CircularProgress />
-                    </div>
-                  ) : (
-                    <Box
-                      sx={{
-                        border: '1px solid #003FE0',
-                        borderRadius: '10px',
-                        p: '15px',
-                        mt: '10px'
-                      }}
-                    >
-                      {claims ? (
-                        <>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              gap: '5px',
-                              alignItems: 'center'
-                            }}
-                          >
-                            <SVGBadge />
-                            <Typography
-                              sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}
-                            >
-                              {detailedClaim?.credentialSubject?.name ?? ''} has claimed:
-                            </Typography>
-                          </Box>
-                          <Box>
-                            <Box>
-                              <Typography
-                                sx={{
-                                  color: '#202E5B',
-                                  fontFamily: 'Inter',
-                                  fontSize: '24px',
-                                  fontWeight: 700,
-                                  letterSpacing: '0.075px',
-                                  mb: '10px'
-                                }}
-                              >
-                                Management Skills
-                              </Typography>
-                              <Box
-                                sx={{
-                                  ...credentialBoxStyles,
-                                  bgcolor: '#d5e1fb'
-                                }}
-                              >
-                                <Box sx={{ mt: '2px' }}>
-                                  <SVGDate />
-                                </Box>
-                                <Typography
-                                  sx={{ ...commonTypographyStyles, fontSize: '13px' }}
-                                >
-                                  {detailedClaim?.credentialSubject?.duration}
-                                </Typography>
-                              </Box>
-                            </Box>
+          {claims ? (
+            claims.map(claim => (
+              <div key={claim.id}>
+                <ListItem button onClick={() => handleClaimClick(claim.id, claim)}>
+                  <ListItemText primary={claim.achievementName} />
+                  {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openClaim === claim.id} timeout='auto' unmountOnExit>
+                  <Container>
+                    {loadingClaims[claim.id] ? (
+                      <div>
+                        <CircularProgress />
+                      </div>
+                    ) : (
+                      <Box
+                        sx={{
+                          border: '1px solid #003FE0',
+                          borderRadius: '10px',
+                          p: '15px',
+                          mt: '10px'
+                        }}
+                      >
+                        {claims ? (
+                          <>
                             <Box
                               sx={{
                                 display: 'flex',
-                                flexDirection: 'column',
-                                gap: '20px'
+                                gap: '5px',
+                                alignItems: 'center'
                               }}
                             >
+                              <SVGBadge />
                               <Typography
                                 sx={{
-                                  fontFamily: 'Lato',
-                                  fontSize: '17px',
-                                  letterSpacing: '0.075px',
-                                  lineHeight: '24px'
+                                  fontWeight: 700,
+                                  fontSize: '13px',
+                                  color: '#202E5B'
                                 }}
                               >
-                                {detailedClaim?.credentialSubject?.achievement[0]?.description.replace(
-                                  /<\/?[^>]+>/gi,
-                                  ''
-                                )}
+                                {detailedClaim?.credentialSubject?.name ?? ''} has
+                                claimed:
                               </Typography>
+                            </Box>
+                            <Box>
                               <Box>
-                                <Typography>Earning criteria:</Typography>
-                                <ul style={{ marginLeft: '25px' }}>
-                                  <li>
-                                    {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
+                                <Typography
+                                  sx={{
+                                    color: '#202E5B',
+                                    fontFamily: 'Inter',
+                                    fontSize: '24px',
+                                    fontWeight: 700,
+                                    letterSpacing: '0.075px',
+                                    mb: '10px'
+                                  }}
+                                >
+                                  {detailedClaim?.credentialSubject?.achievement[0]?.name}
+                                </Typography>
+                                {detailedClaim?.credentialSubject?.duration && (
+                                  <Box
+                                    sx={{
+                                      ...credentialBoxStyles,
+                                      bgcolor: '#d5e1fb'
+                                    }}
+                                  >
+                                    <Box sx={{ mt: '2px' }}>
+                                      <SVGDate />
+                                    </Box>
+                                    <Typography
+                                      sx={{ ...commonTypographyStyles, fontSize: '13px' }}
+                                    >
+                                      {detailedClaim?.credentialSubject?.duration}
+                                    </Typography>
+                                  </Box>
+                                )}
+                              </Box>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '20px'
+                                }}
+                              >
+                                {detailedClaim?.credentialSubject?.achievement[0]
+                                  ?.description && (
+                                  <Typography
+                                    sx={{
+                                      fontFamily: 'Lato',
+                                      fontSize: '17px',
+                                      letterSpacing: '0.075px',
+                                      lineHeight: '24px'
+                                    }}
+                                  >
+                                    {detailedClaim?.credentialSubject?.achievement[0]?.description.replace(
                                       /<\/?[^>]+>/gi,
                                       ''
                                     )}
-                                  </li>
-                                </ul>
-                              </Box>
-                              <Box>
-                                <Typography>Supporting Evidence:</Typography>
-                                <ul style={evidenceListStyles}>
-                                  {detailedClaim?.credentialSubject?.portfolio?.map(
-                                    (porto: { url: any; name: any }) => (
-                                      <li key={porto.url}>
-                                        <Link href={porto.url}>{porto.name}</Link>
+                                  </Typography>
+                                )}
+                                {detailedClaim?.credentialSubject?.achievement[0]
+                                  ?.criteria?.narrative && (
+                                  <Box>
+                                    <Typography>Earning criteria:</Typography>
+                                    <ul style={{ marginLeft: '25px' }}>
+                                      <li>
+                                        {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
+                                          /<\/?[^>]+>/gi,
+                                          ''
+                                        )}
                                       </li>
-                                    )
-                                  )}
-                                </ul>
+                                    </ul>
+                                  </Box>
+                                )}
+                                {detailedClaim?.credentialSubject?.portfolio?.name ||
+                                  (detailedClaim?.credentialSubject?.portfolio?.url && (
+                                    <Box>
+                                      <Typography>Supporting Evidence:</Typography>
+                                      <ul style={evidenceListStyles}>
+                                        {detailedClaim?.credentialSubject?.portfolio?.map(
+                                          (porto: { url: any; name: any }) => (
+                                            <li key={porto.url}>
+                                              <Link href={porto.url}>{porto.name}</Link>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
+                                    </Box>
+                                  ))}
                               </Box>
                             </Box>
-                          </Box>
-                          <Box
-                            sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}
-                          >
-                            <Link
-                              href={`/View/${encodeURIComponent(
-                                `https://drive.google.com/file/d/${claim.id}/view`
-                              )}`}
+                            <Box
+                              sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}
                             >
-                              <Button
-                                variant='contained'
-                                sx={{
-                                  backgroundColor: '#003FE0',
-                                  textTransform: 'none',
-                                  borderRadius: '100px'
-                                }}
+                              <Link
+                                href={`/View/${encodeURIComponent(
+                                  `https://drive.google.com/file/d/${claim.id}/view`
+                                )}`}
                               >
-                                View Credential
-                              </Button>
-                            </Link>
-                          </Box>
-                        </>
-                      ) : (
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}
-                        >
-                          <CircularProgress />
-                        </Box>
-                      )}
-                    </Box>
-                  )}
-                </Container>
-              </Collapse>
-            </div>
-          ))}
+                                <Button
+                                  variant='contained'
+                                  sx={{
+                                    backgroundColor: '#003FE0',
+                                    textTransform: 'none',
+                                    borderRadius: '100px'
+                                  }}
+                                >
+                                  View Credential
+                                </Button>
+                              </Link>
+                            </Box>
+                          </>
+                        ) : (
+                          <div>
+                            <CircularProgress />
+                          </div>
+                        )}
+                      </Box>
+                    )}
+                  </Container>
+                </Collapse>
+              </div>
+            ))
+          ) : (
+            <Container
+              sx={{
+                height: 300,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <CircularProgress />
+            </Container>
+          )}
         </>
       </List>
+
       <Link href='/CredentialForm'>
         <Box
           sx={{

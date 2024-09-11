@@ -106,6 +106,7 @@ const Form = ({ onStepChange }: any) => {
       else if (data.storageOption === options.Device) {
         signAndSaveOnDevice(data)
       }
+      setActiveStep(0)
     } catch (error: any) {
       if (error.message === 'MetaMask address could not be retrieved') {
         setErrorMessage('Please make sure you have MetaMask installed and connected.')
