@@ -27,6 +27,7 @@ import { useStepContext } from './StepContext'
 import { handleSign } from '../../utils/formUtils'
 import { signAndSaveOnDevice } from '../../utils/saveOnDevice'
 import { saveSession } from '../../utils/saveSession'
+import SnackMessage from '../../components/SnackMessage'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
@@ -34,7 +35,8 @@ const Form = ({ onStepChange }: any) => {
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
   const [metamaskAdress, setMetamaskAdress] = useState<string>('')
-  const [disabled0, setDisabled0] = React.useState(false)
+  const [disabled0, setDisabled0] = useState(false)
+  const [snackMessage, setSnackMessgae] = useState('')
 
   const characterLimit = 294
   const maxSteps = textGuid.length
@@ -156,15 +158,15 @@ const Form = ({ onStepChange }: any) => {
   const handleSaveSession = async () => {
     try {
       const formData = watch() // Get the current form data
+      setSnackMessgae('Successfully saved in Your ' + formData.storageOption)
       if (!accessToken) {
         setErrorMessage('Access token is missing')
         return
       }
       await saveSession(formData, accessToken) // Save session data to Google Drive
-      setErrorMessage('Session saved successfully.')
     } catch (error: any) {
+      setSnackMessgae('Someting went wrong, please try agin later')
       console.error('Error saving session:', error)
-      setErrorMessage('An error occurred while saving the session.')
     }
   }
 
@@ -272,6 +274,7 @@ const Form = ({ onStepChange }: any) => {
           {errorMessage}
         </div>
       )}
+      {snackMessage ? <SnackMessage message={snackMessage} /> : ''}
     </form>
   )
 }
