@@ -128,10 +128,10 @@
     "@babel/helper-validator-identifier" "^7.24.7"
     to-fast-properties "^2.0.0"
 
-"@cooperation/vc-storage@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@cooperation/vc-storage/-/vc-storage-1.0.0.tgz"
-  integrity sha512-cqSHEHB0j8Y/fZkIirqApV1/3QzztnnrJZczZBb48COStMKMWXwisA8Dgx84VlyxbdqnY2ujtzMWMFCEjnOTfQ==
+"@cooperation/vc-storage@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@cooperation/vc-storage/-/vc-storage-1.0.1.tgz#15736558bab11f2e3770ec7490c84d8585b0e390"
+  integrity sha512-q/C/2FJQP5UyarKDB5nhJrkOAflzPniQ5+eiUJ+/zn7Azy94wYgoOcZnmIONUFcpSP0Fds7R8CNoKEpTwIWI5A==
   dependencies:
     "@digitalbazaar/ed25519-signature-2020" "^5.3.0"
     "@digitalbazaar/ed25519-verification-key-2020" "^4.1.0"
