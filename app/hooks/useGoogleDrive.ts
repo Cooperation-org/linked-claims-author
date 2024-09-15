@@ -15,7 +15,9 @@ const useGoogleDrive = () => {
   const [ownerEmail, setOwnerEmail] = useState<string | null>(null)
 
   useEffect(() => {
+    let gapiInitialized = false
     const initializeGapi = () => {
+      if (gapiInitialized) return
       console.log('Initializing Google API client...')
       window.gapi.load('client', async () => {
         try {
@@ -25,14 +27,14 @@ const useGoogleDrive = () => {
             discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
           })
 
-          console.log('Setting access token...')
           if (session?.accessToken) {
+            console.log('Setting access token...')
             window.gapi.client.setToken({
               access_token: session.accessToken
             })
           }
           console.log('Google API client initialized successfully.')
-
+          gapiInitialized = true
           setTimeout(() => setGapiLoaded(true), 1000)
         } catch (error) {
           console.error('Error initializing Google API client:', error)
@@ -51,7 +53,14 @@ const useGoogleDrive = () => {
   }, [session])
 
   const fetchFileContent = async (fileId: string, resourceKey: string = '') => {
-    console.log('Fetching file content:', fileId, resourceKey)
+    const cachedContent = localStorage.getItem(`fileContent_${fileId}`)
+    if (cachedContent) {
+      console.log('Using cached file content...')
+      setFileContent(cachedContent)
+      return
+    }
+
+    console.log('Fetching file content from Google API:', fileId)
     try {
       const response = await window.gapi.client.drive.files.get({
         fileId: fileId,
@@ -63,13 +72,20 @@ const useGoogleDrive = () => {
 
       console.log('Fetched file content:', response.body)
       setFileContent(response.body)
+      localStorage.setItem(`fileContent_${fileId}`, response.body)
     } catch (error) {
       console.error('Error fetching file content:', error)
     }
   }
 
   const fetchFileMetadata = async (fileId: string, resourceKey: string = '') => {
-    console.log('Fetching file metadata:', fileId, resourceKey)
+    const cachedMetadata = localStorage.getItem(`fileMetadata_${fileId}`)
+    if (cachedMetadata) {
+      console.log('Using cached file metadata...')
+      setFileMetadata(JSON.parse(cachedMetadata))
+      return
+    }
+    console.log('Fetching file metadata from Google API:', fileId)
     try {
       const response = await window.gapi.client.drive.files.get({
         fileId: fileId,
@@ -81,6 +97,7 @@ const useGoogleDrive = () => {
 
       console.log('Fetched file metadata:', response.result)
       setFileMetadata(response.result)
+      localStorage.setItem(`fileMetadata_${fileId}`, JSON.stringify(response.result))
       if (response.result.owners && response.result.owners.length > 0) {
         setOwnerEmail(response.result.owners[0].emailAddress)
       } else {
