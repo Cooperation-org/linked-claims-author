@@ -6,9 +6,13 @@ import FetchedData from '../viewCredential/FetchedData'
 
 interface DeclineRequestProps {
   credentialData: string
+  handleBack: () => void // Add handleBack prop to allow going back
 }
 
-const DeclineRequest: React.FC<DeclineRequestProps> = ({ credentialData }) => {
+const DeclineRequest: React.FC<DeclineRequestProps> = ({
+  credentialData,
+  handleBack
+}) => {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
 
@@ -94,6 +98,24 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({ credentialData }) => {
         Email subject will be pre-filled with "Unable to Provide Recommendation at this
         Time for {fullName}"
       </Typography>
+      <Button
+        onClick={handleBack}
+        sx={{
+          padding: '10px 24px',
+          borderRadius: '100px',
+          fontFamily: 'Roboto',
+          textTransform: 'capitalize',
+          fontSize: '16px',
+          width: '100%',
+          backgroundColor: '#FF6347',
+          color: '#fff',
+          '&:hover': {
+            backgroundColor: '#FF4500'
+          }
+        }}
+      >
+        Back
+      </Button>
     </Box>
   )
 }

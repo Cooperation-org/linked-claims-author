@@ -23,8 +23,12 @@ const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) =
     setShowDeclineRequest(true)
   }
 
+  const handleBack = () => {
+    setShowDeclineRequest(false) // Go back to Credential component
+  }
+
   if (showDeclineRequest) {
-    return <DeclineRequest credentialData={fullName} />
+    return <DeclineRequest credentialData={fullName} handleBack={handleBack} />
   }
 
   return (
@@ -98,7 +102,6 @@ const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) =
               display: 'flex',
               lineHeight: 'normal',
               alignItems: 'center',
-              // justifyContent: 'flex-start',
               width: '100%'
             }}
           >
