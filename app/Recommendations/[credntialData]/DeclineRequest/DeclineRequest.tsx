@@ -63,7 +63,8 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({
         }}
       >
         However, it would be helpful to {fullName} if you could send them a note and an
-        explanation letting them know why you can't make a recommendation at this time.
+        explanation letting them know why you can&apos;t make a recommendation at this
+        time.
       </Typography>
       <Box sx={{ display: 'none' }}>
         <FetchedData setFullName={setFullName} setEmail={setEmail} />
@@ -95,8 +96,8 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({
           marginTop: '20px'
         }}
       >
-        Email subject will be pre-filled with "Unable to Provide Recommendation at this
-        Time for {fullName}"
+        Email subject will be pre-filled with &quot;Unable to Provide Recommendation at
+        this Time for {fullName}&quot;
       </Typography>
       <Button
         onClick={handleBack}

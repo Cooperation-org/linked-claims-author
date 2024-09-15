@@ -60,26 +60,7 @@ export default function HorizontalLinearStepper() {
     }
 
     fetchDriveData()
-  }, [gapiLoaded])
-
-  React.useEffect(() => {
-    if (fileContent) {
-      const parsedData = JSON.parse(fileContent)
-      console.log(':  React.useEffect  parsedData', parsedData)
-      setDriveData(parsedData)
-      localStorage.setItem('parsedData', JSON.stringify(parsedData))
-      reset({
-        reference: `Hey there! I hope you’re doing well. 
-      
-  I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-    driveData?.credentialSubject?.achievement[0]?.name || ''
-  }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me! 
-              
-Credential Public Link:   http://localhost:3000/Recommendations/${params.credentialData}
-`
-      })
-    }
-  }, [fileContent])
+  }, [gapiLoaded, fetchFileContent, params.credentialData])
 
   const {
     reset,
@@ -104,6 +85,25 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
     },
     mode: 'onChange'
   })
+  React.useEffect(() => {
+    if (fileContent) {
+      const parsedData = JSON.parse(fileContent)
+      console.log(':  React.useEffect  parsedData', parsedData)
+      setDriveData(parsedData)
+      localStorage.setItem('parsedData', JSON.stringify(parsedData))
+      reset({
+        reference: `Hey there! I hope you’re doing well. 
+            
+            I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
+              parsedData?.credentialSubject?.achievement[0]?.name || ''
+            }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me! 
+                        
+            Credential Public Link:   http://localhost:3000/Recommendations/${
+              params.credentialData
+            }`
+      })
+    }
+  }, [fileContent, reset, params.credentialData])
   const handleCheckboxChange = (event: any) => {
     setSendCopyToSelf(event.target.checked)
   }
@@ -229,7 +229,7 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                           height: '100px'
                         }}
                       >
-                        <img
+                        <Image
                           style={{
                             borderRadius: '20px 0px 0px 20px',
                             width: '100px',
@@ -238,6 +238,8 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
                           }}
                           src={driveData?.credentialSubject?.evidenceLink || imageLink}
                           alt={driveData?.credentialSubject?.name || 'Evidence Image'}
+                          width={100}
+                          height={100}
                         />
                       </Box>
                       <Box sx={{ flex: 1, ml: 2, mt: 1 }}>
