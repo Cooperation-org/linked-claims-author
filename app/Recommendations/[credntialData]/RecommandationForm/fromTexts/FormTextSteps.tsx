@@ -42,7 +42,8 @@ export const StorageText =
 export const featuresRecommentations = (fullName: string) => [
   { id: 1, name: `How you know ${fullName}` },
   { id: 2, name: 'Proof of your qualifications' },
-  { id: 3, name: `Evidence of ${fullName}’s skills` }
+  { id: 3, name: `Comment on ${fullName}’s skills` },
+  { id: 4, name: `Any additional evidence, if available` }
 ]
 
 interface FormTextStepsProps {
