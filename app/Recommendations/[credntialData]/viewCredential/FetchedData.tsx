@@ -102,7 +102,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                   mb: '10px'
                 }}
               >
-                {driveData.credentialSubject?.achievement[0]?.name || 'Management Skills'}
+                {driveData.credentialSubject?.achievement[0]?.name}
               </Typography>
               <Box sx={{ ...credentialBoxStyles, bgcolor: '#d5e1fb' }}>
                 <Box sx={{ mt: '2px' }}>
@@ -113,46 +113,56 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                 </Typography>
               </Box>
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <Typography
-                sx={{
-                  fontFamily: 'Lato',
-                  fontSize: '17px',
-                  letterSpacing: '0.075px',
-                  lineHeight: '24px'
-                }}
-              >
-                {driveData.credentialSubject?.achievement[0]?.description.replace(
-                  /<\/?[^>]+>/gi,
-                  ''
-                ) || ''}
-                .
-              </Typography>
-              <Box>
-                <Typography>Earning criteria:</Typography>
-                <ul style={{ marginLeft: '25px' }}>
-                  <li>
-                    {driveData.credentialSubject?.achievement[0]?.criteria?.narrative?.replace(
-                      /<\/?[^>]+>/gi,
-                      ''
-                    )}
-                  </li>
-                </ul>
-              </Box>
-              <Box>
-                <Typography>Supporting Evidence:</Typography>
-                <ul style={evidenceListStyles}>
-                  {driveData.credentialSubject?.portfolio?.map(
-                    (porto: { url: string; name: string }) => (
-                      <li key={porto.url}>
-                        <Link href={porto.url} target='_blank'>
-                          {porto.name}
-                        </Link>
-                      </li>
-                    )
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '20px'
+              }}
+            >
+              {driveData?.credentialSubject?.achievement[0]?.description && (
+                <Typography
+                  sx={{
+                    fontFamily: 'Lato',
+                    fontSize: '17px',
+                    letterSpacing: '0.075px',
+                    lineHeight: '24px'
+                  }}
+                >
+                  {driveData?.credentialSubject?.achievement[0]?.description.replace(
+                    /<\/?[^>]+>/gi,
+                    ''
                   )}
-                </ul>
-              </Box>
+                </Typography>
+              )}
+              {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative && (
+                <Box>
+                  <Typography>Earning criteria:</Typography>
+                  <ul style={{ marginLeft: '25px' }}>
+                    <li>
+                      {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
+                        /<\/?[^>]+>/gi,
+                        ''
+                      )}
+                    </li>
+                  </ul>
+                </Box>
+              )}
+              {driveData?.credentialSubject?.portfolio?.name ||
+                (driveData?.credentialSubject?.portfolio?.url && (
+                  <Box>
+                    <Typography>Supporting Evidence:</Typography>
+                    <ul style={evidenceListStyles}>
+                      {driveData?.credentialSubject?.portfolio?.map(
+                        (porto: { url: any; name: any }) => (
+                          <li key={porto.url}>
+                            <Link href={porto.url}>{porto.name}</Link>
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </Box>
+                ))}
             </Box>
           </Box>
         </>

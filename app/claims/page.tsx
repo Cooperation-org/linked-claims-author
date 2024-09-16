@@ -61,7 +61,7 @@ declare global {
 
 const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<Claim[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
+  console.log(':  claims', claims)
   const [openClaim, setOpenClaim] = useState<string | null>(null)
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
@@ -160,13 +160,11 @@ const ClaimsPage: React.FC = () => {
   useEffect(() => {
     if (!accessToken || !storage) {
       setErrorMessage('Please sign in to view your claims')
-      setLoading(false)
       return
     }
     const fetchClaims = async () => {
       const claimsData = await getAllClaims()
       setClaims(claimsData)
-      setLoading(false)
     }
 
     fetchClaims()
@@ -184,21 +182,6 @@ const ClaimsPage: React.FC = () => {
       setLoadingClaims(prevState => ({ ...prevState, [claimId]: false }))
       await fetchComments(claimId)
     }
-  }
-
-  if (loading) {
-    return (
-      <Container
-        sx={{
-          height: 300,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-        <CircularProgress />
-      </Container>
-    )
   }
 
   return errorMessage ? (

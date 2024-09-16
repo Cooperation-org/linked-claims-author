@@ -62,6 +62,22 @@ export default function HorizontalLinearStepper() {
     fetchDriveData()
   }, [gapiLoaded, fetchFileContent, params.credentialData])
 
+  React.useEffect(() => {
+    if (fileContent) {
+      const parsedData = JSON.parse(fileContent)
+      console.log(':  React.useEffect  parsedData', parsedData)
+      setDriveData(parsedData)
+      localStorage.setItem('parsedData', JSON.stringify(parsedData))
+      reset({
+        reference: `Hey there! I hope you’re doing well. 
+        
+    I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
+      driveData?.credentialSubject?.achievement[0]?.name || ''
+    }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me! `
+      })
+    }
+  }, [fileContent])
+
   const {
     reset,
     watch,
@@ -74,14 +90,10 @@ export default function HorizontalLinearStepper() {
       email: '',
       reference: `Hey there! I hope you’re doing well. 
       
-  I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-    driveData?.credentialSubject?.achievement[0]?.name || ''
-  }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me! 
-              
-Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendations/${
-        params.credentialData
-      }
-`
+    I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
+      driveData?.credentialSubject?.achievement[0]?.name || ''
+    }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!             
+    `
     },
     mode: 'onChange'
   })
@@ -98,20 +110,25 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
               parsedData?.credentialSubject?.achievement[0]?.name || ''
             }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me! 
                         
-            Credential Public Link:   http://localhost:3000/Recommendations/${
-              params.credentialData
-            }`
       })
     }
   }, [fileContent, reset, params.credentialData])
+
   const handleCheckboxChange = (event: any) => {
     setSendCopyToSelf(event.target.checked)
   }
+
   const mailToLink = `mailto:${watch('email')}${
     sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
   }?subject=Support Request: ${
     driveData?.credentialSubject?.achievement[0]?.name || ''
-  }&body=${encodeURIComponent(watch('reference'))}`
+  }&body=${encodeURIComponent(
+    `Reference: ${watch(
+      'reference'
+    )}\nCredential Public Link: https://linked-claims-author.vercel.app/Recommendations/${
+      params.credentialData
+    }`
+  )}`
 
   return (
     <Box
