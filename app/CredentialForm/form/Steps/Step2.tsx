@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { FormLabel, TextField, Box } from '@mui/material'
+import { FormLabel, Autocomplete, TextField, Box } from '@mui/material'
 import {
   inputPropsStyles,
   TextFieldStyles,
@@ -19,6 +19,18 @@ interface Step2Props {
   errors: FieldErrors<FormData>
 }
 
+// Example list of skills for auto-search
+const skillsList = [
+  'Software Developer',
+  'Project Manager',
+  'Data Analyst',
+  'Marketing Coordinator',
+  'Community Gardening Coordinator',
+  'UX/UI Designer',
+  'Product Manager',
+  'Financial Analyst'
+]
+
 export function Step2({
   register,
   watch,
@@ -31,26 +43,38 @@ export function Step2({
         <FormLabel sx={formLabelStyles} id='name-label'>
           Skill Name <span style={formLabelSpanStyles}> *</span>
         </FormLabel>
-        <TextField
-          {...register('credentialName', {
-            required: 'Skill name is required'
-          })}
-          placeholder='e.g., Community Gardening Coordinator'
-          variant='outlined'
-          sx={TextFieldStyles}
-          aria-labelledby='name-label'
-          inputProps={{
-            'aria-label': 'weight',
-            style: inputPropsStyles
-          }}
-          error={!!errors.credentialName}
-          helperText={errors.credentialName?.message}
+
+        {/* Autocomplete Component for Skill Name with Auto-Search */}
+        <Autocomplete
+          freeSolo
+          options={skillsList}
+          renderInput={params => (
+            <TextField
+              {...params}
+              {...register('credentialName', {
+                required: 'Skill name is required'
+              })}
+              placeholder='e.g., Community Gardening Coordinator'
+              variant='outlined'
+              sx={TextFieldStyles}
+              aria-labelledby='name-label'
+              inputProps={{
+                ...params.inputProps,
+                'aria-label': 'weight',
+                style: inputPropsStyles
+              }}
+              error={!!errors.credentialName}
+              helperText={errors.credentialName?.message}
+            />
+          )}
         />
       </Box>
+
       <TextEditor
         value={watch('credentialDescription')}
         onChange={handleTextEditorChange}
       />
+
       <Box>
         <FormLabel sx={formLabelStyles} id='duration-label'>
           Duration

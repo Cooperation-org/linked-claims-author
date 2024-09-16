@@ -3,6 +3,7 @@ import GoogleProvider from 'next-auth/providers/google'
 
 declare module 'next-auth' {
   interface Session {
+    [x: string]: any
     accessToken?: string
     refreshToken?: string
     expires?: number

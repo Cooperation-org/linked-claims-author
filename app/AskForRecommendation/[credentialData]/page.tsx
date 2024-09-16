@@ -41,7 +41,6 @@ export default function HorizontalLinearStepper() {
   const { activeStep, handleNext, handleBack } = useStepContext()
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const [driveData, setDriveData] = React.useState<any>(null)
-  console.log(':  FetchedData  driveData', driveData)
   const { data: session } = useSession()
   const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
   const params = useParams()
@@ -74,21 +73,17 @@ export default function HorizontalLinearStepper() {
       email: '',
       reference: `Hey there! I hope you’re doing well. 
       
-  I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-    driveData?.credentialSubject?.achievement[0]?.name || ''
-  }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me! 
-              
-Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendations/${
-        params.credentialData
-      }
-`
+    I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
+      driveData?.credentialSubject?.achievement[0]?.name || ''
+    }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!             
+    `
     },
     mode: 'onChange'
   })
+
   React.useEffect(() => {
     if (fileContent) {
       const parsedData = JSON.parse(fileContent)
-      console.log(':  React.useEffect  parsedData', parsedData)
       setDriveData(parsedData)
       localStorage.setItem('parsedData', JSON.stringify(parsedData))
       reset({
@@ -96,17 +91,15 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
             
             I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
               parsedData?.credentialSubject?.achievement[0]?.name || ''
-            }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me! 
-                        
-            Credential Public Link:   http://localhost:3000/Recommendations/${
-              params.credentialData
-            }`
+            }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
       })
     }
-  }, [fileContent, reset, params.credentialData])
+  }, [fileContent, reset])
+
   const handleCheckboxChange = (event: any) => {
     setSendCopyToSelf(event.target.checked)
   }
+
   const mailToLink = `mailto:${encodeURIComponent(watch('email'))}${
     sendCopyToSelf && session?.user?.email
       ? `,${encodeURIComponent(session.user.email)}`
