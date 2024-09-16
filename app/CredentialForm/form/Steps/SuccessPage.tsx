@@ -156,7 +156,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                     borderRadius: '10px'
                   }
                 }}
-                value={link || 'loading...'}
+                value={link || 'wait as your credentials is being processed...'}
                 InputProps={{
                   endAdornment: <InputAdornment position='start'></InputAdornment>,
                   startAdornment: (

@@ -12,6 +12,7 @@ interface ButtonsProps {
   maxSteps: number
   isValid: boolean
   disabled0: boolean
+  handleSaveSession: () => void
 }
 
 export function Buttons({
@@ -21,7 +22,8 @@ export function Buttons({
   handleSign,
   maxSteps,
   isValid,
-  disabled0
+  disabled0,
+  handleSaveSession
 }: Readonly<ButtonsProps>) {
   return (
     <Box
@@ -52,7 +54,7 @@ export function Buttons({
           <Button sx={StyledButton} onClick={handleBack} color='secondary'>
             Back
           </Button>
-          <Button sx={StyledButton} type='submit' color='secondary'>
+          <Button sx={StyledButton} onClick={handleSaveSession} color='secondary'>
             Save & Exit
           </Button>
         </>

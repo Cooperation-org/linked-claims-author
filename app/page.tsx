@@ -6,8 +6,7 @@ import ProfileImageWithLabels from './CredentialForm/ProfileImageWithLabels'
 import SVGDesign, {
   SVGCheckMarks,
   TwoPhonesMobileSVG,
-  TwoPhonesTabletSVG,
-  TwoPhonesDesktopSVG
+  TwoPhonesTabletSVG
 } from './Assets/SVGs'
 import Image from 'next/image'
 import AddIcon from './Assets/Images/Add_icon.png'
@@ -35,13 +34,7 @@ const Page = () => {
 
   const features = isSmallScreen ? featuresSmallScreen : featuresLargeScreen
 
-  const SelectedImage = isSmallScreen
-    ? TwoPhonesMobileSVG
-    : isMediumScreen
-    ? TwoPhonesTabletSVG
-    : isLargeScreen
-    ? TwoPhonesDesktopSVG
-    : TwoPhonesMobileSVG
+  const SelectedImage = isSmallScreen ? TwoPhonesMobileSVG : TwoPhonesTabletSVG
 
   return (
     <Box

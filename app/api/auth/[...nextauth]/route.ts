@@ -3,6 +3,7 @@ import GoogleProvider from 'next-auth/providers/google'
 
 declare module 'next-auth' {
   interface Session {
+    [x: string]: any
     accessToken?: string
     refreshToken?: string
     expires?: number
@@ -22,8 +23,7 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
       authorization: {
         params: {
-          scope:
-            'openid email profile https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file',
+          scope: 'openid email profile https://www.googleapis.com/auth/drive.file',
           access_type: 'offline' // Add this line
         }
       }

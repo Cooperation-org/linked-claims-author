@@ -150,7 +150,7 @@ export const SVGCheckMark = () => {
 export const SVGCheckMarks = () => {
   return (
     // dark blue circular checkmark.svg
-    <div>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
       <svg
         xmlns='http://www.w3.org/2000/svg'
         width='24'
