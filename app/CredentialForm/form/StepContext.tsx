@@ -10,15 +10,15 @@ const StepContext = createContext({
 })
 
 export const StepProvider = ({ children }: { children: any }) => {
-  // Function to extract the step from the URL hash
+  const [activeStep, setActiveStep] = useState(0)
+
   const getStepFromHash = () => {
     const hash = window.location.hash
     const step = Number(hash.replace('#step', ''))
     return isNaN(step) ? 0 : step
   }
 
-  const [activeStep, setActiveStep] = useState(getStepFromHash)
-
+  // Load the active step from localStorage and the hash when the component mounts
   useEffect(() => {
     const savedStep = localStorage.getItem('activeStep')
     const hashStep = getStepFromHash()
