@@ -18,7 +18,7 @@ export const StepProvider = ({ children }: { children: any }) => {
     return isNaN(step) ? 0 : step
   }
 
-  // Load the active step from localStorage and the hash when the component mounts
+
   useEffect(() => {
     const savedStep = localStorage.getItem('activeStep')
     const hashStep = getStepFromHash()
