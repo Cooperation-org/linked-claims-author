@@ -107,11 +107,13 @@ Credential Public Link:   https://linkedd-claims-author.vercel.app/Recommendatio
   const handleCheckboxChange = (event: any) => {
     setSendCopyToSelf(event.target.checked)
   }
-  const mailToLink = `mailto:${watch('email')}${
-    sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
-  }?subject=Support Request: ${
-    driveData?.credentialSubject?.achievement[0]?.name || ''
-  }&body=${encodeURIComponent(watch('reference'))}`
+  const mailToLink = `mailto:${encodeURIComponent(watch('email'))}${
+    sendCopyToSelf && session?.user?.email
+      ? `,${encodeURIComponent(session.user.email)}`
+      : ''
+  }?subject=${encodeURIComponent(
+    `Support Request: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
+  )}&body=${encodeURIComponent(watch('reference'))}`
 
   return (
     <Box
