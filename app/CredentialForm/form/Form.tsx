@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import React, { useEffect, useState } from 'react'
@@ -133,7 +134,7 @@ const Form = ({ onStepChange }: any) => {
       const { didDocument, keyPair, issuerId } = newDid
       const storage = new GoogleDriveStorage(accessToken)
 
-      await saveToGoogleDrive(
+      const saveResponse = await saveToGoogleDrive(
         storage,
         {
           didDocument,
@@ -141,13 +142,38 @@ const Form = ({ onStepChange }: any) => {
         },
         'DID'
       )
-      console.log('🚀 ~ newDid:', newDid)
-      console.log('🚀 ~ data.fullname:', data.fullName)
+
+      if (!saveResponse || !saveResponse.id) {
+        throw new Error('Failed to save file to Google Drive')
+      }
+
+
+      const permissionUrl = `https://www.googleapis.com/drive/v3/files/${saveResponse.id}/permissions`
+      const permissionBody = {
+        role: 'commenter', 
+        type: 'anyone' 
+      }
+
+      const response = await fetch(permissionUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(permissionBody)
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to set permissions: ${response.statusText}`)
+      }
+
       const res = await signCred(accessToken, data, issuerId, keyPair)
       setLink(`https://drive.google.com/file/d/${res.id}/view`)
+
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res
     } catch (error: any) {
+      console.error('Error during signing process:', error)
       throw error
     }
   }

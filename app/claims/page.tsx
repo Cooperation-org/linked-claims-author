@@ -8,8 +8,8 @@ import {
   Collapse,
   Typography,
   CircularProgress,
-  Button,
-  Box
+  Box,
+  Button
 } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
@@ -47,6 +47,18 @@ interface ClaimDetail {
   }
 }
 
+interface Comment {
+  author: string
+  content: string
+  createdTime: string
+}
+
+declare global {
+  interface Window {
+    gapi: any
+  }
+}
+
 const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<Claim[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -55,13 +67,46 @@ const ClaimsPage: React.FC = () => {
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
+  const [comments, setComments] = useState<{ [key: string]: Comment[] }>({})
+  const [gapiInitialized, setGapiInitialized] = useState<boolean>(false)
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
+
+  // Load gapi and initialize the Drive API
+  const loadGapiClient = () => {
+    return new Promise<void>((resolve, reject) => {
+      window.gapi.load('client:auth2', async () => {
+        try {
+          await window.gapi.client.init({
+            apiKey: 'YOUR_API_KEY', // Replace with your actual API Key
+            clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com', // Replace with your actual Client ID
+            scope: 'https://www.googleapis.com/auth/drive',
+            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
+          })
+          resolve()
+        } catch (error) {
+          console.error('Error loading GAPI client:', error)
+          reject(error)
+        }
+      })
+    })
+  }
 
   useEffect(() => {
     if (accessToken) {
       const storageInstance = new GoogleDriveStorage(accessToken)
       setStorage(storageInstance)
+    }
+
+    // Ensure gapi is initialized only on the client-side
+    if (typeof window !== 'undefined' && window.gapi) {
+      loadGapiClient()
+        .then(() => {
+          setGapiInitialized(true)
+        })
+        .catch(error => {
+          console.error('Failed to initialize gapi:', error)
+        })
     }
   }, [accessToken])
 
@@ -80,9 +125,7 @@ const ClaimsPage: React.FC = () => {
     if (!claimsData.files) return []
     const claimsNames: Claim[] = await Promise.all(
       claimsData.files.map(async (claim: any) => {
-        console.log(':  claimsData.files.map  claimsData', claimsData)
         const content = await getContent(claim.id)
-        console.log(':  claimsData.files.map  content', content)
         const achievementName =
           content.credentialSubject.achievement?.[0]?.name || 'Unnamed Achievement'
         return { id: claim.id, achievementName }
@@ -90,6 +133,29 @@ const ClaimsPage: React.FC = () => {
     )
     return claimsNames
   }, [getContent, storage])
+
+  const fetchComments = async (fileId: string) => {
+    if (!window.gapi || !gapiInitialized) return
+
+    try {
+      const commentsList = await window.gapi.client.drive.comments.list({
+        fileId: fileId,
+        fields: 'comments(author, content, createdTime)'
+      })
+      console.log(':  commentsList', commentsList)
+
+      const commentsData =
+        commentsList.result.comments?.map((comment: any) => ({
+          author: comment.author.displayName,
+          content: comment.content,
+          createdTime: comment.createdTime
+        })) || []
+
+      setComments(prevState => ({ ...prevState, [fileId]: commentsData }))
+    } catch (error) {
+      console.error('Error fetching comments:', error)
+    }
+  }
 
   useEffect(() => {
     if (!accessToken || !storage) {
@@ -99,7 +165,6 @@ const ClaimsPage: React.FC = () => {
     }
     const fetchClaims = async () => {
       const claimsData = await getAllClaims()
-      console.log('🚀 ~ fetchClaims ~ claimsData:', claimsData)
       setClaims(claimsData)
       setLoading(false)
     }
@@ -114,10 +179,10 @@ const ClaimsPage: React.FC = () => {
     } else {
       setLoadingClaims(prevState => ({ ...prevState, [claimId]: true }))
       const claimDetails = await getContent(claimId)
-      console.log('claimDetails', claimDetails)
       setDetailedClaim(claimDetails)
       setOpenClaim(claimId)
       setLoadingClaims(prevState => ({ ...prevState, [claimId]: false }))
+      await fetchComments(claimId)
     }
   }
 
@@ -137,203 +202,140 @@ const ClaimsPage: React.FC = () => {
   }
 
   return errorMessage ? (
-    <Container
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        minHeight: 'calc(100vh - 190px)'
-      }}
-    >
+    <Container>
+      <Typography variant='h4'>Previous Claims</Typography>
       <List>
-        <>
-          <Typography
-            variant='h4'
-            sx={{
-              mt: 5,
-              textAlign: 'center'
-            }}
-          >
-            Previous Claims
-          </Typography>
-          {claims.map(claim => (
-            <div key={claim.id}>
-              <ListItem button onClick={() => handleClaimClick(claim.id, claim)}>
-                <ListItemText primary={claim.achievementName} />
-                {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={openClaim === claim.id} timeout='auto' unmountOnExit>
-                <Container>
-                  {loadingClaims[claim.id] ? (
-                    <div>
-                      <CircularProgress />
-                    </div>
-                  ) : (
+        {claims.map(claim => (
+          <div key={claim.id}>
+            <ListItem button onClick={() => handleClaimClick(claim.id, claim)}>
+              <ListItemText primary={claim.achievementName} />
+              {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={openClaim === claim.id} timeout='auto' unmountOnExit>
+              <Container>
+                {loadingClaims[claim.id] ? (
+                  <CircularProgress />
+                ) : (
+                  <Box>
+                    {/* Claim Details Box */}
                     <Box
                       sx={{
                         border: '1px solid #003FE0',
                         borderRadius: '10px',
                         p: '15px',
-                        mt: '10px'
+                        mb: '10px',
+                        bgcolor: '#d5e1fb'
                       }}
                     >
-                      {claims ? (
-                        <>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              gap: '5px',
-                              alignItems: 'center'
-                            }}
-                          >
-                            <SVGBadge />
-                            <Typography
-                              sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}
-                            >
-                              {detailedClaim?.credentialSubject?.name ?? ''} has claimed:
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          gap: '5px',
+                          alignItems: 'center'
+                        }}
+                      >
+                        <SVGBadge />
+                        <Typography
+                          sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}
+                        >
+                          {detailedClaim?.credentialSubject?.name ?? ''} has claimed:
+                        </Typography>
+                      </Box>
+                      <Typography
+                        sx={{
+                          color: '#202E5B',
+                          fontFamily: 'Inter',
+                          fontSize: '24px',
+                          fontWeight: 700,
+                          letterSpacing: '0.075px',
+                          mb: '10px'
+                        }}
+                      >
+                        Management Skills
+                      </Typography>
+                      <Box
+                        sx={{
+                          ...credentialBoxStyles,
+                          bgcolor: '#f9f9f9'
+                        }}
+                      >
+                        <Box sx={{ mt: '2px' }}>
+                          <SVGDate />
+                        </Box>
+                        <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
+                          {detailedClaim?.credentialSubject?.duration}
+                        </Typography>
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontFamily: 'Lato',
+                          fontSize: '17px',
+                          letterSpacing: '0.075px',
+                          lineHeight: '24px'
+                        }}
+                      >
+                        {detailedClaim?.credentialSubject?.achievement[0]?.description.replace(
+                          /<\/?[^>]+>/gi,
+                          ''
+                        )}
+                      </Typography>
+                      <Box>
+                        <Typography>Earning criteria:</Typography>
+                        <ul style={{ marginLeft: '25px' }}>
+                          <li>
+                            {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
+                              /<\/?[^>]+>/gi,
+                              ''
+                            )}
+                          </li>
+                        </ul>
+                      </Box>
+                      <Box>
+                        <Typography>Supporting Evidence:</Typography>
+                        <ul style={evidenceListStyles}>
+                          {detailedClaim?.credentialSubject?.portfolio?.map(
+                            (porto: { url: any; name: any }) => (
+                              <li key={porto.url}>
+                                <Link href={porto.url}>{porto.name}</Link>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </Box>
+                    </Box>
+
+                    {/* Comments Box */}
+                    <Box
+                      sx={{
+                        border: '1px solid #003FE0',
+                        borderRadius: '10px',
+                        p: '15px',
+                        bgcolor: '#f1f1f1'
+                      }}
+                    >
+                      <Typography variant='h6'>Comments</Typography>
+                      {comments[claim.id] && comments[claim.id].length > 0 ? (
+                        comments[claim.id].map((comment, index) => (
+                          <Box key={index} mb={2}>
+                            <Typography>
+                              <strong>{comment.author}</strong>: {comment.content}
+                            </Typography>
+                            <Typography variant='caption'>
+                              {new Date(comment.createdTime).toLocaleString()}
                             </Typography>
                           </Box>
-                          <Box>
-                            <Box>
-                              <Typography
-                                sx={{
-                                  color: '#202E5B',
-                                  fontFamily: 'Inter',
-                                  fontSize: '24px',
-                                  fontWeight: 700,
-                                  letterSpacing: '0.075px',
-                                  mb: '10px'
-                                }}
-                              >
-                                Management Skills
-                              </Typography>
-                              <Box
-                                sx={{
-                                  ...credentialBoxStyles,
-                                  bgcolor: '#d5e1fb'
-                                }}
-                              >
-                                <Box sx={{ mt: '2px' }}>
-                                  <SVGDate />
-                                </Box>
-                                <Typography
-                                  sx={{ ...commonTypographyStyles, fontSize: '13px' }}
-                                >
-                                  {detailedClaim?.credentialSubject?.duration}
-                                </Typography>
-                              </Box>
-                            </Box>
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '20px'
-                              }}
-                            >
-                              <Typography
-                                sx={{
-                                  fontFamily: 'Lato',
-                                  fontSize: '17px',
-                                  letterSpacing: '0.075px',
-                                  lineHeight: '24px'
-                                }}
-                              >
-                                {detailedClaim?.credentialSubject?.achievement[0]?.description.replace(
-                                  /<\/?[^>]+>/gi,
-                                  ''
-                                )}
-                              </Typography>
-                              <Box>
-                                <Typography>Earning criteria:</Typography>
-                                <ul style={{ marginLeft: '25px' }}>
-                                  <li>
-                                    {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
-                                      /<\/?[^>]+>/gi,
-                                      ''
-                                    )}
-                                  </li>
-                                </ul>
-                              </Box>
-                              <Box>
-                                <Typography>Supporting Evidence:</Typography>
-                                <ul style={evidenceListStyles}>
-                                  {detailedClaim?.credentialSubject?.portfolio?.map(
-                                    (porto: { url: any; name: any }) => (
-                                      <li key={porto.url}>
-                                        <Link href={porto.url}>{porto.name}</Link>
-                                      </li>
-                                    )
-                                  )}
-                                </ul>
-                              </Box>
-                            </Box>
-                          </Box>
-                          <Box
-                            sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}
-                          >
-                            <Link
-                              href={`/View/${encodeURIComponent(
-                                `https://drive.google.com/file/d/${claim.id}/view`
-                              )}`}
-                            >
-                              <Button
-                                variant='contained'
-                                sx={{
-                                  backgroundColor: '#003FE0',
-                                  textTransform: 'none',
-                                  borderRadius: '100px'
-                                }}
-                              >
-                                View Credential
-                              </Button>
-                            </Link>
-                          </Box>
-                        </>
+                        ))
                       ) : (
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}
-                        >
-                          <CircularProgress />
-                        </Box>
+                        <Typography>No comments found.</Typography>
                       )}
                     </Box>
-                  )}
-                </Container>
-              </Collapse>
-            </div>
-          ))}
-        </>
+                  </Box>
+                )}
+              </Container>
+            </Collapse>
+          </div>
+        ))}
       </List>
-      <Link href='/CredentialForm'>
-        <Box
-          sx={{
-            width: '100%',
-            mb: 5,
-            ml: 'auto',
-            display: 'flex',
-            justifyContent: 'center'
-          }}
-        >
-          <Button
-            variant='contained'
-            sx={{
-              fontSize: '0.8rem',
-              mt: 5,
-
-              border: 'solid 1px blue',
-              borderRadius: '50px',
-              px: 2,
-              fontWeight: 600
-            }}
-          >
-            Add another one
-          </Button>
-        </Box>
-      </Link>
     </Container>
   ) : (
     <h1>{errorMessage}</h1>

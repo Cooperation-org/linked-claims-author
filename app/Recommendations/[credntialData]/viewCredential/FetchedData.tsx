@@ -15,11 +15,13 @@ import useGoogleDrive from '../../../hooks/useGoogleDrive'
 interface FetchedDataProps {
   setFullName: (name: string) => void
   setEmail?: (email: string) => void
+  setFileID?: (fileId: string) => void
 }
 
 const FetchedData: React.FC<FetchedDataProps> = ({
   setFullName,
-  setEmail = () => {}
+  setEmail = () => {},
+  setFileID = () => {}
 }) => {
   const [driveData, setDriveData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -42,6 +44,10 @@ const FetchedData: React.FC<FetchedDataProps> = ({
       const fileIdMatch = RegExp(/\/d\/([a-zA-Z0-9_-]+)/).exec(decodedLink)
       const fileId = fileIdMatch ? fileIdMatch[1] : null
       console.log('Extracted File ID:', fileId) // Log the extracted file ID
+
+      if (fileId) {
+        setFileID(fileId)
+      }
 
       if (fileId && gapiLoaded) {
         console.log('Fetching data...')
