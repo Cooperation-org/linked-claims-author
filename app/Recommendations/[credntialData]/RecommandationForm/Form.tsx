@@ -35,6 +35,7 @@ const Form = () => {
     explainAnswer: '',
     isRecommand: 'yes'
   })
+  const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
 
   const defaultValues: FormData = storedValue
 
@@ -65,6 +66,9 @@ const Form = () => {
       setStoreNewValue(formData)
     }
   }, [formData, storedValue, setStoreNewValue])
+  useEffect(() => {
+    console.log('Active Step:', activeStep)
+  }, [activeStep])
 
   // Load the gapi client dynamically
   useEffect(() => {
@@ -134,6 +138,7 @@ const Form = () => {
   }
 
   const handleFormSubmit = handleSubmit((data: FormData) => {
+    setSubmittedFullName(data.fullName)
     addCommentToFile(fileID, JSON.stringify(data), accessToken as any)
     clearValue()
     reset({
@@ -148,6 +153,8 @@ const Form = () => {
       explainAnswer: '',
       isRecommand: 'yes'
     })
+    setActiveStep(6)
+
   })
 
   return (
@@ -207,30 +214,33 @@ const Form = () => {
             {activeStep === 4 && (
               <Step4 watch={watch} setValue={setValue} errors={errors} />
             )}
-            {activeStep === 5 && <DataPreview formData={watch() as any} />}
-            {activeStep === 6 && <SuccessPage />}
+            {activeStep === 5 && (
+              <DataPreview
+                formData={formData}
+                handleNext={handleNext}
+                handleBack={handleBack}
+                handleSign={handleFormSubmit}
+              />
+            )}
+            {activeStep === 6 && (
+              <SuccessPage
+                formData={formData}
+                link={''}
+                submittedFullName={submittedFullName}
+                handleBack={handleBack}
+              />
+            )}
           </FormControl>
         </Box>
-        {activeStep !== 6 && activeStep !== 1 && activeStep !== 0 && (
-          <Buttons
-            activeStep={activeStep}
-            maxSteps={textGuid(fullName).length}
-            handleNext={handleNext}
-            handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
-            handleBack={handleBack}
-            isValid={isValid}
-          />
-        )}
-        {activeStep === 1 && (
-          <Buttons
-            activeStep={activeStep}
-            maxSteps={textGuid.length}
-            handleNext={handleNext}
-            handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
-            handleBack={undefined}
-            isValid={isValid}
-          />
-        )}
+
+        <Buttons
+          activeStep={activeStep}
+          maxSteps={textGuid(fullName).length}
+          handleNext={handleNext}
+          handleSign={handleFormSubmit}
+          handleBack={handleBack}
+          isValid={isValid}
+        />
       </form>
     </FormProvider>
   )
