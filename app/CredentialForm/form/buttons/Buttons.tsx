@@ -3,7 +3,6 @@
 import React from 'react'
 import { Box, Button } from '@mui/material'
 import { nextButtonStyle, StyledButton } from '../../../components/Styles/appStyles'
-import { saveSession } from '../../../utils/saveSession'
 
 interface ButtonsProps {
   activeStep: number
@@ -55,12 +54,7 @@ export function Buttons({
           <Button sx={StyledButton} onClick={handleBack} color='secondary'>
             Back
           </Button>
-          <Button
-            sx={StyledButton}
-            onClick={handleSaveSession}
-            type='submit'
-            color='secondary'
-          >
+          <Button sx={StyledButton} onClick={handleSaveSession} color='secondary'>
             Save & Exit
           </Button>
         </>
