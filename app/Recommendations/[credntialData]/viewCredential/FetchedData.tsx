@@ -15,14 +15,16 @@ import useGoogleDrive from '../../../hooks/useGoogleDrive'
 interface FetchedDataProps {
   setFullName: (name: string) => void
   setEmail?: (email: string) => void
+  setFileID?: (fileId: string) => void
 }
 
 const FetchedData: React.FC<FetchedDataProps> = ({
   setFullName,
-  setEmail = () => {}
+  setEmail = () => {},
+  setFileID = () => {}
 }) => {
   const [driveData, setDriveData] = useState<any>(null)
-  console.log(':  driveData', driveData)
+  const [loading, setLoading] = useState(true)
   const params = useParams()
 
   const {
@@ -43,42 +45,46 @@ const FetchedData: React.FC<FetchedDataProps> = ({
       const fileId = fileIdMatch ? fileIdMatch[1] : null
       console.log('Extracted File ID:', fileId) // Log the extracted file ID
 
-      if (fileId && gapiLoaded) {
-        console.log('Google API loaded, proceeding to fetch file content and metadata')
-        const resourceKey = ''
+      if (fileId) {
+        setFileID(fileId)
+      }
 
-        await fetchFileContent(fileId, resourceKey)
-        await fetchFileMetadata(fileId, resourceKey)
+      if (fileId && gapiLoaded) {
+        console.log('Fetching data...')
+        await fetchFileContent(fileId)
+        await fetchFileMetadata(fileId)
       } else {
-        console.error('Invalid file ID or gapi not loaded')
+        console.error('Invalid file ID or Google API not loaded')
       }
     }
 
-    fetchDriveData()
-  }, [gapiLoaded])
+    if (gapiLoaded) {
+      fetchDriveData()
+    }
+  }, [gapiLoaded, params])
+
   useEffect(() => {
-    if (fileContent) {
+    if (fileContent && fileMetadata) {
       const parsedData = JSON.parse(fileContent)
       setDriveData(parsedData)
       setFullName(parsedData.credentialSubject?.name)
-      localStorage.setItem('parsedData', JSON.stringify(parsedData))
+      setLoading(false)
     }
+
     if (ownerEmail) {
       setEmail(ownerEmail)
     }
-  }, [fileContent, ownerEmail])
+  }, [fileContent, fileMetadata, ownerEmail])
 
   return (
     <Box sx={{ border: '1px solid #003FE0', borderRadius: '10px', p: '15px' }}>
-      {driveData ? (
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <CircularProgress />
+        </Box>
+      ) : driveData ? (
         <>
-          <Box
-            sx={{
-              display: 'flex',
-              gap: '5px',
-              alignItems: 'center'
-            }}
-          >
+          <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
             <SVGBadge />
             <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
               {driveData.credentialSubject?.name || fileMetadata?.name} has claimed:
@@ -98,12 +104,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
               >
                 {driveData.credentialSubject?.achievement[0]?.name}
               </Typography>
-              <Box
-                sx={{
-                  ...credentialBoxStyles,
-                  bgcolor: '#d5e1fb'
-                }}
-              >
+              <Box sx={{ ...credentialBoxStyles, bgcolor: '#d5e1fb' }}>
                 <Box sx={{ mt: '2px' }}>
                   <SVGDate />
                 </Box>
@@ -166,9 +167,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
           </Box>
         </>
       ) : (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <CircularProgress />
-        </Box>
+        <Typography>Data not available.</Typography>
       )}
     </Box>
   )

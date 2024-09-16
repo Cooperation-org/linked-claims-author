@@ -8,13 +8,27 @@ import { SVGCheckMarks } from '../../../Assets/SVGs'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { featuresRecommentations } from '../RecommandationForm/fromTexts/FormTextSteps'
 import FetchedData from './FetchedData'
+import DeclineRequest from '../DeclineRequest/DeclineRequest'
 
 const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) => {
   const theme = useTheme()
   const [fullName, setFullName] = useState('Golda')
+  const [showDeclineRequest, setShowDeclineRequest] = useState(false)
 
   const handleClick = () => {
     setactivStep(1)
+  }
+
+  const handleDeclineRequest = () => {
+    setShowDeclineRequest(true)
+  }
+
+  const handleBack = () => {
+    setShowDeclineRequest(false) // Go back to Credential component
+  }
+
+  if (showDeclineRequest) {
+    return <DeclineRequest credentialData={fullName} handleBack={handleBack} />
   }
 
   return (
@@ -28,29 +42,66 @@ const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) =
         mt: '30px'
       }}
     >
+      <Typography
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: theme.palette.t3BodyText,
+          fontFamily: 'Lato',
+          fontSize: '24px',
+          fontWeight: '600',
+          lineHeight: '28.8px',
+          textAlign: 'center',
+          m: '0',
+          width: '100%'
+        }}
+      >
+        Hi, I’m Tessa! I’ll help you with <br /> {fullName}’s recommendation.
+      </Typography>
       <Button onClick={handleClick} sx={{ ...nextButtonStyle, width: '100%' }}>
         Get Started
       </Button>
+      <Button
+        onClick={handleDeclineRequest}
+        sx={{
+          padding: '10px 24px',
+          borderRadius: '100px',
+          textTransform: 'capitalize',
+          fontFamily: 'Roboto',
+          textDecoration: 'underline',
+          fontWeight: '600',
+          lineHeight: '16px',
+          flexGrow: 8,
+          fontSize: '16px',
+          width: '100%'
+        }}
+        variant='text'
+      >
+        Decline Recommendation Request
+      </Button>
       <Typography
         sx={{
-          flexShrink: 0,
+          flexShrink: 1,
           fontFamily: 'Lato',
           fontSize: '16px',
-          fontWeight: '400',
-          lineHeight: 'normal',
+          fontWeight: 'bold',
+          lineHeight: '19.2px',
           m: '0 3px 0 15px'
         }}
       >
         Here’s what you may need before getting started:
       </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: '210px' }}>
+      <Box
+        sx={{ display: 'flex', flexDirection: 'column', minWidth: '210px', gap: '15px' }}
+      >
         {featuresRecommentations(fullName).map((feature: { id: any; name: any }) => (
           <Box
             key={feature.id}
             sx={{
               display: 'flex',
+              lineHeight: 'normal',
               alignItems: 'center',
-              justifyContent: 'flex-start',
               width: '100%'
             }}
           >
@@ -61,8 +112,8 @@ const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) =
                 flexShrink: 1,
                 fontFamily: 'Lato',
                 fontSize: '18px',
-                fontWeight: '400',
-                lineHeight: 'normal',
+                fontWeight: '600',
+                lineHeight: '21.6px',
                 m: '0 5px 0 15px'
               }}
             >

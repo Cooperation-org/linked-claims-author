@@ -41,7 +41,6 @@ export default function HorizontalLinearStepper() {
   const { activeStep, handleNext, handleBack } = useStepContext()
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const [driveData, setDriveData] = React.useState<any>(null)
-  console.log(':  FetchedData  driveData', driveData)
   const { data: session } = useSession()
   const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
   const params = useParams()
@@ -60,23 +59,7 @@ export default function HorizontalLinearStepper() {
     }
 
     fetchDriveData()
-  }, [gapiLoaded])
-
-  React.useEffect(() => {
-    if (fileContent) {
-      const parsedData = JSON.parse(fileContent)
-      console.log(':  React.useEffect  parsedData', parsedData)
-      setDriveData(parsedData)
-      localStorage.setItem('parsedData', JSON.stringify(parsedData))
-      reset({
-        reference: `Hey there! I hope you’re doing well. 
-        
-    I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-      driveData?.credentialSubject?.achievement[0]?.name || ''
-    }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me! `
-      })
-    }
-  }, [fileContent])
+  }, [gapiLoaded, fetchFileContent, params.credentialData])
 
   const {
     reset,
@@ -98,21 +81,32 @@ export default function HorizontalLinearStepper() {
     mode: 'onChange'
   })
 
+  React.useEffect(() => {
+    if (fileContent) {
+      const parsedData = JSON.parse(fileContent)
+      setDriveData(parsedData)
+      localStorage.setItem('parsedData', JSON.stringify(parsedData))
+      reset({
+        reference: `Hey there! I hope you’re doing well. 
+            
+            I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
+              parsedData?.credentialSubject?.achievement[0]?.name || ''
+            }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+      })
+    }
+  }, [fileContent, reset])
+
   const handleCheckboxChange = (event: any) => {
     setSendCopyToSelf(event.target.checked)
   }
 
-  const mailToLink = `mailto:${watch('email')}${
-    sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
-  }?subject=Support Request: ${
-    driveData?.credentialSubject?.achievement[0]?.name || ''
-  }&body=${encodeURIComponent(
-    `Reference: ${watch(
-      'reference'
-    )}\nCredential Public Link: https://linked-claims-author.vercel.app/Recommendations/${
-      params.credentialData
-    }`
-  )}`
+  const mailToLink = `mailto:${encodeURIComponent(watch('email'))}${
+    sendCopyToSelf && session?.user?.email
+      ? `,${encodeURIComponent(session.user.email)}`
+      : ''
+  }?subject=${encodeURIComponent(
+    `Support Request: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
+  )}&body=${encodeURIComponent(watch('reference'))}`
 
   return (
     <Box
@@ -230,7 +224,7 @@ export default function HorizontalLinearStepper() {
                           height: '100px'
                         }}
                       >
-                        <img
+                        <Image
                           style={{
                             borderRadius: '20px 0px 0px 20px',
                             width: '100px',
@@ -239,6 +233,8 @@ export default function HorizontalLinearStepper() {
                           }}
                           src={driveData?.credentialSubject?.evidenceLink || imageLink}
                           alt={driveData?.credentialSubject?.name || 'Evidence Image'}
+                          width={100}
+                          height={100}
                         />
                       </Box>
                       <Box sx={{ flex: 1, ml: 2, mt: 1 }}>
