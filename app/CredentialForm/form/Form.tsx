@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box } from '@mui/material'
 import { FormData } from './types/Types'
@@ -20,7 +20,6 @@ import { Step4 } from './Steps/Step4'
 import { Step5 } from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
-
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { useGoogleSignIn } from '../../components/signing/useGoogleSignIn'
@@ -38,8 +37,8 @@ const Form = ({ onStepChange }: any) => {
   const [hasSignedIn, setHasSignedIn] = useState(false)
   const [metamaskAdress, setMetamaskAdress] = useState<string>('')
   const [disabled0, setDisabled0] = useState(false)
-  const [snackMessage, setSnackMessgae] = useState('')
-  const [userSessions, setuserSessions] = useState<{}[]>([])
+  const [snackMessage, setSnackMessage] = useState('')
+  const [userSessions, setUserSessions] = useState<{}[]>([])
   const [openDialog, setOpenDialog] = useState(false)
 
   const characterLimit = 294
@@ -87,7 +86,7 @@ const Form = ({ onStepChange }: any) => {
       console.log('userSessions', userSessions)
 
       if (userSessions.length > 0) {
-        setuserSessions(userSessions)
+        setUserSessions(userSessions)
         setOpenDialog(true)
       }
     } catch (err) {
@@ -188,15 +187,14 @@ const Form = ({ onStepChange }: any) => {
         'DID'
       )
 
-      if (!saveResponse || !saveResponse.id) {
+      if (!saveResponse?.id) {
         throw new Error('Failed to save file to Google Drive')
       }
 
-
       const permissionUrl = `https://www.googleapis.com/drive/v3/files/${saveResponse.id}/permissions`
       const permissionBody = {
-        role: 'commenter', 
-        type: 'anyone' 
+        role: 'commenter',
+        type: 'anyone'
       }
 
       const response = await fetch(permissionUrl, {
@@ -226,14 +224,14 @@ const Form = ({ onStepChange }: any) => {
   const handleSaveSession = async () => {
     try {
       const formData = watch() // Get the current form data
-      setSnackMessgae('Successfully saved in Your ' + formData.storageOption)
+      setSnackMessage('Successfully saved in Your ' + formData.storageOption)
       if (!accessToken) {
         setErrorMessage('Access token is missing')
         return
       }
       await saveSession(formData, accessToken) // Save session data to Google Drive
     } catch (error: any) {
-      setSnackMessgae('Someting went wrong, please try agin later')
+      setSnackMessage('Someting went wrong, please try agin later')
       console.error('Error saving session:', error)
     }
   }

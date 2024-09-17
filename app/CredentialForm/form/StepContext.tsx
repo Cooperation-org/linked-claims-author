@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react'
 
 const StepContext = createContext({
   activeStep: 0,
@@ -17,7 +17,6 @@ export const StepProvider = ({ children }: { children: any }) => {
     const step = Number(hash.replace('#step', ''))
     return isNaN(step) ? 0 : step
   }
-
 
   useEffect(() => {
     const savedStep = localStorage.getItem('activeStep')
@@ -58,7 +57,12 @@ export const StepProvider = ({ children }: { children: any }) => {
   }
 
   return (
-    <StepContext.Provider value={{ activeStep, setActiveStep, handleNext, handleBack }}>
+    <StepContext.Provider
+      value={useMemo(
+        () => ({ activeStep, setActiveStep, handleNext, handleBack }),
+        [activeStep, setActiveStep, handleNext, handleBack]
+      )}
+    >
       {children}
     </StepContext.Provider>
   )
