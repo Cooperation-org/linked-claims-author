@@ -79,15 +79,19 @@ const ClaimsPage: React.FC = () => {
       window.gapi.load('client:auth2', async () => {
         try {
           await window.gapi.client.init({
-            apiKey: 'YOUR_API_KEY', // Replace with your actual API Key
-            clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com', // Replace with your actual Client ID
+            apiKey: process.env.GOOGLE_API_KEY, // Loaded from env variables
+            clientId: process.env.GOOGLE_CLIENT_ID, // Loaded from env variables
             scope: 'https://www.googleapis.com/auth/drive',
             discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
           })
           resolve()
-        } catch (error) {
+        } catch (error: unknown) {
           console.error('Error loading GAPI client:', error)
-          reject(error)
+          if (error instanceof Error) {
+            reject(new Error(`Error loading GAPI client: ${error.message}`))
+          } else {
+            reject(new Error('Error loading GAPI client: An unknown error occurred'))
+          }
         }
       })
     })
@@ -220,7 +224,7 @@ const ClaimsPage: React.FC = () => {
       <List>
         {claims.map(claim => (
           <div key={claim.id}>
-            <ListItem button onClick={() => handleClaimClick(claim.id, claim)}>
+            <ListItem onClick={() => handleClaimClick(claim.id, claim)}>
               <ListItemText primary={claim.achievementName} />
               {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
