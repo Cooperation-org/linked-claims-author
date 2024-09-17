@@ -8,8 +8,7 @@ import {
   Collapse,
   Typography,
   CircularProgress,
-  Box,
-  Button
+  Box
 } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
@@ -71,6 +70,8 @@ const ClaimsPage: React.FC = () => {
   const [gapiInitialized, setGapiInitialized] = useState<boolean>(false)
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
+  console.log('Session data:', session)
+  console.log('Access token:', accessToken)
 
   // Load gapi and initialize the Drive API
   const loadGapiClient = () => {
@@ -94,14 +95,18 @@ const ClaimsPage: React.FC = () => {
 
   useEffect(() => {
     if (accessToken) {
+      console.log('Initializing Google Drive Storage with access token...')
       const storageInstance = new GoogleDriveStorage(accessToken)
       setStorage(storageInstance)
+    } else {
+      console.log('No access token found.')
     }
 
     // Ensure gapi is initialized only on the client-side
     if (typeof window !== 'undefined' && window.gapi) {
       loadGapiClient()
         .then(() => {
+          console.log('GAPI client initialized successfully.')
           setGapiInitialized(true)
         })
         .catch(error => {
@@ -112,7 +117,10 @@ const ClaimsPage: React.FC = () => {
 
   const getContent = useCallback(
     async (fileId: string): Promise<ClaimDetail> => {
-      if (!storage) throw new Error('Storage is not initialized')
+      if (!storage) {
+        console.log('Storage is not initialized.')
+        throw new Error('Storage is not initialized')
+      }
       const file = await storage.retrieve(fileId)
       return file as ClaimDetail
     },
@@ -120,7 +128,11 @@ const ClaimsPage: React.FC = () => {
   )
 
   const getAllClaims = useCallback(async (): Promise<any> => {
-    if (!storage) throw new Error('Storage is not initialized')
+    if (!storage) {
+      console.log('Storage is not initialized.')
+      throw new Error('Storage is not initialized')
+    }
+    console.log('Fetching claims from Google Drive...')
     const claimsData = await storage.getAllClaims()
     if (!claimsData.files) return []
     const claimsNames: Claim[] = await Promise.all(
@@ -142,7 +154,7 @@ const ClaimsPage: React.FC = () => {
         fileId: fileId,
         fields: 'comments(author, content, createdTime)'
       })
-      console.log(':  commentsList', commentsList)
+      console.log('Comments list:', commentsList)
 
       const commentsData =
         commentsList.result.comments?.map((comment: any) => ({
@@ -159,12 +171,25 @@ const ClaimsPage: React.FC = () => {
 
   useEffect(() => {
     if (!accessToken || !storage) {
+      console.log('Setting error message: Please sign in to view your claims')
       setErrorMessage('Please sign in to view your claims')
       return
     }
     const fetchClaims = async () => {
-      const claimsData = await getAllClaims()
-      setClaims(claimsData)
+      try {
+        console.log('Fetching all claims...')
+        const claimsData = await getAllClaims()
+        if (claimsData.length === 0) {
+          console.log('No claims available.')
+          setErrorMessage('No claims available.')
+        } else {
+          setClaims(claimsData)
+          setErrorMessage(null) // Clear error message when claims are fetched successfully
+        }
+      } catch (error) {
+        console.error('Error fetching claims:', error)
+        setErrorMessage('Failed to fetch claims.')
+      }
     }
 
     fetchClaims()
@@ -185,6 +210,11 @@ const ClaimsPage: React.FC = () => {
   }
 
   return errorMessage ? (
+    <Container>
+      <Typography variant='h4'>Previous Claims</Typography>
+      <Typography color='error'>{errorMessage}</Typography>
+    </Container>
+  ) : (
     <Container>
       <Typography variant='h4'>Previous Claims</Typography>
       <List>
@@ -277,7 +307,7 @@ const ClaimsPage: React.FC = () => {
                         <Typography>Supporting Evidence:</Typography>
                         <ul style={evidenceListStyles}>
                           {detailedClaim?.credentialSubject?.portfolio?.map(
-                            (porto: { url: any; name: any }) => (
+                            (porto: { url: string; name: string }) => (
                               <li key={porto.url}>
                                 <Link href={porto.url}>{porto.name}</Link>
                               </li>
@@ -298,8 +328,8 @@ const ClaimsPage: React.FC = () => {
                     >
                       <Typography variant='h6'>Comments</Typography>
                       {comments[claim.id] && comments[claim.id].length > 0 ? (
-                        comments[claim.id].map((comment, index) => (
-                          <Box key={index} mb={2}>
+                        comments[claim.id].map(comment => (
+                          <Box key={comment.createdTime} mb={2}>
                             <Typography>
                               <strong>{comment.author}</strong>: {comment.content}
                             </Typography>
@@ -320,8 +350,6 @@ const ClaimsPage: React.FC = () => {
         ))}
       </List>
     </Container>
-  ) : (
-    <h1>{errorMessage}</h1>
   )
 }
 
