@@ -30,10 +30,7 @@ const Form = () => {
     recommendationText: '',
     portfolio: [{ name: '', url: '' }],
     qualifications: '',
-    communicationRating: 0,
-    dependabilityRating: 0,
-    explainAnswer: '',
-    isRecommand: 'yes'
+    explainAnswer: ''
   })
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
 
@@ -148,13 +145,9 @@ const Form = () => {
       recommendationText: '',
       portfolio: [{ name: '', url: '' }],
       qualifications: '',
-      communicationRating: 0,
-      dependabilityRating: 0,
-      explainAnswer: '',
-      isRecommand: 'yes'
+      explainAnswer: ''
     })
     setActiveStep(6)
-
   })
 
   return (
