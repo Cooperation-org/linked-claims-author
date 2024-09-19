@@ -236,7 +236,7 @@ const ClaimsPage: React.FC = () => {
                           mb: '10px'
                         }}
                       >
-                        Management Skills
+                        {claim.achievementName}
                       </Typography>
                       {detailedClaim?.credentialSubject?.duration && (
                         <Box
