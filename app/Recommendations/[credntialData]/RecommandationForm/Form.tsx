@@ -186,6 +186,7 @@ const Form = () => {
                 watch={watch}
                 errors={errors}
                 handleTextEditorChange={value => setValue('howKnow', value ?? '')}
+                fullName={fullName}
               />
             )}
             {activeStep === 3 && (
@@ -202,10 +203,16 @@ const Form = () => {
                 }
                 handleNext={handleNext}
                 handleBack={handleBack}
+                fullName={fullName}
               />
             )}
             {activeStep === 4 && (
-              <Step4 watch={watch} setValue={setValue} errors={errors} />
+              <Step4
+                watch={watch}
+                setValue={setValue}
+                errors={errors}
+                fullName={fullName}
+              />
             )}
             {activeStep === 5 && (
               <DataPreview

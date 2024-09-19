@@ -19,10 +19,10 @@ export const textGuid = (fullName: string) => [
     Thanks, Carol! <br /> Now share your recommendation and how you know {fullName}.{' '}
     <br /> Do you have evidence to share?
   </>,
-  'Would you like to add an image to your skill?',
   <>
     Well done! <br /> Here’s what you’ve created:
   </>,
+  <>Your recommendation has been saved to Google Drive!</>,
   'Success!'
 ]
 
