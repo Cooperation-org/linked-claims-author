@@ -23,7 +23,7 @@ import SuccessPage from './Steps/SuccessPage'
 
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
-import { useGoogleSignIn } from '../../components/signing/useGoogleSignIn'
+import { useSession, signIn, signOut } from 'next-auth/react'
 import { useStepContext } from './StepContext'
 import { handleSign } from '../../utils/formUtils'
 import { signAndSaveOnDevice } from '../../utils/saveOnDevice'
@@ -45,7 +45,7 @@ const Form = ({ onStepChange }: any) => {
 
   const characterLimit = 294
   const maxSteps = textGuid.length
-  const { session, handleSignIn } = useGoogleSignIn()
+  const { data: session } = useSession()
   const accessToken = session?.accessToken
 
   const storage = new GoogleDriveStorage(accessToken as string)
@@ -127,7 +127,7 @@ const Form = ({ onStepChange }: any) => {
       !session?.accessToken &&
       !hasSignedIn
     ) {
-      const signInSuccess = await handleSignIn()
+      const signInSuccess = await signIn('google')
       if (!signInSuccess || !session?.accessToken) return
       setHasSignedIn(true)
       handleNext()
@@ -187,16 +187,15 @@ const Form = ({ onStepChange }: any) => {
         fileId,
         resource: {
           role: 'commenter',
-          type: 'anyone',
-        },
-      });
-      console.log('Permission successfully set');
+          type: 'anyone'
+        }
+      })
+      console.log('Permission successfully set')
     } catch (error) {
-      console.error('Failed to set permissions:', error);
-      throw new Error('Failed to set permissions.');
+      console.error('Failed to set permissions:', error)
+      throw new Error('Failed to set permissions.')
     }
-  };
-
+  }
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
@@ -246,9 +245,6 @@ const Form = ({ onStepChange }: any) => {
       if (!saveResponse || !saveResponse.id) {
         throw new Error('Failed to save file to Google Drive')
       }
-
-
- 
 
       const res = await signCred(accessToken, data, issuerId, keyPair)
       setLink(`https://drive.google.com/file/d/${res.id}/view`)

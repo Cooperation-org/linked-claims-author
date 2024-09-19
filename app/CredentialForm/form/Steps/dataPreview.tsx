@@ -37,6 +37,32 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         bgcolor: isLargeScreen ? theme.palette.t3NewWhitesmoke : 'none'
       }}
     >
+      <Box sx={commonBoxStyles}>
+        <Typography
+          sx={{
+            ...commonTypographyStyles,
+            fontSize: '24px',
+            fontWeight: 700
+          }}
+        >
+          {formData.credentialName}
+        </Typography>
+        {formData.credentialDuration && (
+          <Box
+            sx={{
+              ...credentialBoxStyles,
+              bgcolor: theme.palette.t3LightGray
+            }}
+          >
+            <Box sx={{ mt: '2px' }}>
+              <SVGDate />
+            </Box>
+            <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
+              {formData.credentialDuration}
+            </Typography>
+          </Box>
+        )}
+      </Box>
       <Box
         sx={{
           display: 'flex',
@@ -58,32 +84,6 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         ) : (
           <Box sx={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }} />
         )}
-        <Box sx={commonBoxStyles}>
-          <Typography
-            sx={{
-              ...commonTypographyStyles,
-              fontSize: '24px',
-              fontWeight: 700
-            }}
-          >
-            {formData.credentialName}
-          </Typography>
-          {formData.credentialDuration && (
-            <Box
-              sx={{
-                ...credentialBoxStyles,
-                bgcolor: theme.palette.t3LightGray
-              }}
-            >
-              <Box sx={{ mt: '2px' }}>
-                <SVGDate />
-              </Box>
-              <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
-                {formData.credentialDuration}
-              </Typography>
-            </Box>
-          )}
-        </Box>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <Typography sx={commonTypographyStyles}>

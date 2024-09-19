@@ -341,17 +341,17 @@ const ClaimsPage: React.FC = () => {
                     </Box>
 
                     {/* Comments Box */}
-                    <Box
-                      sx={{
-                        border: '1px solid #003FE0',
-                        borderRadius: '10px',
-                        p: '15px',
-                        bgcolor: '#f1f1f1'
-                      }}
-                    >
-                      <Typography variant='h6'>Comments</Typography>
-                      {comments[claim.id] && comments[claim.id].length > 0 ? (
-                        comments[claim.id].map((comment, index) => (
+                    {comments[claim.id] && comments[claim.id].length > 0 && (
+                      <Box
+                        sx={{
+                          border: '1px solid #003FE0',
+                          borderRadius: '10px',
+                          p: '15px',
+                          bgcolor: '#f1f1f1'
+                        }}
+                      >
+                        <Typography variant='h6'>Comments</Typography>
+                        {comments[claim.id].map((comment, index) => (
                           <Box key={index} mb={2}>
                             <Typography>
                               <strong>{comment.author}</strong>: {comment.content}
@@ -360,11 +360,9 @@ const ClaimsPage: React.FC = () => {
                               {new Date(comment.createdTime).toLocaleString()}
                             </Typography>
                           </Box>
-                        ))
-                      ) : (
-                        <Typography>No comments found.</Typography>
-                      )}
-                    </Box>
+                        ))}
+                      </Box>
+                    )}
                   </Box>
                 )}
               </Container>

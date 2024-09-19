@@ -14,14 +14,14 @@ import useLocalStorage from '../../../hooks/useLocalStorage'
 import FetchedData from '../viewCredential/FetchedData'
 import { useStepContext } from '../../../CredentialForm/form/StepContext'
 import { handleSign } from '../../../utils/formUtils'
-import { useGoogleSignIn } from '../../../components/signing/useGoogleSignIn'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [fullName, setFullName] = useState('')
   const [fileID, setFileID] = useState('')
   const [gapiReady, setGapiReady] = useState(false)
-  const { session } = useGoogleSignIn()
+  const { data: session } = useSession()
   const accessToken = session?.accessToken
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
