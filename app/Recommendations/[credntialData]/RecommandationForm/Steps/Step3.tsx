@@ -55,10 +55,10 @@ const Step3: React.FC<Step3Props> = ({
   handleBack
 }) => {
   const theme = useTheme()
-  const [urlError, setUrlError] = useState<string | null>(null)
+  const [urlError, setUrlError] = useState<string[]>([])
 
-  const handleUrlChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleUrlValidation(event, setUrlError)
+  const handleUrlChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
+    handleUrlValidation(event, setUrlError, index, urlError)
   }
 
   const handleEditorChange = (field: string) => (value: string) => {
@@ -141,8 +141,8 @@ const Step3: React.FC<Step3Props> = ({
                 sx={TextFieldStyles}
                 aria-labelledby={`url-label-${index}`}
                 error={!!errors?.portfolio?.[index]?.url}
-                onChange={handleUrlChange}
-                helperText={urlError}
+                onChange={event => handleUrlChange(event, index)}
+                helperText={urlError[index]}
               />
             </Box>
             <Box
