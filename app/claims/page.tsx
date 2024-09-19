@@ -61,7 +61,6 @@ declare global {
 
 const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<Claim[]>([])
-  console.log(':  claims', claims)
   const [openClaim, setOpenClaim] = useState<string | null>(null)
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
@@ -78,9 +77,7 @@ const ClaimsPage: React.FC = () => {
       window.gapi.load('client:auth2', async () => {
         try {
           await window.gapi.client.init({
-            apiKey: 'YOUR_API_KEY', // Replace with your actual API Key
-            clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com', // Replace with your actual Client ID
-            scope: 'https://www.googleapis.com/auth/drive',
+            apiKey: process.env.GOOGLE_API_KEY,
             discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
           })
           resolve()
@@ -145,11 +142,11 @@ const ClaimsPage: React.FC = () => {
       console.log(':  commentsList', commentsList)
 
       const commentsData =
-        commentsList.result.comments?.map((comment: any) => ({
-          author: comment.author.displayName,
-          content: comment.content,
-          createdTime: comment.createdTime
-        })) || []
+      commentsList.result.comments?.map((comment: any) => ({
+        author: comment.author.displayName,
+        content: comment.content,
+        createdTime: comment.createdTime
+      })) || []
 
       setComments(prevState => ({ ...prevState, [fileId]: commentsData }))
     } catch (error) {
@@ -186,7 +183,12 @@ const ClaimsPage: React.FC = () => {
 
   return errorMessage ? (
     <Container>
-      <Typography variant='h4'>Previous Claims</Typography>
+      <Typography
+        sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}
+        variant='h4'
+      >
+        Previous Claims
+      </Typography>
       <List>
         {claims.map(claim => (
           <div key={claim.id}>
@@ -236,19 +238,23 @@ const ClaimsPage: React.FC = () => {
                       >
                         Management Skills
                       </Typography>
-                      <Box
-                        sx={{
-                          ...credentialBoxStyles,
-                          bgcolor: '#f9f9f9'
-                        }}
-                      >
-                        <Box sx={{ mt: '2px' }}>
-                          <SVGDate />
+                      {detailedClaim?.credentialSubject?.duration && (
+                        <Box
+                          sx={{
+                            ...credentialBoxStyles,
+                            bgcolor: '#f9f9f9'
+                          }}
+                        >
+                          <Box sx={{ mt: '2px' }}>
+                            <SVGDate />
+                          </Box>
+                          <Typography
+                            sx={{ ...commonTypographyStyles, fontSize: '13px' }}
+                          >
+                            {detailedClaim?.credentialSubject?.duration}
+                          </Typography>
                         </Box>
-                        <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
-                          {detailedClaim?.credentialSubject?.duration}
-                        </Typography>
-                      </Box>
+                      )}
                       <Typography
                         sx={{
                           fontFamily: 'Lato',
@@ -262,7 +268,7 @@ const ClaimsPage: React.FC = () => {
                           ''
                         )}
                       </Typography>
-                      <Box>
+                      { detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative && <Box>
                         <Typography>Earning criteria:</Typography>
                         <ul style={{ marginLeft: '25px' }}>
                           <li>
@@ -272,8 +278,8 @@ const ClaimsPage: React.FC = () => {
                             )}
                           </li>
                         </ul>
-                      </Box>
-                      <Box>
+                      </Box>}
+                      {detailedClaim?.credentialSubject?.portfolio && <Box>
                         <Typography>Supporting Evidence:</Typography>
                         <ul style={evidenceListStyles}>
                           {detailedClaim?.credentialSubject?.portfolio?.map(
@@ -284,6 +290,42 @@ const ClaimsPage: React.FC = () => {
                             )
                           )}
                         </ul>
+                      </Box>}
+                      <Box
+                        sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}
+                      >
+                        <Link
+                          href={`/View/${encodeURIComponent(
+                            `https://drive.google.com/file/d/${claim.id}/view`
+                          )}`}
+                        >
+                          <Button
+                            variant='contained'
+                            sx={{
+                              backgroundColor: '#003FE0',
+                              textTransform: 'none',
+                              borderRadius: '100px'
+                            }}
+                          >
+                            View Credential
+                          </Button>
+                        </Link>
+                        <Link
+                          href={`/AskForRecommendation/${encodeURIComponent(
+                            `https://drive.google.com/file/d/${claim.id}/view`
+                          )}`}
+                        >
+                          <Button
+                            variant='contained'
+                            sx={{
+                              backgroundColor: '#003FE0',
+                              textTransform: 'none',
+                              borderRadius: '100px'
+                            }}
+                          >
+                            Ask for Recommendation
+                          </Button>
+                        </Link>
                       </Box>
                     </Box>
 

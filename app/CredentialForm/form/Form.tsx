@@ -41,6 +41,7 @@ const Form = ({ onStepChange }: any) => {
   const [snackMessage, setSnackMessgae] = useState('')
   const [userSessions, setuserSessions] = useState<{}[]>([])
   const [openDialog, setOpenDialog] = useState(false)
+  const [gapiLoaded, setGapiLoaded] = useState(false)
 
   const characterLimit = 294
   const maxSteps = textGuid.length
@@ -142,6 +143,61 @@ const Form = ({ onStepChange }: any) => {
     }
   }
 
+  useEffect(() => {
+    let gapiInitialized = false
+    const initializeGapi = () => {
+      if (gapiInitialized) return
+      console.log('Initializing Google API client...')
+      window.gapi.load('client', async () => {
+        try {
+          console.log('Loading Google API client...')
+          await window.gapi.client.init({
+            apiKey: process.env.GOOGLE_API_KEY,
+            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
+          })
+
+          if (session?.accessToken) {
+            console.log('Setting access token...')
+            window.gapi.client.setToken({
+              access_token: session.accessToken
+            })
+          }
+          console.log('Google API client initialized successfully.')
+          gapiInitialized = true
+          setTimeout(() => setGapiLoaded(true), 1000)
+        } catch (error) {
+          console.error('Error initializing Google API client:', error)
+        }
+      })
+    }
+
+    if (window.gapi) {
+      initializeGapi()
+    } else {
+      const script = document.createElement('script')
+      script.src = 'https://apis.google.com/js/api.js'
+      script.onload = initializeGapi
+      document.body.appendChild(script)
+    }
+  }, [session])
+
+  const setPermissionsWithGoogleAPI = async (fileId: string) => {
+    try {
+      await window.gapi.client.drive.permissions.create({
+        fileId,
+        resource: {
+          role: 'commenter',
+          type: 'anyone',
+        },
+      });
+      console.log('Permission successfully set');
+    } catch (error) {
+      console.error('Failed to set permissions:', error);
+      throw new Error('Failed to set permissions.');
+    }
+  };
+
+
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
       if (
@@ -152,7 +208,6 @@ const Form = ({ onStepChange }: any) => {
       else if (data.storageOption === options.Device) {
         signAndSaveOnDevice(data)
       }
-      setActiveStep(0)
     } catch (error: any) {
       if (error.message === 'MetaMask address could not be retrieved') {
         setErrorMessage('Please make sure you have MetaMask installed and connected.')
@@ -193,27 +248,11 @@ const Form = ({ onStepChange }: any) => {
       }
 
 
-      const permissionUrl = `https://www.googleapis.com/drive/v3/files/${saveResponse.id}/permissions`
-      const permissionBody = {
-        role: 'commenter', 
-        type: 'anyone' 
-      }
-
-      const response = await fetch(permissionUrl, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(permissionBody)
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to set permissions: ${response.statusText}`)
-      }
+ 
 
       const res = await signCred(accessToken, data, issuerId, keyPair)
       setLink(`https://drive.google.com/file/d/${res.id}/view`)
+      setPermissionsWithGoogleAPI(res.id)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res

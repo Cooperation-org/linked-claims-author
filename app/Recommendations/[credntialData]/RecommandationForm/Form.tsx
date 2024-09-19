@@ -79,7 +79,7 @@ const Form = () => {
         window.gapi.load('client:auth2', async () => {
           await window.gapi.client.init({
             clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
-            scope: 'https://www.googleapis.com/auth/drive.file'
+            scope: 'https://www.googleapis.com/auth/drive'
           })
           setGapiReady(true)
         })
