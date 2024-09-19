@@ -150,7 +150,9 @@ const Page = () => {
                   {driveData?.credentialSubject?.portfolio?.map(
                     (porto: { url: any; name: any }) => (
                       <li key={porto.url}>
-                        <Link href={porto.url}>{porto.name}</Link>
+                        <Link href={porto.url} target='_blank'>
+                          {porto.name}
+                        </Link>
                       </li>
                     )
                   )}

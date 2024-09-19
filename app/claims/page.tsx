@@ -142,11 +142,11 @@ const ClaimsPage: React.FC = () => {
       console.log(':  commentsList', commentsList)
 
       const commentsData =
-      commentsList.result.comments?.map((comment: any) => ({
-        author: comment.author.displayName,
-        content: comment.content,
-        createdTime: comment.createdTime
-      })) || []
+        commentsList.result.comments?.map((comment: any) => ({
+          author: comment.author.displayName,
+          content: comment.content,
+          createdTime: comment.createdTime
+        })) || []
 
       setComments(prevState => ({ ...prevState, [fileId]: commentsData }))
     } catch (error) {
@@ -268,29 +268,40 @@ const ClaimsPage: React.FC = () => {
                           ''
                         )}
                       </Typography>
-                      { detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative && <Box>
-                        <Typography>Earning criteria:</Typography>
-                        <ul style={{ marginLeft: '25px' }}>
-                          <li>
-                            {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
-                              /<\/?[^>]+>/gi,
-                              ''
+                      {detailedClaim?.credentialSubject?.achievement[0]?.criteria
+                        ?.narrative && (
+                        <Box>
+                          <Typography>Earning criteria:</Typography>
+                          <ul style={{ marginLeft: '25px' }}>
+                            <li>
+                              {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
+                                /<\/?[^>]+>/gi,
+                                ''
+                              )}
+                            </li>
+                          </ul>
+                        </Box>
+                      )}
+                      {detailedClaim?.credentialSubject?.portfolio && (
+                        <Box>
+                          <Typography>Supporting Evidence:</Typography>
+                          <ul style={evidenceListStyles}>
+                            {detailedClaim?.credentialSubject?.portfolio?.map(
+                              (porto: { url: any; name: any }) => (
+                                <li key={porto.url}>
+                                  <Link
+                                    href={porto.url}
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                  >
+                                    {porto.name}
+                                  </Link>
+                                </li>
+                              )
                             )}
-                          </li>
-                        </ul>
-                      </Box>}
-                      {detailedClaim?.credentialSubject?.portfolio && <Box>
-                        <Typography>Supporting Evidence:</Typography>
-                        <ul style={evidenceListStyles}>
-                          {detailedClaim?.credentialSubject?.portfolio?.map(
-                            (porto: { url: any; name: any }) => (
-                              <li key={porto.url}>
-                                <Link href={porto.url}>{porto.name}</Link>
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      </Box>}
+                          </ul>
+                        </Box>
+                      )}
                       <Box
                         sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}
                       >

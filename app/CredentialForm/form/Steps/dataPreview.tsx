@@ -22,8 +22,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
   const theme: Theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
 
-  const handleNavigate = (url: string) => {
-    window.location.href = url
+  const handleNavigate = (url: string, target: string = '_self') => {
+    window.open(url, target)
   }
 
   const imageUrl = formData.evidenceLink || ''
@@ -106,7 +106,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
                     <li
                       style={{ cursor: 'pointer', width: 'fit-content' }}
                       key={porto.url}
-                      onClick={() => handleNavigate(porto.url)}
+                      onClick={() => handleNavigate(porto.url, '_blank')}
                     >
                       {porto.name}
                     </li>
