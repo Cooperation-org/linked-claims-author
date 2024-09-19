@@ -23,7 +23,10 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   return (
     <Box
       sx={{
-        minHeight: 'calc(100vh - 190px)',
+        minHeight: {
+          xs: 'calc(100vh - 190px)',
+          md: 'calc(100vh - 381px)'
+        },
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',

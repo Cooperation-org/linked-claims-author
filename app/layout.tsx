@@ -27,7 +27,16 @@ export default function RootLayout({
           <Providers>
             <StepProvider>
               <NavBar />
-              <Box sx={{ minHeight: 'calc(100vh - 190px)' }}>{children}</Box>
+              <Box
+                sx={{
+                  minHeight: {
+                    xs: 'calc(100vh - 190px)',
+                    md: 'calc(100vh - 381px)'
+                  }
+                }}
+              >
+                {children}
+              </Box>
               <Footer />
             </StepProvider>
           </Providers>

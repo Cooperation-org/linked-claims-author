@@ -105,12 +105,17 @@ export default function HorizontalLinearStepper() {
     driveData?.credentialSubject?.achievement[0]?.name || ''
   }`}&body=${encodeURIComponent(
     watch('reference')
-  )}, Credential Public Link: https://linked-claims-author.vercel.app/Recommendations/${encodeURIComponent(`${params.credentialData}`)}`
+  )}, Credential Public Link: https://linked-claims-author.vercel.app/Recommendations/${encodeURIComponent(
+    `${params.credentialData}`
+  )}`
 
   return (
     <Box
       sx={{
-        minHeight: 'calc(100vh - 190px)',
+        minHeight: {
+          xs: 'calc(100vh - 190px)',
+          md: 'calc(100vh - 381px)'
+        },
         overflow: 'auto',
         mb: '30px'
       }}
