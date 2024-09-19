@@ -8,6 +8,7 @@ import Footer from './components/footer/Footer'
 import Theme from './theme'
 import Head from 'next/head'
 import { StepProvider } from './CredentialForm/form/StepContext'
+import SessionExpiryModel from './components/refreshtokenPopup'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           <Providers>
             <StepProvider>
               <NavBar />
+              <SessionExpiryModel />
               <Box
                 sx={{
                   minHeight: {
