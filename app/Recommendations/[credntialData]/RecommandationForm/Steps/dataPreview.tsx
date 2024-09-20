@@ -69,7 +69,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({
       )}
 
       {/* Quote Section */}
-      {formData.explainAnswer && (
+      {formData.explainAnswer && formData.explainAnswer.trim() && (
         <Card
           variant='outlined'
           sx={{
@@ -98,7 +98,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({
       )}
 
       {/* How They Know Each Other */}
-      {formData.howKnow && (
+      {formData.howKnow && formData.howKnow.trim() && (
         <Card
           variant='outlined'
           sx={{
@@ -134,45 +134,50 @@ const DataPreview: React.FC<DataPreviewProps> = ({
       )}
 
       {/* Supporting Evidence */}
-      {formData.portfolio && formData.portfolio.length > 0 && (
-        <Card
-          variant='outlined'
-          sx={{
-            p: '10px',
-            border: '1px solid #003fe0',
-            borderRadius: '10px'
-          }}
-        >
-          <Typography
-            variant='subtitle1'
+      {formData.portfolio &&
+        formData.portfolio.filter(item => item.name || item.url).length > 0 && (
+          <Card
+            variant='outlined'
             sx={{
-              fontWeight: 'bold',
-              fontSize: '15px',
-              letterSpacing: '0.01em',
-              mb: 1
+              p: '10px',
+              border: '1px solid #003fe0',
+              borderRadius: '10px'
             }}
           >
-            Supporting Evidence
-          </Typography>
-          {formData.portfolio.map(item => (
-            <Box key={item.url} sx={{ mt: 1 }}>
-              <Link
-                href={item.url}
-                underline='hover'
-                color='primary'
-                sx={{
-                  fontSize: '15px',
-                  textDecoration: 'underline',
-                  color: '#003fe0'
-                }}
-                target='_blank'
-              >
-                {item.name}
-              </Link>
-            </Box>
-          ))}
-        </Card>
-      )}
+            <Typography
+              variant='subtitle1'
+              sx={{
+                fontWeight: 'bold',
+                fontSize: '15px',
+                letterSpacing: '0.01em',
+                mb: 1
+              }}
+            >
+              Supporting Evidence
+            </Typography>
+            {formData.portfolio
+              .filter(item => item.name || item.url)
+              .map(item => (
+                <Box key={item.url} sx={{ mt: 1 }}>
+                  {item.name && item.url ? (
+                    <Link
+                      href={item.url}
+                      underline='hover'
+                      color='primary'
+                      sx={{
+                        fontSize: '15px',
+                        textDecoration: 'underline',
+                        color: '#003fe0'
+                      }}
+                      target='_blank'
+                    >
+                      {item.name}
+                    </Link>
+                  ) : null}
+                </Box>
+              ))}
+          </Card>
+        )}
     </Container>
   )
 }
