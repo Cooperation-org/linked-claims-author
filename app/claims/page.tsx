@@ -53,12 +53,6 @@ interface Comment {
   createdTime: string
 }
 
-declare global {
-  interface Window {
-    gapi: any
-  }
-}
-
 const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<Claim[]>([])
   const [openClaim, setOpenClaim] = useState<string | null>(null)
@@ -67,43 +61,13 @@ const ClaimsPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
   const [comments, setComments] = useState<{ [key: string]: Comment[] }>({})
-  const [gapiInitialized, setGapiInitialized] = useState<boolean>(false)
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
-
-  // Load gapi and initialize the Drive API
-  const loadGapiClient = () => {
-    return new Promise<void>((resolve, reject) => {
-      window.gapi.load('client:auth2', async () => {
-        try {
-          await window.gapi.client.init({
-            apiKey: process.env.GOOGLE_API_KEY,
-            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
-          })
-          resolve()
-        } catch (error) {
-          console.error('Error loading GAPI client:', error)
-          reject(error)
-        }
-      })
-    })
-  }
 
   useEffect(() => {
     if (accessToken) {
       const storageInstance = new GoogleDriveStorage(accessToken)
       setStorage(storageInstance)
-    }
-
-    // Ensure gapi is initialized only on the client-side
-    if (typeof window !== 'undefined' && window.gapi) {
-      loadGapiClient()
-        .then(() => {
-          setGapiInitialized(true)
-        })
-        .catch(error => {
-          console.error('Failed to initialize gapi:', error)
-        })
     }
   }, [accessToken])
 
@@ -132,23 +96,32 @@ const ClaimsPage: React.FC = () => {
   }, [getContent, storage])
 
   const fetchComments = async (fileId: string) => {
-    if (!window.gapi || !gapiInitialized) return
+    if (!accessToken) {
+      console.log('Access Token not available.')
+      return
+    }
 
     try {
-      const commentsList = await window.gapi.client.drive.comments.list({
-        fileId: fileId,
-        fields: 'comments(author, content, createdTime)'
-      })
-      console.log(':  commentsList', commentsList)
-
-      const commentsData =
-        commentsList.result.comments?.map((comment: any) => ({
+      const response = await fetch(
+        `https://www.googleapis.com/drive/v2/files/${fileId}/comments`,
+        {
+          headers: new Headers({
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          })
+        }
+      )
+      const data = await response.json()
+      if (response.ok) {
+        const commentsData = data.items.map((comment: { author: { displayName: any }; content: any; createdTime: any }) => ({
           author: comment.author.displayName,
           content: comment.content,
           createdTime: comment.createdTime
-        })) || []
-
-      setComments(prevState => ({ ...prevState, [fileId]: commentsData }))
+        }))
+        setComments(prevState => ({ ...prevState, [fileId]: commentsData }))
+      } else {
+        throw new Error(data.error.message)
+      }
     } catch (error) {
       console.error('Error fetching comments:', error)
     }
@@ -177,7 +150,7 @@ const ClaimsPage: React.FC = () => {
       setDetailedClaim(claimDetails)
       setOpenClaim(claimId)
       setLoadingClaims(prevState => ({ ...prevState, [claimId]: false }))
-      await fetchComments(claimId)
+      fetchComments(claimId)
     }
   }
 
