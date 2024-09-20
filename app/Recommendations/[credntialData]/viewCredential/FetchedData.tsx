@@ -72,7 +72,10 @@ const FetchedData: React.FC<FetchedDataProps> = ({
     }
 
     if (ownerEmail) {
+      console.log('Fetched owner email:', ownerEmail)
       setEmail(ownerEmail)
+    } else {
+      console.warn('ownerEmail is not available')
     }
   }, [fileContent, fileMetadata, ownerEmail])
 

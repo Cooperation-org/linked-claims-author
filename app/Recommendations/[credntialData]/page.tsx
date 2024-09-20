@@ -65,9 +65,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
         </Box>
       </Box>
       <Box sx={{ height: '100%' }}>
-        {activeStep === 0 && (
-          <Credential setactivStep={setActiveStep} setFullName={setFullName} />
-        )}
+        {activeStep === 0 && <Credential setactivStep={setActiveStep} />}
         {activeStep !== 0 && (
           <>
             <FormTextSteps

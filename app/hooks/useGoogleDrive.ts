@@ -82,7 +82,15 @@ const useGoogleDrive = () => {
     const cachedMetadata = localStorage.getItem(`fileMetadata_${fileId}`)
     if (cachedMetadata) {
       console.log('Using cached file metadata...')
-      setFileMetadata(JSON.parse(cachedMetadata))
+      const parsedMetadata = JSON.parse(cachedMetadata)
+      setFileMetadata(parsedMetadata)
+      if (parsedMetadata.owners && parsedMetadata.owners.length > 0) {
+        setOwnerEmail(parsedMetadata.owners[0].emailAddress)
+        console.log(
+          'Owner email from cached metadata:',
+          parsedMetadata.owners[0].emailAddress
+        )
+      }
       return
     }
     console.log('Fetching file metadata from Google API:', fileId)
@@ -99,7 +107,9 @@ const useGoogleDrive = () => {
       setFileMetadata(response.result)
       localStorage.setItem(`fileMetadata_${fileId}`, JSON.stringify(response.result))
       if (response.result.owners && response.result.owners.length > 0) {
-        setOwnerEmail(response.result.owners[0].emailAddress)
+        const ownerEmail = response.result.owners[0].emailAddress
+        setOwnerEmail(ownerEmail)
+        console.log('Fetched owner email:', ownerEmail)
       } else {
         console.warn('No owners found for this file.')
       }
