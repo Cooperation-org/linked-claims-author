@@ -113,11 +113,17 @@ const ClaimsPage: React.FC = () => {
       )
       const data = await response.json()
       if (response.ok) {
-        const commentsData = data.items.map((comment: { author: { displayName: any }; content: any; createdTime: any }) => ({
-          author: comment.author.displayName,
-          content: comment.content,
-          createdTime: comment.createdTime
-        }))
+        const commentsData = data.items.map(
+          (comment: {
+            author: { displayName: any }
+            content: any
+            createdTime: any
+          }) => ({
+            author: comment.author.displayName,
+            content: comment.content,
+            createdTime: comment.createdTime
+          })
+        )
         setComments(prevState => ({ ...prevState, [fileId]: commentsData }))
       } else {
         throw new Error(data.error.message)
@@ -154,6 +160,20 @@ const ClaimsPage: React.FC = () => {
     }
   }
 
+  const cleanHTML = (htmlContent: string) => {
+    return htmlContent
+      .replace(/<p><br><\/p>/g, '')
+      .replace(/<p><\/p>/g, '')
+      .replace(/<br>/g, '')
+      .replace(/class="[^"]*"/g, '')
+      .replace(/style="[^"]*"/g, '')
+  }
+
+  const formatCommentDate = (createdTime: string | undefined) => {
+    if (!createdTime) return 'No Date Available'
+    const commentDate = new Date(createdTime)
+    return isNaN(commentDate.getTime()) ? 'Invalid Date' : commentDate.toLocaleString()
+  }
   return errorMessage ? (
     <Container>
       <Typography
@@ -324,16 +344,104 @@ const ClaimsPage: React.FC = () => {
                         }}
                       >
                         <Typography variant='h6'>Comments</Typography>
-                        {comments[claim.id].map((comment, index) => (
-                          <Box key={index} mb={2}>
-                            <Typography>
-                              <strong>{comment.author}</strong>: {comment.content}
-                            </Typography>
-                            <Typography variant='caption'>
-                              {new Date(comment.createdTime).toLocaleString()}
-                            </Typography>
+                        {comments[claim.id] && comments[claim.id].length > 0 && (
+                          <Box
+                            sx={{
+                              border: '1px solid #003FE0',
+                              borderRadius: '10px',
+                              p: '15px',
+                              bgcolor: '#f1f1f1'
+                            }}
+                          >
+                            <Typography variant='h6'>Comments</Typography>
+                            {comments[claim.id].map((comment, index) => {
+                              let parsedContent
+                              try {
+                                parsedContent = JSON.parse(comment.content)
+                              } catch (e) {
+                                parsedContent = comment.content
+                              }
+
+                              const filteredContent = Object.entries(
+                                parsedContent
+                              ).reduce((acc, [key, value]) => {
+                                if (Array.isArray(value)) {
+                                  const nonEmptyItems = value.filter(
+                                    (item: any) => item.name && item.url
+                                  )
+                                  if (nonEmptyItems.length > 0) {
+                                    acc[key] = nonEmptyItems
+                                  }
+                                } else if (
+                                  typeof value === 'string' &&
+                                  value.trim() !== ''
+                                ) {
+                                  acc[key] = cleanHTML(value)
+                                } else {
+                                  acc[key] = value
+                                }
+                                return acc
+                              }, {} as Record<string, any>)
+
+                              return (
+                                <Box key={index} mb={2}>
+                                  <Typography>
+                                    <strong>{comment.author}</strong>:
+                                  </Typography>
+                                  <ul>
+                                    {Object.entries(filteredContent).map(
+                                      ([key, value], idx) => {
+                                        if (Array.isArray(value)) {
+                                          return (
+                                            <li key={idx}>
+                                              <strong>{key}:</strong>
+                                              <ul>
+                                                {value.map(
+                                                  (
+                                                    item: { name: string; url: string },
+                                                    itemIndex: number
+                                                  ) => (
+                                                    <li key={itemIndex}>
+                                                      <Link
+                                                        href={item.url}
+                                                        target='_blank'
+                                                        rel='noopener noreferrer'
+                                                      >
+                                                        {item.name}
+                                                      </Link>
+                                                    </li>
+                                                  )
+                                                )}
+                                              </ul>
+                                            </li>
+                                          )
+                                        }
+
+                                        return (
+                                          <li key={idx}>
+                                            <strong>{key}:</strong>{' '}
+                                            {typeof value === 'string' ? (
+                                              <span
+                                                dangerouslySetInnerHTML={{
+                                                  __html: cleanHTML(value)
+                                                }}
+                                              />
+                                            ) : (
+                                              value
+                                            )}
+                                          </li>
+                                        )
+                                      }
+                                    )}
+                                  </ul>
+                                  <Typography variant='caption'>
+                                    {formatCommentDate(comment.createdTime)}
+                                  </Typography>
+                                </Box>
+                              )
+                            })}
                           </Box>
-                        ))}
+                        )}
                       </Box>
                     )}
                   </Box>
