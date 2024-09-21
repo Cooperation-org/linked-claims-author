@@ -220,8 +220,9 @@ const Form = ({ onStepChange }: any) => {
       }
 
       const res = await signCred(accessToken, data, issuerId, keyPair)
-      setLink(`https://drive.google.com/file/d/${res.id}/view`)
+      console.log(":  sign  res", res.id)
       setPermissionsWithAPI(res.id)
+      setLink(`https://drive.google.com/file/d/${res.id}/view`)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res
