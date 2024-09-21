@@ -42,6 +42,7 @@ export default function HorizontalLinearStepper() {
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const [driveData, setDriveData] = React.useState<any>(null)
   const { data: session } = useSession()
+  const accessToken = session?.accessToken
   const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
   const params = useParams()
   const { fetchFileContent, fileContent } = useGoogleDrive()
@@ -53,12 +54,11 @@ export default function HorizontalLinearStepper() {
       const decodedLink = decodeURIComponent(params.credentialData as any)
       const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
       const resourceKey = ''
-        await fetchFileContent(fileId, resourceKey)
-      
+      await fetchFileContent(fileId, resourceKey, accessToken)
     }
 
     fetchDriveData()
-  }, [fetchFileContent, params.credentialData])
+  }, [accessToken, fetchFileContent, params.credentialData])
 
   const {
     reset,
