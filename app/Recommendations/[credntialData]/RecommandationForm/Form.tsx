@@ -20,7 +20,6 @@ const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [fullName, setFullName] = useState('')
   const [fileID, setFileID] = useState('')
-  const [gapiReady, setGapiReady] = useState(false)
   const { data: session } = useSession()
   const accessToken = session?.accessToken
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
@@ -66,30 +65,6 @@ const Form = () => {
   useEffect(() => {
     console.log('Active Step:', activeStep)
   }, [activeStep])
-
-  // Load the gapi client dynamically
-  useEffect(() => {
-    const loadGapi = () => {
-      const script = document.createElement('script')
-      script.src = 'https://apis.google.com/js/api.js'
-      script.onload = () => {
-        window.gapi.load('client:auth2', async () => {
-          await window.gapi.client.init({
-            clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
-            scope: 'https://www.googleapis.com/auth/drive'
-          })
-          setGapiReady(true)
-        })
-      }
-      document.body.appendChild(script)
-    }
-
-    if (!window.gapi) {
-      loadGapi()
-    } else {
-      setGapiReady(true)
-    }
-  }, [])
 
   // Function to add a comment to a Google Drive file
   async function addCommentToFile(

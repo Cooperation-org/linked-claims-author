@@ -41,7 +41,6 @@ const Form = ({ onStepChange }: any) => {
   const [snackMessage, setSnackMessgae] = useState('')
   const [userSessions, setuserSessions] = useState<{}[]>([])
   const [openDialog, setOpenDialog] = useState(false)
-  const [gapiLoaded, setGapiLoaded] = useState(false)
 
   const characterLimit = 294
   const maxSteps = textGuid.length

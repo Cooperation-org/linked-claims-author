@@ -44,7 +44,7 @@ export default function HorizontalLinearStepper() {
   const { data: session } = useSession()
   const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
   const params = useParams()
-  const { fetchFileContent, fileContent, gapiLoaded } = useGoogleDrive()
+  const { fetchFileContent, fileContent } = useGoogleDrive()
   const imageLink =
     'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg'
 
@@ -53,13 +53,12 @@ export default function HorizontalLinearStepper() {
       const decodedLink = decodeURIComponent(params.credentialData as any)
       const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
       const resourceKey = ''
-      if (gapiLoaded) {
         await fetchFileContent(fileId, resourceKey)
-      }
+      
     }
 
     fetchDriveData()
-  }, [gapiLoaded, fetchFileContent, params.credentialData])
+  }, [fetchFileContent, params.credentialData])
 
   const {
     reset,
