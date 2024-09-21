@@ -10,7 +10,7 @@ const useGoogleDrive = () => {
   const fetchFileContent = async (fileId: any, resourceKey: string = '') => {
     try {
       const response = await fetch(
-        `https://www.googleapis.com/drive/v3/files/${fileId}`,
+        `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
         {
           method: 'GET',
           headers: {
@@ -22,9 +22,7 @@ const useGoogleDrive = () => {
 
       if (response.ok) {
         const content = await response.text()
-        console.log('Fetched file content:', content)
         setFileContent(content)
-        localStorage.setItem(`fileContent_${fileId}`, content)
       } else {
         console.error('Error fetching file content:', response)
       }
