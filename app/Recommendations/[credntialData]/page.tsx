@@ -18,7 +18,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   const { activeStep, setActiveStep } = useStepContext()
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  const [fullName, setFullName] = useState('Golda')
+  const [fullName, setFullName] = useState('')
 
   return (
     <Box
