@@ -12,7 +12,7 @@ import DeclineRequest from '../DeclineRequest/DeclineRequest'
 
 const Credential = ({ setactivStep }: { setactivStep: any }) => {
   const theme = useTheme()
-  const [fullName, setFullName] = useState('Golda')
+  const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [showDeclineRequest, setShowDeclineRequest] = useState(false)
 

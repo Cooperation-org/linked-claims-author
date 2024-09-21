@@ -14,7 +14,7 @@ interface Step4Props {
 }
 
 const Step4: React.FC<Step4Props> = ({ watch, setValue, errors, fullName }) => {
-  const displayName = fullName || 'Golda'
+  const displayName = fullName || ''
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>

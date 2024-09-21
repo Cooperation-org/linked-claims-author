@@ -58,7 +58,7 @@ const Step3: React.FC<Step3Props> = ({
 }) => {
   const theme = useTheme()
   const [urlError, setUrlError] = useState<string[]>([])
-  const displayName = fullName || 'Golda'
+  const displayName = fullName || ''
 
   const handleUrlChange = async (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
