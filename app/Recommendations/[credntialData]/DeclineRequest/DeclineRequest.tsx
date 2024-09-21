@@ -1,21 +1,19 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import FetchedData from '../viewCredential/FetchedData'
 
 interface DeclineRequestProps {
-  credentialData: string
+  fullName: string
+  email: string
   handleBack: () => void // Add handleBack prop to allow going back
 }
 
 const DeclineRequest: React.FC<DeclineRequestProps> = ({
-  credentialData,
+  fullName,
+  email,
   handleBack
 }) => {
-  const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
-
   const handleSendEmail = () => {
     const subject = `Unable to Provide Recommendation at this Time for ${fullName}`
     const body = `Hi ${fullName},\n\nI'm currently unable to provide a recommendation. I apologize for the inconvenience.\n\nBest regards.`
@@ -66,9 +64,6 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({
         explanation letting them know why you can&apos;t make a recommendation at this
         time.
       </Typography>
-      <Box sx={{ display: 'none' }}>
-        <FetchedData setFullName={setFullName} setEmail={setEmail} />
-      </Box>
       <Button
         onClick={handleSendEmail}
         sx={{

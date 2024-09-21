@@ -14,14 +14,13 @@ import useLocalStorage from '../../../hooks/useLocalStorage'
 import FetchedData from '../viewCredential/FetchedData'
 import { useStepContext } from '../../../CredentialForm/form/StepContext'
 import { handleSign } from '../../../utils/formUtils'
-import { useGoogleSignIn } from '../../../components/signing/useGoogleSignIn'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [fullName, setFullName] = useState('')
   const [fileID, setFileID] = useState('')
-  const [gapiReady, setGapiReady] = useState(false)
-  const { session } = useGoogleSignIn()
+  const { data: session } = useSession()
   const accessToken = session?.accessToken
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
@@ -30,10 +29,7 @@ const Form = () => {
     recommendationText: '',
     portfolio: [{ name: '', url: '' }],
     qualifications: '',
-    communicationRating: 0,
-    dependabilityRating: 0,
-    explainAnswer: '',
-    isRecommand: 'yes'
+    explainAnswer: ''
   })
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
 
@@ -69,30 +65,6 @@ const Form = () => {
   useEffect(() => {
     console.log('Active Step:', activeStep)
   }, [activeStep])
-
-  // Load the gapi client dynamically
-  useEffect(() => {
-    const loadGapi = () => {
-      const script = document.createElement('script')
-      script.src = 'https://apis.google.com/js/api.js'
-      script.onload = () => {
-        window.gapi.load('client:auth2', async () => {
-          await window.gapi.client.init({
-            clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
-            scope: 'https://www.googleapis.com/auth/drive.file'
-          })
-          setGapiReady(true)
-        })
-      }
-      document.body.appendChild(script)
-    }
-
-    if (!window.gapi) {
-      loadGapi()
-    } else {
-      setGapiReady(true)
-    }
-  }, [])
 
   // Function to add a comment to a Google Drive file
   async function addCommentToFile(
@@ -148,13 +120,9 @@ const Form = () => {
       recommendationText: '',
       portfolio: [{ name: '', url: '' }],
       qualifications: '',
-      communicationRating: 0,
-      dependabilityRating: 0,
-      explainAnswer: '',
-      isRecommand: 'yes'
+      explainAnswer: ''
     })
     setActiveStep(6)
-
   })
 
   return (
@@ -193,6 +161,7 @@ const Form = () => {
                 watch={watch}
                 errors={errors}
                 handleTextEditorChange={value => setValue('howKnow', value ?? '')}
+                fullName={fullName}
               />
             )}
             {activeStep === 3 && (
@@ -209,10 +178,16 @@ const Form = () => {
                 }
                 handleNext={handleNext}
                 handleBack={handleBack}
+                fullName={fullName}
               />
             )}
             {activeStep === 4 && (
-              <Step4 watch={watch} setValue={setValue} errors={errors} />
+              <Step4
+                watch={watch}
+                setValue={setValue}
+                errors={errors}
+                fullName={fullName}
+              />
             )}
             {activeStep === 5 && (
               <DataPreview

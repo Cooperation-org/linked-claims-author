@@ -40,6 +40,7 @@ interface Step3Props {
   handleTextEditorChange: (field: string, value: any) => void
   handleNext: () => void
   handleBack: () => void
+  fullName: string
 }
 
 const Step3: React.FC<Step3Props> = ({
@@ -52,13 +53,18 @@ const Step3: React.FC<Step3Props> = ({
   setValue,
   handleTextEditorChange,
   handleNext,
-  handleBack
+  handleBack,
+  fullName
 }) => {
   const theme = useTheme()
-  const [urlError, setUrlError] = useState<string | null>(null)
+  const [urlError, setUrlError] = useState<string[]>([])
+  const displayName = fullName || 'Golda'
 
-  const handleUrlChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleUrlValidation(event, setUrlError)
+  const handleUrlChange = async (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    index: number
+  ) => {
+    handleUrlValidation(event, setUrlError, index, urlError)
   }
 
   const handleEditorChange = (field: string) => (value: string) => {
@@ -75,7 +81,7 @@ const Step3: React.FC<Step3Props> = ({
         <TextEditor
           value={watch('recommendationText') || ''}
           onChange={handleEditorChange('recommendationText')}
-          placeholder='e.g., Golda managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative'
+          placeholder={`e.g., ${displayName} managed a local garden for 2 years, organized weekly gardening workshops, led a community clean-up initiative.`}
         />
         {errors.recommendationText && (
           <Typography color='error'>{errors.recommendationText.message}</Typography>
@@ -92,7 +98,7 @@ const Step3: React.FC<Step3Props> = ({
         <TextEditor
           value={watch('qualifications') || ''}
           onChange={handleEditorChange('qualifications')}
-          placeholder='e.g., I managed Golda at a local garden for 2 years where she coordinated weekly gardening workshops and led a community clean-up initiative.'
+          placeholder={`e.g., I managed ${displayName} at a local garden for 2 years where ${displayName} coordinated weekly gardening workshops and led a community clean-up initiative.`}
         />
         {errors.qualifications && (
           <Typography color='error'>{errors.qualifications.message}</Typography>
@@ -141,8 +147,8 @@ const Step3: React.FC<Step3Props> = ({
                 sx={TextFieldStyles}
                 aria-labelledby={`url-label-${index}`}
                 error={!!errors?.portfolio?.[index]?.url}
-                onChange={handleUrlChange}
-                helperText={urlError}
+                onChange={event => handleUrlChange(event, index)}
+                helperText={urlError[index]}
               />
             </Box>
             <Box
@@ -156,7 +162,7 @@ const Step3: React.FC<Step3Props> = ({
           <Box sx={addAnotherBoxStyles}>
             <Button
               type='button'
-              onClick={() => append({ name: '', url: '' })} // Appending a new empty object for additional fields
+              onClick={() => append({ name: '', url: '' })} //
               sx={addAnotherButtonStyles(theme)}
               endIcon={
                 <Box sx={addAnotherIconStyles}>

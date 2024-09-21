@@ -1,8 +1,12 @@
 export const handleUrlValidation = async (
-  event: React.ChangeEvent<HTMLInputElement>,
-  setUrlError: (arg0: string) => void
+  event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  setUrlError: (arg0: string[]) => void,
+  index: number,
+  urlErrorArray: string[]
 ) => {
   const url = event.target.value
+  const updatedErrors = [...urlErrorArray] // Copy existing error array
+
   if (url) {
     try {
       const response = await fetch(`/api/fetchContent?url=${encodeURIComponent(url)}`)
@@ -13,59 +17,62 @@ export const handleUrlValidation = async (
       const { contentType } = await response.json()
 
       const videoRegex = /\.(mp4|webm|ogg|avi|mov|wmv|flv|mkv)$|youtube\.com|vimeo\.com/i
-
       const gitHubRegex = /github\.com/i
 
       if (videoRegex.test(url)) {
-        setUrlError('The URL points to a video link.')
+        updatedErrors[index] = 'The URL points to a video link.'
       } else if (gitHubRegex.test(url)) {
-        setUrlError('The URL points to a video link.')
+        updatedErrors[index] = 'The URL points to a GitHub repository.'
       } else if (contentType.includes('text/html')) {
-        setUrlError('The URL points to a web page.')
+        updatedErrors[index] = 'The URL points to a web page.'
       } else if (contentType.startsWith('image/')) {
-        setUrlError('The URL points to an image.')
+        updatedErrors[index] = 'The URL points to an image.'
       } else if (contentType.startsWith('audio/')) {
-        setUrlError('The URL points to an audio.')
+        updatedErrors[index] = 'The URL points to an audio file.'
       } else if (contentType === 'application/pdf') {
-        setUrlError('The URL points to a PDF document.')
+        updatedErrors[index] = 'The URL points to a PDF document.'
       } else if (contentType === 'application/json') {
-        setUrlError('The URL points to JSON data.')
+        updatedErrors[index] = 'The URL points to JSON data.'
       } else if (contentType.startsWith('application/')) {
         if (contentType.includes('zip')) {
-          setUrlError('The URL points to a ZIP archive.')
+          updatedErrors[index] = 'The URL points to a ZIP archive.'
         } else if (
           contentType.includes('msword') ||
           contentType.includes('wordprocessingml')
         ) {
-          setUrlError('The URL points to a Word document.')
+          updatedErrors[index] = 'The URL points to a Word document.'
         } else if (contentType.includes('vnd.ms-excel')) {
-          setUrlError('The URL points to an Excel spreadsheet.')
+          updatedErrors[index] = 'The URL points to an Excel spreadsheet.'
         } else if (
           contentType.includes('vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         ) {
-          setUrlError('The URL points to an Excel spreadsheet (XLSX).')
+          updatedErrors[index] = 'The URL points to an Excel spreadsheet (XLSX).'
         } else if (contentType.includes('xml')) {
-          setUrlError('The URL points to an XML document.')
+          updatedErrors[index] = 'The URL points to an XML document.'
         } else {
-          setUrlError('The URL points to an application document.')
+          updatedErrors[index] = 'The URL points to an application document.'
         }
       } else if (contentType.startsWith('text/')) {
         if (contentType.includes('plain')) {
-          setUrlError('The URL points to a plain text file.')
+          updatedErrors[index] = 'The URL points to a plain text file.'
         } else if (contentType.includes('csv')) {
-          setUrlError('The URL points to a CSV file.')
+          updatedErrors[index] = 'The URL points to a CSV file.'
         } else {
-          setUrlError('The URL points to a text document.')
+          updatedErrors[index] = 'The URL points to a text document.'
         }
       } else if (contentType.startsWith('font/')) {
-        setUrlError('The URL points to a font file.')
+        updatedErrors[index] = 'The URL points to a font file.'
       } else {
-        setUrlError('The URL points to an unsupported content type.')
+        updatedErrors[index] = 'The URL points to an unsupported content type.'
       }
     } catch (error: any) {
-      setUrlError(`Failed to fetch the URL or URL is not valid: ${error.message}`)
+      updatedErrors[
+        index
+      ] = `Failed to fetch the URL or URL is not valid: ${error.message}`
     }
   } else {
-    setUrlError('URL cannot be empty.')
+    updatedErrors[index] = 'URL cannot be empty.'
   }
+
+  setUrlError(updatedErrors) // Set the updated errors array
 }

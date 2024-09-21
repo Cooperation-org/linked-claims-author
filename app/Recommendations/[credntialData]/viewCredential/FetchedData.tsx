@@ -28,7 +28,6 @@ const FetchedData: React.FC<FetchedDataProps> = ({
   const params = useParams()
 
   const {
-    gapiLoaded,
     fetchFileContent,
     fetchFileMetadata,
     fileContent,
@@ -43,25 +42,21 @@ const FetchedData: React.FC<FetchedDataProps> = ({
 
       const fileIdMatch = RegExp(/\/d\/([a-zA-Z0-9_-]+)/).exec(decodedLink)
       const fileId = fileIdMatch ? fileIdMatch[1] : null
+      const resourceKey = ''
       console.log('Extracted File ID:', fileId) // Log the extracted file ID
 
       if (fileId) {
         setFileID(fileId)
       }
-
-      if (fileId && gapiLoaded) {
         console.log('Fetching data...')
-        await fetchFileContent(fileId)
-        await fetchFileMetadata(fileId)
-      } else {
-        console.error('Invalid file ID or Google API not loaded')
-      }
+        await fetchFileContent(fileId, resourceKey)
+        await fetchFileMetadata(fileId, resourceKey)
+      
     }
 
-    if (gapiLoaded) {
       fetchDriveData()
-    }
-  }, [gapiLoaded, params])
+    
+  }, [params])
 
   useEffect(() => {
     if (fileContent && fileMetadata) {
@@ -72,7 +67,10 @@ const FetchedData: React.FC<FetchedDataProps> = ({
     }
 
     if (ownerEmail) {
+      console.log('Fetched owner email:', ownerEmail)
       setEmail(ownerEmail)
+    } else {
+      console.warn('ownerEmail is not available')
     }
   }, [fileContent, fileMetadata, ownerEmail])
 
@@ -156,7 +154,9 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                       {driveData?.credentialSubject?.portfolio?.map(
                         (porto: { url: any; name: any }) => (
                           <li key={porto.url}>
-                            <Link href={porto.url}>{porto.name}</Link>
+                            <Link href={porto.url} target='_blank'>
+                              {porto.name}
+                            </Link>
                           </li>
                         )
                       )}

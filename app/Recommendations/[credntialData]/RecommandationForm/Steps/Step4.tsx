@@ -10,9 +10,11 @@ interface Step4Props {
   watch: UseFormWatch<FormData>
   setValue: UseFormSetValue<FormData>
   errors: FieldErrors<FormData>
+  fullName: string
 }
 
-const Step4: React.FC<Step4Props> = ({ watch, setValue, errors }) => {
+const Step4: React.FC<Step4Props> = ({ watch, setValue, errors, fullName }) => {
+  const displayName = fullName || 'Golda'
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
@@ -22,7 +24,7 @@ const Step4: React.FC<Step4Props> = ({ watch, setValue, errors }) => {
         <TextEditor
           value={watch('explainAnswer')}
           onChange={value => setValue('explainAnswer', value ?? '')}
-          placeholder='I worked with Golda for about two years managing her work at the community garden. She was an excellent worker, prompt, and friendly.'
+          placeholder={`I worked with ${displayName} for about two years managing ${displayName}'s work at the community garden. ${displayName} was an excellent worker, prompt, and friendly.`}
         />
         {errors.explainAnswer && (
           <Typography color='error'>{errors.explainAnswer.message}</Typography>

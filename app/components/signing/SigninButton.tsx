@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { Box, Button } from '@mui/material'
-import { useGoogleSignIn } from './useGoogleSignIn'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 const buttonStyle = {
   padding: '10px 20px',
@@ -19,20 +19,19 @@ const buttonStyle = {
 }
 
 const SigninButton = () => {
-  const { session, handleSignIn, handleSignOut } = useGoogleSignIn()
+  const { data: session } = useSession()
 
   if (session?.user) {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px', mt: '20px' }}>
-        {/* <Typography>Hi, {session.user.name}</Typography> */}
-        <Button sx={buttonStyle} onClick={handleSignOut}>
+        <Button sx={buttonStyle} onClick={() => signOut()}>
           Sign Out
         </Button>
       </Box>
     )
   }
   return (
-    <Button sx={{ ...buttonStyle, mt: '20px' }} onClick={handleSignIn}>
+    <Button sx={{ ...buttonStyle, mt: '20px' }} onClick={() => signIn()}>
       Sign In
     </Button>
   )

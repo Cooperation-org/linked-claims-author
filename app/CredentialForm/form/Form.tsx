@@ -23,7 +23,7 @@ import SuccessPage from './Steps/SuccessPage'
 
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
-import { useGoogleSignIn } from '../../components/signing/useGoogleSignIn'
+import { useSession, signIn, signOut } from 'next-auth/react'
 import { useStepContext } from './StepContext'
 import { handleSign } from '../../utils/formUtils'
 import { signAndSaveOnDevice } from '../../utils/saveOnDevice'
@@ -44,7 +44,7 @@ const Form = ({ onStepChange }: any) => {
 
   const characterLimit = 294
   const maxSteps = textGuid.length
-  const { session, handleSignIn } = useGoogleSignIn()
+  const { data: session } = useSession()
   const accessToken = session?.accessToken
 
   const storage = new GoogleDriveStorage(accessToken as string)
@@ -126,7 +126,7 @@ const Form = ({ onStepChange }: any) => {
       !session?.accessToken &&
       !hasSignedIn
     ) {
-      const signInSuccess = await handleSignIn()
+      const signInSuccess = await signIn('google')
       if (!signInSuccess || !session?.accessToken) return
       setHasSignedIn(true)
       handleNext()
@@ -142,6 +142,34 @@ const Form = ({ onStepChange }: any) => {
     }
   }
 
+  const setPermissionsWithAPI = async (fileId: string) => {
+    const endpoint = `https://www.googleapis.com/drive/v3/files/${fileId}/permissions`;
+    const params = {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        role: 'reader',
+        type: 'anyone'
+      })
+    };
+    try {
+      const response = await fetch(endpoint, params);
+      const data = await response.json();
+      console.log(":  setPermissionsWithAPI  data", data)
+      if (response.ok) {
+        console.log('Permission successfully set', data);
+      } else {
+        throw new Error(data.error.message);
+      }
+    } catch (error: any) {
+      console.error('Failed to set permissions:', error);
+      setErrorMessage(`Failed to set permissions: ${error.message}`);
+    }
+  };
+
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
       if (
@@ -152,7 +180,6 @@ const Form = ({ onStepChange }: any) => {
       else if (data.storageOption === options.Device) {
         signAndSaveOnDevice(data)
       }
-      setActiveStep(0)
     } catch (error: any) {
       if (error.message === 'MetaMask address could not be retrieved') {
         setErrorMessage('Please make sure you have MetaMask installed and connected.')
@@ -192,28 +219,9 @@ const Form = ({ onStepChange }: any) => {
         throw new Error('Failed to save file to Google Drive')
       }
 
-
-      const permissionUrl = `https://www.googleapis.com/drive/v3/files/${saveResponse.id}/permissions`
-      const permissionBody = {
-        role: 'commenter', 
-        type: 'anyone' 
-      }
-
-      const response = await fetch(permissionUrl, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(permissionBody)
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to set permissions: ${response.statusText}`)
-      }
-
       const res = await signCred(accessToken, data, issuerId, keyPair)
       setLink(`https://drive.google.com/file/d/${res.id}/view`)
+      setPermissionsWithAPI(res.id)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res
