@@ -126,7 +126,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                 height: '100px'
               }}
             >
-              <Image
+              {/* <Image
                 style={{
                   borderRadius: '20px 0px 0px 20px',
                   width: '100px',
@@ -134,7 +134,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                 }}
                 src={formData?.evidenceLink ?? 'not Valid image'}
                 alt='logo'
-              />
+              /> */}
             </Box>
             <Box sx={{ flex: 1 }}>
               <Typography sx={successPageTitleStyles}>

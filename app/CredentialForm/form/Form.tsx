@@ -143,59 +143,33 @@ const Form = ({ onStepChange }: any) => {
     }
   }
 
-  useEffect(() => {
-    let gapiInitialized = false
-    const initializeGapi = () => {
-      if (gapiInitialized) return
-      console.log('Initializing Google API client...')
-      window.gapi.load('client', async () => {
-        try {
-          console.log('Loading Google API client...')
-          await window.gapi.client.init({
-            apiKey: process.env.GOOGLE_API_KEY,
-            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
-          })
-
-          if (session?.accessToken) {
-            console.log('Setting access token...')
-            window.gapi.client.setToken({
-              access_token: session.accessToken
-            })
-          }
-          console.log('Google API client initialized successfully.')
-          gapiInitialized = true
-          setTimeout(() => setGapiLoaded(true), 1000)
-        } catch (error) {
-          console.error('Error initializing Google API client:', error)
-        }
+  const setPermissionsWithAPI = async (fileId: string) => {
+    const endpoint = `https://www.googleapis.com/drive/v3/files/${fileId}/permissions`;
+    const params = {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        role: 'reader',
+        type: 'anyone'
       })
-    }
-
-    if (window.gapi) {
-      initializeGapi()
-    } else {
-      const script = document.createElement('script')
-      script.src = 'https://apis.google.com/js/api.js'
-      script.onload = initializeGapi
-      document.body.appendChild(script)
-    }
-  }, [session])
-
-  const setPermissionsWithGoogleAPI = async (fileId: string) => {
+    };
     try {
-      await window.gapi.client.drive.permissions.create({
-        fileId,
-        resource: {
-          role: 'commenter',
-          type: 'anyone'
-        }
-      })
-      console.log('Permission successfully set')
-    } catch (error) {
-      console.error('Failed to set permissions:', error)
-      throw new Error('Failed to set permissions.')
+      const response = await fetch(endpoint, params);
+      const data = await response.json();
+      console.log(":  setPermissionsWithAPI  data", data)
+      if (response.ok) {
+        console.log('Permission successfully set', data);
+      } else {
+        throw new Error(data.error.message);
+      }
+    } catch (error: any) {
+      console.error('Failed to set permissions:', error);
+      setErrorMessage(`Failed to set permissions: ${error.message}`);
     }
-  }
+  };
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
@@ -248,7 +222,7 @@ const Form = ({ onStepChange }: any) => {
 
       const res = await signCred(accessToken, data, issuerId, keyPair)
       setLink(`https://drive.google.com/file/d/${res.id}/view`)
-      setPermissionsWithGoogleAPI(res.id)
+      setPermissionsWithAPI(res.id)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res
