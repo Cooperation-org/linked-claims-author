@@ -8,25 +8,17 @@ const useGoogleDrive = () => {
   const [ownerEmail, setOwnerEmail] = useState<string | null>(null)
 
   const fetchFileContent = async (fileId: any, resourceKey: string = '') => {
-    const cachedContent = localStorage.getItem(`fileContent_${fileId}`)
-    if (cachedContent) {
-      console.log('Using cached file content...')
-      setFileContent(cachedContent)
-      return
-    }
-
-    console.log('Fetching file content from Google API:', fileId)
     try {
       const response = await fetch(
-        `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+        `https://www.googleapis.com/drive/v3/files/${fileId}`,
         {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${session?.accessToken}`,
-            'X-Goog-Drive-Resource-Keys': `${fileId}/${resourceKey}`
+            Authorization: `Bearer ${session?.accessToken}`
           }
         }
       )
+      console.log(":  fetchFileContent  response", response)
 
       if (response.ok) {
         const content = await response.text()
@@ -34,7 +26,7 @@ const useGoogleDrive = () => {
         setFileContent(content)
         localStorage.setItem(`fileContent_${fileId}`, content)
       } else {
-        console.error('Error fetching file content:', response.statusText)
+        console.error('Error fetching file content:', response)
       }
     } catch (error) {
       console.error('Error fetching file content:', error)
@@ -60,7 +52,7 @@ const useGoogleDrive = () => {
     console.log('Fetching file metadata from Google API:', fileId)
     try {
       const response = await fetch(
-        `https://www.googleapis.com/drive/v3/files/${fileId}?fields=owners,id,name,mimeType`,
+        `https://www.googleapis.com/drive/v3/files/${fileId}`,
         {
           method: 'GET',
           headers: {
