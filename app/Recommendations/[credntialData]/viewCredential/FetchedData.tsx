@@ -38,7 +38,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
       const decodedLink = decodeURIComponent(params.credntialData as any)
       const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
       const resourceKey = ''
-      await fetchFileContent(fileId, resourceKey, accessToken)
+      await fetchFileContent(fileId, accessToken)
       await fetchFileMetadata(fileId, resourceKey)
     }
 
