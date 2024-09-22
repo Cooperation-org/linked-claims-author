@@ -6,13 +6,6 @@ import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { SVGDate, SVGBadge } from '../../Assets/SVGs'
-import {
-  boxStyles,
-  commonTypographyStyles,
-  commonBoxStyles,
-  evidenceListStyles,
-  credentialBoxStyles
-} from '../../components/Styles/appStyles'
 import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 
@@ -162,7 +155,7 @@ const ComprehensiveClaimDetails: React.FC = () => {
   return (
     <Box
       sx={{
-        ...boxStyles,
+        width: '100%',
         p: '20px',
         gap: '20px',
         bgcolor: isLargeScreen ? theme.palette.t3NewWhitesmoke : 'none',
@@ -172,40 +165,80 @@ const ComprehensiveClaimDetails: React.FC = () => {
         borderRadius: '10px'
       }}
     >
-      <Box sx={commonBoxStyles}>
+      {/* Display Name and Achievement */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          justifyContent: 'center'
+        }}
+      >
         <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
           <SVGBadge />
           <Typography
-            sx={{ ...commonTypographyStyles, fontSize: '24px', fontWeight: 700 }}
+            sx={{
+              color: 't3BodyText',
+              fontSize: '24px',
+              fontWeight: 700,
+              fontStyle: 'normal'
+            }}
           >
             {credentialSubject.name || fileMetadata?.name} has claimed:
           </Typography>
         </Box>
         <Typography
-          sx={{ ...commonTypographyStyles, fontSize: '24px', fontWeight: 700, mt: 2 }}
+          sx={{
+            color: 't3BodyText',
+            fontSize: '24px',
+            fontWeight: 700,
+            fontStyle: 'normal',
+            mt: 2
+          }}
         >
           {achievement?.name || 'Unnamed Achievement'}
         </Typography>
       </Box>
 
+      {/* Credential Duration */}
       {credentialSubject.duration && (
-        <Box sx={{ ...credentialBoxStyles, bgcolor: '#d5e1fb', mt: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '2px',
+            padding: '2px 5px',
+            borderRadius: '5px',
+            width: 'fit-content',
+            mb: '10px',
+            bgcolor: '#d5e1fb',
+            mt: 2
+          }}
+        >
           <Box sx={{ mt: '2px' }}>
             <SVGDate />
           </Box>
-          <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
+          <Typography sx={{ color: 't3BodyText', fontSize: '13px' }}>
             {credentialSubject.duration}
           </Typography>
         </Box>
       )}
 
+      {/* Display Image */}
       {achievement?.image?.id && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: isLargeScreen ? 'row' : 'column',
+            gap: isLargeScreen ? '20px' : '10px',
+            my: '10px'
+          }}
+        >
           <img
             style={{
-              borderRadius: '10px',
-              width: isLargeScreen ? '300px' : '100%',
-              height: 'auto'
+              borderRadius: '20px',
+              width: !isLargeScreen ? '100%' : '179px',
+              height: '100%'
             }}
             src={achievement.image.id}
             alt='Achievement Evidence'
@@ -213,6 +246,7 @@ const ComprehensiveClaimDetails: React.FC = () => {
         </Box>
       )}
 
+      {/* Achievement Description */}
       {achievement?.description && (
         <Typography
           sx={{
@@ -227,6 +261,7 @@ const ComprehensiveClaimDetails: React.FC = () => {
         </Typography>
       )}
 
+      {/* Achievement Criteria */}
       {achievement?.criteria?.narrative && (
         <Box sx={{ mt: 2 }}>
           <Typography>Earning criteria:</Typography>
@@ -236,12 +271,20 @@ const ComprehensiveClaimDetails: React.FC = () => {
         </Box>
       )}
 
+      {/* Portfolio Evidence */}
       {hasValidEvidence && (
         <Box sx={{ mt: 3 }}>
           <Typography sx={{ fontWeight: 600 }}>
             Supporting Evidence / Portfolio:
           </Typography>
-          <ul style={evidenceListStyles}>
+          <ul
+            style={{
+              marginLeft: '25px',
+              textDecorationLine: 'underline',
+              color: 'blue',
+              backgroundColor: '#FFFFFF'
+            }}
+          >
             {credentialSubject.portfolio.map((porto, index) => (
               <li
                 key={index}
@@ -256,6 +299,7 @@ const ComprehensiveClaimDetails: React.FC = () => {
         </Box>
       )}
 
+      {/* Display the owner email if available */}
       {ownerEmail && (
         <Box sx={{ mt: 2 }}>
           <Typography variant='body2'>Owner Email: {ownerEmail}</Typography>
