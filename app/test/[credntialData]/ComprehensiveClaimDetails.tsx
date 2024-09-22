@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react'
 import { Box, CircularProgress, Typography, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import { SVGDate, SVGBadge } from '../../Assets/SVGs'
+import { usePathname } from 'next/navigation'
+import { SVGDate, SVGBadge, CheckMarkSVG } from '../../Assets/SVGs'
 import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import SessionExpiryModal from '../../components/refreshtokenPopup'
@@ -36,14 +36,22 @@ interface ClaimDetail {
   credentialSubject: CredentialSubject
 }
 
-const ComprehensiveClaimDetails: React.FC = () => {
+interface ComprehensiveClaimDetailsProps {
+  params: {
+    credntialData: string
+  }
+}
+
+const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
+  params
+}) => {
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [ownerEmail, setOwnerEmail] = useState<string | null>(null)
   const theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  const params = useParams()
+  const pathname = usePathname()
   const { data: session } = useSession()
   const accessToken = session?.accessToken
 
@@ -54,6 +62,8 @@ const ComprehensiveClaimDetails: React.FC = () => {
     fileMetadata,
     ownerEmail: fetchedOwnerEmail
   } = useGoogleDrive()
+  // console.log('Received params in ComprehensiveClaimDetails:', params)
+  // console.log('Decoded credntialData:', decodeURIComponent(params.credntialData))
 
   useEffect(() => {
     const fetchDriveData = async () => {
@@ -64,8 +74,10 @@ const ComprehensiveClaimDetails: React.FC = () => {
       }
 
       try {
-        const decodedLink = decodeURIComponent(params.credntialData as string)
+        const decodedLink = decodeURIComponent(params.credntialData)
         const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
+        // console.log('Decoded Link:', decodedLink)
+        // console.log('Extracted fileId:', fileId)
 
         if (!fileId) {
           setErrorMessage('Invalid claim ID.')
@@ -103,18 +115,20 @@ const ComprehensiveClaimDetails: React.FC = () => {
   useEffect(() => {
     if (fileContent) {
       const parsedData = JSON.parse(fileContent)
+      // console.log('Parsed fileContent:', parsedData)
       setClaimDetail(parsedData as ClaimDetail)
       setLoading(false)
 
-      const decodedLink = decodeURIComponent(params.credntialData as string)
+      const decodedLink = decodeURIComponent(params.credntialData)
       const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
       localStorage.setItem(`fileContent_${fileId}`, fileContent)
     }
 
     if (fetchedOwnerEmail) {
+      // console.log('Fetched owner email:', fetchedOwnerEmail)
       setOwnerEmail(fetchedOwnerEmail)
 
-      const decodedLink = decodeURIComponent(params.credntialData as string)
+      const decodedLink = decodeURIComponent(params.credntialData)
       const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
       const metadata = { owners: [{ emailAddress: fetchedOwnerEmail }] }
       localStorage.setItem(`fileMetadata_${fileId}`, JSON.stringify(metadata))
@@ -307,6 +321,57 @@ const ComprehensiveClaimDetails: React.FC = () => {
       {ownerEmail && (
         <Box sx={{ mt: 2 }}>
           <Typography variant='body2'>Owner Email: {ownerEmail}</Typography>
+        </Box>
+      )}
+      {/* Additional Credential Details displayed only on the /View route */}
+      {pathname?.includes('/View') && (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px', mt: '20px' }}>
+          <Typography
+            sx={{
+              fontSize: '13px',
+              fontWeight: 700,
+              color: '#000E40',
+              fontFamily: 'Arial'
+            }}
+          >
+            Credential Details
+          </Typography>
+          <Box sx={{ display: 'flex', gap: '5px', mt: '10px', alignItems: 'center' }}>
+            <Box
+              sx={{
+                borderRadius: '4px',
+                bgcolor: '#C2F1BE',
+                p: '4px'
+              }}
+            >
+              <CheckMarkSVG />
+            </Box>
+            <Typography>Has a valid digital signature</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+            <Box
+              sx={{
+                borderRadius: '4px',
+                bgcolor: '#C2F1BE',
+                p: '4px'
+              }}
+            >
+              <CheckMarkSVG />
+            </Box>
+            <Typography>Has not expired</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+            <Box
+              sx={{
+                borderRadius: '4px',
+                bgcolor: '#C2F1BE',
+                p: '4px'
+              }}
+            >
+              <CheckMarkSVG />
+            </Box>
+            <Typography>Has not been revoked by issuer</Typography>
+          </Box>
         </Box>
       )}
     </Box>

@@ -1,48 +1,41 @@
 'use client'
 
-import { Box, CircularProgress, Typography, useMediaQuery } from '@mui/material'
-import Link from 'next/link'
-import fram from '../../Assets/Images/Frame 35278.png'
+import React from 'react'
+import { Box, Typography, useMediaQuery } from '@mui/material'
 import Image from 'next/image'
-import { useParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
-import vector from '../../Assets/Images/Vector 145.png'
-import { SVGBadge, SVGDate, CheckMarkSVG } from '../../Assets/SVGs'
-import {
-  credentialBoxStyles,
-  commonTypographyStyles,
-  evidenceListStyles
-} from '../../components/Styles/appStyles'
-import useGoogleDrive from '../../hooks/useGoogleDrive'
 import theme from '../../theme'
-import { useSession } from 'next-auth/react'
+import ComprehensiveClaimDetails from '../../test/[credntialData]/ComprehensiveClaimDetails'
+import fram from '../../Assets/Images/Frame 35278.png'
+import vector from '../../Assets/Images/Vector 145.png'
+import { useParams } from 'next/navigation'
 
-const Page = () => {
-  const [driveData, setDriveData] = useState<any>(null)
-  const params = useParams()
-  const { data: session } = useSession()
-  const accessToken = session?.accessToken
-  const { fetchFileContent, fileContent, fileMetadata } = useGoogleDrive()
+const Page: React.FC = () => {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
+  const params = useParams()
 
-  useEffect(() => {
-    const fetchDriveData = async () => {
-      const decodedLink = decodeURIComponent(params.credentialData as any)
-      const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
-      const resourceKey = ''
-      await fetchFileContent(fileId, accessToken)
-    }
+  const credentialData = Array.isArray(params?.credentialData)
+    ? params.credentialData[0]
+    : params?.credentialData
+  // console.log('Params:', params)
+  // console.log('credentialData in Page.tsx:', credentialData)
 
-    fetchDriveData()
-  })
+  if (!credentialData) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh'
+        }}
+      >
+        <Typography variant='h6' color='error'>
+          Missing credential data. Please check the URL.
+        </Typography>
+      </Box>
+    )
+  }
 
-  useEffect(() => {
-    if (fileContent) {
-      const parsedData = JSON.parse(fileContent)
-      console.log(':  useEffect  parsedData', parsedData)
-      setDriveData(parsedData)
-    }
-  }, [fileContent])
   return (
     <Box
       sx={{
@@ -58,166 +51,9 @@ const Page = () => {
         pt: '50px'
       }}
     >
-      {driveData ? (
-        <Box
-          sx={{
-            flex: 1,
-            width: { xs: '90%', md: '60%' },
-            m: '0 auto'
-          }}
-        >
-          <Box
-            sx={{
-              height: 'fit-content',
-              border: '1px solid #003FE0',
-              borderRadius: '10px',
-              p: '15px'
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '5px',
-                alignItems: 'center'
-              }}
-            >
-              <SVGBadge />
-              <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
-                {driveData?.credentialSubject?.name || fileMetadata?.name} has claimed:
-              </Typography>
-            </Box>
-            <Box sx={{ width: '100%' }}>
-              <Typography
-                sx={{
-                  color: '#202E5B',
-                  fontFamily: 'Inter',
-                  fontSize: '24px',
-                  fontWeight: 700,
-                  letterSpacing: '0.075px',
-                  mb: '10px'
-                }}
-              >
-                Management Skills
-              </Typography>
-              <Box
-                sx={{
-                  ...credentialBoxStyles,
-                  bgcolor: '#d5e1fb'
-                }}
-              >
-                <Box sx={{ mt: '2px' }}>
-                  <SVGDate />
-                </Box>
-                <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
-                  {driveData?.credentialSubject?.duration}
-                </Typography>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '20px',
-                width: '100%'
-              }}
-            >
-              <Typography
-                sx={{
-                  fontFamily: 'Lato',
-                  fontSize: '17px',
-                  letterSpacing: '0.075px',
-                  lineHeight: '24px'
-                }}
-              >
-                This credential certifies about{' '}
-                {driveData?.credentialSubject?.achievement[0]?.name}
-              </Typography>
-              <Box>
-                <Typography>Earning criteria:</Typography>
-                <ul style={{ marginLeft: '25px' }}>
-                  <li>
-                    {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
-                      /<\/?[^>]+>/gi,
-                      ''
-                    )}
-                  </li>
-                </ul>
-              </Box>
-              <Box>
-                <Typography>Supporting Evidence:</Typography>
-                <ul style={evidenceListStyles}>
-                  {driveData?.credentialSubject?.portfolio?.map(
-                    (porto: { url: any; name: any }) => (
-                      <li key={porto.url}>
-                        <Link href={porto.url} target='_blank'>
-                          {porto.name}
-                        </Link>
-                      </li>
-                    )
-                  )}
-                </ul>
-              </Box>
-            </Box>
-            <Box
-              sx={{ display: 'flex', flexDirection: 'column', gap: '4px', mt: '20px' }}
-            >
-              <Typography
-                sx={{
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  color: '#000E40',
-                  fontFamily: 'Arial'
-                }}
-              >
-                Credential Details
-              </Typography>
-              <Box sx={{ display: 'flex', gap: '5px', mt: '10px', alignItems: 'center' }}>
-                <Box
-                  sx={{
-                    borderRadius: '4px',
-                    bgcolor: '#C2F1BE',
+      <ComprehensiveClaimDetails params={{ credntialData: credentialData }} />
 
-                    p: '4px'
-                  }}
-                >
-                  <CheckMarkSVG />
-                </Box>
-                <Typography>Has a valid digital signature</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                <Box
-                  sx={{
-                    borderRadius: '4px',
-                    bgcolor: '#C2F1BE',
-
-                    p: '4px'
-                  }}
-                >
-                  <CheckMarkSVG />
-                </Box>
-                <Typography>Has not expired</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                <Box
-                  sx={{
-                    borderRadius: '4px',
-                    bgcolor: '#C2F1BE',
-
-                    p: '4px'
-                  }}
-                >
-                  <CheckMarkSVG />
-                </Box>
-                <Typography>Has not been revoked by issuer</Typography>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-      ) : (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <CircularProgress />
-        </Box>
-      )}
+      {/* Footer section only for small screens */}
       {!isLargeScreen && (
         <Box
           sx={{
