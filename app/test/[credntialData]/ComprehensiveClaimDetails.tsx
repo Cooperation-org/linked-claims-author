@@ -8,6 +8,7 @@ import { useParams } from 'next/navigation'
 import { SVGDate, SVGBadge } from '../../Assets/SVGs'
 import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
+import SessionExpiryModal from '../../components/refreshtokenPopup'
 
 interface Portfolio {
   name: string
@@ -165,6 +166,9 @@ const ComprehensiveClaimDetails: React.FC = () => {
         borderRadius: '10px'
       }}
     >
+      {/* Display Session Expiry Modal */}
+      <SessionExpiryModal />
+
       {/* Display Name and Achievement */}
       <Box
         sx={{
@@ -285,9 +289,9 @@ const ComprehensiveClaimDetails: React.FC = () => {
               backgroundColor: '#FFFFFF'
             }}
           >
-            {credentialSubject.portfolio.map((porto, index) => (
+            {credentialSubject.portfolio.map(porto => (
               <li
-                key={index}
+                key={porto.url}
                 style={{ cursor: 'pointer', width: 'fit-content', marginBottom: '10px' }}
               >
                 <Link href={porto.url} target='_blank' rel='noopener noreferrer'>
