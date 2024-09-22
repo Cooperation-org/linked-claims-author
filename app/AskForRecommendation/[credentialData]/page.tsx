@@ -54,7 +54,7 @@ export default function HorizontalLinearStepper() {
       const decodedLink = decodeURIComponent(params.credentialData as any)
       const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
       const resourceKey = ''
-      await fetchFileContent(fileId, resourceKey, accessToken)
+      await fetchFileContent(fileId, accessToken)
     }
 
     fetchDriveData()
