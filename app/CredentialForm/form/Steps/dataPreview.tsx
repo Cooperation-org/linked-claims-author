@@ -1,6 +1,4 @@
-'use client'
-
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
 import { SVGDate } from '../../../Assets/SVGs'
@@ -22,12 +20,25 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
   const theme: Theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
 
+  const [imageUrl, setImageUrl] = useState('')
+
+  // Generate image URL from File object
+  useEffect(() => {
+    if (formData.evidenceLink) {
+      const url = URL.createObjectURL(formData.evidenceLink as any)
+      setImageUrl(url)
+      return () => {
+        URL.revokeObjectURL(url) // Clean up URL after component unmounts
+      }
+    }
+  }, [formData.evidenceLink])
+
   const handleNavigate = (url: string, target: string = '_self') => {
     window.open(url, target)
   }
 
-  const imageUrl = formData.evidenceLink || ''
   const hasValidEvidence = formData.portfolio?.some(porto => porto.name && porto.url)
+
   return (
     <Box
       sx={{

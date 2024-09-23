@@ -1,40 +1,48 @@
 'use client'
 
-import React from 'react' // , { useState }
-import { FormLabel, TextField, Box } from '@mui/material'
-import {
-  buttonLinkStyles,
-  inputPropsStyles,
-  TextFieldStyles,
-  formLabelStyles,
-  skipButtonBoxStyles
-} from '../../../components/Styles/appStyles'
+import React from 'react'
 import { UseFormRegister } from 'react-hook-form'
-import { FormData } from '../types/Types'
-// import { handleUrlValidation } from '../../../utils/urlValidation'
+import { Box, Button, FormLabel, TextField, Typography } from '@mui/material'
+import {
+  skipButtonBoxStyles,
+  buttonLinkStyles
+} from '../../../components/Styles/appStyles'
 
 interface Step5Props {
   register: UseFormRegister<FormData>
+
   handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
 }
 
-export function Step5({ register, handleNext }: Readonly<Step5Props>) {
+export function Step5({ handleNext, register, setValue, watch, errors }: any) {
+  const file = watch('evidenceLink')
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null
+    if (file) {
+      // Validate file type if needed
+      if (/^image\/(jpeg|png|gif)$/.test(file.type)) {
+        setValue('evidenceLink', file) // Setting file in react-hook-form's state
+      } else {
+        alert('Please upload an image file (jpeg, png, gif)')
+      }
+    }
+  }
+
   return (
     <Box>
-      <FormLabel sx={formLabelStyles} id='image-url-label'>
-        URL of an image you have permission to use (optional)
-      </FormLabel>
+      <FormLabel htmlFor='evidenceLink'>Upload an image (optional)</FormLabel>
       <TextField
         {...register('evidenceLink')}
-        placeholder='https://'
-        variant='outlined'
-        sx={TextFieldStyles}
-        aria-labelledby='image-url-label'
-        inputProps={{
-          'aria-label': 'weight',
-          style: inputPropsStyles
-        }}
+        type='file'
+        onChange={handleFileChange}
+        inputProps={{ accept: 'image/jpeg, image/png, image/gif' }}
+        error={Boolean(errors.evidenceLink)}
+        helperText={errors.evidenceLink?.message || ''}
+        fullWidth
       />
+
+      {file && <Typography>Image ready to be uploaded: {file.name}</Typography>}
       <Box sx={skipButtonBoxStyles}>
         <button type='button' onClick={handleNext} style={buttonLinkStyles}>
           Skip
@@ -43,3 +51,5 @@ export function Step5({ register, handleNext }: Readonly<Step5Props>) {
     </Box>
   )
 }
+
+export default Step5

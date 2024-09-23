@@ -17,7 +17,7 @@ import { Step1 } from './Steps/Step1'
 import { Step2 } from './Steps/Step2'
 import { Step3 } from './Steps/Step3'
 import { Step4 } from './Steps/Step4'
-import { Step5 } from './Steps/Step5'
+import Step5 from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 
@@ -143,34 +143,36 @@ const Form = ({ onStepChange }: any) => {
   }
 
   const setPermissionsWithAPI = async (fileId: string) => {
-    const endpoint = `https://www.googleapis.com/drive/v3/files/${fileId}/permissions`;
+    const endpoint = `https://www.googleapis.com/drive/v3/files/${fileId}/permissions`
     const params = {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         role: 'reader',
         type: 'anyone'
       })
-    };
+    }
     try {
-      const response = await fetch(endpoint, params);
-      const data = await response.json();
-      console.log(":  setPermissionsWithAPI  data", data)
+      const response = await fetch(endpoint, params)
+      const data = await response.json()
+      console.log(':  setPermissionsWithAPI  data', data)
       if (response.ok) {
-        console.log('Permission successfully set', data);
+        console.log('Permission successfully set', data)
       } else {
-        throw new Error(data.error.message);
+        throw new Error(data.error.message)
       }
     } catch (error: any) {
-      console.error('Failed to set permissions:', error);
-      setErrorMessage(`Failed to set permissions: ${error.message}`);
+      console.error('Failed to set permissions:', error)
+      setErrorMessage(`Failed to set permissions: ${error.message}`)
     }
-  };
+  }
 
-  const handleFormSubmit = handleSubmit(async (data: FormData) => {
+  const handleFormSubmit = handleSubmit(async (data: any) => {
+    // will chnage later
+
     try {
       if (
         data.storageOption === options.GoogleDrive ||
@@ -205,6 +207,8 @@ const Form = ({ onStepChange }: any) => {
         newDid = await createDID()
       }
       const { didDocument, keyPair, issuerId } = newDid
+      const file = data.evidenceLink;
+        const fileName = file.name;
 
       const saveResponse = await saveToGoogleDrive(
         storage,
@@ -213,6 +217,8 @@ const Form = ({ onStepChange }: any) => {
           keyPair
         },
         'DID'
+        // file,                  // will active after packege publishing
+        // fileName
       )
 
       if (!saveResponse || !saveResponse.id) {
@@ -220,7 +226,7 @@ const Form = ({ onStepChange }: any) => {
       }
 
       const res = await signCred(accessToken, data, issuerId, keyPair)
-      console.log(":  sign  res", res.id)
+      console.log(':  sign  res', res.id)
       setPermissionsWithAPI(res.id)
       setLink(`https://drive.google.com/file/d/${res.id}/view`)
 
@@ -325,7 +331,15 @@ const Form = ({ onStepChange }: any) => {
                 remove={remove}
               />
             )}
-            {activeStep === 5 && <Step5 register={register} handleNext={handleNext} />}
+            {activeStep === 5 && (
+              <Step5
+                handleNext={handleNext}
+                register={register}
+                watch={watch}
+                errors={errors}
+                setValue={setValue}
+              />
+            )}
             {activeStep === 6 && <DataComponent formData={watch()} />}
             {activeStep === 7 && (
               <SuccessPage

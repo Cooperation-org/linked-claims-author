@@ -82,12 +82,13 @@ export const inputPropsStyles = {
 
 export const buttonLinkStyles = {
   background: 'none',
-  color: 't3Purple',
+  color: 'blue',
   border: 'none',
   textDecoration: 'underline',
   cursor: 'pointer',
   fontSize: '14px',
-  fontWeight: 400
+  fontWeight: 400,
+  marginTop:'16px'
 }
 
 export const UseAIStyles = {
