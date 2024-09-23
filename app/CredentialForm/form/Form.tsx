@@ -188,31 +188,8 @@ const Form = ({ onStepChange }: any) => {
         'DID'
       )
 
-      if (!saveResponse || !saveResponse.id) {
-        throw new Error('Failed to save file to Google Drive')
-      }
-
-
-      const permissionUrl = `https://www.googleapis.com/drive/v3/files/${saveResponse.id}/permissions`
-      const permissionBody = {
-        role: 'commenter', 
-        type: 'anyone' 
-      }
-
-      const response = await fetch(permissionUrl, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(permissionBody)
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to set permissions: ${response.statusText}`)
-      }
-
-      const res = await signCred(accessToken, data, issuerId, keyPair)
+      const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
+      await saveToGoogleDrive(storage, res, 'VC')
       setLink(`https://drive.google.com/file/d/${res.id}/view`)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)

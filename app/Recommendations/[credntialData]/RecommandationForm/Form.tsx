@@ -15,6 +15,8 @@ import FetchedData from '../viewCredential/FetchedData'
 import { useStepContext } from '../../../CredentialForm/form/StepContext'
 import { handleSign } from '../../../utils/formUtils'
 import { useGoogleSignIn } from '../../../components/signing/useGoogleSignIn'
+import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
+import { createDID, signCred } from '../../../utils/signCred'
 
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
@@ -70,76 +72,45 @@ const Form = () => {
     console.log('Active Step:', activeStep)
   }, [activeStep])
 
-  // Load the gapi client dynamically
-  useEffect(() => {
-    const loadGapi = () => {
-      const script = document.createElement('script')
-      script.src = 'https://apis.google.com/js/api.js'
-      script.onload = () => {
-        window.gapi.load('client:auth2', async () => {
-          await window.gapi.client.init({
-            clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
-            scope: 'https://www.googleapis.com/auth/drive.file'
-          })
-          setGapiReady(true)
-        })
-      }
-      document.body.appendChild(script)
-    }
-
-    if (!window.gapi) {
-      loadGapi()
-    } else {
-      setGapiReady(true)
-    }
-  }, [])
-
-  // Function to add a comment to a Google Drive file
-  async function addCommentToFile(
-    fileId: string,
-    commentText: string,
-    accessToken: string
-  ) {
-    console.log(': addCommentToFile fileId', fileId)
-    if (!fileId || !commentText || !accessToken) {
-      console.error('Missing required parameters: fileId, commentText, or accessToken')
-      return
-    }
-
-    const url = `https://www.googleapis.com/drive/v3/files/${fileId}/comments?fields=id,content,createdTime`
-
-    const body = {
-      content: commentText
-    }
-
+  const storage = new GoogleDriveStorage(accessToken as string)
+  const saveAndAddcomment = async () => {
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
+      if (!accessToken) throw new Error('Access token is not provided')
+      let newDid = await createDID()
+
+      const { didDocument, keyPair, issuerId } = newDid
+
+      saveToGoogleDrive(
+        storage,
+        {
+          didDocument,
+          keyPair
         },
-        body: JSON.stringify(body)
-      })
+        'DID'
+      )
 
-      if (!response.ok) {
-        const errorDetails = await response.json()
-        console.error('Error adding comment:', errorDetails)
-        throw new Error(`Failed to add comment: ${response.statusText}`)
-      }
+      const res = await signCred(
+        accessToken,
+        formData,
+        issuerId,
+        keyPair,
+        'RECOMMENDATION'
+      )
+      await saveToGoogleDrive(storage, res, 'RECOMMENDATION')
 
-      const result = await response.json()
-      console.log('Comment added successfully:', result)
-      return result
-    } catch (error) {
-      console.error('Error adding comment:', error)
+      const rec = await storage.addCommentToFile(fileID, 'Test Comment')
+      console.log('🚀 ~ saveAndAddcomment ~ rec:', rec)
+      console.log('🚀 ~ handleFormSubmit ~ res:', res)
+      return res
+    } catch (error: any) {
+      console.error('Error during signing process:', error)
       throw error
     }
   }
 
-  const handleFormSubmit = handleSubmit((data: FormData) => {
+  const handleFormSubmit = handleSubmit(async (data: FormData) => {
     setSubmittedFullName(data.fullName)
-    addCommentToFile(fileID, JSON.stringify(data), accessToken as any)
+    await saveAndAddcomment()
     clearValue()
     reset({
       storageOption: 'Google Drive',
@@ -154,7 +125,6 @@ const Form = () => {
       isRecommand: 'yes'
     })
     setActiveStep(6)
-
   })
 
   return (
