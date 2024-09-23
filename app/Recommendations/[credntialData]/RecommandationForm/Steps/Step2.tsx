@@ -17,14 +17,18 @@ interface Step2Props {
   watch: (field: string) => any
   handleTextEditorChange: (value: any) => void
   errors: FieldErrors<FormData>
+  fullName: string
 }
 
 const Step2: React.FC<Step2Props> = ({
   register,
   watch,
   handleTextEditorChange,
-  errors
+  errors,
+  fullName
 }) => {
+  const displayName = fullName || ''
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
@@ -49,12 +53,12 @@ const Step2: React.FC<Step2Props> = ({
       </Box>
       <Box>
         <FormLabel sx={formLabelStyles} id='qualifications-label'>
-          How do you know Golda? <span style={formLabelSpanStyles}> *</span>
+          How do you know {displayName}? <span style={formLabelSpanStyles}> *</span>
         </FormLabel>
         <TextEditor
           value={watch('howKnow')}
           onChange={handleTextEditorChange}
-          placeholder='e.g., I am Golda’s former supervisor. I’ve known her for 5 years.'
+          placeholder={`e.g., I am ${displayName}’s former supervisor. I’ve known ${displayName} for 5 years.`}
         />
       </Box>
     </Box>

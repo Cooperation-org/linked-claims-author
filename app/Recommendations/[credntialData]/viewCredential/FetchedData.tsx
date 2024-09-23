@@ -11,6 +11,7 @@ import {
   evidenceListStyles
 } from '../../../components/Styles/appStyles'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
+import { useSession } from 'next-auth/react'
 
 interface FetchedDataProps {
   setFullName: (name: string) => void
@@ -26,45 +27,26 @@ const FetchedData: React.FC<FetchedDataProps> = ({
   const [driveData, setDriveData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const params = useParams()
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
 
-  const {
-    gapiLoaded,
-    fetchFileContent,
-    fetchFileMetadata,
-    fileContent,
-    fileMetadata,
-    ownerEmail
-  } = useGoogleDrive()
+  const { fetchFileContent, fetchFileMetadata, fileContent, fileMetadata, ownerEmail } =
+    useGoogleDrive()
 
   useEffect(() => {
     const fetchDriveData = async () => {
       const decodedLink = decodeURIComponent(params.credntialData as any)
-      console.log('Decoded Link:', decodedLink) // Log the decoded link
-
-      const fileIdMatch = RegExp(/\/d\/([a-zA-Z0-9_-]+)/).exec(decodedLink)
-      const fileId = fileIdMatch ? fileIdMatch[1] : null
-      console.log('Extracted File ID:', fileId) // Log the extracted file ID
-
-      if (fileId) {
-        setFileID(fileId)
-      }
-
-      if (fileId && gapiLoaded) {
-        console.log('Fetching data...')
-        await fetchFileContent(fileId)
-        await fetchFileMetadata(fileId)
-      } else {
-        console.error('Invalid file ID or Google API not loaded')
-      }
+      const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
+      const resourceKey = ''
+      await fetchFileContent(fileId, resourceKey, accessToken)
+      await fetchFileMetadata(fileId, resourceKey)
     }
 
-    if (gapiLoaded) {
-      fetchDriveData()
-    }
-  }, [gapiLoaded, params])
+    fetchDriveData()
+  }, [accessToken, fetchFileContent, fetchFileMetadata, params, setFileID])
 
   useEffect(() => {
-    if (fileContent && fileMetadata) {
+    if (fileContent) {
       const parsedData = JSON.parse(fileContent)
       setDriveData(parsedData)
       setFullName(parsedData.credentialSubject?.name)
@@ -72,9 +54,12 @@ const FetchedData: React.FC<FetchedDataProps> = ({
     }
 
     if (ownerEmail) {
+      console.log('Fetched owner email:', ownerEmail)
       setEmail(ownerEmail)
+    } else {
+      console.warn('ownerEmail is not available')
     }
-  }, [fileContent, fileMetadata, ownerEmail])
+  }, [fileContent, fileMetadata, ownerEmail, setEmail, setFullName])
 
   return (
     <Box sx={{ border: '1px solid #003FE0', borderRadius: '10px', p: '15px' }}>
@@ -156,7 +141,9 @@ const FetchedData: React.FC<FetchedDataProps> = ({
                       {driveData?.credentialSubject?.portfolio?.map(
                         (porto: { url: any; name: any }) => (
                           <li key={porto.url}>
-                            <Link href={porto.url}>{porto.name}</Link>
+                            <Link href={porto.url} target='_blank'>
+                              {porto.name}
+                            </Link>
                           </li>
                         )
                       )}

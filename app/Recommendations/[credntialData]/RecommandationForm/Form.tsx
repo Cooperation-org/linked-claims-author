@@ -22,8 +22,7 @@ const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [fullName, setFullName] = useState('')
   const [fileID, setFileID] = useState('')
-  const [gapiReady, setGapiReady] = useState(false)
-  const { session } = useGoogleSignIn()
+  const { data: session } = useSession()
   const accessToken = session?.accessToken
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
@@ -32,10 +31,7 @@ const Form = () => {
     recommendationText: '',
     portfolio: [{ name: '', url: '' }],
     qualifications: '',
-    communicationRating: 0,
-    dependabilityRating: 0,
-    explainAnswer: '',
-    isRecommand: 'yes'
+    explainAnswer: ''
   })
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
 
@@ -74,6 +70,7 @@ const Form = () => {
 
   const storage = new GoogleDriveStorage(accessToken as string)
   const saveAndAddcomment = async () => {
+
     try {
       if (!accessToken) {
         throw new Error('No access token provided.')
@@ -130,10 +127,7 @@ const Form = () => {
       recommendationText: '',
       portfolio: [{ name: '', url: '' }],
       qualifications: '',
-      communicationRating: 0,
-      dependabilityRating: 0,
-      explainAnswer: '',
-      isRecommand: 'yes'
+      explainAnswer: ''
     })
     setActiveStep(6)
   })
@@ -174,6 +168,7 @@ const Form = () => {
                 watch={watch}
                 errors={errors}
                 handleTextEditorChange={value => setValue('howKnow', value ?? '')}
+                fullName={fullName}
               />
             )}
             {activeStep === 3 && (
@@ -190,10 +185,16 @@ const Form = () => {
                 }
                 handleNext={handleNext}
                 handleBack={handleBack}
+                fullName={fullName}
               />
             )}
             {activeStep === 4 && (
-              <Step4 watch={watch} setValue={setValue} errors={errors} />
+              <Step4
+                watch={watch}
+                setValue={setValue}
+                errors={errors}
+                fullName={fullName}
+              />
             )}
             {activeStep === 5 && (
               <DataPreview

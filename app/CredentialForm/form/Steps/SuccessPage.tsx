@@ -35,6 +35,8 @@ import {
   successPageTextFieldStyles
 } from '../../../components/Styles/appStyles'
 import { options } from './Step0'
+import { useStepContext } from '../StepContext'
+import Image from 'next/image'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
@@ -46,13 +48,13 @@ interface SuccessPageProps {
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
-  setActiveStep,
   formData,
   reset,
   link,
   setLink,
   storageOption
 }) => {
+  const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const theme = useTheme()
   const encodedLink = encodeURIComponent(link)
@@ -124,7 +126,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                 height: '100px'
               }}
             >
-              <img
+              {/* <Image
                 style={{
                   borderRadius: '20px 0px 0px 20px',
                   width: '100px',
@@ -132,7 +134,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                 }}
                 src={formData?.evidenceLink ?? 'not Valid image'}
                 alt='logo'
-              />
+              /> */}
             </Box>
             <Box sx={{ flex: 1 }}>
               <Typography sx={successPageTitleStyles}>
@@ -177,6 +179,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         {storageOption !== options.Device && (
           <Link href={`/AskForRecommendation/${encodedLink}`}>
             <Button
+              onClick={() => {
+                setActiveStep(0)
+              }}
               variant='contained'
               sx={{
                 borderRadius: '100px',

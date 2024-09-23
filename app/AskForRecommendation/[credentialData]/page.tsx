@@ -42,9 +42,10 @@ export default function HorizontalLinearStepper() {
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const [driveData, setDriveData] = React.useState<any>(null)
   const { data: session } = useSession()
+  const accessToken = session?.accessToken
   const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
   const params = useParams()
-  const { fetchFileContent, fileContent, gapiLoaded } = useGoogleDrive()
+  const { fetchFileContent, fileContent } = useGoogleDrive()
   const imageLink =
     'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg'
 
@@ -53,13 +54,11 @@ export default function HorizontalLinearStepper() {
       const decodedLink = decodeURIComponent(params.credentialData as any)
       const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
       const resourceKey = ''
-      if (gapiLoaded) {
-        await fetchFileContent(fileId, resourceKey)
-      }
+      await fetchFileContent(fileId, resourceKey, accessToken)
     }
 
     fetchDriveData()
-  }, [gapiLoaded, fetchFileContent, params.credentialData])
+  }, [accessToken, fetchFileContent, params.credentialData])
 
   const {
     reset,
@@ -72,11 +71,10 @@ export default function HorizontalLinearStepper() {
       secondName: '',
       email: '',
       reference: `Hey there! I hope you’re doing well. 
-      
-    I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-      driveData?.credentialSubject?.achievement[0]?.name || ''
-    }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!             
-    `
+            
+            I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
+              driveData?.credentialSubject?.achievement[0]?.name || ''
+            }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
     },
     mode: 'onChange'
   })
@@ -100,18 +98,23 @@ export default function HorizontalLinearStepper() {
     setSendCopyToSelf(event.target.checked)
   }
 
-  const mailToLink = `mailto:${encodeURIComponent(watch('email'))}${
-    sendCopyToSelf && session?.user?.email
-      ? `,${encodeURIComponent(session.user.email)}`
-      : ''
-  }?subject=${encodeURIComponent(
-    `Support Request: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
-  )}&body=${encodeURIComponent(watch('reference'))}`
+  const mailToLink = `mailto:${watch('email')}${
+    sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
+  }?subject=${`Support Request: ${
+    driveData?.credentialSubject?.achievement[0]?.name || ''
+  }`}&body=${encodeURIComponent(
+    watch('reference')
+  )}, Credential Public Link: https://linked-claims-author.vercel.app/Recommendations/${encodeURIComponent(
+    `${params.credentialData}`
+  )}`
 
   return (
     <Box
       sx={{
-        minHeight: 'calc(100vh - 190px)',
+        minHeight: {
+          xs: 'calc(100vh - 190px)',
+          md: 'calc(100vh - 381px)'
+        },
         overflow: 'auto',
         mb: '30px'
       }}

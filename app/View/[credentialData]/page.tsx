@@ -15,12 +15,14 @@ import {
 } from '../../components/Styles/appStyles'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import theme from '../../theme'
+import { useSession } from 'next-auth/react'
 
 const Page = () => {
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
-  console.log(':  page  params', params)
-  const { fetchFileContent, fileContent, gapiLoaded, fileMetadata } = useGoogleDrive()
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
+  const { fetchFileContent, fileContent, fileMetadata } = useGoogleDrive()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
 
   useEffect(() => {
@@ -28,26 +30,26 @@ const Page = () => {
       const decodedLink = decodeURIComponent(params.credentialData as any)
       const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
       const resourceKey = ''
-      if (gapiLoaded) {
-        await fetchFileContent(fileId, resourceKey)
-      }
+      await fetchFileContent(fileId, resourceKey, accessToken)
     }
 
     fetchDriveData()
-  }, [gapiLoaded])
+  })
 
   useEffect(() => {
     if (fileContent) {
       const parsedData = JSON.parse(fileContent)
       console.log(':  useEffect  parsedData', parsedData)
       setDriveData(parsedData)
-      localStorage.setItem('parsedData', JSON.stringify(parsedData))
     }
   }, [fileContent])
   return (
     <Box
       sx={{
-        minHeight: 'calc(100vh - 190px)',
+        minHeight: {
+          xs: 'calc(100vh - 190px)',
+          md: 'calc(100vh - 381px)'
+        },
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -147,7 +149,9 @@ const Page = () => {
                   {driveData?.credentialSubject?.portfolio?.map(
                     (porto: { url: any; name: any }) => (
                       <li key={porto.url}>
-                        <Link href={porto.url}>{porto.name}</Link>
+                        <Link href={porto.url} target='_blank'>
+                          {porto.name}
+                        </Link>
                       </li>
                     )
                   )}

@@ -77,7 +77,7 @@ export function Step2({
 
       <Box>
         <FormLabel sx={formLabelStyles} id='duration-label'>
-          Duration
+          Time it took to acquire this skill
         </FormLabel>
         <TextField
           {...register('credentialDuration')}

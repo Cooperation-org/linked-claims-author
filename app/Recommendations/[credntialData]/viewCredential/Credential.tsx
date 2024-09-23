@@ -10,9 +10,10 @@ import { featuresRecommentations } from '../RecommandationForm/fromTexts/FormTex
 import FetchedData from './FetchedData'
 import DeclineRequest from '../DeclineRequest/DeclineRequest'
 
-const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) => {
+const Credential = ({ setactivStep }: { setactivStep: any }) => {
   const theme = useTheme()
-  const [fullName, setFullName] = useState('Golda')
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
   const [showDeclineRequest, setShowDeclineRequest] = useState(false)
 
   const handleClick = () => {
@@ -28,7 +29,7 @@ const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) =
   }
 
   if (showDeclineRequest) {
-    return <DeclineRequest credentialData={fullName} handleBack={handleBack} />
+    return <DeclineRequest fullName={fullName} email={email} handleBack={handleBack} />
   }
 
   return (
@@ -123,7 +124,7 @@ const Credential = ({ setactivStep }: { setactivStep: any; setFullName: any }) =
           </Box>
         ))}
       </Box>
-      <FetchedData setFullName={setFullName} />
+      <FetchedData setFullName={setFullName} setEmail={setEmail} />
     </Box>
   )
 }

@@ -18,12 +18,15 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   const { activeStep, setActiveStep } = useStepContext()
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  const [fullName, setFullName] = useState('Golda')
+  const [fullName, setFullName] = useState('')
 
   return (
     <Box
       sx={{
-        minHeight: 'calc(100vh - 190px)',
+        minHeight: {
+          xs: 'calc(100vh - 190px)',
+          md: 'calc(100vh - 381px)'
+        },
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -62,9 +65,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
         </Box>
       </Box>
       <Box sx={{ height: '100%' }}>
-        {activeStep === 0 && (
-          <Credential setactivStep={setActiveStep} setFullName={setFullName} />
-        )}
+        {activeStep === 0 && <Credential setactivStep={setActiveStep} />}
         {activeStep !== 0 && (
           <>
             <FormTextSteps

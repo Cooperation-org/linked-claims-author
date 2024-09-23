@@ -23,7 +23,7 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
       authorization: {
         params: {
-          scope: 'openid email profile https://www.googleapis.com/auth/drive.file',
+          scope: 'openid email profile https://www.googleapis.com/auth/drive',
           access_type: 'offline' // Add this line
         }
       }
@@ -34,8 +34,8 @@ const handler = NextAuth({
       if (account) {
         token.accessToken = account.access_token
         token.refreshToken = account.refresh_token // Ensure refresh token is included
-        token.expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 2 // Access token expires in 2 days
-        token.refreshTokenExpires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 // Refresh token expires in 7 days
+        token.expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24  // Access token expires in 1 days
+        token.refreshTokenExpires = Math.floor(Date.now() / 1000) + 60 * 60 * 24  // Refresh token expires in 1 days
       }
       return token
     },
@@ -49,7 +49,8 @@ const handler = NextAuth({
   },
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60 * 24 * 7 // 7 days
+    maxAge: 60 * 60 * 24 * 2, // 2 days
+    updateAge: 60 * 60 * 24, // try one day
   }
 })
 

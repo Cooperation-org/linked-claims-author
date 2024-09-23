@@ -38,11 +38,15 @@ export function Step4({
   remove
 }: Readonly<Step4Props>) {
   const theme = useTheme<Theme>()
-  const [urlError, setUrlError] = useState<string | null>(null)
+  const [urlError, setUrlError] = useState<string[]>([])
 
-  const handleUrlChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleUrlValidation(event, setUrlError)
+  const handleUrlChange = async (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    index: number
+  ) => {
+    handleUrlValidation(event, setUrlError, index, urlError)
   }
+
   return (
     <Box>
       {fields.map((field, index) => (
@@ -84,8 +88,8 @@ export function Step4({
               sx={TextFieldStyles}
               aria-labelledby={`url-label-${index}`}
               error={!!errors?.portfolio?.[index]?.url}
-              onChange={handleUrlChange}
-              helperText={urlError}
+              onChange={event => handleUrlChange(event, index)}
+              helperText={urlError[index]}
             />
           </Box>
           <Box

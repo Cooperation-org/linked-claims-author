@@ -3,6 +3,7 @@ import {
   CredentialEngine,
   GoogleDriveStorage
 } from '@cooperation/vc-storage'
+import { FormData } from '../CredentialForm/form/types/Types'
 
 interface FormDataI {
   expirationDate: string
@@ -79,20 +80,26 @@ const signCred = async (
   }
 }
 
-export const generateCredentialData = (data: any): FormDataI => {
+export const generateCredentialData = (data: FormData): FormDataI => {
   return {
     expirationDate: new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
     ).toISOString(),
-    fullName: data.fullName,
-    duration: data.credentialDuration,
-    criteriaNarrative: data.credentialDescription,
-    achievementDescription: data.credentialDescription,
-    achievementName: data.credentialName,
-    portfolio: data.portfolio,
-    evidenceLink: data.evidenceLink,
-    evidenceDescription: data.description,
-    credentialType: data.persons
+    fullName: data.fullName || '',
+    duration: data.credentialDuration || '',
+    criteriaNarrative: data.credentialDescription || '',
+    achievementDescription:
+      typeof data.description === 'string'
+        ? data.description
+        : String(data.description || ''),
+    achievementName: data.credentialName || '',
+    portfolio:
+      data.portfolio && data.portfolio.length > 0
+        ? data.portfolio
+        : [{ name: '', url: '' }],
+    evidenceLink: data.evidenceLink || '',
+    evidenceDescription: data.evidenceDescription || '',
+    credentialType: data.persons || ''
   }
 }
 
