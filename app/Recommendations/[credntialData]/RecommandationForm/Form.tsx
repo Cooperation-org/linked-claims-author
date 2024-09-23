@@ -110,7 +110,7 @@ const Form = () => {
       console.log('🚀 ~ savedRecommendation:', savedRecommendation)
 
       // Step 5: Add a comment to a specific file in Google Drive
-      const rec = await storage.addCommentToFile(fileID, 'Test Comment')
+      const rec = await storage.addCommentToFile(fileID)
 
       return signedCred // Return the signed credential as a result
     } catch (error: any) {
