@@ -14,9 +14,9 @@ import useLocalStorage from '../../../hooks/useLocalStorage'
 import FetchedData from '../viewCredential/FetchedData'
 import { useStepContext } from '../../../CredentialForm/form/StepContext'
 import { handleSign } from '../../../utils/formUtils'
-import { useGoogleSignIn } from '../../../components/signing/useGoogleSignIn'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID, signCred } from '../../../utils/signCred'
+import { useSession } from 'next-auth/react'
 
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
@@ -102,12 +102,12 @@ const Form = () => {
       const savedRecommendation = await saveToGoogleDrive(
         storage,
         signedCred,
-        'RECOMMENDATION'
+        'SESSION'
       )
       console.log('🚀 ~ savedRecommendation:', savedRecommendation)
 
       // Step 5: Add a comment to a specific file in Google Drive
-      const rec = await storage.addCommentToFile(fileID)
+      // const rec = await storage.addCommentToFile(fileID)
 
       return signedCred // Return the signed credential as a result
     } catch (error: any) {
