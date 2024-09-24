@@ -149,12 +149,9 @@ export const radioGroupStyles = {
   flexDirection: 'column',
   gap: '15px',
   m: '0 auto',
-  width: {
-    xs: '100%',
-    md: '50%'
-  },
+  width: '100%',
   pl: '10px',
-  // minWidth: '355px',  // will change later
+  maxWidth: '355px',
   alignItems: 'center'
 }
 
