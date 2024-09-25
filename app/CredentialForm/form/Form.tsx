@@ -188,7 +188,7 @@ const Form = ({ onStepChange }: any) => {
       )
 
       const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
-      const file = await saveToGoogleDrive(storage, res, 'VC')
+      const file = (await saveToGoogleDrive(storage, res, 'VC')) as any
       setLink(`https://drive.google.com/file/d/${file.id}/view`)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
