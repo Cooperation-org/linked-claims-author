@@ -142,34 +142,6 @@ const Form = ({ onStepChange }: any) => {
     }
   }
 
-  const setPermissionsWithAPI = async (fileId: string) => {
-    const endpoint = `https://www.googleapis.com/drive/v3/files/${fileId}/permissions`;
-    const params = {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        role: 'reader',
-        type: 'anyone'
-      })
-    };
-    try {
-      const response = await fetch(endpoint, params);
-      const data = await response.json();
-      console.log(":  setPermissionsWithAPI  data", data)
-      if (response.ok) {
-        console.log('Permission successfully set', data);
-      } else {
-        throw new Error(data.error.message);
-      }
-    } catch (error: any) {
-      console.error('Failed to set permissions:', error);
-      setErrorMessage(`Failed to set permissions: ${error.message}`);
-    }
-  };
-
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
       if (
@@ -215,14 +187,9 @@ const Form = ({ onStepChange }: any) => {
         'DID'
       )
 
-      if (!saveResponse || !saveResponse.id) {
-        throw new Error('Failed to save file to Google Drive')
-      }
-
-      const res = await signCred(accessToken, data, issuerId, keyPair)
-      console.log(":  sign  res", res.id)
-      setPermissionsWithAPI(res.id)
-      setLink(`https://drive.google.com/file/d/${res.id}/view`)
+      const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
+      const file = (await saveToGoogleDrive(storage, res, 'VC')) as any
+      setLink(`https://drive.google.com/file/d/${file.id}/view`)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res

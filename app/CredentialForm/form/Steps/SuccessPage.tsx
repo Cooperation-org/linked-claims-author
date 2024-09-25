@@ -190,6 +190,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                 fontFamily: 'Roboto, sans-serif',
                 boxShadow: '0px 0px 2px 2px #F7BC00'
               }}
+              disabled={!link}
             >
               <Typography>Ask for a Recommendation</Typography>
             </Button>

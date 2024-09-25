@@ -14,7 +14,9 @@ import useLocalStorage from '../../../hooks/useLocalStorage'
 import FetchedData from '../viewCredential/FetchedData'
 import { useStepContext } from '../../../CredentialForm/form/StepContext'
 import { handleSign } from '../../../utils/formUtils'
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
+import { createDID, signCred } from '../../../utils/signCred'
+import { useSession } from 'next-auth/react'
 
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
@@ -66,52 +68,52 @@ const Form = () => {
     console.log('Active Step:', activeStep)
   }, [activeStep])
 
-  // Function to add a comment to a Google Drive file
-  async function addCommentToFile(
-    fileId: string,
-    commentText: string,
-    accessToken: string
-  ) {
-    console.log(': addCommentToFile fileId', fileId)
-    if (!fileId || !commentText || !accessToken) {
-      console.error('Missing required parameters: fileId, commentText, or accessToken')
-      return
-    }
-
-    const url = `https://www.googleapis.com/drive/v3/files/${fileId}/comments?fields=id,content,createdTime`
-
-    const body = {
-      content: commentText
-    }
-
+  const storage = new GoogleDriveStorage(accessToken as string)
+  const saveAndAddcomment = async () => {
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      })
-
-      if (!response.ok) {
-        const errorDetails = await response.json()
-        console.error('Error adding comment:', errorDetails)
-        throw new Error(`Failed to add comment: ${response.statusText}`)
+      if (!accessToken) {
+        throw new Error('No access token provided.')
       }
+      // Step 1: Create DID
+      const newDid = await createDID()
+      const { didDocument, keyPair, issuerId } = newDid
 
-      const result = await response.json()
-      console.log('Comment added successfully:', result)
-      return result
-    } catch (error) {
-      console.error('Error adding comment:', error)
+      // Save the DID document and keyPair to Google Drive
+      await saveToGoogleDrive(
+        storage,
+        {
+          didDocument,
+          keyPair
+        },
+        'DID'
+      )
+
+      // Step 3: Sign the credential (recommendation)
+      const signedCred = await signCred(
+        accessToken,
+        formData,
+        issuerId,
+        keyPair,
+        'RECOMMENDATION'
+      )
+
+      // Step 4: Save the signed recommendation to Google Drive
+      const savedRecommendation = await saveToGoogleDrive(storage, signedCred, 'SESSION')
+      console.log('🚀 ~ savedRecommendation:', savedRecommendation)
+
+      // Step 5: Add a comment to a specific file in Google Drive
+      const rec = await storage.addCommentToFile(fileID)
+      console.log(rec)
+      return signedCred // Return the signed credential as a result
+    } catch (error: any) {
+      console.error('Error during signing process:', error.message)
       throw error
     }
   }
 
-  const handleFormSubmit = handleSubmit((data: FormData) => {
+  const handleFormSubmit = handleSubmit(async (data: FormData) => {
     setSubmittedFullName(data.fullName)
-    addCommentToFile(fileID, JSON.stringify(data), accessToken as any)
+    await saveAndAddcomment()
     clearValue()
     reset({
       storageOption: 'Google Drive',

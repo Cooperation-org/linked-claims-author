@@ -15,8 +15,7 @@ export async function signAndSaveOnDevice(data: any) {
   const credentialEngine = new CredentialEngine()
   const { didDocument, keyPair } = newDid
 
-  const unsignedVC = await credentialEngine.createUnsignedVC(formData, didDocument.id)
-  const signedVC = await credentialEngine.signVC(unsignedVC, keyPair)
+  const signedVC = await credentialEngine.signVC(formData, 'VC', keyPair, didDocument.id)
 
   const jsonString = JSON.stringify(signedVC, null, 2)
 
