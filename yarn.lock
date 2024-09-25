@@ -128,14 +128,15 @@
     "@babel/helper-validator-identifier" "^7.24.7"
     to-fast-properties "^2.0.0"
 
-"@cooperation/vc-storage@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@cooperation/vc-storage/-/vc-storage-1.0.1.tgz"
-  integrity sha512-q/C/2FJQP5UyarKDB5nhJrkOAflzPniQ5+eiUJ+/zn7Azy94wYgoOcZnmIONUFcpSP0Fds7R8CNoKEpTwIWI5A==
+"@cooperation/vc-storage@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@cooperation/vc-storage/-/vc-storage-1.0.2.tgz#b9b57b5587a39dd74343b1baeb58f1513e5be547"
+  integrity sha512-Y4clk0+umkFJnfpAYdC3qTKxmKqfbmmAYABnPedYAVhMD0zsmErLEp7GslUiSEd1ZOcqBLwp85LTZoo2YtppPQ==
   dependencies:
     "@digitalbazaar/ed25519-signature-2020" "^5.3.0"
     "@digitalbazaar/ed25519-verification-key-2020" "^4.1.0"
     "@digitalbazaar/vc" "^6.3.0"
+    "@types/uuid" "^10.0.0"
     ethers "^6.13.2"
     tsc "^2.0.4"
     uuid "^10.0.0"
@@ -725,6 +726,11 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
+
+"@types/uuid@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-10.0.0.tgz#e9c07fe50da0f53dc24970cca94d619ff03f6f6d"
+  integrity sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==
 
 "@typescript-eslint/parser@^5.4.2 || ^6.0.0":
   version "6.21.0"
