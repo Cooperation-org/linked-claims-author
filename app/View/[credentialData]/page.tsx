@@ -4,7 +4,7 @@ import React from 'react'
 import { Box, Typography, useMediaQuery } from '@mui/material'
 import Image from 'next/image'
 import theme from '../../theme'
-import ComprehensiveClaimDetails from '../../test/[credntialData]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../test/[credentialData]/ComprehensiveClaimDetails'
 import fram from '../../Assets/Images/Frame 35278.png'
 import vector from '../../Assets/Images/Vector 145.png'
 import { useParams } from 'next/navigation'
@@ -16,6 +16,8 @@ const Page: React.FC = () => {
   const credentialData = Array.isArray(params?.credentialData)
     ? params.credentialData[0]
     : params?.credentialData
+  console.log('credentialData in ClaimPage:', credentialData)
+
   // console.log('Params:', params)
   // console.log('credentialData in Page.tsx:', credentialData)
 
@@ -51,7 +53,15 @@ const Page: React.FC = () => {
         pt: '50px'
       }}
     >
-      <ComprehensiveClaimDetails params={{ credntialData: credentialData }} />
+      <ComprehensiveClaimDetails
+        params={{
+          credentialData
+        }}
+        setFullName={() => {}}
+        setEmail={() => {}}
+        setFileID={() => {}}
+        claimId={''}
+      />
 
       {/* Footer section only for small screens */}
       {!isLargeScreen && (

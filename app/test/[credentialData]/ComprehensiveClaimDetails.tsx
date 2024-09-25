@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { Box, CircularProgress, Typography, useMediaQuery } from '@mui/material'
+import React, { useEffect, useState, useMemo } from 'react'
+import { Box, CircularProgress, Typography, useMediaQuery, Button } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -38,12 +38,20 @@ interface ClaimDetail {
 
 interface ComprehensiveClaimDetailsProps {
   params: {
-    credntialData: string
+    credentialData: string
   }
+  setFullName: (name: string) => void
+  setEmail?: (email: string) => void
+  setFileID?: (fileId: string) => void
+  claimId: string
 }
 
 const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
-  params
+  params,
+  setFullName,
+  setEmail = () => {},
+  setFileID = () => {},
+  claimId
 }) => {
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
@@ -62,78 +70,100 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     fileMetadata,
     ownerEmail: fetchedOwnerEmail
   } = useGoogleDrive()
-  // console.log('Received params in ComprehensiveClaimDetails:', params)
-  // console.log('Decoded credntialData:', decodeURIComponent(params.credntialData))
 
+  // Decode and extract fileId once using useMemo
+  const decodedcredentialData = useMemo(
+    () => decodeURIComponent(params.credentialData),
+    [params.credentialData]
+  )
+  const fileId = useMemo(
+    () => decodedcredentialData.split('/d/')[1]?.split('/')[0],
+    [decodedcredentialData]
+  )
+
+  // Validate fileId and set error if invalid
+  useEffect(() => {
+    if (!fileId) {
+      setErrorMessage('Invalid claim ID.')
+      setLoading(false)
+    }
+  }, [fileId])
+
+  // Fetch Drive Data
   useEffect(() => {
     const fetchDriveData = async () => {
-      if (!accessToken) {
-        setErrorMessage('Please sign in to view your claim details.')
-        setLoading(false)
-        return
-      }
+      if (!accessToken || !fileId) return
 
       try {
-        const decodedLink = decodeURIComponent(params.credntialData)
-        const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
-        // console.log('Decoded Link:', decodedLink)
-        // console.log('Extracted fileId:', fileId)
+        setFileID(fileId)
 
-        if (!fileId) {
-          setErrorMessage('Invalid claim ID.')
-          setLoading(false)
-          return
-        }
-
+        // Check local cache
         const cachedContent = localStorage.getItem(`fileContent_${fileId}`)
         const cachedMetadata = localStorage.getItem(`fileMetadata_${fileId}`)
 
         if (cachedContent) {
-          setClaimDetail(JSON.parse(cachedContent) as ClaimDetail)
-          setLoading(false)
+          const parsedData = JSON.parse(cachedContent) as ClaimDetail
+          setClaimDetail(parsedData)
+          setFullName(parsedData.credentialSubject?.name)
         } else {
           await fetchFileContent(fileId, accessToken)
         }
 
         if (cachedMetadata) {
-          setOwnerEmail(JSON.parse(cachedMetadata)?.owners[0]?.emailAddress)
+          const metadataOwnerEmail = JSON.parse(cachedMetadata)?.owners[0]?.emailAddress
+          setOwnerEmail(metadataOwnerEmail)
+          setEmail(metadataOwnerEmail)
         } else {
           await fetchFileMetadata(fileId, '')
         }
       } catch (error) {
         console.error('Error fetching claim details:', error)
         setErrorMessage('Failed to fetch claim details.')
+      } finally {
         setLoading(false)
       }
     }
 
-    if (accessToken && params?.credntialData) {
+    if (accessToken && fileId) {
       fetchDriveData()
     }
-  }, [accessToken, fetchFileContent, fetchFileMetadata, params])
+  }, [
+    accessToken,
+    fetchFileContent,
+    fetchFileMetadata,
+    fileId,
+    setFullName,
+    setEmail,
+    setFileID
+  ])
 
+  // Update claim detail from fetched content
   useEffect(() => {
     if (fileContent) {
-      const parsedData = JSON.parse(fileContent)
-      // console.log('Parsed fileContent:', parsedData)
-      setClaimDetail(parsedData as ClaimDetail)
-      setLoading(false)
-
-      const decodedLink = decodeURIComponent(params.credntialData)
-      const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
+      const parsedData = JSON.parse(fileContent) as ClaimDetail
+      setClaimDetail(parsedData)
+      setFullName(parsedData.credentialSubject?.name)
       localStorage.setItem(`fileContent_${fileId}`, fileContent)
     }
 
     if (fetchedOwnerEmail) {
-      // console.log('Fetched owner email:', fetchedOwnerEmail)
       setOwnerEmail(fetchedOwnerEmail)
-
-      const decodedLink = decodeURIComponent(params.credntialData)
-      const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
+      setEmail(fetchedOwnerEmail)
       const metadata = { owners: [{ emailAddress: fetchedOwnerEmail }] }
       localStorage.setItem(`fileMetadata_${fileId}`, JSON.stringify(metadata))
     }
-  }, [fileContent, fetchedOwnerEmail])
+  }, [fileContent, fetchedOwnerEmail, setFullName, setEmail, fileId])
+
+  // Utility function to clean HTML content
+  const cleanHTML = (htmlContent: string) => {
+    return htmlContent
+      .replace(/<p><br><\/p>/g, '')
+      .replace(/<p><\/p>/g, '')
+      .replace(/<br>/g, '')
+      .replace(/class="[^"]*"/g, '')
+      .replace(/style="[^"]*"/g, '')
+      .replace(/<\/?[^>]+>/g, '')
+  }
 
   if (loading) {
     return (
@@ -194,31 +224,18 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       >
         <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
           <SVGBadge />
-          <Typography
-            sx={{
-              color: 't3BodyText',
-              fontSize: '24px',
-              fontWeight: 700,
-              fontStyle: 'normal'
-            }}
-          >
+          <Typography sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700 }}>
             {credentialSubject.name || fileMetadata?.name} has claimed:
           </Typography>
         </Box>
         <Typography
-          sx={{
-            color: 't3BodyText',
-            fontSize: '24px',
-            fontWeight: 700,
-            fontStyle: 'normal',
-            mt: 2
-          }}
+          sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700, mt: 2 }}
         >
           {achievement?.name || 'Unnamed Achievement'}
         </Typography>
       </Box>
 
-      {/* Credential Duration */}
+      {/* Display Achievement Duration */}
       {credentialSubject.duration && (
         <Box
           sx={{
@@ -242,20 +259,20 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Box>
       )}
 
-      {/* Display Image */}
+      {/* Display Achievement Image */}
       {achievement?.image?.id && (
         <Box
           sx={{
             display: 'flex',
             flexDirection: isLargeScreen ? 'row' : 'column',
-            gap: isLargeScreen ? '20px' : '10px',
+            gap: '20px',
             my: '10px'
           }}
         >
           <img
             style={{
               borderRadius: '20px',
-              width: !isLargeScreen ? '100%' : '179px',
+              width: isLargeScreen ? '179px' : '100%',
               height: '100%'
             }}
             src={achievement.image.id}
@@ -264,7 +281,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Box>
       )}
 
-      {/* Achievement Description */}
+      {/* Display Achievement Description */}
       {achievement?.description && (
         <Typography
           sx={{
@@ -275,21 +292,21 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
             mt: 2
           }}
         >
-          {achievement.description.replace(/<\/?[^>]+>/gi, '')}
+          {cleanHTML(achievement.description)}
         </Typography>
       )}
 
-      {/* Achievement Criteria */}
+      {/* Display Criteria for Achievement */}
       {achievement?.criteria?.narrative && (
         <Box sx={{ mt: 2 }}>
           <Typography>Earning criteria:</Typography>
           <ul style={{ marginLeft: '25px' }}>
-            <li>{achievement.criteria.narrative.replace(/<\/?[^>]+>/gi, '')}</li>
+            <li>{cleanHTML(achievement.criteria.narrative)}</li>
           </ul>
         </Box>
       )}
 
-      {/* Portfolio Evidence */}
+      {/* Display Supporting Evidence */}
       {hasValidEvidence && (
         <Box sx={{ mt: 3 }}>
           <Typography sx={{ fontWeight: 600 }}>
@@ -303,13 +320,13 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
               backgroundColor: '#FFFFFF'
             }}
           >
-            {credentialSubject.portfolio.map(porto => (
+            {credentialSubject.portfolio.map(portfolioItem => (
               <li
-                key={porto.url}
+                key={portfolioItem.url}
                 style={{ cursor: 'pointer', width: 'fit-content', marginBottom: '10px' }}
               >
-                <Link href={porto.url} target='_blank' rel='noopener noreferrer'>
-                  {porto.name}
+                <Link href={portfolioItem.url} target='_blank' rel='noopener noreferrer'>
+                  {portfolioItem.name}
                 </Link>
               </li>
             ))}
@@ -317,57 +334,71 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Box>
       )}
 
-      {/* Display the owner email if available */}
+      {/* Display Owner Email if available */}
       {ownerEmail && (
         <Box sx={{ mt: 2 }}>
           <Typography variant='body2'>Owner Email: {ownerEmail}</Typography>
         </Box>
       )}
-      {/* Additional Credential Details displayed only on the /View route */}
+
+      {/* Conditional Rendering for View and Recommendation Buttons */}
+      {pathname?.includes('/claims') && (
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+          <Link
+            href={`/View/${encodeURIComponent(
+              `https://drive.google.com/file/d/${claimId}/view`
+            )}`}
+          >
+            <Button
+              variant='contained'
+              sx={{
+                backgroundColor: '#003FE0',
+                textTransform: 'none',
+                borderRadius: '100px'
+              }}
+            >
+              View Credential
+            </Button>
+          </Link>
+          <Link
+            href={`/AskForRecommendation/${encodeURIComponent(
+              `https://drive.google.com/file/d/${claimId}/view`
+            )}`}
+          >
+            <Button
+              variant='contained'
+              sx={{
+                backgroundColor: '#003FE0',
+                textTransform: 'none',
+                borderRadius: '100px'
+              }}
+            >
+              Ask for Recommendation
+            </Button>
+          </Link>
+        </Box>
+      )}
+
+      {/* Display Additional Credential Details if on /View route */}
       {pathname?.includes('/View') && (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px', mt: '20px' }}>
-          <Typography
-            sx={{
-              fontSize: '13px',
-              fontWeight: 700,
-              color: '#000E40',
-              fontFamily: 'Arial'
-            }}
-          >
+          <Typography sx={{ fontSize: '13px', fontWeight: 700, color: '#000E40' }}>
             Credential Details
           </Typography>
           <Box sx={{ display: 'flex', gap: '5px', mt: '10px', alignItems: 'center' }}>
-            <Box
-              sx={{
-                borderRadius: '4px',
-                bgcolor: '#C2F1BE',
-                p: '4px'
-              }}
-            >
+            <Box sx={{ borderRadius: '4px', bgcolor: '#C2F1BE', p: '4px' }}>
               <CheckMarkSVG />
             </Box>
             <Typography>Has a valid digital signature</Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-            <Box
-              sx={{
-                borderRadius: '4px',
-                bgcolor: '#C2F1BE',
-                p: '4px'
-              }}
-            >
+            <Box sx={{ borderRadius: '4px', bgcolor: '#C2F1BE', p: '4px' }}>
               <CheckMarkSVG />
             </Box>
             <Typography>Has not expired</Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-            <Box
-              sx={{
-                borderRadius: '4px',
-                bgcolor: '#C2F1BE',
-                p: '4px'
-              }}
-            >
+            <Box sx={{ borderRadius: '4px', bgcolor: '#C2F1BE', p: '4px' }}>
               <CheckMarkSVG />
             </Box>
             <Typography>Has not been revoked by issuer</Typography>

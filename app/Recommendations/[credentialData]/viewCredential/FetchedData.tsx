@@ -35,7 +35,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
 
   useEffect(() => {
     const fetchDriveData = async () => {
-      const decodedLink = decodeURIComponent(params.credntialData as any)
+      const decodedLink = decodeURIComponent(params.credentialData as any)
       const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
       const resourceKey = ''
       await fetchFileContent(fileId, accessToken)
