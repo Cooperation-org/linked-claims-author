@@ -70,7 +70,6 @@ const Form = () => {
 
   const storage = new GoogleDriveStorage(accessToken as string)
   const saveAndAddcomment = async () => {
-
     try {
       if (!accessToken) {
         throw new Error('No access token provided.')
@@ -99,16 +98,12 @@ const Form = () => {
       )
 
       // Step 4: Save the signed recommendation to Google Drive
-      const savedRecommendation = await saveToGoogleDrive(
-        storage,
-        signedCred,
-        'SESSION'
-      )
+      const savedRecommendation = await saveToGoogleDrive(storage, signedCred, 'SESSION')
       console.log('🚀 ~ savedRecommendation:', savedRecommendation)
 
       // Step 5: Add a comment to a specific file in Google Drive
-      // const rec = await storage.addCommentToFile(fileID)
-
+      const rec = await storage.addCommentToFile(fileID)
+      console.log(rec)
       return signedCred // Return the signed credential as a result
     } catch (error: any) {
       console.error('Error during signing process:', error.message)

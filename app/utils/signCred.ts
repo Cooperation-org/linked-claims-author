@@ -1,8 +1,4 @@
-import {
-  saveToGoogleDrive,
-  CredentialEngine,
-  GoogleDriveStorage
-} from '@cooperation/vc-storage'
+import { CredentialEngine } from '@cooperation/vc-storage'
 import { FormData } from '../CredentialForm/form/types/Types'
 
 interface FormDataI {
@@ -51,28 +47,23 @@ const signCred = async (
   if (!accessToken) {
     throw new Error('Access token is not provided')
   }
-  console.log('🚀 ~ data:', data)
   let formData: FormDataI | RecommendationI
+  let signedVC
   try {
     const credentialEngine = new CredentialEngine()
-    const storage = new GoogleDriveStorage(accessToken)
-    let unsignedVC
     if (type === 'RECOMMENDATION') {
       formData = genearteRecommendtionData(data)
-      unsignedVC = await credentialEngine.createUnsignedRecommendation(
+      signedVC = await credentialEngine.signVC(
         formData,
+        'RECOMMENDATION',
+        keyPair,
         issuerDid
       )
     } else {
       formData = generateCredentialData(data)
-      unsignedVC = await credentialEngine.createUnsignedVC(formData, issuerDid)
+      signedVC = await credentialEngine.signVC(formData, 'VC', keyPair, issuerDid)
     }
-    await saveToGoogleDrive(storage, unsignedVC, 'UnsignedVC')
-    console.log('Unsigned VC:', unsignedVC)
 
-    const signedVC = await credentialEngine.signVC(unsignedVC, keyPair)
-
-    console.log('Signed ' + type, signedVC)
     return signedVC
   } catch (error) {
     console.error('Error during VC signing:', error)

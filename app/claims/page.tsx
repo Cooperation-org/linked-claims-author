@@ -82,7 +82,7 @@ const ClaimsPage: React.FC = () => {
 
   const getAllClaims = useCallback(async (): Promise<any> => {
     if (!storage) throw new Error('Storage is not initialized')
-    const claimsData = await storage.getAllClaims()
+    const claimsData = await storage.getAllVCs()
     if (!claimsData.files) return []
     const claimsNames: Claim[] = await Promise.all(
       claimsData.files.map(async (claim: any) => {
