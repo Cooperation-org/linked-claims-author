@@ -7,10 +7,10 @@ import fram from '../Assets/Images/Frame 35278.png'
 import vector from '../Assets/Images/Vector 145.png'
 import img3 from '../Assets/Images/Tessa Persona large sceens.png'
 import { SVGLargeScreen } from '../Assets/SVGs'
-import { StepTrackShape } from '../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
+import { StepTrackShape } from './form/fromTexts & stepTrack/StepTrackShape'
 import dynamic from 'next/dynamic'
 
-const DynamicForm = dynamic(() => import('../credentialForm/form/Form'), {
+const DynamicForm = dynamic(() => import('./form/Form'), {
   ssr: false,
   loading: () => <p></p>
 })
