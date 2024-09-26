@@ -7,8 +7,8 @@ import { CssBaseline, ThemeProvider, Box } from '@mui/material'
 import Footer from './components/footer/Footer'
 import Theme from './theme'
 import Head from 'next/head'
-import { StepProvider } from './CredentialForm/form/StepContext'
 import SessionExpiryModel from './components/refreshtokenPopup'
+import { StepProvider } from './credentialForm/form/StepContext'
 
 const inter = Inter({ subsets: ['latin'] })
 

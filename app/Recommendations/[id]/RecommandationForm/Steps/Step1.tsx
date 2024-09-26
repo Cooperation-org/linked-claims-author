@@ -11,7 +11,7 @@ import {
   CardContent
 } from '@mui/material'
 import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
-import { FormData } from '../../../../CredentialForm/form/types/Types'
+import { FormData } from '../../../../credentialForm/form/types/Types'
 import { GoogleDrive, DigitalWallet } from '../../../../Assets/SVGs'
 import {
   radioCheckedStyles,

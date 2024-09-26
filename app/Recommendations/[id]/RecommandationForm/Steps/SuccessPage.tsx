@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import { SVGBadge, CopySVG } from '../../../../Assets/SVGs'
 import { copyFormValuesToClipboard } from '../../../../utils/formUtils'
-import { FormData } from '../../../../CredentialForm/form/types/Types'
+import { FormData } from '../../../../credentialForm/form/types/Types'
 import FetchedData from '../../viewCredential/FetchedData'
 import Link from 'next/link'
 

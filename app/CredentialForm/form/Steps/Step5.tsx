@@ -10,8 +10,7 @@ import {
   skipButtonBoxStyles
 } from '../../../components/Styles/appStyles'
 import { UseFormRegister } from 'react-hook-form'
-import { FormData } from '../types/Types'
-// import { handleUrlValidation } from '../../../utils/urlValidation'
+import { FormData } from '../../../credentialForm/form/types/Types'
 
 interface Step5Props {
   register: UseFormRegister<FormData>

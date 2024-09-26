@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Box } from '@mui/material'
-import { useStepContext } from '../StepContext'
+import { useStepContext } from '../../../credentialForm/form/StepContext'
 
 const TOTAL_STEPS = 8
 

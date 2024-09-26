@@ -27,7 +27,7 @@ import {
 import { useParams } from 'next/navigation'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import { useSession } from 'next-auth/react'
-import { useStepContext } from '../../CredentialForm/form/StepContext'
+import { useStepContext } from '../../credentialForm/form/StepContext'
 
 const steps = ['Message', 'Invite', '']
 
