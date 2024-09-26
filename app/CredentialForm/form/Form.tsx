@@ -4,22 +4,15 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Slide } from '@mui/material'
-import { FormData } from '../../credentialForm/form/types/Types'
-import {
-  textGuid,
-  NoteText,
-  SuccessText,
-  FormTextSteps
-} from '../../credentialForm/form/fromTexts & stepTrack/FormTextSteps'
-import { options, Step0 } from '../../credentialForm/form/Steps/Step0'
-import { Buttons } from '../../credentialForm/form/buttons/Buttons'
-import { Step1 } from '../../credentialForm/form/Steps/Step1'
-import { Step2 } from '../../credentialForm/form/Steps/Step2'
-import { Step3 } from '../../credentialForm/form/Steps/Step3'
-import { Step4 } from '../../credentialForm/form/Steps/Step4'
-import { Step5 } from '../../credentialForm/form/Steps/Step5'
-import DataComponent from '../../credentialForm/form/Steps/dataPreview'
-import SuccessPage from '../../credentialForm/form/Steps/SuccessPage'
+import { FormData } from './types/Types'
+import { options, Step0 } from './Steps/Step0'
+import { Buttons } from './buttons/Buttons'
+import { Step1 } from './Steps/Step1'
+import { Step2 } from './Steps/Step2'
+import { Step3 } from './Steps/Step3'
+import { Step4 } from './Steps/Step4'
+import { Step5 } from './Steps/Step5'
+import DataComponent from './Steps/dataPreview'
 
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
@@ -29,7 +22,14 @@ import { signAndSaveOnDevice } from '../../utils/saveOnDevice'
 import { saveSession } from '../../utils/saveSession'
 import SnackMessage from '../../components/SnackMessage'
 import SessionDialog from '../../components/SessionDialog'
-import { useStepContext } from '../../credentialForm/form/StepContext'
+import { useStepContext } from './StepContext'
+import {
+  FormTextSteps,
+  NoteText,
+  SuccessText,
+  textGuid
+} from './fromTexts & stepTrack/FormTextSteps'
+import SuccessPage from './Steps/SuccessPage'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
