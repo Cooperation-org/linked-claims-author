@@ -23,7 +23,7 @@ import {
   skipButtonStyles
 } from '../../../../components/Styles/appStyles'
 import TextEditor from '../TextEditor/Texteditor'
-import { FormData } from '../../../../CredentialForm/form/types/Types'
+import { FormData } from '../../../../credentialForm/form/types/Types'
 import ClearIcon from '@mui/icons-material/Clear'
 import AddIcon from '@mui/icons-material/Add'
 

@@ -5,12 +5,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Slide } from '@mui/material'
 import { FormData } from './types/Types'
-import {
-  textGuid,
-  NoteText,
-  SuccessText,
-  FormTextSteps
-} from './fromTexts & stepTrack/FormTextSteps'
 import { options, Step0 } from './Steps/Step0'
 import { Buttons } from './buttons/Buttons'
 import { Step1 } from './Steps/Step1'
@@ -19,17 +13,23 @@ import { Step3 } from './Steps/Step3'
 import { Step4 } from './Steps/Step4'
 import { Step5 } from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
-import SuccessPage from './Steps/SuccessPage'
 
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { useSession, signIn, signOut } from 'next-auth/react'
-import { useStepContext } from './StepContext'
 import { handleSign } from '../../utils/formUtils'
 import { signAndSaveOnDevice } from '../../utils/saveOnDevice'
 import { saveSession } from '../../utils/saveSession'
 import SnackMessage from '../../components/SnackMessage'
 import SessionDialog from '../../components/SessionDialog'
+import { useStepContext } from './StepContext'
+import {
+  FormTextSteps,
+  NoteText,
+  SuccessText,
+  textGuid
+} from './fromTexts & stepTrack/FormTextSteps'
+import SuccessPage from './Steps/SuccessPage'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()

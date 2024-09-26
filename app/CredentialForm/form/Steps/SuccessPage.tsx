@@ -19,7 +19,7 @@ import {
   CopySVG
 } from '../../../Assets/SVGs'
 
-import { FormData } from '../types/Types'
+import { FormData } from '../../../credentialForm/form/types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
@@ -36,7 +36,6 @@ import {
 } from '../../../components/Styles/appStyles'
 import { options } from './Step0'
 import { useStepContext } from '../StepContext'
-import Image from 'next/image'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void

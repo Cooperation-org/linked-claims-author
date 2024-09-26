@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Box, Card, Container, Link, Typography } from '@mui/material'
 import { SVGBadge, QuoteSVG } from '../../../../Assets/SVGs'
-import { FormData } from '../../../../CredentialForm/form/types/Types'
+import { FormData } from '../../../../credentialForm/form/types/Types'
 import FetchedData from '../../viewCredential/FetchedData'
 
 interface DataPreviewProps {

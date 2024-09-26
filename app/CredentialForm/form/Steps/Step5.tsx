@@ -11,8 +11,6 @@ import {
 } from '../../../components/Styles/appStyles'
 import { UseFormRegister } from 'react-hook-form'
 import { FormData } from '../types/Types'
-// import { handleUrlValidation } from '../../../utils/urlValidation'
-
 interface Step5Props {
   register: UseFormRegister<FormData>
   handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
