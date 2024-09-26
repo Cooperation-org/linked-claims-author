@@ -8,9 +8,9 @@ import {
   formLabelStyles,
   formLabelSpanStyles
 } from '../../../components/Styles/appStyles'
-import TextEditor from '../../../credentialForm/form/TextEditor/Texteditor'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
-import { FormData } from '../../../credentialForm/form/types/Types'
+import { FormData } from '../types/Types'
+import TextEditor from '../TextEditor/Texteditor'
 
 interface Step2Props {
   register: UseFormRegister<FormData>

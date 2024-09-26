@@ -11,8 +11,8 @@ import vector from '../../Assets/Images/Vector 145.png'
 import { FormTextSteps, textGuid } from './RecommandationForm/fromTexts/FormTextSteps'
 import Credential from './viewCredential/Credential'
 import TabsComponent from '../../components/Tabs/Tabs'
-import { StepTrackShape } from '../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
 import { useStepContext } from '../../credentialForm/form/StepContext'
+import { StepTrackShape } from '../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
 
 const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   const { activeStep, setActiveStep } = useStepContext()

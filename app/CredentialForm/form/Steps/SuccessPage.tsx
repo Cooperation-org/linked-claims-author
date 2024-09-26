@@ -35,7 +35,7 @@ import {
   successPageTextFieldStyles
 } from '../../../components/Styles/appStyles'
 import { options } from './Step0'
-import { useStepContext } from '../../../credentialForm/form/StepContext'
+import { useStepContext } from '../StepContext'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void

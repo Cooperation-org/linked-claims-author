@@ -17,7 +17,7 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import ClearIcon from '@mui/icons-material/Clear'
 import { UseFormRegister, FieldErrors, UseFieldArrayAppend } from 'react-hook-form'
-import { FormData } from '../../../credentialForm/form/types/Types'
+import { FormData } from '../types/Types'
 import { handleUrlValidation } from '../../../utils/urlValidation'
 
 interface Step4Props {

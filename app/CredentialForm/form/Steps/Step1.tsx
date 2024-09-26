@@ -18,7 +18,7 @@ import {
   textFieldInputProps
 } from '../../../components/Styles/appStyles'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
-import { FormData } from '../../../credentialForm/form/types/Types'
+import { FormData } from '../types/Types'
 
 interface Step1Props {
   register: UseFormRegister<FormData>
