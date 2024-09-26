@@ -1,8 +1,4 @@
-import {
-  saveToGoogleDrive,
-  CredentialEngine,
-  GoogleDriveStorage
-} from '@cooperation/vc-storage'
+import { CredentialEngine } from '@cooperation/vc-storage'
 import { FormData } from '../CredentialForm/form/types/Types'
 
 interface FormDataI {
@@ -16,6 +12,16 @@ interface FormDataI {
   evidenceLink: string
   evidenceDescription: string
   credentialType: string
+}
+
+interface RecommendationI {
+  recommendationText: string
+  qualifications: string
+  expirationDate: string
+  fullName: string
+  howKnow: string
+  explainAnswer: string
+  portfolio: { name: string; url: string }[]
 }
 
 export async function createDIDWithMetaMask(metaMaskAddress: string) {
@@ -35,25 +41,30 @@ const signCred = async (
   accessToken: string,
   data: any,
   issuerDid: string,
-  keyPair: string
+  keyPair: string,
+  type: 'RECOMMENDATION' | 'VC'
 ) => {
   if (!accessToken) {
     throw new Error('Access token is not provided')
   }
-  console.log('🚀 ~ data:', data)
-  const formData: FormDataI = generateCredentialData(data)
+  let formData: FormDataI | RecommendationI
+  let signedVC
   try {
     const credentialEngine = new CredentialEngine()
-    const storage = new GoogleDriveStorage(accessToken)
-    const unsignedVC = await credentialEngine.createUnsignedVC(formData, issuerDid)
-    await saveToGoogleDrive(storage, unsignedVC, 'UnsignedVC')
-    console.log('Unsigned VC:', unsignedVC)
+    if (type === 'RECOMMENDATION') {
+      formData = genearteRecommendtionData(data)
+      signedVC = await credentialEngine.signVC(
+        formData,
+        'RECOMMENDATION',
+        keyPair,
+        issuerDid
+      )
+    } else {
+      formData = generateCredentialData(data)
+      signedVC = await credentialEngine.signVC(formData, 'VC', keyPair, issuerDid)
+    }
 
-    const signedVC = await credentialEngine.signVC(unsignedVC, keyPair)
-    const signedVCFile = await saveToGoogleDrive(storage, signedVC, 'VC')
-    console.log('🚀 ~ signedVCFile:', signedVCFile)
-    console.log('Signed VC:', signedVC)
-    return signedVCFile
+    return signedVC
   } catch (error) {
     console.error('Error during VC signing:', error)
     throw error
@@ -80,6 +91,20 @@ export const generateCredentialData = (data: FormData): FormDataI => {
     evidenceLink: data.evidenceLink || '',
     evidenceDescription: data.evidenceDescription || '',
     credentialType: data.persons || ''
+  }
+}
+
+const genearteRecommendtionData = (data: any): RecommendationI => {
+  return {
+    recommendationText: data.recommendationText,
+    qualifications: data.howKnow,
+    expirationDate: new Date(
+      new Date().setFullYear(new Date().getFullYear() + 1)
+    ).toISOString(),
+    fullName: data.fullName,
+    howKnow: data.howKnow,
+    explainAnswer: data.explainAnswer,
+    portfolio: data.portfolio
   }
 }
 

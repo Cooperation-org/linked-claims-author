@@ -3,7 +3,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { FormControl, Box } from '@mui/material'
+import { FormControl, Box, Slide } from '@mui/material'
 import { FormData } from './types/Types'
 import {
   textGuid,
@@ -33,6 +33,7 @@ import SessionDialog from '../../components/SessionDialog'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
+  const [prevStep, setPrevStep] = useState(0)
   const [link, setLink] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
@@ -77,6 +78,12 @@ const Form = ({ onStepChange }: any) => {
     control,
     name: 'portfolio'
   })
+
+  useEffect(() => {
+    setPrevStep(activeStep + 1)
+  }, [activeStep])
+
+  const direction = activeStep > prevStep ? 'left' : 'right'
 
   const handleFetchinguserSessions = async () => {
     try {
@@ -142,37 +149,7 @@ const Form = ({ onStepChange }: any) => {
     }
   }
 
-  const setPermissionsWithAPI = async (fileId: string) => {
-    const endpoint = `https://www.googleapis.com/drive/v3/files/${fileId}/permissions`
-    const params = {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        role: 'reader',
-        type: 'anyone'
-      })
-    }
-    try {
-      const response = await fetch(endpoint, params)
-      const data = await response.json()
-      console.log(':  setPermissionsWithAPI  data', data)
-      if (response.ok) {
-        console.log('Permission successfully set', data)
-      } else {
-        throw new Error(data.error.message)
-      }
-    } catch (error: any) {
-      console.error('Failed to set permissions:', error)
-      setErrorMessage(`Failed to set permissions: ${error.message}`)
-    }
-  }
-
-  const handleFormSubmit = handleSubmit(async (data: any) => {
-    // will chnage later
-
+  const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
       if (
         data.storageOption === options.GoogleDrive ||
@@ -221,14 +198,9 @@ const Form = ({ onStepChange }: any) => {
         // fileName
       )
 
-      if (!saveResponse || !saveResponse.id) {
-        throw new Error('Failed to save file to Google Drive')
-      }
-
-      const res = await signCred(accessToken, data, issuerId, keyPair)
-      console.log(':  sign  res', res.id)
-      setPermissionsWithAPI(res.id)
-      setLink(`https://drive.google.com/file/d/${res.id}/view`)
+      const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
+      const file = (await saveToGoogleDrive(storage, res, 'VC')) as any
+      setLink(`https://drive.google.com/file/d/${file.id}/view`)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res
@@ -282,74 +254,108 @@ const Form = ({ onStepChange }: any) => {
           <NoteText />
         )}
         {activeStep === 7 && <SuccessText />}
-        <Box sx={{ width: { xs: '100%', md: '50%' } }}>
+        <Box sx={{ width: { xs: '100%', md: '50%' }, minWidth: { md: '400px' } }}>
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 0 && (
-              <Step0
-                activeStep={activeStep}
-                watch={watch}
-                setValue={setValue}
-                setMetaMaskAddres={setMetamaskAdress}
-                setErrorMessage={setErrorMessage}
-                setDisabled0={setDisabled0}
-              />
+              <Slide in={true} direction={direction} timeout={500}>
+                <Box>
+                  <Step0
+                    activeStep={activeStep}
+                    watch={watch}
+                    setValue={setValue}
+                    setMetaMaskAddres={setMetamaskAdress}
+                    setErrorMessage={setErrorMessage}
+                    setDisabled0={setDisabled0}
+                  />
+                </Box>
+              </Slide>
             )}
             {activeStep === 1 && (
-              <Step1
-                watch={watch}
-                setValue={setValue}
-                register={register}
-                errors={errors}
-              />
+              <Slide in={true} direction={direction} timeout={500}>
+                <Box>
+                  <Step1
+                    watch={watch}
+                    setValue={setValue}
+                    register={register}
+                    errors={errors}
+                  />
+                </Box>
+              </Slide>
             )}
 
             {activeStep === 2 && (
-              <Step2
-                register={register}
-                watch={watch}
-                handleTextEditorChange={value =>
-                  setValue('credentialDescription', value ?? '')
-                }
-                errors={errors}
-              />
+              <Slide in={true} direction={direction}>
+                <Box>
+                  <Step2
+                    register={register}
+                    watch={watch}
+                    handleTextEditorChange={value =>
+                      setValue('credentialDescription', value ?? '')
+                    }
+                    errors={errors}
+                  />
+                </Box>
+              </Slide>
             )}
             {activeStep === 3 && (
-              <Step3
-                watch={watch}
-                register={register}
-                errors={errors}
-                characterLimit={characterLimit}
-              />
+              <Slide in={true} direction={direction}>
+                <Box>
+                  <Step3
+                    watch={watch}
+                    register={register}
+                    errors={errors}
+                    characterLimit={characterLimit}
+                  />
+                </Box>
+              </Slide>
             )}
             {activeStep === 4 && (
-              <Step4
-                register={register}
-                fields={fields}
-                append={append}
-                handleNext={handleNext}
-                errors={errors}
-                remove={remove}
-              />
+              <Slide in={true} direction={direction}>
+                <Box>
+                  <Step4
+                    register={register}
+                    fields={fields}
+                    append={append}
+                    handleNext={handleNext}
+                    errors={errors}
+                    remove={remove}
+                  />
+                </Box>
+              </Slide>
             )}
             {activeStep === 5 && (
-              <Step5
+              <Slide in={true} direction={direction}>
+                <Box>
+                   <Step5
                 handleNext={handleNext}
                 register={register}
                 watch={watch}
                 errors={errors}
                 setValue={setValue}
-              />
+                   />                
+                </Box>
+              </Slide>
             )}
-            {activeStep === 6 && <DataComponent formData={watch()} />}
+            {activeStep === 6 && (
+              <Slide in={true} direction={direction}>
+                <Box>
+                  <DataComponent formData={watch()} />
+                </Box>
+              </Slide>
+            )}
             {activeStep === 7 && (
-              <SuccessPage
-                formData={watch()}
-                setActiveStep={setActiveStep}
-                reset={reset}
-                link={link}
-                setLink={setLink}
-                storageOption={watch('storageOption')}
-              />
+              <Slide in={true} direction={direction}>
+                <Box>
+                  <SuccessPage
+                    formData={watch()}
+                    setActiveStep={setActiveStep}
+                    reset={reset}
+                    link={link}
+                    setLink={setLink}
+                    storageOption={watch('storageOption')}
+                  />
+                </Box>
+              </Slide>
             )}
           </FormControl>
         </Box>
