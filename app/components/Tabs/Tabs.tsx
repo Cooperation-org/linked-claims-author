@@ -1,6 +1,9 @@
+'use client'
+
 import React, { useState } from 'react'
-import { Tabs, Tab, Box } from '@mui/material'
-import FetchedData from '../../Recommendations/[credentialData]/viewCredential/FetchedData'
+import { Tabs, Tab, Box, Typography } from '@mui/material'
+import { useParams } from 'next/navigation'
+import ComprehensiveClaimDetails from '../../test/[credentialData]/ComprehensiveClaimDetails'
 import Form from '../../Recommendations/[credentialData]/RecommandationForm/Form'
 
 function a11yProps(index: number) {
@@ -23,9 +26,26 @@ interface TabsComponentProps {
 
 const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) => {
   const [value, setValue] = useState(0)
+  const [fileID, setFileID] = useState('')
+
+  const params = useParams()
+  const credentialData = Array.isArray(params?.credentialData)
+    ? params.credentialData[0]
+    : params?.credentialData
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
+  }
+
+  if (!credentialData) {
+    console.error('Error: Missing credential data.')
+    return (
+      <Box sx={{ padding: '20px', textAlign: 'center' }}>
+        <Typography variant='h6' color='error'>
+          Error: Missing credential data.
+        </Typography>
+      </Box>
+    )
   }
 
   return (
@@ -51,7 +71,13 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) 
         <Form />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <FetchedData setFullName={setFullName} />
+        <ComprehensiveClaimDetails
+          params={{ credentialData }}
+          setFullName={setFullName}
+          setEmail={() => {}}
+          setFileID={setFileID}
+          claimId={fileID}
+        />
       </TabPanel>
     </Box>
   )

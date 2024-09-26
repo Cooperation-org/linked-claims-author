@@ -1,6 +1,9 @@
+'use client'
+
 import React, { useEffect, useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Typography } from '@mui/material'
+import { useParams } from 'next/navigation'
 import { FormData } from '../../../CredentialForm/form/types/Types'
 import { textGuid, NoteText, SuccessText, StorageText } from './fromTexts/FormTextSteps'
 import Step1 from './Steps/Step1'
@@ -11,17 +14,29 @@ import DataPreview from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import useLocalStorage from '../../../hooks/useLocalStorage'
-import FetchedData from '../viewCredential/FetchedData'
+import ComprehensiveClaimDetails from '../../../test/[credentialData]/ComprehensiveClaimDetails'
 import { useStepContext } from '../../../CredentialForm/form/StepContext'
-import { handleSign } from '../../../utils/formUtils'
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [fullName, setFullName] = useState('')
   const [fileID, setFileID] = useState('')
+  const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
+
   const { data: session } = useSession()
   const accessToken = session?.accessToken
+
+  const params = useParams()
+  const credentialData = Array.isArray(params?.credentialData)
+    ? params.credentialData[0]
+    : params?.credentialData
+
+  if (!credentialData) {
+    console.error('Error: Missing credential data.')
+    return <div>Error: Missing credential data.</div>
+  }
+
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
     fullName: '',
@@ -31,68 +46,42 @@ const Form = () => {
     qualifications: '',
     explainAnswer: ''
   })
-  const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
 
-  const defaultValues: FormData = storedValue
+  const methods = useForm<FormData>({ defaultValues: storedValue, mode: 'onChange' })
+  const { register, handleSubmit, watch, setValue, control, reset, formState } = methods
+  const { errors, isValid } = formState
 
-  const methods = useForm<FormData>({
-    defaultValues,
-    mode: 'onChange'
-  })
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    control,
-    reset,
-    formState: { errors, isValid }
-  } = methods
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'portfolio'
-  })
+  const { fields, append, remove } = useFieldArray({ control, name: 'portfolio' })
 
   const formData = watch()
-
   useEffect(() => {
     if (JSON.stringify(formData) !== JSON.stringify(storedValue)) {
       setStoreNewValue(formData)
     }
   }, [formData, storedValue, setStoreNewValue])
+
   useEffect(() => {
     console.log('Active Step:', activeStep)
   }, [activeStep])
 
-  // Function to add a comment to a Google Drive file
-  async function addCommentToFile(
-    fileId: string,
-    commentText: string,
-    accessToken: string
-  ) {
-    console.log(': addCommentToFile fileId', fileId)
-    if (!fileId || !commentText || !accessToken) {
+  const addCommentToFile = async (fileId: string, commentText: string, token: string) => {
+    if (!fileId || !commentText || !token) {
       console.error('Missing required parameters: fileId, commentText, or accessToken')
       return
     }
 
-    const url = `https://www.googleapis.com/drive/v3/files/${fileId}/comments?fields=id,content,createdTime`
-
-    const body = {
-      content: commentText
-    }
-
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      })
+      const response = await fetch(
+        `https://www.googleapis.com/drive/v3/files/${fileId}/comments?fields=id,content,createdTime`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ content: commentText })
+        }
+      )
 
       if (!response.ok) {
         const errorDetails = await response.json()
@@ -109,20 +98,24 @@ const Form = () => {
     }
   }
 
-  const handleFormSubmit = handleSubmit((data: FormData) => {
-    setSubmittedFullName(data.fullName)
-    addCommentToFile(fileID, JSON.stringify(data), accessToken as any)
-    clearValue()
-    reset({
-      storageOption: 'Google Drive',
-      fullName: '',
-      howKnow: '',
-      recommendationText: '',
-      portfolio: [{ name: '', url: '' }],
-      qualifications: '',
-      explainAnswer: ''
-    })
-    setActiveStep(6)
+  const handleFormSubmit = handleSubmit(async (data: FormData) => {
+    try {
+      setSubmittedFullName(data.fullName)
+      await addCommentToFile(fileID, JSON.stringify(data), accessToken ?? '')
+      clearValue()
+      reset({
+        storageOption: 'Google Drive',
+        fullName: '',
+        howKnow: '',
+        recommendationText: '',
+        portfolio: [{ name: '', url: '' }],
+        qualifications: '',
+        explainAnswer: ''
+      })
+      setActiveStep(6)
+    } catch (error) {
+      console.error('Error during form submission:', error)
+    }
   })
 
   return (
@@ -140,11 +133,18 @@ const Form = () => {
         onSubmit={handleFormSubmit}
       >
         <Box sx={{ display: 'none' }}>
-          <FetchedData setFullName={setFullName} setFileID={setFileID} />
+          <ComprehensiveClaimDetails
+            params={{ credentialData }}
+            setFullName={setFullName}
+            setEmail={() => {}}
+            setFileID={setFileID}
+            claimId={fileID}
+          />
         </Box>
+
         {activeStep === 2 && <NoteText />}
         {activeStep === 1 && (
-          <Typography sx={{ fontWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>
+          <Typography sx={{ fontWeight: 400, fontSize: '16px', fontFamily: 'Lato' }}>
             {StorageText}
           </Typography>
         )}
@@ -173,9 +173,7 @@ const Form = () => {
                 fields={fields}
                 append={append}
                 remove={remove}
-                handleTextEditorChange={(field: string, value: any) =>
-                  setValue(field, value)
-                }
+                handleTextEditorChange={(field, value) => setValue(field, value)}
                 handleNext={handleNext}
                 handleBack={handleBack}
                 fullName={fullName}

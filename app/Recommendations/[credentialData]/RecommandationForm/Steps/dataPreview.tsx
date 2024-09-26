@@ -1,8 +1,11 @@
+'use client'
+
 import React, { useState } from 'react'
 import { Box, Card, Container, Link, Typography } from '@mui/material'
 import { SVGBadge, QuoteSVG } from '../../../../Assets/SVGs'
+import { useParams } from 'next/navigation'
 import { FormData } from '../../../../CredentialForm/form/types/Types'
-import FetchedData from '../../viewCredential/FetchedData'
+import ComprehensiveClaimDetails from '../../../../test/[credentialData]/ComprehensiveClaimDetails'
 
 interface DataPreviewProps {
   formData: FormData
@@ -18,6 +21,23 @@ const DataPreview: React.FC<DataPreviewProps> = ({
   handleSign
 }) => {
   const [fetchedName, setFetchedName] = useState<string | null>(null)
+  const [fileID, setFileID] = useState<string | null>(null)
+
+  const params = useParams()
+  const credentialData = Array.isArray(params?.credentialData)
+    ? params.credentialData[0]
+    : params?.credentialData
+
+  if (!credentialData) {
+    console.error('Error: Missing credential data.')
+    return (
+      <Container maxWidth='sm' sx={{ mt: 4, mb: 4 }}>
+        <Typography variant='h6' color='error'>
+          Error: Missing credential data.
+        </Typography>
+      </Container>
+    )
+  }
 
   return (
     <Container maxWidth='sm' sx={{ mt: 4, mb: 4 }}>
@@ -30,13 +50,16 @@ const DataPreview: React.FC<DataPreviewProps> = ({
         If everything looks good, select Finish & Sign to complete your recommendation.
       </Typography>
 
-      {/* Credential Details from Google Drive */}
-      <FetchedData
+      {/* Credential Details from Google Drive using ComprehensiveClaimDetails */}
+      <ComprehensiveClaimDetails
+        params={{ credentialData }}
         setFullName={(name: string) => {
           console.log('Full Name:', name)
           setFetchedName(name)
         }}
         setEmail={(email: string) => console.log('Email:', email)}
+        setFileID={setFileID}
+        claimId={fileID || ''}
       />
 
       {/* Vouch Confirmation */}
