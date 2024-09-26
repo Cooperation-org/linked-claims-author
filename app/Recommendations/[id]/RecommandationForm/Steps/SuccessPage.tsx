@@ -160,7 +160,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
         <Button
           component={Link}
-          href='/CredentialForm'
+          href='/credentialForm'
           sx={{
             textTransform: 'capitalize',
             m: '20px 0',

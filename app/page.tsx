@@ -2,7 +2,7 @@
 import { useTheme } from '@mui/material/styles'
 import React, { useEffect } from 'react'
 import { Box, Typography, useMediaQuery, Avatar, Button } from '@mui/material'
-import ProfileImageWithLabels from './CredentialForm/ProfileImageWithLabels'
+import ProfileImageWithLabels from './credentialForm/ProfileImageWithLabels'
 import SVGDesign, {
   SVGCheckMarks,
   TwoPhonesMobileSVG,
@@ -129,7 +129,7 @@ const Page = () => {
             mt: { xs: '37px', md: '36px' }
           }}
         >
-          <Link href='/CredentialForm'>
+          <Link href='/credentialForm'>
             <Button
               sx={{
                 width: '200px',
