@@ -42,10 +42,9 @@ export default function HorizontalLinearStepper() {
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const [driveData, setDriveData] = React.useState<any>(null)
   const { data: session } = useSession()
-  const accessToken = session?.accessToken
   const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
   const params = useParams()
-  const { fetchFileContent, fileContent } = useGoogleDrive()
+  const { getContent } = useGoogleDrive()
   const imageLink =
     'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg'
 
@@ -53,12 +52,13 @@ export default function HorizontalLinearStepper() {
     const fetchDriveData = async () => {
       const decodedLink = decodeURIComponent(params.credentialData as any)
       const fileId = decodedLink.split('/d/')[1]?.split('/')[0]
-      const resourceKey = ''
-      await fetchFileContent(fileId, resourceKey, accessToken)
+      const claimDeails = await getContent(fileId)
+      setDriveData(claimDeails)
     }
 
     fetchDriveData()
-  }, [accessToken, fetchFileContent, params.credentialData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.credentialData])
 
   const {
     reset,
@@ -80,19 +80,17 @@ export default function HorizontalLinearStepper() {
   })
 
   React.useEffect(() => {
-    if (fileContent) {
-      const parsedData = JSON.parse(fileContent)
-      setDriveData(parsedData)
-      localStorage.setItem('parsedData', JSON.stringify(parsedData))
+    if (driveData) {
       reset({
         reference: `Hey there! I hope you’re doing well. 
             
             I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-              parsedData?.credentialSubject?.achievement[0]?.name || ''
+              driveData?.credentialSubject?.achievement[0]?.name || ''
             }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
       })
     }
-  }, [fileContent, reset])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [driveData])
 
   const handleCheckboxChange = (event: any) => {
     setSendCopyToSelf(event.target.checked)

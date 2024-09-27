@@ -15,34 +15,24 @@ import {
 } from '../../components/Styles/appStyles'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import theme from '../../theme'
-import { useSession } from 'next-auth/react'
 
 const Page = () => {
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
-  const { data: session } = useSession()
-  const accessToken = session?.accessToken
-  const { fetchFileContent, fileContent, fileMetadata } = useGoogleDrive()
+  const { getContent, fileMetadata } = useGoogleDrive()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
 
   useEffect(() => {
     const fetchDriveData = async () => {
       const decodedLink = decodeURIComponent(params.credentialData as any)
       const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
-      const resourceKey = ''
-      await fetchFileContent(fileId, resourceKey, accessToken)
+      const claimDeails = await getContent(fileId)
+      setDriveData(claimDeails)
     }
 
     fetchDriveData()
   })
 
-  useEffect(() => {
-    if (fileContent) {
-      const parsedData = JSON.parse(fileContent)
-      console.log(':  useEffect  parsedData', parsedData)
-      setDriveData(parsedData)
-    }
-  }, [fileContent])
   return (
     <Box
       sx={{

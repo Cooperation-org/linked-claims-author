@@ -11,7 +11,6 @@ import {
   evidenceListStyles
 } from '../../../components/Styles/appStyles'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
-import { useSession } from 'next-auth/react'
 
 interface FetchedDataProps {
   setFullName: (name: string) => void
@@ -27,39 +26,31 @@ const FetchedData: React.FC<FetchedDataProps> = ({
   const [driveData, setDriveData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const params = useParams()
-  const { data: session } = useSession()
-  const accessToken = session?.accessToken
 
-  const { fetchFileContent, fetchFileMetadata, fileContent, fileMetadata, ownerEmail } =
-    useGoogleDrive()
+  const { getContent, fetchFileMetadata, fileMetadata, ownerEmail } = useGoogleDrive()
 
   useEffect(() => {
     const fetchDriveData = async () => {
       const decodedLink = decodeURIComponent(params.credntialData as any)
       const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
       const resourceKey = ''
-      await fetchFileContent(fileId, resourceKey, accessToken)
+      const claimDeails = await getContent(fileId)
+      setDriveData(claimDeails)
       await fetchFileMetadata(fileId, resourceKey)
     }
 
     fetchDriveData()
-  }, [accessToken, fetchFileContent, fetchFileMetadata, params, setFileID])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, setFileID])
 
   useEffect(() => {
-    if (fileContent) {
-      const parsedData = JSON.parse(fileContent)
-      setDriveData(parsedData)
-      setFullName(parsedData.credentialSubject?.name)
-      setLoading(false)
-    }
-
     if (ownerEmail) {
       console.log('Fetched owner email:', ownerEmail)
       setEmail(ownerEmail)
     } else {
       console.warn('ownerEmail is not available')
     }
-  }, [fileContent, fileMetadata, ownerEmail, setEmail, setFullName])
+  }, [fileMetadata, ownerEmail, setEmail, setFullName])
 
   return (
     <Box sx={{ border: '1px solid #003FE0', borderRadius: '10px', p: '15px' }}>
