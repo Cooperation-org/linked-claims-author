@@ -15,31 +15,64 @@ import { useSession } from 'next-auth/react'
 
 interface FetchedDataProps {
   setFullName: (name: string) => void
+  setEmail?: (email: string) => void
+  setFileID?: (fileId: string) => void
 }
 
-const FetchedData: React.FC<FetchedDataProps> = ({ setFullName }) => {
+const FetchedData: React.FC<FetchedDataProps> = ({
+  setFullName,
+  setEmail = () => {},
+  setFileID = () => {}
+}) => {
   const [driveData, setDriveData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const { data: session } = useSession()
   const accessToken = session?.accessToken
 
-  const { getContent } = useGoogleDrive()
+  const { getContent, fetchFileMetadata, fileMetadata, ownerEmail } = useGoogleDrive()
 
   useEffect(() => {
     const fetchDriveData = async () => {
-      const decodedLink = decodeURIComponent(params.id as any)
-      const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
-      const data = await getContent(fileId)
-      console.log(':  fetchDriveData  data', data)
-      setDriveData(data)
-      setFullName(data?.credentialSubject?.name)
+      try {
+        const decodedLink = decodeURIComponent(params.id as any)
+        const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
 
-      setLoading(false)
+        if (fileId) {
+          setFileID(fileId)
+
+          // Fetch the data using getContent
+          const data = await getContent(fileId)
+          console.log('Fetched data from Google Drive:', data)
+          setDriveData(data)
+          setFullName(data?.credentialSubject?.name)
+
+          // Fetch metadata
+          await fetchFileMetadata(fileId, '')
+
+          // Set email from metadata
+          if (ownerEmail) {
+            setEmail(ownerEmail)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching drive data:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchDriveData()
-  }, [accessToken, getContent, params])
+  }, [
+    accessToken,
+    getContent,
+    fetchFileMetadata,
+    params,
+    setFileID,
+    setFullName,
+    setEmail,
+    ownerEmail
+  ])
 
   return (
     <Box sx={{ border: '1px solid #003FE0', borderRadius: '10px', p: '15px' }}>
@@ -52,7 +85,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({ setFullName }) => {
           <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
             <SVGBadge />
             <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
-              {driveData.credentialSubject?.name} has claimed:
+              {driveData.credentialSubject?.name || fileMetadata?.name} has claimed:
             </Typography>
           </Box>
           <Box>
@@ -113,8 +146,8 @@ const FetchedData: React.FC<FetchedDataProps> = ({ setFullName }) => {
                   </ul>
                 </Box>
               )}
-              {driveData?.credentialSubject?.portfolio?.name ||
-                (driveData?.credentialSubject?.portfolio?.url && (
+              {driveData?.credentialSubject?.portfolio &&
+                driveData?.credentialSubject?.portfolio.length > 0 && (
                   <Box>
                     <Typography>Supporting Evidence:</Typography>
                     <ul style={evidenceListStyles}>
@@ -129,7 +162,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({ setFullName }) => {
                       )}
                     </ul>
                   </Box>
-                ))}
+                )}
             </Box>
           </Box>
         </>

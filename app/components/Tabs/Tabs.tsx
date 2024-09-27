@@ -1,7 +1,10 @@
+'use client'
+
 import React, { useState } from 'react'
-import { Tabs, Tab, Box } from '@mui/material'
+import { Tabs, Tab, Box, Typography } from '@mui/material'
+import { useParams } from 'next/navigation'
+import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
 import Form from '../../recommendations/[id]/RecommandationForm/Form'
-import FetchedData from '../../recommendations/[id]/viewCredential/FetchedData'
 
 function a11yProps(index: number) {
   return {
@@ -16,12 +19,31 @@ interface TabPanelProps {
   index: number
 }
 
-const TabsComponent = () => {
+interface TabsComponentProps {
+  fullName: string
+  setFullName: (name: string) => void
+}
+
+const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) => {
   const [value, setValue] = useState(0)
-  const [fullname, setFullName] = useState('')
+  const [fileID, setFileID] = useState('')
+
+  const params = useParams()
+  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
+  }
+
+  if (!id) {
+    console.error('Error: Missing credential data.')
+    return (
+      <Box sx={{ padding: '20px', textAlign: 'center' }}>
+        <Typography variant='h6' color='error'>
+          Error: Missing credential data.
+        </Typography>
+      </Box>
+    )
   }
 
   return (
@@ -39,7 +61,7 @@ const TabsComponent = () => {
         />
         <Tab
           sx={{ textTransform: 'capitalize' }}
-          label={`View ${fullname}'s Credential`}
+          label={`View ${fullName}’s Credential`}
           {...a11yProps(1)}
         />
       </Tabs>
@@ -47,11 +69,18 @@ const TabsComponent = () => {
         <Form />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <FetchedData setFullName={setFullName} />
+        <ComprehensiveClaimDetails
+          params={{ id }}
+          setFullName={setFullName}
+          setEmail={() => {}}
+          setFileID={setFileID}
+          id={fileID}
+        />
       </TabPanel>
     </Box>
   )
 }
+
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other }) => {
   return (
     <div

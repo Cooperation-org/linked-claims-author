@@ -5,16 +5,19 @@ import { Typography, Box, useMediaQuery, Theme } from '@mui/material'
 import Image from 'next/image'
 import { useTheme } from '@mui/material/styles'
 import { SVGLargeScreen } from '../../Assets/SVGs'
+// @ts-ignore
 import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
+// @ts-ignore
 import fram from '../../Assets/Images/Frame 35278.png'
+// @ts-ignore
 import vector from '../../Assets/Images/Vector 145.png'
 import { FormTextSteps, textGuid } from './RecommandationForm/fromTexts/FormTextSteps'
 import Credential from './viewCredential/Credential'
 import TabsComponent from '../../components/Tabs/Tabs'
-import { useStepContext } from '../../credentialForm/form/StepContext'
 import { StepTrackShape } from '../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
+import { useStepContext } from '../../credentialForm/form/StepContext'
 
-const CredntialData = ({ params }: { params: { credntialData: any } }) => {
+const credentialData = ({ params }: { params: { id: any } }) => {
   const { activeStep, setActiveStep } = useStepContext()
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
@@ -72,7 +75,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
               activeStep={activeStep}
               activeText={textGuid(fullName)[activeStep]}
             />
-            <TabsComponent />
+            <TabsComponent setFullName={setFullName} fullName={fullName} />
           </>
         )}
       </Box>
@@ -115,4 +118,4 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
   )
 }
 
-export default CredntialData
+export default credentialData

@@ -176,7 +176,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           )}
         </Box>
         {storageOption !== options.Device && (
-          <Link href={`/AskForRecommendation/${encodedLink}`}>
+          <Link href={`/askforrecommendation/${encodedLink}`}>
             <Button
               onClick={() => {
                 setActiveStep(0)

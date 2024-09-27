@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useEffect } from 'react'
 import {
   Box,
@@ -10,7 +12,8 @@ import {
 import { SVGBadge, CopySVG } from '../../../../Assets/SVGs'
 import { copyFormValuesToClipboard } from '../../../../utils/formUtils'
 import { FormData } from '../../../../credentialForm/form/types/Types'
-import FetchedData from '../../viewCredential/FetchedData'
+import ComprehensiveClaimDetails from '../../../../test/[id]/ComprehensiveClaimDetails'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
 interface SuccessPageProps {
@@ -29,12 +32,27 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [fetchedFullName, setFetchedFullName] = useState<string | null>(submittedFullName)
   const [email, setEmail] = useState<string | null>(null)
+  const [fileID, setFileID] = useState<string | null>(null)
+
+  const params = useParams()
+  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
 
   useEffect(() => {
     if (submittedFullName) {
       setFetchedFullName(submittedFullName)
     }
   }, [submittedFullName])
+
+  if (!id) {
+    console.error('Error: Missing credential data.')
+    return (
+      <Box sx={{ padding: '20px', textAlign: 'center' }}>
+        <Typography variant='h6' color='error'>
+          Error: Missing credential data.
+        </Typography>
+      </Box>
+    )
+  }
 
   const message = fetchedFullName
     ? `Hi ${fetchedFullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
@@ -66,10 +84,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         }}
       >
         <Box sx={{ display: 'none' }}>
-          <FetchedData
-            setFullName={name => {
-              setFetchedFullName(name)
-            }}
+          <ComprehensiveClaimDetails
+            params={{ id }}
+            setFullName={(name: string) => setFetchedFullName(name)}
+            setEmail={setEmail}
+            setFileID={setFileID}
+            id={fileID ?? ''}
           />
         </Box>
 
@@ -159,7 +179,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
         <Button
           component={Link}
-          href='/credentialForm'
+          href='/CredentialForm'
           sx={{
             textTransform: 'capitalize',
             m: '20px 0',

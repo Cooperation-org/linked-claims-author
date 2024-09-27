@@ -1,6 +1,9 @@
+'use client'
+
 import React, { useEffect, useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Typography } from '@mui/material'
+import { useParams } from 'next/navigation'
 import { FormData } from '../../../credentialForm/form/types/Types'
 import { textGuid, NoteText, SuccessText, StorageText } from './fromTexts/FormTextSteps'
 import Step1 from './Steps/Step1'
@@ -11,18 +14,27 @@ import DataPreview from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import useLocalStorage from '../../../hooks/useLocalStorage'
-import FetchedData from '../viewCredential/FetchedData'
+import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDetails'
 import { useStepContext } from '../../../credentialForm/form/StepContext'
-import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
-import { createDID, signCred } from '../../../utils/signCred'
 import { useSession } from 'next-auth/react'
 
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [fullName, setFullName] = useState('')
   const [fileID, setFileID] = useState('')
+  const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
+
   const { data: session } = useSession()
   const accessToken = session?.accessToken
+
+  const params = useParams()
+  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
+
+  if (!id) {
+    console.error('Error: Missing credential data.')
+    return <div>Error: Missing credential data.</div>
+  }
+
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
     fullName: '',
@@ -32,98 +44,76 @@ const Form = () => {
     qualifications: '',
     explainAnswer: ''
   })
-  const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
 
-  const defaultValues: FormData = storedValue
+  const methods = useForm<FormData>({ defaultValues: storedValue, mode: 'onChange' })
+  const { register, handleSubmit, watch, setValue, control, reset, formState } = methods
+  const { errors, isValid } = formState
 
-  const methods = useForm<FormData>({
-    defaultValues,
-    mode: 'onChange'
-  })
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    control,
-    reset,
-    formState: { errors, isValid }
-  } = methods
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'portfolio'
-  })
+  const { fields, append, remove } = useFieldArray({ control, name: 'portfolio' })
 
   const formData = watch()
-
   useEffect(() => {
     if (JSON.stringify(formData) !== JSON.stringify(storedValue)) {
       setStoreNewValue(formData)
     }
   }, [formData, storedValue, setStoreNewValue])
+
   useEffect(() => {
     console.log('Active Step:', activeStep)
   }, [activeStep])
 
-  const storage = new GoogleDriveStorage(accessToken as string)
-  const saveAndAddcomment = async () => {
+  const addCommentToFile = async (fileId: string, commentText: string, token: string) => {
+    if (!fileId || !commentText || !token) {
+      console.error('Missing required parameters: fileId, commentText, or accessToken')
+      return
+    }
+
     try {
-      if (!accessToken) {
-        throw new Error('No access token provided.')
-      }
-      // Step 1: Create DID
-      const newDid = await createDID()
-      const { didDocument, keyPair, issuerId } = newDid
-
-      // Save the DID document and keyPair to Google Drive
-      await saveToGoogleDrive(
-        storage,
+      const response = await fetch(
+        `https://www.googleapis.com/drive/v3/files/${fileId}/comments?fields=id,content,createdTime`,
         {
-          didDocument,
-          keyPair
-        },
-        'DID'
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ content: commentText })
+        }
       )
 
-      // Step 3: Sign the credential (recommendation)
-      const signedCred = await signCred(
-        accessToken,
-        formData,
-        issuerId,
-        keyPair,
-        'RECOMMENDATION'
-      )
+      if (!response.ok) {
+        const errorDetails = await response.json()
+        console.error('Error adding comment:', errorDetails)
+        throw new Error(`Failed to add comment: ${response.statusText}`)
+      }
 
-      // Step 4: Save the signed recommendation to Google Drive
-      const savedRecommendation = await saveToGoogleDrive(storage, signedCred, 'SESSION')
-      console.log('🚀 ~ savedRecommendation:', savedRecommendation)
-
-      // Step 5: Add a comment to a specific file in Google Drive
-      const rec = await storage.addCommentToFile(fileID)
-      console.log(rec)
-      return signedCred // Return the signed credential as a result
-    } catch (error: any) {
-      console.error('Error during signing process:', error.message)
+      const result = await response.json()
+      console.log('Comment added successfully:', result)
+      return result
+    } catch (error) {
+      console.error('Error adding comment:', error)
       throw error
     }
   }
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
-    setSubmittedFullName(data.fullName)
-    await saveAndAddcomment()
-    clearValue()
-    reset({
-      storageOption: 'Google Drive',
-      fullName: '',
-      howKnow: '',
-      recommendationText: '',
-      portfolio: [{ name: '', url: '' }],
-      qualifications: '',
-      explainAnswer: ''
-    })
-    setActiveStep(6)
+    try {
+      setSubmittedFullName(data.fullName)
+      await addCommentToFile(fileID, JSON.stringify(data), accessToken ?? '')
+      clearValue()
+      reset({
+        storageOption: 'Google Drive',
+        fullName: '',
+        howKnow: '',
+        recommendationText: '',
+        portfolio: [{ name: '', url: '' }],
+        qualifications: '',
+        explainAnswer: ''
+      })
+      setActiveStep(6)
+    } catch (error) {
+      console.error('Error during form submission:', error)
+    }
   })
 
   return (
@@ -141,11 +131,18 @@ const Form = () => {
         onSubmit={handleFormSubmit}
       >
         <Box sx={{ display: 'none' }}>
-          <FetchedData setFullName={setFullName} />
+          <ComprehensiveClaimDetails
+            params={{ id }}
+            setFullName={setFullName}
+            setEmail={() => {}}
+            setFileID={setFileID}
+            id={fileID}
+          />
         </Box>
+
         {activeStep === 2 && <NoteText />}
         {activeStep === 1 && (
-          <Typography sx={{ fontWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>
+          <Typography sx={{ fontWeight: 400, fontSize: '16px', fontFamily: 'Lato' }}>
             {StorageText}
           </Typography>
         )}
@@ -174,9 +171,7 @@ const Form = () => {
                 fields={fields}
                 append={append}
                 remove={remove}
-                handleTextEditorChange={(field: string, value: any) =>
-                  setValue(field, value)
-                }
+                handleTextEditorChange={(field, value) => setValue(field, value)}
                 handleNext={handleNext}
                 handleBack={handleBack}
                 fullName={fullName}

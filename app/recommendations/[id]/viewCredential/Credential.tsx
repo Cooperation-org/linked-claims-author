@@ -7,14 +7,19 @@ import { nextButtonStyle } from '../../../components/Styles/appStyles'
 import { SVGCheckMarks } from '../../../Assets/SVGs'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { featuresRecommentations } from '../RecommandationForm/fromTexts/FormTextSteps'
-import FetchedData from './FetchedData'
+import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDetails'
 import DeclineRequest from '../DeclineRequest/DeclineRequest'
+import { useParams } from 'next/navigation'
 
 const Credential = ({ setactivStep }: { setactivStep: any }) => {
   const theme = useTheme()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
+  const [fileID, setFileID] = useState<string | null>(null)
   const [showDeclineRequest, setShowDeclineRequest] = useState(false)
+
+  const params = useParams()
+  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
 
   const handleClick = () => {
     setactivStep(1)
@@ -25,11 +30,22 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
   }
 
   const handleBack = () => {
-    setShowDeclineRequest(false) // Go back to Credential component
+    setShowDeclineRequest(false)
   }
 
   if (showDeclineRequest) {
     return <DeclineRequest fullName={fullName} email={email} handleBack={handleBack} />
+  }
+
+  if (!id) {
+    console.error('Error: Missing credential data.')
+    return (
+      <Box sx={{ padding: '20px', textAlign: 'center' }}>
+        <Typography variant='h6' color='error'>
+          Error: Missing credential data.
+        </Typography>
+      </Box>
+    )
   }
 
   return (
@@ -124,7 +140,13 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
           </Box>
         ))}
       </Box>
-      <FetchedData setFullName={setFullName} />
+      <ComprehensiveClaimDetails
+        params={{ id }}
+        setFullName={setFullName}
+        setEmail={setEmail}
+        setFileID={setFileID}
+        id={fileID ?? ''}
+      />
     </Box>
   )
 }
