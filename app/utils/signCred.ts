@@ -1,5 +1,5 @@
 import { CredentialEngine } from '@cooperation/vc-storage'
-import { FormData } from '../CredentialForm/form/types/Types'
+import { FormData } from '../credentialForm/form/types/Types'
 
 interface FormDataI {
   expirationDate: string
