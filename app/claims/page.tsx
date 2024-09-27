@@ -21,6 +21,7 @@ import {
   evidenceListStyles
 } from '../components/Styles/appStyles'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
+import useGoogleDrive from '../hooks/useGoogleDrive'
 
 // Define types
 interface Claim {
@@ -61,6 +62,7 @@ const ClaimsPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
   const [comments, setComments] = useState<{ [key: string]: Comment[] }>({})
+  const { getContent } = useGoogleDrive()
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
 
@@ -70,15 +72,6 @@ const ClaimsPage: React.FC = () => {
       setStorage(storageInstance)
     }
   }, [accessToken])
-
-  const getContent = useCallback(
-    async (fileId: string): Promise<ClaimDetail> => {
-      if (!storage) throw new Error('Storage is not initialized')
-      const file = await storage.retrieve(fileId)
-      return file as ClaimDetail
-    },
-    [storage]
-  )
 
   const getAllClaims = useCallback(async (): Promise<any> => {
     if (!storage) throw new Error('Storage is not initialized')

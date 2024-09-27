@@ -36,7 +36,6 @@ const DataPreview: React.FC<DataPreviewProps> = ({
           console.log('Full Name:', name)
           setFetchedName(name)
         }}
-        setEmail={(email: string) => console.log('Email:', email)}
       />
 
       {/* Vouch Confirmation */}

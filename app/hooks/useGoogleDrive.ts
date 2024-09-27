@@ -1,39 +1,48 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { GoogleDriveStorage } from '@cooperation/vc-storage'
+
+interface ClaimDetail {
+  '@context': string[]
+  id: string
+  type: string[]
+  issuer: {
+    id: string
+    type: string[]
+  }
+  issuanceDate: string
+  expirationDate: string
+  credentialSubject: {
+    type: string[]
+    name: string
+    achievement: any
+    duration: string
+    portfolio: any
+  }
+}
 
 const useGoogleDrive = () => {
   const { data: session } = useSession()
-  const [fileContent, setFileContent] = useState<string | null>(null)
   const [fileMetadata, setFileMetadata] = useState<any | null>(null)
   const [ownerEmail, setOwnerEmail] = useState<string | null>(null)
+  const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
+  const accessToken = session?.accessToken
 
-  const fetchFileContent = async (fileId: any, resourceKey: string = '', accessToken: any) => {
-    if (!session?.accessToken) {
-      console.error('Access token is missing or invalid')
-      return
+  useEffect(() => {
+    if (accessToken) {
+      const storageInstance = new GoogleDriveStorage(accessToken)
+      setStorage(storageInstance)
     }
-    try {
-      const response = await fetch(
-        `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
-      )
-      console.log(":  fetchFileContent  response", response)
+  }, [accessToken])
 
-      if (response.ok) {
-        const content = await response.text()
-        setFileContent(content)
-      } else {
-        console.error('Error fetching file content:', response)
-      }
-    } catch (error) {
-      console.error('Error fetching file content:', error)
-    }
-  }
+  const getContent = useCallback(
+    async (fileId: string): Promise<ClaimDetail> => {
+      // if (!storage) throw new Error('Storage is not initialized')
+      const file = await storage?.retrieve(fileId)
+      return file as ClaimDetail
+    },
+    [storage]
+  )
 
   const fetchFileMetadata = async (fileId: any, resourceKey: string = '') => {
     const cachedMetadata = localStorage.getItem(`fileMetadata_${fileId}`)
@@ -85,9 +94,8 @@ const useGoogleDrive = () => {
   }
 
   return {
-    fetchFileContent,
+    getContent,
     fetchFileMetadata,
-    fileContent,
     fileMetadata,
     ownerEmail
   }
