@@ -141,7 +141,7 @@ const Form = () => {
         onSubmit={handleFormSubmit}
       >
         <Box sx={{ display: 'none' }}>
-          <FetchedData setFullName={setFullName} setFileID={setFileID} />
+          <FetchedData setFullName={setFullName} />
         </Box>
         {activeStep === 2 && <NoteText />}
         {activeStep === 1 && (
