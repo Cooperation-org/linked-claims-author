@@ -70,7 +70,6 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             setFullName={name => {
               setFetchedFullName(name)
             }}
-            setEmail={setEmail}
           />
         </Box>
 
