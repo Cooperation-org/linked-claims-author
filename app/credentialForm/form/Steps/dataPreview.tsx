@@ -12,6 +12,7 @@ import {
   evidenceListStyles,
   credentialBoxStyles
 } from '../../../components/Styles/appStyles'
+import Image from 'next/image'
 
 interface DataPreviewProps {
   formData: FormData
@@ -72,7 +73,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         }}
       >
         {imageUrl ? (
-          <img
+          <Image
             style={{
               borderRadius: '20px',
               width: !isLargeScreen ? '100%' : '179px',
