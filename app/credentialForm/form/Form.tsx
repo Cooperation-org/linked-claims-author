@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Slide } from '@mui/material'
 import { FormData } from './types/Types'
@@ -16,7 +16,7 @@ import DataComponent from './Steps/dataPreview'
 
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { useSession, signIn } from 'next-auth/react'
 import { handleSign } from '../../utils/formUtils'
 import { signAndSaveOnDevice } from '../../utils/saveOnDevice'
 import { saveSession } from '../../utils/saveSession'
@@ -39,8 +39,8 @@ const Form = ({ onStepChange }: any) => {
   const [hasSignedIn, setHasSignedIn] = useState(false)
   const [metamaskAdress, setMetamaskAdress] = useState<string>('')
   const [disabled0, setDisabled0] = useState(false)
-  const [snackMessage, setSnackMessgae] = useState('')
-  const [userSessions, setuserSessions] = useState<{}[]>([])
+  const [snackMessage, setSnackMessage] = useState('')
+  const [userSessions, setUserSessions] = useState<{}[]>([])
   const [openDialog, setOpenDialog] = useState(false)
 
   const characterLimit = 294
@@ -94,7 +94,7 @@ const Form = ({ onStepChange }: any) => {
       console.log('userSessions', userSessions)
 
       if (userSessions.length > 0) {
-        setuserSessions(userSessions)
+        setUserSessions(userSessions)
         setOpenDialog(true)
       }
     } catch (err) {
@@ -209,14 +209,14 @@ const Form = ({ onStepChange }: any) => {
   const handleSaveSession = async () => {
     try {
       const formData = watch() // Get the current form data
-      setSnackMessgae('Successfully saved in Your ' + formData.storageOption)
+      setSnackMessage('Successfully saved in Your ' + formData.storageOption)
       if (!accessToken) {
         setErrorMessage('Access token is missing')
         return
       }
       await saveSession(formData, accessToken) // Save session data to Google Drive
     } catch (error: any) {
-      setSnackMessgae('Someting went wrong, please try agin later')
+      setSnackMessage('Someting went wrong, please try agin later')
       console.error('Error saving session:', error)
     }
   }

@@ -18,7 +18,6 @@ export const StepProvider = ({ children }: { children: any }) => {
     return isNaN(step) ? 0 : step
   }
 
-
   useEffect(() => {
     const savedStep = localStorage.getItem('activeStep')
     const hashStep = getStepFromHash()
