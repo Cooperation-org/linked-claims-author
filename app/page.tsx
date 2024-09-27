@@ -15,7 +15,7 @@ import {
   testimonials,
   featuresSmallScreen,
   featuresLargeScreen
-} from './CredentialForm/landingPageVariables'
+} from './credentialForm/landingPageVariables'
 import Link from 'next/link'
 import useAutoSignOut from './hooks/useAutoSignOut'
 

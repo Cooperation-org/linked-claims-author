@@ -311,55 +311,54 @@ export default function HorizontalLinearStepper() {
               </Box>
             )}
           </form>
-          <React.Fragment>
-            <Box
-              sx={{
-                width: { xs: '100%' },
-                height: '40px',
-                display: 'flex',
-                gap: '15px',
-                justifyContent: 'space-between',
-                p: '0 10px'
-              }}
-            >
-              <Button
-                sx={StyledButton}
-                onClick={handleBack}
-                disabled={activeStep === 0}
-                color='secondary'
-              >
-                Back
-              </Button>
 
-              {activeStep === 0 && (
-                <Button
-                  sx={{
-                    ...nextButtonStyle,
-                    maxWidth: '355px'
-                  }}
-                  onClick={handleNext}
-                  color='primary'
-                  disabled={activeStep !== 0}
-                  variant='contained'
-                >
-                  Next
-                </Button>
-              )}
-              {activeStep === 1 && (
-                <Button
-                  sx={{
-                    ...nextButtonStyle,
-                    maxWidth: '355px'
-                  }}
-                  color='primary'
-                  variant='contained'
-                  onClick={() => (window.location.href = mailToLink)}
-                >
-                  Open Mail
-                </Button>
-              )}
-            </Box>
-          </React.Fragment>
+          <Box
+            sx={{
+              width: { xs: '100%' },
+              height: '40px',
+              display: 'flex',
+              gap: '15px',
+              justifyContent: 'space-between',
+              p: '0 10px'
+            }}
+          >
+            <Button
+              sx={StyledButton}
+              onClick={handleBack}
+              disabled={activeStep === 0}
+              color='secondary'
+            >
+              Back
+            </Button>
+
+            {activeStep === 0 && (
+              <Button
+                sx={{
+                  ...nextButtonStyle,
+                  maxWidth: '355px'
+                }}
+                onClick={handleNext}
+                color='primary'
+                disabled={activeStep !== 0}
+                variant='contained'
+              >
+                Next
+              </Button>
+            )}
+            {activeStep === 1 && (
+              <Button
+                sx={{
+                  ...nextButtonStyle,
+                  maxWidth: '355px'
+                }}
+                color='primary'
+                variant='contained'
+                onClick={() => (window.location.href = mailToLink)}
+              >
+                Open Mail
+              </Button>
+            )}
+          </Box>
         </Box>
       </Box>
     </Box>
