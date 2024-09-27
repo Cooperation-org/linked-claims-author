@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Tabs, Tab, Box } from '@mui/material'
 import Form from '../../recommendations/[id]/RecommandationForm/Form'
-import FetchedData from '../../Recommendations/[id]/viewCredential/FetchedData'
+import FetchedData from '../../recommendations/[id]/viewCredential/FetchedData'
 
 function a11yProps(index: number) {
   return {
