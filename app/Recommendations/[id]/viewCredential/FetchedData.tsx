@@ -15,51 +15,31 @@ import { useSession } from 'next-auth/react'
 
 interface FetchedDataProps {
   setFullName: (name: string) => void
-  setEmail?: (email: string) => void
-  setFileID?: (fileId: string) => void
 }
 
-const FetchedData: React.FC<FetchedDataProps> = ({
-  setFullName,
-  setEmail = () => {},
-  setFileID = () => {}
-}) => {
+const FetchedData: React.FC<FetchedDataProps> = ({ setFullName }) => {
   const [driveData, setDriveData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const { data: session } = useSession()
   const accessToken = session?.accessToken
 
-  const { fetchFileContent, fetchFileMetadata, fileContent, fileMetadata, ownerEmail } =
-    useGoogleDrive()
+  const { getContent } = useGoogleDrive()
 
   useEffect(() => {
     const fetchDriveData = async () => {
-      const decodedLink = decodeURIComponent(params.credntialData as any)
+      const decodedLink = decodeURIComponent(params.id as any)
       const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
-      const resourceKey = ''
-      await fetchFileContent(fileId, resourceKey, accessToken)
-      await fetchFileMetadata(fileId, resourceKey)
-    }
+      const data = await getContent(fileId)
+      console.log(':  fetchDriveData  data', data)
+      setDriveData(data)
+      setFullName(data?.credentialSubject?.name)
 
-    fetchDriveData()
-  }, [accessToken, fetchFileContent, fetchFileMetadata, params, setFileID])
-
-  useEffect(() => {
-    if (fileContent) {
-      const parsedData = JSON.parse(fileContent)
-      setDriveData(parsedData)
-      setFullName(parsedData.credentialSubject?.name)
       setLoading(false)
     }
 
-    if (ownerEmail) {
-      console.log('Fetched owner email:', ownerEmail)
-      setEmail(ownerEmail)
-    } else {
-      console.warn('ownerEmail is not available')
-    }
-  }, [fileContent, fileMetadata, ownerEmail, setEmail, setFullName])
+    fetchDriveData()
+  }, [accessToken, getContent, params])
 
   return (
     <Box sx={{ border: '1px solid #003FE0', borderRadius: '10px', p: '15px' }}>
@@ -72,7 +52,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
           <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
             <SVGBadge />
             <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
-              {driveData.credentialSubject?.name || fileMetadata?.name} has claimed:
+              {driveData.credentialSubject?.name} has claimed:
             </Typography>
           </Box>
           <Box>

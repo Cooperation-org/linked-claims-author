@@ -72,7 +72,7 @@ const CredntialData = ({ params }: { params: { credntialData: any } }) => {
               activeStep={activeStep}
               activeText={textGuid(fullName)[activeStep]}
             />
-            <TabsComponent setFullName={setFullName} fullName={fullName} />
+            <TabsComponent />
           </>
         )}
       </Box>

@@ -124,7 +124,7 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
           </Box>
         ))}
       </Box>
-      <FetchedData setFullName={setFullName} setEmail={setEmail} />
+      <FetchedData setFullName={setFullName} />
     </Box>
   )
 }

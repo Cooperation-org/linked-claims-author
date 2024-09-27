@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Tabs, Tab, Box } from '@mui/material'
-import FetchedData from '../../recommendations/[id]/viewCredential/FetchedData'
 import Form from '../../recommendations/[id]/RecommandationForm/Form'
+import FetchedData from '../../Recommendations/[id]/viewCredential/FetchedData'
 
 function a11yProps(index: number) {
   return {
@@ -16,12 +16,7 @@ interface TabPanelProps {
   index: number
 }
 
-interface TabsComponentProps {
-  fullName: string
-  setFullName: (name: string) => void
-}
-
-const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) => {
+const TabsComponent = () => {
   const [value, setValue] = useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -43,7 +38,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) 
         />
         <Tab
           sx={{ textTransform: 'capitalize' }}
-          label={`View ${fullName}’s Credential`}
+          label={`View ${'fullName'}’s Credential`}
           {...a11yProps(1)}
         />
       </Tabs>
@@ -51,7 +46,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) 
         <Form />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <FetchedData setFullName={setFullName} />
+        <FetchedData />
       </TabPanel>
     </Box>
   )
