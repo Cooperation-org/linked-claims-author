@@ -18,6 +18,7 @@ interface TabPanelProps {
 
 const TabsComponent = () => {
   const [value, setValue] = useState(0)
+  const [fullname, setFullName] = useState('')
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -38,7 +39,7 @@ const TabsComponent = () => {
         />
         <Tab
           sx={{ textTransform: 'capitalize' }}
-          label={`View ${'fullName'}’s Credential`}
+          label={`View ${fullname}'s Credential`}
           {...a11yProps(1)}
         />
       </Tabs>
@@ -46,12 +47,11 @@ const TabsComponent = () => {
         <Form />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <FetchedData />
+        <FetchedData setFullName={setFullName} />
       </TabPanel>
     </Box>
   )
 }
-
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other }) => {
   return (
     <div
