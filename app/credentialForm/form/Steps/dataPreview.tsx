@@ -27,7 +27,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
     window.open(url, target)
   }
 
-  const imageUrl = formData.evidenceLink || ''
+  const imageUrl = ''
   const hasValidEvidence = formData.portfolio?.some(porto => porto.name && porto.url)
   return (
     <Box
