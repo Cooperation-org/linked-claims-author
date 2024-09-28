@@ -35,9 +35,11 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) 
       : Array.isArray(params?.id)
       ? params.id[0]
       : undefined
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
+
   return (
     <Box sx={{ minHeight: '100%', mt: '10px' }}>
       <Tabs
