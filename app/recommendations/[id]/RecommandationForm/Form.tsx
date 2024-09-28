@@ -28,11 +28,20 @@ const Form = () => {
   const accessToken = session?.accessToken
 
   const params = useParams()
-  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
+  const id =
+    typeof params?.id === 'string'
+      ? params.id
+      : Array.isArray(params?.id)
+      ? params.id[0]
+      : undefined
 
+  console.log('id in ClaimPage:', id)
   if (!id) {
-    console.error('Error: Missing credential data.')
-    return <div>Error: Missing credential data.</div>
+    return (
+      <div>
+        <h2>Error: Missing credential data.</h2>
+      </div>
+    )
   }
 
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
@@ -132,11 +141,13 @@ const Form = () => {
       >
         <Box sx={{ display: 'none' }}>
           <ComprehensiveClaimDetails
-            params={{ id }}
-            setFullName={setFullName}
+            params={{
+              claimId: `https://drive.google.com/file/d/${id}/view`
+            }}
+            setFullName={() => {}}
             setEmail={() => {}}
-            setFileID={setFileID}
-            id={fileID}
+            setFileID={() => {}}
+            claimId={id}
           />
         </Box>
 

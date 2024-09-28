@@ -29,22 +29,12 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) 
   const [fileID, setFileID] = useState('')
 
   const params = useParams()
-  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
-  }
-
-  if (!id) {
-    console.error('Error: Missing credential data.')
-    return (
-      <Box sx={{ padding: '20px', textAlign: 'center' }}>
-        <Typography variant='h6' color='error'>
-          Error: Missing credential data.
-        </Typography>
-      </Box>
-    )
-  }
+  const id =
+    typeof params?.id === 'string'
+      ? params.id
+      : Array.isArray(params?.id)
+      ? params.id[0]
+      : undefined
 
   return (
     <Box sx={{ minHeight: '100%', mt: '10px' }}>
@@ -70,11 +60,13 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) 
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ComprehensiveClaimDetails
-          params={{ id }}
-          setFullName={setFullName}
+          params={{
+            claimId: `https://drive.google.com/file/d/${id}/view`
+          }}
+          setFullName={() => {}}
           setEmail={() => {}}
-          setFileID={setFileID}
-          id={fileID}
+          setFileID={() => {}}
+          claimId={id}
         />
       </TabPanel>
     </Box>

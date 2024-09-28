@@ -8,31 +8,24 @@ import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails
 import { useParams } from 'next/navigation'
 
 const Page: React.FC = () => {
-  const params = useParams()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const fram = require('../../Assets/Images/Frame 35278.png')
   const vector = require('../../Assets/Images/Vector 145.png')
 
-  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
+  const params = useParams()
+  const id =
+    typeof params?.id === 'string'
+      ? params.id
+      : Array.isArray(params?.id)
+      ? params.id[0]
+      : undefined
+
   console.log('id in ClaimPage:', id)
-
-  console.log('Params:', params)
-  console.log('id in Page.tsx:', id)
-
   if (!id) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh'
-        }}
-      >
-        <Typography variant='h6' color='error'>
-          Missing credential data. Please check the URL.
-        </Typography>
-      </Box>
+      <div>
+        <h2>Error: Missing credential data.</h2>
+      </div>
     )
   }
 
@@ -53,12 +46,12 @@ const Page: React.FC = () => {
     >
       <ComprehensiveClaimDetails
         params={{
-          id
+          claimId: `https://drive.google.com/file/d/${id}/view`
         }}
         setFullName={() => {}}
         setEmail={() => {}}
         setFileID={() => {}}
-        id={''}
+        claimId={id}
       />
 
       {/* Footer section only for small screens */}

@@ -38,12 +38,12 @@ interface ClaimDetail {
 
 interface ComprehensiveClaimDetailsProps {
   params: {
-    id: string
+    claimId: string
   }
   setFullName: (name: string) => void
   setEmail?: (email: string) => void
   setFileID?: (fileId: string) => void
-  id: string
+  claimId?: string
 }
 
 const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
@@ -51,7 +51,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   setFullName,
   setEmail = () => {},
   setFileID = () => {},
-  id
+  claimId
 }) => {
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
@@ -70,7 +70,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     ownerEmail: fetchedOwnerEmail
   } = useGoogleDrive()
 
-  const decodedid = useMemo(() => decodeURIComponent(params.id), [params.id])
+  const decodedid = useMemo(() => decodeURIComponent(params.claimId), [params.claimId])
   const fileId = useMemo(() => decodedid.split('/d/')[1]?.split('/')[0], [decodedid])
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
           setClaimDetail(parsedData)
           setFullName(parsedData.credentialSubject?.name)
         } else {
-          const content = await getContent(fileId) // Use getContent to fetch data
+          const content = await getContent(fileId)
           setClaimDetail(content)
           setFullName(content.credentialSubject?.name)
           localStorage.setItem(`fileContent_${fileId}`, JSON.stringify(content))
@@ -140,13 +140,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   }, [fetchedOwnerEmail, setEmail, fileId])
 
   const cleanHTML = (htmlContent: string) => {
-    return htmlContent
-      .replace(/<p><br><\/p>/g, '')
-      .replace(/<p><\/p>/g, '')
-      .replace(/<br>/g, '')
-      .replace(/class="[^"]*"/g, '')
-      .replace(/style="[^"]*"/g, '')
-      .replace(/<\/?[^>]+>/g, '')
+    return htmlContent.replace(/<p><br><\/p>|<p><\/p>|<br>|<\/?[^>]+>/g, '')
   }
 
   if (loading) {
@@ -328,11 +322,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       {/* Conditional Rendering for View and Recommendation Buttons */}
       {pathname?.includes('/claims') && (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-          <Link
-            href={`/view/${encodeURIComponent(
-              `https://drive.google.com/file/d/${id}/view`
-            )}`}
-          >
+          <Link href={`/view/${claimId}`}>
             <Button
               variant='contained'
               sx={{
@@ -344,11 +334,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
               View Credential
             </Button>
           </Link>
-          <Link
-            href={`/askforrecommendation/${encodeURIComponent(
-              `https://drive.google.com/file/d/${id}/view`
-            )}`}
-          >
+          <Link href={`/askforrecommendation/${claimId}`}>
             <Button
               variant='contained'
               sx={{

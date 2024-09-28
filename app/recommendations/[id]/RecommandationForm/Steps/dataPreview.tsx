@@ -24,16 +24,19 @@ const DataPreview: React.FC<DataPreviewProps> = ({
   const [fileID, setFileID] = useState<string | null>(null)
 
   const params = useParams()
-  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
+  const id =
+    typeof params?.id === 'string'
+      ? params.id
+      : Array.isArray(params?.id)
+      ? params.id[0]
+      : undefined
 
+  console.log('id in ClaimPage:', id)
   if (!id) {
-    console.error('Error: Missing credential data.')
     return (
-      <Container maxWidth='sm' sx={{ mt: 4, mb: 4 }}>
-        <Typography variant='h6' color='error'>
-          Error: Missing credential data.
-        </Typography>
-      </Container>
+      <div>
+        <h2>Error: Missing credential data.</h2>
+      </div>
     )
   }
 
@@ -50,14 +53,14 @@ const DataPreview: React.FC<DataPreviewProps> = ({
 
       {/* Credential Details from Google Drive using ComprehensiveClaimDetails */}
       <ComprehensiveClaimDetails
-        params={{ id }}
+        params={{ claimId: id }} // Corrected this line to match the expected structure
         setFullName={(name: string) => {
           console.log('Full Name:', name)
           setFetchedName(name)
         }}
         setEmail={(email: string) => console.log('Email:', email)}
         setFileID={setFileID}
-        id={fileID ?? ''}
+        claimId={fileID ?? ''} // Make sure the prop name matches "claimId"
       />
 
       {/* Vouch Confirmation */}

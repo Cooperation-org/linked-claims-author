@@ -19,8 +19,21 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
   const [showDeclineRequest, setShowDeclineRequest] = useState(false)
 
   const params = useParams()
-  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
+  const id =
+    typeof params?.id === 'string'
+      ? params.id
+      : Array.isArray(params?.id)
+      ? params.id[0]
+      : undefined
 
+  console.log('id in ClaimPage:', id)
+  if (!id) {
+    return (
+      <div>
+        <h2>Error: Missing credential data.</h2>
+      </div>
+    )
+  }
   const handleClick = () => {
     setactivStep(1)
   }
@@ -141,11 +154,13 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
         ))}
       </Box>
       <ComprehensiveClaimDetails
-        params={{ id }}
-        setFullName={setFullName}
-        setEmail={setEmail}
-        setFileID={setFileID}
-        id={fileID ?? ''}
+        params={{
+          claimId: `https://drive.google.com/file/d/${id}/view`
+        }}
+        setFullName={() => {}}
+        setEmail={() => {}}
+        setFileID={() => {}}
+        claimId={id}
       />
     </Box>
   )
