@@ -33,26 +33,28 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const [fetchedFullName, setFetchedFullName] = useState<string | null>(submittedFullName)
   const [email, setEmail] = useState<string | null>(null)
   const [fileID, setFileID] = useState<string | null>(null)
-
   const params = useParams()
-  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
 
+  const id =
+    typeof params?.id === 'string'
+      ? params.id
+      : Array.isArray(params?.id)
+      ? params.id[0]
+      : undefined
+
+  console.log('id in ClaimPage:', id)
+  if (!id) {
+    return (
+      <div>
+        <h2>Error: Missing credential data.</h2>
+      </div>
+    )
+  }
   useEffect(() => {
     if (submittedFullName) {
       setFetchedFullName(submittedFullName)
     }
   }, [submittedFullName])
-
-  if (!id) {
-    console.error('Error: Missing credential data.')
-    return (
-      <Box sx={{ padding: '20px', textAlign: 'center' }}>
-        <Typography variant='h6' color='error'>
-          Error: Missing credential data.
-        </Typography>
-      </Box>
-    )
-  }
 
   const message = fetchedFullName
     ? `Hi ${fetchedFullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
@@ -85,11 +87,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       >
         <Box sx={{ display: 'none' }}>
           <ComprehensiveClaimDetails
-            params={{ id }}
-            setFullName={(name: string) => setFetchedFullName(name)}
-            setEmail={setEmail}
-            setFileID={setFileID}
-            id={fileID ?? ''}
+            params={{
+              claimId: `https://drive.google.com/file/d/${id}/view`
+            }}
+            setFullName={() => {}}
+            setEmail={() => {}}
+            setFileID={() => {}}
+            claimId={id}
           />
         </Box>
 

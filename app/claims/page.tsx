@@ -57,8 +57,9 @@ const ClaimsPage: React.FC = () => {
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
   const [comments, setComments] = useState<{ [key: string]: Comment[] }>({})
   const { data: session } = useSession()
-  const params = useParams()
   const accessToken = session?.accessToken as string
+  const params = useParams()
+  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
 
   useEffect(() => {
     if (accessToken) {
@@ -191,14 +192,14 @@ const ClaimsPage: React.FC = () => {
                 ) : (
                   <ComprehensiveClaimDetails
                     params={{
-                      id: encodeURIComponent(
+                      claimId: encodeURIComponent(
                         `https://drive.google.com/file/d/${claim.id}/view`
                       )
                     }}
                     setFullName={() => {}}
                     setEmail={() => {}}
                     setFileID={() => {}}
-                    id={''}
+                    claimId={claim.id}
                   />
                 )}
                 {/* Comments Section */}
