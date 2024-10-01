@@ -20,8 +20,9 @@ import { useSession } from 'next-auth/react'
 
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
-  const [fullName, setFullName] = useState('')
-  const [fileID, setFileID] = useState('')
+  const [fullName, setFullName] = useState<string | null>(null)
+  const [email, setEmail] = useState<string | null>(null)
+  const [fileID, setFileID] = useState<string | null>(null)
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
 
   const { data: session } = useSession()
@@ -108,7 +109,7 @@ const Form = () => {
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
       setSubmittedFullName(data.fullName)
-      await addCommentToFile(fileID, JSON.stringify(data), accessToken ?? '')
+      await addCommentToFile(fileID ?? '', JSON.stringify(data), accessToken ?? '')
       clearValue()
       reset({
         storageOption: 'Google Drive',
@@ -144,9 +145,9 @@ const Form = () => {
             params={{
               claimId: `https://drive.google.com/file/d/${id}/view`
             }}
-            setFullName={() => {}}
-            setEmail={() => {}}
-            setFileID={() => {}}
+            setFullName={setFullName}
+            setEmail={setEmail}
+            setFileID={setFileID}
             claimId={id}
           />
         </Box>
@@ -170,7 +171,7 @@ const Form = () => {
                 watch={watch}
                 errors={errors}
                 handleTextEditorChange={value => setValue('howKnow', value ?? '')}
-                fullName={fullName}
+                fullName={fullName ?? ''}
               />
             )}
             {activeStep === 3 && (
@@ -185,7 +186,7 @@ const Form = () => {
                 handleTextEditorChange={(field, value) => setValue(field, value)}
                 handleNext={handleNext}
                 handleBack={handleBack}
-                fullName={fullName}
+                fullName={fullName ?? ''}
               />
             )}
             {activeStep === 4 && (
@@ -193,7 +194,7 @@ const Form = () => {
                 watch={watch}
                 setValue={setValue}
                 errors={errors}
-                fullName={fullName}
+                fullName={fullName ?? ''}
               />
             )}
             {activeStep === 5 && (
@@ -217,7 +218,7 @@ const Form = () => {
 
         <Buttons
           activeStep={activeStep}
-          maxSteps={textGuid(fullName).length}
+          maxSteps={textGuid(fullName ?? '').length}
           handleNext={handleNext}
           handleSign={handleFormSubmit}
           handleBack={handleBack}

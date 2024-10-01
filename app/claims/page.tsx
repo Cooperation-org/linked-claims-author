@@ -59,6 +59,9 @@ const ClaimsPage: React.FC = () => {
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
   const params = useParams()
+  const [fullName, setFullName] = useState<string | null>(null)
+  const [email, setEmail] = useState<string | null>(null)
+  const [fileID, setFileID] = useState<string | null>(null)
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id
 
   useEffect(() => {
@@ -196,9 +199,9 @@ const ClaimsPage: React.FC = () => {
                         `https://drive.google.com/file/d/${claim.id}/view`
                       )
                     }}
-                    setFullName={() => {}}
-                    setEmail={() => {}}
-                    setFileID={() => {}}
+                    setFullName={setFullName}
+                    setEmail={setEmail}
+                    setFileID={setFileID}
                     claimId={claim.id}
                   />
                 )}

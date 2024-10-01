@@ -31,6 +31,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [fetchedFullName, setFetchedFullName] = useState<string | null>(submittedFullName)
+  const [fullName, setFullName] = useState<string | null>(null)
   const [email, setEmail] = useState<string | null>(null)
   const [fileID, setFileID] = useState<string | null>(null)
   const params = useParams()
@@ -90,9 +91,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             params={{
               claimId: `https://drive.google.com/file/d/${id}/view`
             }}
-            setFullName={() => {}}
-            setEmail={() => {}}
-            setFileID={() => {}}
+            setFullName={setFullName}
+            setEmail={setEmail}
+            setFileID={setFileID}
             claimId={id}
           />
         </Box>

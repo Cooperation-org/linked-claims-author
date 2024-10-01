@@ -85,29 +85,24 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       if (!accessToken || !fileId) return
 
       try {
-        setFileID(fileId)
+        if (fileId) {
+          // Directly setting fileId without using functional updates
+          setFileID(fileId)
+        }
 
-        // Check local cache
         const cachedContent = localStorage.getItem(`fileContent_${fileId}`)
-        const cachedMetadata = localStorage.getItem(`fileMetadata_${fileId}`)
 
         if (cachedContent) {
           const parsedData = JSON.parse(cachedContent) as ClaimDetail
           setClaimDetail(parsedData)
+          // Directly set the full name without functional updates
           setFullName(parsedData.credentialSubject?.name)
         } else {
           const content = await getContent(fileId)
           setClaimDetail(content)
+          // Directly set the full name without functional updates
           setFullName(content.credentialSubject?.name)
           localStorage.setItem(`fileContent_${fileId}`, JSON.stringify(content))
-        }
-
-        if (cachedMetadata) {
-          const metadataOwnerEmail = JSON.parse(cachedMetadata)?.owners[0]?.emailAddress
-          setOwnerEmail(metadataOwnerEmail)
-          setEmail(metadataOwnerEmail)
-        } else {
-          await fetchFileMetadata(fileId, '')
         }
       } catch (error) {
         console.error('Error fetching claim details:', error)
@@ -120,24 +115,15 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     if (accessToken && fileId) {
       fetchDriveData()
     }
-  }, [
-    accessToken,
-    getContent,
-    fetchFileMetadata,
-    fileId,
-    setFullName,
-    setEmail,
-    setFileID
-  ])
+  }, [accessToken, getContent, fileId, setFullName, setFileID])
 
   useEffect(() => {
     if (fetchedOwnerEmail) {
-      setOwnerEmail(fetchedOwnerEmail)
+      console.log('Fetched owner email is being set:', fetchedOwnerEmail)
+      // Directly set the email without functional updates
       setEmail(fetchedOwnerEmail)
-      const metadata = { owners: [{ emailAddress: fetchedOwnerEmail }] }
-      localStorage.setItem(`fileMetadata_${fileId}`, JSON.stringify(metadata))
     }
-  }, [fetchedOwnerEmail, setEmail, fileId])
+  }, [fetchedOwnerEmail, setEmail])
 
   const cleanHTML = (htmlContent: string) => {
     return htmlContent.replace(/<p><br><\/p>|<p><\/p>|<br>|<\/?[^>]+>/g, '')
@@ -188,10 +174,8 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         borderRadius: '10px'
       }}
     >
-      {/* Display Session Expiry Modal */}
       <SessionExpiryModal />
 
-      {/* Display Name and Achievement */}
       <Box
         sx={{
           display: 'flex',
@@ -213,7 +197,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Typography>
       </Box>
 
-      {/* Display Achievement Duration */}
       {credentialSubject.duration && (
         <Box
           sx={{
@@ -237,7 +220,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Box>
       )}
 
-      {/* Display Achievement Image */}
       {achievement?.image?.id && (
         <Box
           sx={{
@@ -259,7 +241,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Box>
       )}
 
-      {/* Display Achievement Description */}
       {achievement?.description && (
         <Typography
           sx={{
@@ -274,7 +255,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Typography>
       )}
 
-      {/* Display Criteria for Achievement */}
       {achievement?.criteria?.narrative && (
         <Box sx={{ mt: 2 }}>
           <Typography>Earning criteria:</Typography>
@@ -284,7 +264,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Box>
       )}
 
-      {/* Display Supporting Evidence */}
       {hasValidEvidence && (
         <Box sx={{ mt: 3 }}>
           <Typography sx={{ fontWeight: 600 }}>
@@ -312,14 +291,12 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Box>
       )}
 
-      {/* Display Owner Email if available */}
       {ownerEmail && (
         <Box sx={{ mt: 2 }}>
           <Typography variant='body2'>Owner Email: {ownerEmail}</Typography>
         </Box>
       )}
 
-      {/* Conditional Rendering for View and Recommendation Buttons */}
       {pathname?.includes('/claims') && (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
           <Link href={`/view/${claimId}`}>
@@ -349,7 +326,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Box>
       )}
 
-      {/* Display Additional Credential Details if on /view route */}
       {pathname?.includes('/view') && (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px', mt: '20px' }}>
           <Typography sx={{ fontSize: '13px', fontWeight: 700, color: '#000E40' }}>

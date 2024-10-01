@@ -21,6 +21,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({
   handleSign
 }) => {
   const [fetchedName, setFetchedName] = useState<string | null>(null)
+  const [fullName, setFullName] = useState<string | null>(null)
+  const [email, setEmail] = useState<string | null>(null)
   const [fileID, setFileID] = useState<string | null>(null)
 
   const params = useParams()
@@ -31,7 +33,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({
       ? params.id[0]
       : undefined
 
-  console.log('id in ClaimPage:', id)
+  console.log('id in DataPreview:', id) // Logging to ensure the `id` is correctly obtained
+
   if (!id) {
     return (
       <div>
@@ -53,14 +56,13 @@ const DataPreview: React.FC<DataPreviewProps> = ({
 
       {/* Credential Details from Google Drive using ComprehensiveClaimDetails */}
       <ComprehensiveClaimDetails
-        params={{ claimId: id }} // Corrected this line to match the expected structure
-        setFullName={(name: string) => {
-          console.log('Full Name:', name)
-          setFetchedName(name)
+        params={{
+          claimId: `https://drive.google.com/file/d/${id}/view`
         }}
-        setEmail={(email: string) => console.log('Email:', email)}
+        setFullName={setFullName}
+        setEmail={setEmail}
         setFileID={setFileID}
-        claimId={fileID ?? ''} // Make sure the prop name matches "claimId"
+        claimId={id}
       />
 
       {/* Vouch Confirmation */}

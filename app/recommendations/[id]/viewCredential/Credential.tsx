@@ -157,9 +157,9 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
         params={{
           claimId: `https://drive.google.com/file/d/${id}/view`
         }}
-        setFullName={() => {}}
-        setEmail={() => {}}
-        setFileID={() => {}}
+        setFullName={setFullName}
+        setEmail={setEmail}
+        setFileID={setFileID}
         claimId={id}
       />
     </Box>

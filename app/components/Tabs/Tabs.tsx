@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Tabs, Tab, Box, Typography } from '@mui/material'
+import { Tabs, Tab, Box } from '@mui/material'
 import { useParams } from 'next/navigation'
 import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
 import Form from '../../recommendations/[id]/RecommandationForm/Form'
@@ -26,8 +26,8 @@ interface TabsComponentProps {
 
 const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) => {
   const [value, setValue] = useState(0)
-  const [fileID, setFileID] = useState('')
-
+  const [email, setEmail] = useState<string | null>(null)
+  const [fileID, setFileID] = useState<string | null>(null)
   const params = useParams()
   const id =
     typeof params?.id === 'string'
@@ -64,12 +64,10 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) 
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ComprehensiveClaimDetails
-          params={{
-            claimId: `https://drive.google.com/file/d/${id}/view`
-          }}
-          setFullName={() => {}}
-          setEmail={() => {}}
-          setFileID={() => {}}
+          params={{ claimId: `https://drive.google.com/file/d/${id}/view` }}
+          setFullName={setFullName}
+          setEmail={setEmail}
+          setFileID={setFileID}
           claimId={id}
         />
       </TabPanel>

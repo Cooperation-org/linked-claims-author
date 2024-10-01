@@ -1,10 +1,13 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'next/navigation'
 import ComprehensiveClaimDetails from './ComprehensiveClaimDetails'
 const ClaimPage = () => {
   const params = useParams()
+  const [fullName, setFullName] = useState<string | null>(null)
+  const [email, setEmail] = useState<string | null>(null)
+  const [fileID, setFileID] = useState<string | null>(null)
   const id =
     typeof params?.id === 'string'
       ? params.id
@@ -25,9 +28,9 @@ const ClaimPage = () => {
       params={{
         claimId: `https://drive.google.com/file/d/${id}/view`
       }}
-      setFullName={() => {}}
-      setEmail={() => {}}
-      setFileID={() => {}}
+      setFullName={setFullName}
+      setEmail={setEmail}
+      setFileID={setFileID}
       claimId={id}
     />
   )
