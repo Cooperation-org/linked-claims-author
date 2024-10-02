@@ -18,14 +18,12 @@ import Link from 'next/link'
 
 interface SuccessPageProps {
   formData: FormData
-  link: string
   submittedFullName: string | null
   handleBack: () => void
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
   formData,
-  link,
   submittedFullName,
   handleBack
 }) => {
@@ -35,6 +33,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const [email, setEmail] = useState<string | null>(null)
   const [fileID, setFileID] = useState<string | null>(null)
   const params = useParams()
+
+  useEffect(() => {
+    if (submittedFullName) {
+      setFetchedFullName(submittedFullName)
+    }
+  }, [submittedFullName])
 
   const id =
     typeof params?.id === 'string'
@@ -51,11 +55,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       </div>
     )
   }
-  useEffect(() => {
-    if (submittedFullName) {
-      setFetchedFullName(submittedFullName)
-    }
-  }, [submittedFullName])
+
+  // Construct the Google Drive link using the file ID
+  const link = `https://drive.google.com/file/d/${id}/view`
 
   const message = fetchedFullName
     ? `Hi ${fetchedFullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
@@ -89,7 +91,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         <Box sx={{ display: 'none' }}>
           <ComprehensiveClaimDetails
             params={{
-              claimId: `https://drive.google.com/file/d/${id}/view`
+              claimId: link
             }}
             setFullName={setFullName}
             setEmail={setEmail}

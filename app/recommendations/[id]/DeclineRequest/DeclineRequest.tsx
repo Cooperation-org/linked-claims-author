@@ -6,7 +6,7 @@ import { Box, Button, Typography } from '@mui/material'
 interface DeclineRequestProps {
   fullName: string
   email: string
-  handleBack: () => void // Add handleBack prop to allow going back
+  handleBack: () => void
 }
 
 const DeclineRequest: React.FC<DeclineRequestProps> = ({

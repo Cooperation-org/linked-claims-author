@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Typography } from '@mui/material'
 import { useParams } from 'next/navigation'
@@ -24,53 +24,40 @@ const Form = () => {
   const [email, setEmail] = useState<string | null>(null)
   const [fileID, setFileID] = useState<string | null>(null)
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
-
   const { data: session } = useSession()
   const accessToken = session?.accessToken
 
-  const params = useParams()
-  const id =
-    typeof params?.id === 'string'
-      ? params.id
-      : Array.isArray(params?.id)
-      ? params.id[0]
-      : undefined
-
-  console.log('id in ClaimPage:', id)
-  if (!id) {
-    return (
-      <div>
-        <h2>Error: Missing credential data.</h2>
-      </div>
-    )
-  }
-
-  const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
-    storageOption: 'Google Drive',
-    fullName: '',
-    howKnow: '',
-    recommendationText: '',
-    portfolio: [{ name: '', url: '' }],
-    qualifications: '',
-    explainAnswer: ''
+  const methods = useForm<FormData>({
+    defaultValues: {
+      storageOption: 'Google Drive',
+      fullName: '',
+      howKnow: '',
+      recommendationText: '',
+      portfolio: [{ name: '', url: '' }],
+      qualifications: '',
+      explainAnswer: ''
+    },
+    mode: 'onChange'
   })
 
-  const methods = useForm<FormData>({ defaultValues: storedValue, mode: 'onChange' })
   const { register, handleSubmit, watch, setValue, control, reset, formState } = methods
   const { errors, isValid } = formState
-
   const { fields, append, remove } = useFieldArray({ control, name: 'portfolio' })
-
   const formData = watch()
-  useEffect(() => {
-    if (JSON.stringify(formData) !== JSON.stringify(storedValue)) {
-      setStoreNewValue(formData)
-    }
-  }, [formData, storedValue, setStoreNewValue])
+  const params = useParams()
+  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
+  const [storedValue, setStoreNewValue, clearValue] = useLocalStorage(
+    'formData',
+    formData
+  )
 
+  // Set initial values only when fullName or fileID changes
   useEffect(() => {
-    console.log('Active Step:', activeStep)
-  }, [activeStep])
+    if (id && fullName && fileID) {
+      setValue('fullName', fullName)
+      setValue('fileID', fileID)
+    }
+  }, [id, fullName, fileID, setValue])
 
   const addCommentToFile = async (fileId: string, commentText: string, token: string) => {
     if (!fileId || !commentText || !token) {
@@ -106,25 +93,28 @@ const Form = () => {
     }
   }
 
-  const handleFormSubmit = handleSubmit(async (data: FormData) => {
-    try {
-      setSubmittedFullName(data.fullName)
-      await addCommentToFile(fileID ?? '', JSON.stringify(data), accessToken ?? '')
-      clearValue()
-      reset({
-        storageOption: 'Google Drive',
-        fullName: '',
-        howKnow: '',
-        recommendationText: '',
-        portfolio: [{ name: '', url: '' }],
-        qualifications: '',
-        explainAnswer: ''
-      })
-      setActiveStep(6)
-    } catch (error) {
-      console.error('Error during form submission:', error)
-    }
-  })
+  const handleFormSubmit = useCallback(
+    handleSubmit(async (data: FormData) => {
+      try {
+        setSubmittedFullName(data.fullName)
+        await addCommentToFile(fileID ?? '', JSON.stringify(data), accessToken ?? '')
+        clearValue()
+        reset({
+          storageOption: 'Google Drive',
+          fullName: '',
+          howKnow: '',
+          recommendationText: '',
+          portfolio: [{ name: '', url: '' }],
+          qualifications: '',
+          explainAnswer: ''
+        })
+        setActiveStep(6)
+      } catch (error) {
+        console.error('Error during form submission:', error)
+      }
+    }),
+    [fileID, accessToken, reset, clearValue, setActiveStep]
+  )
 
   return (
     <FormProvider {...methods}>
@@ -140,7 +130,7 @@ const Form = () => {
         }}
         onSubmit={handleFormSubmit}
       >
-        <Box sx={{ display: 'none' }}>
+        {activeStep === 0 && (
           <ComprehensiveClaimDetails
             params={{
               claimId: `https://drive.google.com/file/d/${id}/view`
@@ -150,7 +140,7 @@ const Form = () => {
             setFileID={setFileID}
             claimId={id}
           />
-        </Box>
+        )}
 
         {activeStep === 2 && <NoteText />}
         {activeStep === 1 && (
