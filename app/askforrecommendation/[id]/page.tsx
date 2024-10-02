@@ -11,15 +11,11 @@ import { FormLabel, TextField, Typography, Checkbox } from '@mui/material'
 import Image from 'next/image'
 import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
 import { useForm } from 'react-hook-form'
-import { SVGLargeScreen, SVGDate } from '../../Assets/SVGs'
+import { SVGLargeScreen } from '../../Assets/SVGs'
 import {
   formLabelStyles,
   CustomTextField,
   customTextFieldStyles,
-  successPageHeaderStyles,
-  successPageTitleStyles,
-  successPageInfoStyles,
-  successPageDateStyles,
   TextFieldStyles,
   StyledButton,
   nextButtonStyle
@@ -28,6 +24,7 @@ import { useParams } from 'next/navigation'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import { useSession } from 'next-auth/react'
 import { useStepContext } from '../../credentialForm/form/StepContext'
+import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
 
 const steps = ['Message', 'Invite', '']
 
@@ -45,67 +42,111 @@ export default function HorizontalLinearStepper() {
   const accessToken = session?.accessToken
   const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
   const params = useParams()
+  const [achievementName, setAchievementName] = React.useState<string | null>(null)
   const { getContent } = useGoogleDrive()
-  const imageLink =
-    'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg'
 
-  React.useEffect(() => {
-    const fetchDriveData = async () => {
-      const decodedLink = decodeURIComponent(params.id as any)
-      const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
-      const data = await getContent(fileId)
-      setDriveData(data)
-    }
+  const id = React.useMemo(() => {
+    console.log('Params:', params)
+    if (typeof params?.id === 'string') return params.id
+    if (Array.isArray(params?.id)) return params.id[0]
+    return undefined
+  }, [params])
 
-    fetchDriveData()
-  }, [accessToken, getContent, params])
+  console.log('ID:', id)
 
   const {
     reset,
     watch,
     register,
     formState: { errors }
-  } = useForm<any>({
+  } = useForm({
     defaultValues: {
       firstName: '',
-      secondName: '',
+      lastName: '',
       email: '',
-      reference: `Hey there! I hope you’re doing well. 
-            
-            I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-              driveData?.credentialSubject?.achievement[0]?.name || ''
-            }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+      reference: ''
     },
     mode: 'onChange'
   })
 
   React.useEffect(() => {
+    const fetchDriveData = async () => {
+      if (id && accessToken) {
+        const fileId = id.split('/d/')[1]?.split('/')[0]
+        console.log('File ID:', fileId)
+        if (fileId) {
+          try {
+            const data = await getContent(fileId)
+            console.log('Drive Data Fetched:', data)
+            if (data) {
+              setDriveData(data)
+              setAchievementName(data?.credentialSubject?.achievement[0]?.name || '')
+              console.log(
+                'Achievement Name:',
+                data?.credentialSubject?.achievement[0]?.name
+              )
+            }
+          } catch (error) {
+            console.error('Error fetching Google Drive data:', error)
+          }
+        }
+      }
+    }
+
+    fetchDriveData()
+  }, [id, accessToken, getContent])
+
+  React.useEffect(() => {
+    console.log('Drive Data:', driveData)
     if (driveData) {
-      localStorage.setItem('parsedData', JSON.stringify(driveData))
+      const newReference = `Hey there! I hope you’re doing well.
+        I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
+          driveData?.credentialSubject?.achievement[0]?.name || 'your field of expertise'
+        }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+
+      console.log('New Reference:', newReference)
+
+      if (watch('reference') !== newReference) {
+        console.log('Resetting form with new reference')
+        reset(formValues => ({
+          ...formValues,
+          reference: newReference
+        }))
+      }
+    }
+  }, [driveData, reset, watch])
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('Checkbox Changed:', event.target.checked)
+    setSendCopyToSelf(event.target.checked)
+  }
+
+  const handleDataFetched = (data: any) => {
+    console.log('Data Fetched from ComprehensiveClaimDetails:', data)
+    if (data?.credentialSubject?.achievement[0]?.name) {
+      setAchievementName(data.credentialSubject.achievement[0].name)
       reset({
-        reference: `Hey there! I hope you’re doing well. 
-            
-            I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-              driveData?.credentialSubject?.achievement[0]?.name || ''
-            }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+        reference: `Hey there! I hope you’re doing well.
+          I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${data.credentialSubject.achievement[0].name}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driveData])
-
-  const handleCheckboxChange = (event: any) => {
-    setSendCopyToSelf(event.target.checked)
   }
 
   const mailToLink = `mailto:${watch('email')}${
     sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
-  }?subject=${`Support Request: ${
-    driveData?.credentialSubject?.achievement[0]?.name || ''
-  }`}&body=${encodeURIComponent(
+  }?subject=${`Support Request: ${achievementName ?? ''}`}&body=${encodeURIComponent(
     watch('reference')
-  )}, Credential Public Link: https://linked-claims-author.vercel.app/Recommendations/${encodeURIComponent(
-    `${params.id}`
   )}`
+
+  console.log('Mailto Link:', mailToLink)
+
+  if (!id) {
+    return (
+      <div>
+        <h2>Error: Missing credential data.</h2>
+      </div>
+    )
+  }
 
   return (
     <Box
@@ -148,6 +189,7 @@ export default function HorizontalLinearStepper() {
           </Box>
         </Box>
       </Box>
+
       <Box
         sx={{
           display: 'flex',
@@ -169,6 +211,7 @@ export default function HorizontalLinearStepper() {
         >
           Let’s get some recommendations for you from people you know.
         </Typography>
+
         <Box sx={{ width: { xs: '100%', md: '50%' }, flex: 1, height: '100%' }}>
           <Stepper activeStep={activeStep}>
             {steps.map((label, index) => (
@@ -187,6 +230,7 @@ export default function HorizontalLinearStepper() {
               </CustomStep>
             ))}
           </Stepper>
+
           <form
             style={{
               display: 'flex',
@@ -216,49 +260,17 @@ export default function HorizontalLinearStepper() {
                   }}
                   error={!!errors.reference}
                 />
-                <Box sx={{ ...successPageHeaderStyles, mt: '30px' }}>
-                  {driveData?.credentialSubject?.evidenceLink && (
-                    <Box sx={{ display: 'flex' }}>
-                      <Box
-                        sx={{
-                          borderRadius: '20px 0px 0px 20px',
-                          width: '100px',
-                          height: '100px'
-                        }}
-                      >
-                        <Image
-                          style={{
-                            borderRadius: '20px 0px 0px 20px',
-                            width: '100px',
-                            height: '100px',
-                            objectFit: 'cover'
-                          }}
-                          src={driveData?.credentialSubject?.evidenceLink || imageLink}
-                          alt={driveData?.credentialSubject?.name || 'Evidence Image'}
-                          width={100}
-                          height={100}
-                        />
-                      </Box>
-                      <Box sx={{ flex: 1, ml: 2, mt: 1 }}>
-                        <Typography sx={successPageTitleStyles}>
-                          {driveData?.credentialSubject?.name || 'Unknown Name'}
-                        </Typography>
-                        <Typography sx={successPageTitleStyles}>
-                          {driveData?.credentialSubject?.achievement[0]?.name ||
-                            'Unknown Achievement'}
-                        </Typography>
-                        <Box sx={successPageInfoStyles}>
-                          <SVGDate />
-                          <Typography sx={successPageDateStyles}>
-                            {driveData?.credentialSubject?.duration || 'Unknown Duration'}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-                  )}
-                </Box>
+                <ComprehensiveClaimDetails
+                  params={{ claimId: `https://drive.google.com/file/d/${id}/view` }}
+                  setFullName={() => {}}
+                  setEmail={() => {}}
+                  setFileID={() => {}}
+                  claimId={id}
+                  onDataFetched={handleDataFetched}
+                />
               </Box>
             )}
+
             {activeStep === 1 && (
               <Box
                 sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}

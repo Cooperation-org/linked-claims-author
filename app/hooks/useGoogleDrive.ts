@@ -37,7 +37,6 @@ const useGoogleDrive = () => {
 
   const getContent = useCallback(
     async (fileId: string): Promise<ClaimDetail> => {
-      // if (!storage) throw new Error('Storage is not initialized')
       const file = await storage?.retrieve(fileId)
       return file as ClaimDetail
     },
@@ -46,7 +45,7 @@ const useGoogleDrive = () => {
 
   const fetchFileMetadata = async (fileId: string, resourceKey: string = '') => {
     if (!fileId || !accessToken) {
-      console.error('fileId or Access token is missing or invalid')
+      console.error('FileId or Access token is missing or invalid')
       return
     }
 
@@ -74,8 +73,17 @@ const useGoogleDrive = () => {
 
       if (response.ok) {
         const metadata = await response.json()
+        console.log('Fetched Metadata:', metadata)
+
         setFileMetadata(metadata)
-        localStorage.setItem(`fileMetadata_${fileId}`, JSON.stringify(metadata))
+
+        try {
+          localStorage.setItem(`fileMetadata_${fileId}`, JSON.stringify(metadata))
+          console.log('Metadata successfully saved to local storage.')
+        } catch (storageError) {
+          console.error('Error saving metadata to local storage:', storageError)
+        }
+
         if (metadata.owners && metadata.owners.length > 0) {
           setOwnerEmail(metadata.owners[0].emailAddress)
         }

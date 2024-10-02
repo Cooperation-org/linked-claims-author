@@ -17,7 +17,7 @@ import TabsComponent from '../../components/Tabs/Tabs'
 import { StepTrackShape } from '../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
 import { useStepContext } from '../../credentialForm/form/StepContext'
 
-const credentialData = ({ params }: { params: { id: any } }) => {
+const CredentialData = ({ params }: { params: { id: any } }) => {
   const { activeStep, setActiveStep } = useStepContext()
   const theme = useTheme<Theme>()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
@@ -118,4 +118,4 @@ const credentialData = ({ params }: { params: { id: any } }) => {
   )
 }
 
-export default credentialData
+export default CredentialData
