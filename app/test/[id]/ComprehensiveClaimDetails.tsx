@@ -48,6 +48,15 @@ interface ComprehensiveClaimDetailsProps {
   onDataFetched?: (data: ClaimDetail | null) => void
 }
 
+const cleanHTML = (htmlContent: string) => {
+  return htmlContent
+    .replace(/<p><br><\/p>/g, '')
+    .replace(/<p><\/p>/g, '')
+    .replace(/<br>/g, '')
+    .replace(/class="[^"]*"/g, '')
+    .replace(/style="[^"]*"/g, '')
+}
+
 const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   params,
   setFullName,
@@ -120,7 +129,9 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         }
       } catch (error) {
         console.error('Error fetching claim details:', error)
-        setErrorMessage('Failed to fetch claim details.')
+        setTimeout(() => {
+          setErrorMessage('Failed to fetch claim details.')
+        }, 5000)
       } finally {
         setLoading(false)
       }
@@ -302,7 +313,9 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                   mt: 2
                 }}
               >
-                {achievement.description}
+                <span
+                  dangerouslySetInnerHTML={{ __html: cleanHTML(achievement.description) }}
+                />
               </Typography>
             )}
 
@@ -310,7 +323,13 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
               <Box sx={{ mt: 2 }}>
                 <Typography>Earning criteria:</Typography>
                 <ul style={{ marginLeft: '25px' }}>
-                  <li>{achievement.criteria.narrative}</li>
+                  <li>
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: cleanHTML(achievement.criteria.narrative)
+                      }}
+                    />
+                  </li>
                 </ul>
               </Box>
             )}
