@@ -184,8 +184,8 @@ const Form = ({ onStepChange }: any) => {
         newDid = await createDID()
       }
       const { didDocument, keyPair, issuerId } = newDid
-      const file = data.evidenceLink;
-        const fileName = file.name;
+      const ImageFile = data.evidenceLink
+      const fileName = ImageFile.name
 
       const saveResponse = await saveToGoogleDrive(
         storage,
@@ -194,7 +194,7 @@ const Form = ({ onStepChange }: any) => {
           keyPair
         },
         'DID'
-        // file,                  // will active after packege publishing
+        // ImageFile,                  // will active after packege publishing
         // fileName
       )
 
@@ -209,7 +209,6 @@ const Form = ({ onStepChange }: any) => {
       throw error
     }
   }
-
   const handleSaveSession = async () => {
     try {
       const formData = watch() // Get the current form data
@@ -326,13 +325,13 @@ const Form = ({ onStepChange }: any) => {
             {activeStep === 5 && (
               <Slide in={true} direction={direction}>
                 <Box>
-                   <Step5
-                handleNext={handleNext}
-                register={register}
-                watch={watch}
-                errors={errors}
-                setValue={setValue}
-                   />                
+                  <Step5
+                    handleNext={handleNext}
+                    register={register}
+                    watch={watch}
+                    errors={errors}
+                    setValue={setValue}
+                  />
                 </Box>
               </Slide>
             )}

@@ -1,55 +1,75 @@
-'use client'
+import React, { useCallback } from 'react'
+import { Box, Typography, Link, Button } from '@mui/material'
+import { useDropzone } from 'react-dropzone'
+import { useStepContext } from '../StepContext'
 
-import React from 'react'
-import { UseFormRegister } from 'react-hook-form'
-import { Box, Button, FormLabel, TextField, Typography } from '@mui/material'
-import {
-  skipButtonBoxStyles,
-  buttonLinkStyles
-} from '../../../components/Styles/appStyles'
+const Step5 = () => {
+  const { handleNext } = useStepContext()
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    console.log(acceptedFiles)
+    // Handle file processing here
+  }, [])
 
-interface Step5Props {
-  register: UseFormRegister<FormData>
-
-  handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
-}
-
-export function Step5({ handleNext, register, setValue, watch, errors }: any) {
-  const file = watch('evidenceLink')
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null
-    if (file) {
-      // Validate file type if needed
-      if (/^image\/(jpeg|png|gif)$/.test(file.type)) {
-        setValue('evidenceLink', file) // Setting file in react-hook-form's state
-      } else {
-        alert('Please upload an image file (jpeg, png, gif)')
-      }
-    }
-  }
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/gif': ['.gif']
+    },
+    maxSize: 50 * 1024 * 1024 // 50MB limit
+  })
 
   return (
-    <Box>
-      <FormLabel htmlFor='evidenceLink'>Upload an image (optional)</FormLabel>
-      <TextField
-        {...register('evidenceLink')}
-        type='file'
-        onChange={handleFileChange}
-        inputProps={{ accept: 'image/jpeg, image/png, image/gif' }}
-        error={Boolean(errors.evidenceLink)}
-        helperText={errors.evidenceLink?.message || ''}
-        fullWidth
-      />
-
-      {file && <Typography>Image ready to be uploaded: {file.name}</Typography>}
-      <Box sx={skipButtonBoxStyles}>
-        <button type='button' onClick={handleNext} style={buttonLinkStyles}>
-          Skip
-        </button>
-      </Box>
+    <Box
+      {...getRootProps()}
+      sx={{
+        border: '2px dashed #e0e0e0',
+        borderRadius: '8px',
+        padding: '20px',
+        textAlign: 'center',
+        cursor: 'pointer',
+        backgroundColor: 'FFFFFF',
+        '&:hover': {
+          borderColor: '#90caf9'
+        }
+      }}
+    >
+      <input {...getInputProps()} />
+      <Typography
+        sx={{ display: 'flex', justifyContent: 'center' }}
+        variant='body1'
+        component='div'
+      >
+        Drop your files here or{'  '}
+        <Typography
+          sx={{
+            textDecoration: 'underline',
+            ml: '4px',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+          color='primary'
+        >
+          {' '}
+          browse
+        </Typography>
+      </Typography>
+      <Typography variant='body2' color='textSecondary' sx={{ mt: 1 }}>
+        Maximum size: 50MB
+      </Typography>
+      <Button
+        onClick={event => {
+          event.stopPropagation()
+          handleNext()
+        }}
+        variant='text'
+        color='primary'
+        sx={{ mt: 2 }}
+      >
+        Skip
+      </Button>
     </Box>
   )
 }
-
 export default Step5
