@@ -216,21 +216,32 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       {pathname?.includes('/askforrecommendation') && (
         <Box
           sx={{
-            width: '30%',
-            marginRight: '20px',
+            width: achievement?.image?.id ? '30%' : '0',
+            marginRight: achievement?.image?.id ? '20px' : '15px',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            overflow: 'hidden'
           }}
         >
-          <img
-            style={{
-              borderRadius: '20px',
-              maxWidth: '100%'
-            }}
-            src={achievement?.image?.id}
-            alt='Achievement Evidence'
-          />
+          {achievement?.image?.id ? (
+            <img
+              style={{
+                borderRadius: '20px',
+                maxWidth: '100%'
+              }}
+              src={achievement?.image?.id}
+              alt='Achievement Evidence'
+            />
+          ) : (
+            <Box
+              sx={{
+                width: '15px',
+                height: '100px',
+                backgroundColor: 'transparent'
+              }}
+            />
+          )}
         </Box>
       )}
 

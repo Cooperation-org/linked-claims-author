@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import React from 'react'
@@ -14,6 +15,15 @@ import {
 } from '../../../components/Styles/appStyles'
 import Image from 'next/image'
 
+const cleanHTML = (htmlContent: string) => {
+  return htmlContent
+    .replace(/<p><br><\/p>/g, '')
+    .replace(/<p><\/p>/g, '')
+    .replace(/<br>/g, '')
+    .replace(/class="[^"]*"/g, '')
+    .replace(/style="[^"]*"/g, '')
+}
+
 interface DataPreviewProps {
   formData: FormData
 }
@@ -27,8 +37,9 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
     window.open(url, target)
   }
 
-  const imageUrl = ''
+  const imageUrl = formData.evidenceLink || ''
   const hasValidEvidence = formData.portfolio?.some(porto => porto.name && porto.url)
+
   return (
     <Box
       sx={{
@@ -73,7 +84,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         }}
       >
         {imageUrl ? (
-          <Image
+          <img
             style={{
               borderRadius: '20px',
               width: !isLargeScreen ? '100%' : '179px',
@@ -88,12 +99,18 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <Typography sx={commonTypographyStyles}>
-          {formData?.description as any}
+          <span
+            dangerouslySetInnerHTML={{ __html: cleanHTML(formData?.description as any) }}
+          />
         </Typography>
         {formData.credentialDescription && (
           <Box sx={commonTypographyStyles}>
             <span style={{ display: 'block' }}>Earning criteria:</span>
-            {formData.credentialDescription.replace(/<[^>]+>/g, '')}
+            <span
+              dangerouslySetInnerHTML={{
+                __html: cleanHTML(formData.credentialDescription as any)
+              }}
+            />
           </Box>
         )}
         {hasValidEvidence && (
