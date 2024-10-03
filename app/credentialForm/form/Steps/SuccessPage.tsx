@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import React, { useState } from 'react'
@@ -43,6 +44,7 @@ interface SuccessPageProps {
   reset: () => void
   link: string
   setLink: (link: string) => void
+  setRefLink: (link: string) => void
   storageOption: string
 }
 
@@ -51,12 +53,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   reset,
   link,
   setLink,
+  setRefLink,
   storageOption
 }) => {
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const theme = useTheme()
-  const encodedLink = encodeURIComponent(link)
+  const refLink = link ? link.match(/\/d\/(.+?)\//)?.[1] : ''
 
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
@@ -118,23 +121,32 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         </Box>
         <Box sx={{ width: '100%' }}>
           <Box sx={successPageHeaderStyles}>
-            <Box
-              sx={{
-                borderRadius: '20px 0px 0px 20px',
-                width: '100px',
-                height: '100px'
-              }}
-            >
-              {/* <Image
-                style={{
+            {formData?.evidenceLink ? (
+              <Box
+                sx={{
                   borderRadius: '20px 0px 0px 20px',
                   width: '100px',
                   height: '100px'
                 }}
-                src={formData?.evidenceLink ?? 'not Valid image'}
-                alt='logo'
-              /> */}
-            </Box>
+              >
+                <img
+                  style={{
+                    borderRadius: '20px 0px 0px 20px',
+                    width: '100px',
+                    height: '100px'
+                  }}
+                  src={formData.evidenceLink}
+                  alt='Certification Evidence'
+                />
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  width: '15px',
+                  height: '100px'
+                }}
+              />
+            )}
             <Box sx={{ flex: 1 }}>
               <Typography sx={successPageTitleStyles}>
                 {formData?.credentialName}
@@ -176,7 +188,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           )}
         </Box>
         {storageOption !== options.Device && (
-          <Link href={`/AskForRecommendation/${encodedLink}`}>
+          <Link href={`/askforrecommendation/${refLink}`}>
             <Button
               onClick={() => {
                 setActiveStep(0)

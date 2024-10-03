@@ -1,14 +1,26 @@
+'use client'
+
 import React, { useState } from 'react'
 import { Box, Card, Container, Link, Typography } from '@mui/material'
 import { SVGBadge, QuoteSVG } from '../../../../Assets/SVGs'
+import { useParams } from 'next/navigation'
 import { FormData } from '../../../../credentialForm/form/types/Types'
-import FetchedData from '../../viewCredential/FetchedData'
+import ComprehensiveClaimDetails from '../../../../test/[id]/ComprehensiveClaimDetails'
 
 interface DataPreviewProps {
   formData: FormData
   handleNext: () => void
   handleBack: () => void
   handleSign: () => void
+}
+
+const cleanHTML = (htmlContent: string) => {
+  return htmlContent
+    .replace(/<p><br><\/p>/g, '')
+    .replace(/<p><\/p>/g, '')
+    .replace(/<br>/g, '')
+    .replace(/class="[^"]*"/g, '')
+    .replace(/style="[^"]*"/g, '')
 }
 
 const DataPreview: React.FC<DataPreviewProps> = ({
@@ -18,6 +30,27 @@ const DataPreview: React.FC<DataPreviewProps> = ({
   handleSign
 }) => {
   const [fetchedName, setFetchedName] = useState<string | null>(null)
+  const [fullName, setFullName] = useState<string | null>(null)
+  const [email, setEmail] = useState<string | null>(null)
+  const [fileID, setFileID] = useState<string | null>(null)
+
+  const params = useParams()
+  const id =
+    typeof params?.id === 'string'
+      ? params.id
+      : Array.isArray(params?.id)
+      ? params.id[0]
+      : undefined
+
+  console.log('id in DataPreview:', id) // Logging to ensure the `id` is correctly obtained
+
+  if (!id) {
+    return (
+      <div>
+        <h2>Error: Missing credential data.</h2>
+      </div>
+    )
+  }
 
   return (
     <Container maxWidth='sm' sx={{ mt: 4, mb: 4 }}>
@@ -30,12 +63,15 @@ const DataPreview: React.FC<DataPreviewProps> = ({
         If everything looks good, select Finish & Sign to complete your recommendation.
       </Typography>
 
-      {/* Credential Details from Google Drive */}
-      <FetchedData
-        setFullName={(name: string) => {
-          console.log('Full Name:', name)
-          setFetchedName(name)
+      {/* Credential Details from Google Drive using ComprehensiveClaimDetails */}
+      <ComprehensiveClaimDetails
+        params={{
+          claimId: `https://drive.google.com/file/d/${id}/view`
         }}
+        setFullName={setFullName}
+        setEmail={setEmail}
+        setFileID={setFileID}
+        claimId={id}
       />
 
       {/* Vouch Confirmation */}
@@ -90,7 +126,11 @@ const DataPreview: React.FC<DataPreviewProps> = ({
                 letterSpacing: '0.01em'
               }}
             >
-              {formData.explainAnswer.replace(/<\/?[^>]+>/gi, '')}
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: cleanHTML(formData.explainAnswer)
+                }}
+              />
             </Typography>
           </Box>
         </Card>
@@ -127,7 +167,11 @@ const DataPreview: React.FC<DataPreviewProps> = ({
               letterSpacing: '0.01em'
             }}
           >
-            {formData.howKnow.replace(/<\/?[^>]+>/gi, '')}
+            <span
+              dangerouslySetInnerHTML={{
+                __html: cleanHTML(formData.howKnow)
+              }}
+            />
           </Typography>
         </Card>
       )}

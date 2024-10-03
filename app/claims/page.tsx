@@ -16,6 +16,9 @@ import {
 } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
+import { GoogleDriveStorage } from '@cooperation/vc-storage'
+import useGoogleDrive from '../hooks/useGoogleDrive'
+import DOMPurify from 'dompurify'
 import Link from 'next/link'
 import { SVGBadge, SVGDate } from '../Assets/SVGs'
 import {
@@ -23,9 +26,6 @@ import {
   commonTypographyStyles,
   evidenceListStyles
 } from '../components/Styles/appStyles'
-import { GoogleDriveStorage } from '@cooperation/vc-storage'
-import useGoogleDrive from '../hooks/useGoogleDrive'
-import DOMPurify from 'dompurify'
 
 // Define types
 interface Claim {

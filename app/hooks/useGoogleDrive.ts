@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
 
@@ -36,54 +36,56 @@ const useGoogleDrive = () => {
   }, [accessToken])
 
   const getContent = useCallback(
-    async (fileId: string): Promise<ClaimDetail> => {
-      // if (!storage) throw new Error('Storage is not initialized')
-      const file = await storage?.retrieve(fileId)
+    async (fileID: string): Promise<ClaimDetail> => {
+      const file = await storage?.retrieve(fileID)
       return file as ClaimDetail
     },
     [storage]
   )
 
-  const fetchFileMetadata = async (fileId: any, resourceKey: string = '') => {
-    const cachedMetadata = localStorage.getItem(`fileMetadata_${fileId}`)
+  const fetchFileMetadata = async (fileID: string, resourceKey: string = '') => {
+    if (!fileID || !accessToken) {
+      console.error('FileId or Access token is missing or invalid')
+      return
+    }
+
+    const cachedMetadata = localStorage.getItem(`fileMetadata_${fileID}`)
     if (cachedMetadata) {
       console.log('Using cached file metadata...')
       const parsedMetadata = JSON.parse(cachedMetadata)
       setFileMetadata(parsedMetadata)
       if (parsedMetadata.owners && parsedMetadata.owners.length > 0) {
         setOwnerEmail(parsedMetadata.owners[0].emailAddress)
-        console.log(
-          'Owner email from cached metadata:',
-          parsedMetadata.owners[0].emailAddress
-        )
       }
       return
     }
 
-    console.log('Fetching file metadata from Google API:', fileId)
     try {
       const response = await fetch(
-        `https://www.googleapis.com/drive/v3/files/${fileId}`,
+        `https://www.googleapis.com/drive/v3/files/${fileID}?fields=id,name,mimeType,owners&supportsAllDrives=true`,
         {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${session?.accessToken}`,
-            'X-Goog-Drive-Resource-Keys': `${fileId}/${resourceKey}`
+            Authorization: `Bearer ${accessToken}`
           }
         }
       )
 
       if (response.ok) {
         const metadata = await response.json()
-        console.log('Fetched file metadata:', metadata)
+        console.log('Fetched Metadata:', metadata)
+
         setFileMetadata(metadata)
-        localStorage.setItem(`fileMetadata_${fileId}`, JSON.stringify(metadata))
+
+        try {
+          localStorage.setItem(`fileMetadata_${fileID}`, JSON.stringify(metadata))
+          console.log('Metadata successfully saved to local storage.')
+        } catch (storageError) {
+          console.error('Error saving metadata to local storage:', storageError)
+        }
+
         if (metadata.owners && metadata.owners.length > 0) {
-          const ownerEmail = metadata.owners[0].emailAddress
-          setOwnerEmail(ownerEmail)
-          console.log('Fetched owner email:', ownerEmail)
-        } else {
-          console.warn('No owners found for this file.')
+          setOwnerEmail(metadata.owners[0].emailAddress)
         }
       } else {
         console.error('Error fetching file metadata:', response.statusText)

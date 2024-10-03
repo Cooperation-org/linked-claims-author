@@ -1,7 +1,10 @@
+'use client'
+
 import React, { useState } from 'react'
 import { Tabs, Tab, Box } from '@mui/material'
+import { useParams } from 'next/navigation'
+import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
 import Form from '../../recommendations/[id]/RecommandationForm/Form'
-import FetchedData from '../../recommendations/[id]/viewCredential/FetchedData'
 
 function a11yProps(index: number) {
   return {
@@ -16,9 +19,22 @@ interface TabPanelProps {
   index: number
 }
 
-const TabsComponent = () => {
+interface TabsComponentProps {
+  fullName: string
+  setFullName: (name: string) => void
+}
+
+const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) => {
   const [value, setValue] = useState(0)
-  const [fullname, setFullName] = useState('')
+  const [email, setEmail] = useState<string | null>(null)
+  const [fileID, setFileID] = useState<string | null>(null)
+  const params = useParams()
+  const id =
+    typeof params?.id === 'string'
+      ? params.id
+      : Array.isArray(params?.id)
+      ? params.id[0]
+      : undefined
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -39,7 +55,7 @@ const TabsComponent = () => {
         />
         <Tab
           sx={{ textTransform: 'capitalize' }}
-          label={`View ${fullname}'s Credential`}
+          label={`View ${fullName}’s Credential`}
           {...a11yProps(1)}
         />
       </Tabs>
@@ -47,11 +63,18 @@ const TabsComponent = () => {
         <Form />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <FetchedData setFullName={setFullName} />
+        <ComprehensiveClaimDetails
+          params={{ claimId: `https://drive.google.com/file/d/${id}/view` }}
+          setFullName={setFullName}
+          setEmail={setEmail}
+          setFileID={setFileID}
+          claimId={id}
+        />
       </TabPanel>
     </Box>
   )
 }
+
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other }) => {
   return (
     <div

@@ -33,10 +33,9 @@ const SessionExpiryModal = () => {
   }, [session])
 
   const handleRefreshSession = () => {
-      console.log('sign in');
-    signIn('google') 
-    console.log(showModal);
-    
+    console.log('sign in')
+    signIn('google')
+    console.log(showModal)
   }
 
   return (

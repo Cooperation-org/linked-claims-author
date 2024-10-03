@@ -1,133 +1,148 @@
 'use client'
 
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import Stepper from '@mui/material/Stepper'
-import Step from '@mui/material/Step'
-import StepLabel from '@mui/material/StepLabel'
-import Button from '@mui/material/Button'
-import { styled } from '@mui/material/styles'
+import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import {
-  FormLabel,
-  TextField,
+  Box,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  CircularProgress,
   Typography,
   Checkbox,
-  CircularProgress
+  TextField,
+  FormLabel,
+  styled
 } from '@mui/material'
 import Image from 'next/image'
-import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
 import { useForm } from 'react-hook-form'
-import { SVGLargeScreen, SVGDate } from '../../Assets/SVGs'
-import {
-  formLabelStyles,
-  CustomTextField,
-  customTextFieldStyles,
-  successPageHeaderStyles,
-  successPageTitleStyles,
-  successPageInfoStyles,
-  successPageDateStyles,
-  TextFieldStyles,
-  StyledButton,
-  nextButtonStyle
-} from '../../components/Styles/appStyles'
 import { useParams } from 'next/navigation'
-import useGoogleDrive from '../../hooks/useGoogleDrive'
 import { useSession } from 'next-auth/react'
+import useGoogleDrive from '../../hooks/useGoogleDrive'
+import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
+import {
+  StyledButton,
+  formLabelStyles,
+  customTextFieldStyles,
+  TextFieldStyles,
+  nextButtonStyle,
+  CustomTextField
+} from '../../components/Styles/appStyles'
 import { useStepContext } from '../../credentialForm/form/StepContext'
+import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
+import { SVGLargeScreen } from '../../Assets/SVGs'
 
 const steps = ['Message', 'Invite', '']
 
+// Custom Step styling
 const CustomStep = styled(Step)(({ theme, completed, active }) => ({
   '& .MuiStepLabel-root': {
     color: completed || active ? 'green' : theme.palette.text.primary
   }
 }))
 
-export default function HorizontalLinearStepper() {
+export default function AskForRecommendation() {
   const { activeStep, handleNext, handleBack } = useStepContext()
-  const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
-  const [driveData, setDriveData] = React.useState<any>(null)
   const { data: session } = useSession()
-  const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
-  const [isLoading, setIsLoading] = React.useState(true)
-
+  const [sendCopyToSelf, setSendCopyToSelf] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
+
+  const id = useMemo(
+    () => (Array.isArray(params?.id) ? params.id[0] : params?.id || ''),
+    [params]
+  )
+
+  const memoizedParams = useMemo(
+    () => ({
+      claimId: `https://drive.google.com/file/d/${id}/view`
+    }),
+    [id]
+  )
+
   const { getContent } = useGoogleDrive()
-  const imageLink =
-    'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg'
 
   const {
-    reset,
-    watch,
     register,
+    watch,
+    reset,
     formState: { errors }
-  } = useForm<any>({
+  } = useForm({
     defaultValues: {
       firstName: '',
-      secondName: '',
+      lastName: '',
       email: '',
-      reference: `Hey there! I hope you’re doing well. 
-              
-              I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-                driveData?.credentialSubject?.achievement[0]?.name || ''
-              }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+      reference: ''
     },
     mode: 'onChange'
   })
 
-  React.useEffect(() => {
-    const fetchDriveData = async () => {
-      setIsLoading(true)
-      try {
-        const decodedLink = decodeURIComponent(params.id as string)
-        const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
-        const data = await getContent(fileId)
-        setDriveData(data)
-        localStorage.setItem('parsedData', JSON.stringify(data))
+  // Function to get data from local storage or fetch from Google Drive
+  const fetchOrRetrieveData = useCallback(async () => {
+    try {
+      const cachedData = localStorage.getItem(`driveData_${id}`)
+
+      if (cachedData) {
+        const parsedData = JSON.parse(cachedData)
+        setDriveData(parsedData)
+
+        const achievementName = parsedData?.credentialSubject?.achievement[0]?.name || ''
+
         reset({
-          reference: `Hey there! I hope you're doing well. 
-              
-              I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-                data?.credentialSubject?.achievement[0]?.name || ''
-              }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+          reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
         })
-      } catch (error) {
-        console.error('Error fetching drive data:', error)
-      } finally {
-        setIsLoading(false)
+      } else {
+        const data = await getContent(id)
+
+        if (data) {
+          setDriveData(data)
+          localStorage.setItem(`driveData_${id}`, JSON.stringify(data))
+
+          const achievementName = data?.credentialSubject?.achievement[0]?.name || ''
+
+          reset({
+            reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+          })
+        }
       }
+    } catch (error) {
+      console.error('Error fetching drive data:', error)
+      setIsLoading(false)
+      alert('Error fetching data. Please try again later.')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [id, getContent, reset])
+
+  useEffect(() => {
+    if (!id) {
+      setIsLoading(false)
+      return
     }
 
-    fetchDriveData()
-  }, [getContent, params, reset])
+    fetchOrRetrieveData()
+  }, [id, fetchOrRetrieveData])
 
-  React.useEffect(() => {
-    if (driveData) {
-      localStorage.setItem('parsedData', JSON.stringify(driveData))
-      reset({
-        reference: `Hey there! I hope you’re doing well. 
-            
-            I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-              driveData?.credentialSubject?.achievement[0]?.name || ''
-            }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
-      })
+  // Only fetch data when component mounts
+  useEffect(() => {
+    if (!id) {
+      setIsLoading(false)
+      return
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driveData])
 
-  const handleCheckboxChange = (event: any) => {
+    fetchOrRetrieveData()
+  }, [id, getContent, reset, setDriveData, fetchOrRetrieveData])
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSendCopyToSelf(event.target.checked)
   }
 
   const mailToLink = `mailto:${watch('email')}${
     sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
-  }?subject=${`Support Request: ${
+  }?subject=Support Request: ${
     driveData?.credentialSubject?.achievement[0]?.name || ''
-  }`}&body=${encodeURIComponent(
-    watch('reference')
-  )}, Credential Public Link: https://linked-claims-author.vercel.app/Recommendations/${encodeURIComponent(
-    `${params.id}`
-  )}`
+  }&body=${encodeURIComponent(watch('reference'))}`
 
   if (isLoading) {
     return (
@@ -164,14 +179,7 @@ export default function HorizontalLinearStepper() {
           mb: '20px'
         }}
       >
-        <Box
-          sx={{
-            position: 'relative',
-            width: '100%',
-            height: '100px',
-            mt: '30px'
-          }}
-        >
+        <Box sx={{ position: 'relative', width: '100%', height: '100px', mt: '30px' }}>
           <SVGLargeScreen />
           <Box
             sx={{
@@ -185,6 +193,7 @@ export default function HorizontalLinearStepper() {
           </Box>
         </Box>
       </Box>
+
       <Box
         sx={{
           display: 'flex',
@@ -197,7 +206,7 @@ export default function HorizontalLinearStepper() {
       >
         <Typography
           sx={{
-            color: 'var(--T3-Body-Text, #202E5B)',
+            color: '#202E5B',
             textAlign: 'center',
             fontFamily: 'Lato',
             fontSize: '24px',
@@ -206,6 +215,7 @@ export default function HorizontalLinearStepper() {
         >
           Let’s get some recommendations for you from people you know.
         </Typography>
+
         <Box sx={{ width: { xs: '100%', md: '50%' }, flex: 1, height: '100%' }}>
           <Stepper activeStep={activeStep}>
             {steps.map((label, index) => (
@@ -224,6 +234,7 @@ export default function HorizontalLinearStepper() {
               </CustomStep>
             ))}
           </Stepper>
+
           <form
             style={{
               display: 'flex',
@@ -236,73 +247,38 @@ export default function HorizontalLinearStepper() {
             }}
           >
             {activeStep === 0 && (
-              <Box position='relative' width='100%'>
-                <FormLabel sx={formLabelStyles} id='description-label'>
-                  Write a message asking for a reference:{' '}
-                  <span style={{ color: 'red' }}>*</span>
-                </FormLabel>
-                <CustomTextField
-                  {...register('reference')}
-                  sx={customTextFieldStyles}
-                  multiline
-                  rows={11}
-                  value={watch('reference')}
-                  variant='outlined'
-                  FormHelperTextProps={{
-                    className: 'MuiFormHelperText-root'
-                  }}
-                  error={!!errors.reference}
-                />
-                <Box sx={{ ...successPageHeaderStyles, mt: '30px' }}>
-                  {driveData?.credentialSubject?.evidenceLink && (
-                    <Box sx={{ display: 'flex' }}>
-                      <Box
-                        sx={{
-                          borderRadius: '20px 0px 0px 20px',
-                          width: '100px',
-                          height: '100px'
-                        }}
-                      >
-                        <Image
-                          style={{
-                            borderRadius: '20px 0px 0px 20px',
-                            width: '100px',
-                            height: '100px',
-                            objectFit: 'cover'
-                          }}
-                          src={driveData?.credentialSubject?.evidenceLink || imageLink}
-                          alt={driveData?.credentialSubject?.name || 'Evidence Image'}
-                          width={100}
-                          height={100}
-                        />
-                      </Box>
-                      <Box sx={{ flex: 1, ml: 2, mt: 1 }}>
-                        <Typography sx={successPageTitleStyles}>
-                          {driveData?.credentialSubject?.name || 'Unknown Name'}
-                        </Typography>
-                        <Typography sx={successPageTitleStyles}>
-                          {driveData?.credentialSubject?.achievement[0]?.name ||
-                            'Unknown Achievement'}
-                        </Typography>
-                        <Box sx={successPageInfoStyles}>
-                          <SVGDate />
-                          <Typography sx={successPageDateStyles}>
-                            {driveData?.credentialSubject?.duration || 'Unknown Duration'}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-                  )}
+              <>
+                <Box position='relative' width='100%'>
+                  <FormLabel sx={formLabelStyles} id='description-label'>
+                    Write a message asking for a reference:{' '}
+                    <span style={{ color: 'red' }}>*</span>
+                  </FormLabel>
+                  <CustomTextField
+                    {...register('reference')}
+                    sx={customTextFieldStyles}
+                    multiline
+                    rows={11}
+                    variant='outlined'
+                    error={!!errors.reference}
+                  />
                 </Box>
-              </Box>
+                <ComprehensiveClaimDetails
+                  params={memoizedParams}
+                  setFullName={() => {}}
+                  setEmail={() => {}}
+                  setFileID={() => {}}
+                  claimId={id}
+                  onDataFetched={setDriveData}
+                />
+              </>
             )}
+
             {activeStep === 1 && (
               <Box
                 sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
-                position='relative'
                 width='100%'
               >
-                <FormLabel sx={formLabelStyles} id='description-label'>
+                <FormLabel sx={{ color: 'black', fontSize: '16px', fontWeight: 'bold' }}>
                   Who would you like to send this to?{' '}
                   <span style={{ color: 'red' }}>*</span>
                 </FormLabel>
@@ -328,11 +304,7 @@ export default function HorizontalLinearStepper() {
                   variant='outlined'
                 />
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Checkbox
-                    {...label}
-                    checked={sendCopyToSelf}
-                    onChange={handleCheckboxChange}
-                  />
+                  <Checkbox checked={sendCopyToSelf} onChange={handleCheckboxChange} />
                   <Typography
                     sx={{
                       color: '#000',
@@ -351,7 +323,7 @@ export default function HorizontalLinearStepper() {
 
           <Box
             sx={{
-              width: { xs: '100%' },
+              width: '100%',
               height: '40px',
               display: 'flex',
               gap: '15px',
@@ -382,6 +354,7 @@ export default function HorizontalLinearStepper() {
                 Next
               </Button>
             )}
+
             {activeStep === 1 && (
               <Button
                 sx={{

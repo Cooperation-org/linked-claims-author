@@ -1,6 +1,9 @@
+'use client'
+
 import React, { useEffect, useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Typography } from '@mui/material'
+import { useParams } from 'next/navigation'
 import { FormData } from '../../../credentialForm/form/types/Types'
 import { textGuid, NoteText, SuccessText, StorageText } from './fromTexts/FormTextSteps'
 import Step1 from './Steps/Step1'
@@ -16,10 +19,12 @@ import { useStepContext } from '../../../credentialForm/form/StepContext'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID, signCred } from '../../../utils/signCred'
 import { useSession } from 'next-auth/react'
+import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDetails'
 
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState<string | null>(null)
   const [fileID, setFileID] = useState('')
   const { data: session } = useSession()
   const accessToken = session?.accessToken
@@ -57,7 +62,15 @@ const Form = () => {
   })
 
   const formData = watch()
+  const params = useParams()
+  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
 
+  useEffect(() => {
+    if (id && fullName && fileID) {
+      setValue('fullName', fullName)
+      setValue('fileID', fileID)
+    }
+  }, [id, fullName, fileID, setValue])
   useEffect(() => {
     if (JSON.stringify(formData) !== JSON.stringify(storedValue)) {
       setStoreNewValue(formData)
@@ -111,19 +124,23 @@ const Form = () => {
   }
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
-    setSubmittedFullName(data.fullName)
-    await saveAndAddcomment()
-    clearValue()
-    reset({
-      storageOption: 'Google Drive',
-      fullName: '',
-      howKnow: '',
-      recommendationText: '',
-      portfolio: [{ name: '', url: '' }],
-      qualifications: '',
-      explainAnswer: ''
-    })
-    setActiveStep(6)
+    try {
+      setSubmittedFullName(data.fullName)
+      await saveAndAddcomment()
+      clearValue()
+      reset({
+        storageOption: 'Google Drive',
+        fullName: '',
+        howKnow: '',
+        recommendationText: '',
+        portfolio: [{ name: '', url: '' }],
+        qualifications: '',
+        explainAnswer: ''
+      })
+      setActiveStep(6)
+    } catch (error) {
+      console.error('Error during form submission:', error)
+    }
   })
 
   return (
@@ -140,6 +157,17 @@ const Form = () => {
         }}
         onSubmit={handleFormSubmit}
       >
+        {activeStep === 0 && (
+          <ComprehensiveClaimDetails
+            params={{
+              claimId: `https://drive.google.com/file/d/${id}/view`
+            }}
+            setFullName={setFullName}
+            setEmail={setEmail}
+            setFileID={setFileID}
+            claimId={id}
+          />
+        )}
         <Box sx={{ display: 'none' }}>
           <FetchedData setFullName={setFullName} />
         </Box>
@@ -162,7 +190,7 @@ const Form = () => {
                 watch={watch}
                 errors={errors}
                 handleTextEditorChange={value => setValue('howKnow', value ?? '')}
-                fullName={fullName}
+                fullName={fullName ?? ''}
               />
             )}
             {activeStep === 3 && (
@@ -179,7 +207,7 @@ const Form = () => {
                 }
                 handleNext={handleNext}
                 handleBack={handleBack}
-                fullName={fullName}
+                fullName={fullName ?? ''}
               />
             )}
             {activeStep === 4 && (
@@ -187,7 +215,7 @@ const Form = () => {
                 watch={watch}
                 setValue={setValue}
                 errors={errors}
-                fullName={fullName}
+                fullName={fullName ?? ''}
               />
             )}
             {activeStep === 5 && (
@@ -211,7 +239,7 @@ const Form = () => {
 
         <Buttons
           activeStep={activeStep}
-          maxSteps={textGuid(fullName).length}
+          maxSteps={textGuid(fullName ?? '').length}
           handleNext={handleNext}
           handleSign={handleFormSubmit}
           handleBack={handleBack}
