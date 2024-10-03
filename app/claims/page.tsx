@@ -313,11 +313,7 @@ const ClaimsPage: React.FC = () => {
                       <Box
                         sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}
                       >
-                        <Link
-                          href={`/View/${encodeURIComponent(
-                            `https://drive.google.com/file/d/${claim.id}/view`
-                          )}`}
-                        >
+                        <Link href={`/view/${claim.id}`}>
                           <Button
                             variant='contained'
                             sx={{
@@ -329,11 +325,7 @@ const ClaimsPage: React.FC = () => {
                             View Credential
                           </Button>
                         </Link>
-                        <Link
-                          href={`/AskForRecommendation/${encodeURIComponent(
-                            `https://drive.google.com/file/d/${claim.id}/view`
-                          )}`}
-                        >
+                        <Link href={`/askforrecommendation/${claim.id}`}>
                           <Button
                             variant='contained'
                             sx={{
