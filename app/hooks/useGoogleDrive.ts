@@ -36,20 +36,20 @@ const useGoogleDrive = () => {
   }, [accessToken])
 
   const getContent = useCallback(
-    async (fileId: string): Promise<ClaimDetail> => {
-      const file = await storage?.retrieve(fileId)
+    async (fileID: string): Promise<ClaimDetail> => {
+      const file = await storage?.retrieve(fileID)
       return file as ClaimDetail
     },
     [storage]
   )
 
-  const fetchFileMetadata = async (fileId: string, resourceKey: string = '') => {
-    if (!fileId || !accessToken) {
+  const fetchFileMetadata = async (fileID: string, resourceKey: string = '') => {
+    if (!fileID || !accessToken) {
       console.error('FileId or Access token is missing or invalid')
       return
     }
 
-    const cachedMetadata = localStorage.getItem(`fileMetadata_${fileId}`)
+    const cachedMetadata = localStorage.getItem(`fileMetadata_${fileID}`)
     if (cachedMetadata) {
       console.log('Using cached file metadata...')
       const parsedMetadata = JSON.parse(cachedMetadata)
@@ -62,7 +62,7 @@ const useGoogleDrive = () => {
 
     try {
       const response = await fetch(
-        `https://www.googleapis.com/drive/v3/files/${fileId}?fields=id,name,mimeType,owners&supportsAllDrives=true`,
+        `https://www.googleapis.com/drive/v3/files/${fileID}?fields=id,name,mimeType,owners&supportsAllDrives=true`,
         {
           method: 'GET',
           headers: {
@@ -78,7 +78,7 @@ const useGoogleDrive = () => {
         setFileMetadata(metadata)
 
         try {
-          localStorage.setItem(`fileMetadata_${fileId}`, JSON.stringify(metadata))
+          localStorage.setItem(`fileMetadata_${fileID}`, JSON.stringify(metadata))
           console.log('Metadata successfully saved to local storage.')
         } catch (storageError) {
           console.error('Error saving metadata to local storage:', storageError)

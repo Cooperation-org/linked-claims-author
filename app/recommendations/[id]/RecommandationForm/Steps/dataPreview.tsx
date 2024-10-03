@@ -14,6 +14,15 @@ interface DataPreviewProps {
   handleSign: () => void
 }
 
+const cleanHTML = (htmlContent: string) => {
+  return htmlContent
+    .replace(/<p><br><\/p>/g, '')
+    .replace(/<p><\/p>/g, '')
+    .replace(/<br>/g, '')
+    .replace(/class="[^"]*"/g, '')
+    .replace(/style="[^"]*"/g, '')
+}
+
 const DataPreview: React.FC<DataPreviewProps> = ({
   formData,
   handleNext,
@@ -117,7 +126,11 @@ const DataPreview: React.FC<DataPreviewProps> = ({
                 letterSpacing: '0.01em'
               }}
             >
-              {formData.explainAnswer.replace(/<\/?[^>]+>/gi, '')}
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: cleanHTML(formData.explainAnswer)
+                }}
+              />
             </Typography>
           </Box>
         </Card>
@@ -154,7 +167,11 @@ const DataPreview: React.FC<DataPreviewProps> = ({
               letterSpacing: '0.01em'
             }}
           >
-            {formData.howKnow.replace(/<\/?[^>]+>/gi, '')}
+            <span
+              dangerouslySetInnerHTML={{
+                __html: cleanHTML(formData.howKnow)
+              }}
+            />
           </Typography>
         </Card>
       )}

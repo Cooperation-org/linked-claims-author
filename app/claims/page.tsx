@@ -72,9 +72,9 @@ const ClaimsPage: React.FC = () => {
   }, [accessToken])
 
   const getContent = useCallback(
-    async (fileId: string): Promise<ClaimDetail> => {
+    async (fileID: string): Promise<ClaimDetail> => {
       if (!storage) throw new Error('Storage is not initialized')
-      const file = await storage.retrieve(fileId)
+      const file = await storage.retrieve(fileID)
       return file as ClaimDetail
     },
     [storage]
@@ -95,7 +95,7 @@ const ClaimsPage: React.FC = () => {
     return claimsNames
   }, [getContent, storage])
 
-  const fetchComments = async (fileId: string) => {
+  const fetchComments = async (fileID: string) => {
     if (!accessToken) {
       console.log('Access Token not available.')
       return
@@ -103,7 +103,7 @@ const ClaimsPage: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://www.googleapis.com/drive/v2/files/${fileId}/comments`,
+        `https://www.googleapis.com/drive/v2/files/${fileID}/comments`,
         {
           headers: new Headers({
             Authorization: `Bearer ${accessToken}`,
@@ -124,7 +124,7 @@ const ClaimsPage: React.FC = () => {
             createdTime: comment.createdTime
           })
         )
-        setComments(prevState => ({ ...prevState, [fileId]: commentsData }))
+        setComments(prevState => ({ ...prevState, [fileID]: commentsData }))
       } else {
         throw new Error(data.error.message)
       }

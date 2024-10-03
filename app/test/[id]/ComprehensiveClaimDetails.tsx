@@ -43,7 +43,7 @@ interface ComprehensiveClaimDetailsProps {
   }
   setFullName: (name: string) => void
   setEmail?: (email: string) => void
-  setFileID?: (fileId: string) => void
+  setFileID?: (fileID: string) => void
   claimId?: string
   onDataFetched?: (data: ClaimDetail | null) => void
 }
@@ -82,23 +82,23 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   } = useGoogleDrive()
 
   const decodedId = useMemo(() => decodeURIComponent(params.claimId), [params.claimId])
-  const fileId = useMemo(() => decodedId.split('/d/')[1]?.split('/')[0], [decodedId])
+  const fileID = useMemo(() => decodedId.split('/d/')[1]?.split('/')[0], [decodedId])
 
   useEffect(() => {
-    if (!fileId) {
+    if (!fileID) {
       setErrorMessage('Invalid claim ID.')
       setLoading(false)
     }
-  }, [fileId])
+  }, [fileID])
 
   useEffect(() => {
     const fetchDriveData = async () => {
-      if (!accessToken || !fileId) return
+      if (!accessToken || !fileID) return
 
       try {
-        setFileID(fileId)
+        setFileID(fileID)
 
-        const cachedContent = localStorage.getItem(`fileContent_${fileId}`)
+        const cachedContent = localStorage.getItem(`fileContent_${fileID}`)
         if (cachedContent) {
           const parsedData = JSON.parse(cachedContent) as ClaimDetail
           if (
@@ -110,14 +110,14 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
             onDataFetched?.(parsedData)
           }
         } else {
-          const content = await getContent(fileId)
+          const content = await getContent(fileID)
           setClaimDetail(content)
           setFullName(content.credentialSubject?.name)
-          localStorage.setItem(`fileContent_${fileId}`, JSON.stringify(content))
+          localStorage.setItem(`fileContent_${fileID}`, JSON.stringify(content))
           onDataFetched?.(content)
         }
 
-        const cachedMetadata = localStorage.getItem(`fileMetadata_${fileId}`)
+        const cachedMetadata = localStorage.getItem(`fileMetadata_${fileID}`)
         if (cachedMetadata) {
           const metadataOwnerEmail = JSON.parse(cachedMetadata)?.owners[0]?.emailAddress
           if (!ownerEmail || ownerEmail !== metadataOwnerEmail) {
@@ -125,7 +125,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
             setEmail(metadataOwnerEmail)
           }
         } else {
-          await fetchFileMetadata(fileId, '')
+          await fetchFileMetadata(fileID, '')
         }
       } catch (error) {
         console.error('Error fetching claim details:', error)
@@ -137,12 +137,12 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       }
     }
 
-    if (accessToken && fileId) {
+    if (accessToken && fileID) {
       fetchDriveData()
     }
   }, [
     accessToken,
-    fileId,
+    fileID,
     claimDetail,
     getContent,
     fetchFileMetadata,

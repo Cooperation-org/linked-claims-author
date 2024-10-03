@@ -58,15 +58,15 @@ const Form = () => {
     }
   }, [id, fullName, fileID, setValue])
 
-  const addCommentToFile = async (fileId: string, commentText: string, token: string) => {
-    if (!fileId || !commentText || !token) {
-      console.error('Missing required parameters: fileId, commentText, or accessToken')
+  const addCommentToFile = async (fileID: string, commentText: string, token: string) => {
+    if (!fileID || !commentText || !token) {
+      console.error('Missing required parameters: fileID, commentText, or accessToken')
       return
     }
 
     try {
       const response = await fetch(
-        `https://www.googleapis.com/drive/v3/files/${fileId}/comments?fields=id,content,createdTime`,
+        `https://www.googleapis.com/drive/v3/files/${fileID}/comments?fields=id,content,createdTime`,
         {
           method: 'POST',
           headers: {

@@ -20,10 +20,10 @@ export const createFolderAndUploadFile = async (
         type: 'application/json'
       })
     }
-    const fileId = await storage.save(fileData, folderId)
-    console.log('File uploaded successfully with ID:', fileId)
+    const fileID = await storage.save(fileData, folderId)
+    console.log('File uploaded successfully with ID:', fileID)
 
-    const fileLink = `https://drive.google.com/file/d/${fileId}/view?usp=sharing`
+    const fileLink = `https://drive.google.com/file/d/${fileID}/view?usp=sharing`
     setLink(fileLink)
     console.log('File uploaded successfully with link:', fileLink)
   } catch (error) {

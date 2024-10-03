@@ -16,7 +16,7 @@ import { useSession } from 'next-auth/react'
 interface FetchedDataProps {
   setFullName: (name: string) => void
   setEmail?: (email: string) => void
-  setFileID?: (fileId: string) => void
+  setFileID?: (fileID: string) => void
 }
 
 const FetchedData: React.FC<FetchedDataProps> = ({
@@ -36,19 +36,19 @@ const FetchedData: React.FC<FetchedDataProps> = ({
     const fetchDriveData = async () => {
       try {
         const decodedLink = decodeURIComponent(params.id as any)
-        const fileId = decodedLink?.split('/d/')[1]?.split('/')[0]
+        const fileID = decodedLink?.split('/d/')[1]?.split('/')[0]
 
-        if (fileId) {
-          setFileID(fileId)
+        if (fileID) {
+          setFileID(fileID)
 
           // Fetch the data using getContent
-          const data = await getContent(fileId)
+          const data = await getContent(fileID)
           console.log('Fetched data from Google Drive:', data)
           setDriveData(data)
           setFullName(data?.credentialSubject?.name)
 
           // Fetch metadata
-          await fetchFileMetadata(fileId, '')
+          await fetchFileMetadata(fileID, '')
 
           // Set email from metadata
           if (ownerEmail) {

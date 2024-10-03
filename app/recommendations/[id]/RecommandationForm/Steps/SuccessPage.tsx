@@ -48,7 +48,6 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       ? params.id[0]
       : undefined
 
-  console.log('id in ClaimPage:', id)
   if (!id) {
     return (
       <div>
