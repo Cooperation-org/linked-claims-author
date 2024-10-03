@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import {
   Box,
   Stepper,
@@ -79,7 +79,7 @@ export default function AskForRecommendation() {
   })
 
   // Function to get data from local storage or fetch from Google Drive
-  const fetchOrRetrieveData = async () => {
+  const fetchOrRetrieveData = useCallback(async () => {
     try {
       const cachedData = localStorage.getItem(`driveData_${id}`)
 
@@ -113,7 +113,16 @@ export default function AskForRecommendation() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [id, getContent, reset])
+
+  useEffect(() => {
+    if (!id) {
+      setIsLoading(false)
+      return
+    }
+
+    fetchOrRetrieveData()
+  }, [id, fetchOrRetrieveData])
 
   // Only fetch data when component mounts
   useEffect(() => {
@@ -123,7 +132,7 @@ export default function AskForRecommendation() {
     }
 
     fetchOrRetrieveData()
-  }, [id, getContent, reset])
+  }, [id, getContent, reset, setDriveData, fetchOrRetrieveData])
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSendCopyToSelf(event.target.checked)
