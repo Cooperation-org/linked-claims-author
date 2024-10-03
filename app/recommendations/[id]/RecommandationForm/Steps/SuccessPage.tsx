@@ -60,7 +60,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const link = `https://drive.google.com/file/d/${id}/view`
 
   const message = fetchedFullName
-    ? `Hi ${fetchedFullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
+    ? `Hi ${fullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
     : 'Loading...'
 
   const handleCopy = () => {
@@ -101,7 +101,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         </Box>
 
         <Typography sx={{ fontSize: '16px', letterSpacing: '0.01em', textAlign: 'left' }}>
-          Now let {fetchedFullName ?? 'loading...'} know that you’ve completed the
+          Now let {fullName ?? 'loading...'} know that you’ve completed the
           recommendation.
         </Typography>
 
@@ -133,7 +133,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             <SVGBadge />
           </Box>
           <Typography sx={{ position: 'relative', letterSpacing: '0.06px', zIndex: 1 }}>
-            {submittedFullName} vouched for {fetchedFullName}.
+            {submittedFullName} vouched for {fullName}.
           </Typography>
         </Box>
 
