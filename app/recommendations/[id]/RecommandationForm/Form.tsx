@@ -51,7 +51,6 @@ const Form = () => {
     formData
   )
 
-  // Set initial values only when fullName or fileID changes
   useEffect(() => {
     if (id && fullName && fileID) {
       setValue('fullName', fullName)
@@ -93,28 +92,25 @@ const Form = () => {
     }
   }
 
-  const handleFormSubmit = useCallback(
-    handleSubmit(async (data: FormData) => {
-      try {
-        setSubmittedFullName(data.fullName)
-        await addCommentToFile(fileID ?? '', JSON.stringify(data), accessToken ?? '')
-        clearValue()
-        reset({
-          storageOption: 'Google Drive',
-          fullName: '',
-          howKnow: '',
-          recommendationText: '',
-          portfolio: [{ name: '', url: '' }],
-          qualifications: '',
-          explainAnswer: ''
-        })
-        setActiveStep(6)
-      } catch (error) {
-        console.error('Error during form submission:', error)
-      }
-    }),
-    [fileID, accessToken, reset, clearValue, setActiveStep]
-  )
+  const handleFormSubmit = handleSubmit(async (data: FormData) => {
+    try {
+      setSubmittedFullName(data.fullName)
+      await addCommentToFile(fileID ?? '', JSON.stringify(data), accessToken ?? '')
+      clearValue()
+      reset({
+        storageOption: 'Google Drive',
+        fullName: '',
+        howKnow: '',
+        recommendationText: '',
+        portfolio: [{ name: '', url: '' }],
+        qualifications: '',
+        explainAnswer: ''
+      })
+      setActiveStep(6)
+    } catch (error) {
+      console.error('Error during form submission:', error)
+    }
+  })
 
   return (
     <FormProvider {...methods}>
