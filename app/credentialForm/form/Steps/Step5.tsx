@@ -1,43 +1,75 @@
-'use client'
+import React, { useCallback } from 'react'
+import { Box, Typography, Link, Button } from '@mui/material'
+import { useDropzone } from 'react-dropzone'
+import { useStepContext } from '../StepContext'
 
-import React from 'react' // , { useState }
-import { FormLabel, TextField, Box } from '@mui/material'
-import {
-  buttonLinkStyles,
-  inputPropsStyles,
-  TextFieldStyles,
-  formLabelStyles,
-  skipButtonBoxStyles
-} from '../../../components/Styles/appStyles'
-import { UseFormRegister } from 'react-hook-form'
-import { FormData } from '../types/Types'
-interface Step5Props {
-  register: UseFormRegister<FormData>
-  handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
-}
+const Step5 = () => {
+  const { handleNext } = useStepContext()
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    console.log(acceptedFiles)
+    // Handle file processing here
+  }, [])
 
-export function Step5({ register, handleNext }: Readonly<Step5Props>) {
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/gif': ['.gif']
+    },
+    maxSize: 50 * 1024 * 1024 // 50MB limit
+  })
+
   return (
-    <Box>
-      <FormLabel sx={formLabelStyles} id='image-url-label'>
-        URL of an image you have permission to use (optional)
-      </FormLabel>
-      <TextField
-        {...register('evidenceLink')}
-        placeholder='https://'
-        variant='outlined'
-        sx={TextFieldStyles}
-        aria-labelledby='image-url-label'
-        inputProps={{
-          'aria-label': 'weight',
-          style: inputPropsStyles
+    <Box
+      {...getRootProps()}
+      sx={{
+        border: '2px dashed #e0e0e0',
+        borderRadius: '8px',
+        padding: '20px',
+        textAlign: 'center',
+        cursor: 'pointer',
+        backgroundColor: 'FFFFFF',
+        '&:hover': {
+          borderColor: '#90caf9'
+        }
+      }}
+    >
+      <input {...getInputProps()} />
+      <Typography
+        sx={{ display: 'flex', justifyContent: 'center' }}
+        variant='body1'
+        component='div'
+      >
+        Drop your files here or{'  '}
+        <Typography
+          sx={{
+            textDecoration: 'underline',
+            ml: '4px',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+          color='primary'
+        >
+          {' '}
+          browse
+        </Typography>
+      </Typography>
+      <Typography variant='body2' color='textSecondary' sx={{ mt: 1 }}>
+        Maximum size: 50MB
+      </Typography>
+      <Button
+        onClick={event => {
+          event.stopPropagation()
+          handleNext()
         }}
-      />
-      <Box sx={skipButtonBoxStyles}>
-        <button type='button' onClick={handleNext} style={buttonLinkStyles}>
-          Skip
-        </button>
-      </Box>
+        variant='text'
+        color='primary'
+        sx={{ mt: 2 }}
+      >
+        Skip
+      </Button>
     </Box>
   )
 }
+export default Step5
