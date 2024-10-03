@@ -19,7 +19,13 @@ import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
 import useGoogleDrive from '../hooks/useGoogleDrive'
 import DOMPurify from 'dompurify'
-
+import Link from 'next/link'
+import { SVGBadge, SVGDate } from '../Assets/SVGs'
+import {
+  credentialBoxStyles,
+  commonTypographyStyles,
+  evidenceListStyles
+} from '../components/Styles/appStyles'
 
 // Define types
 interface Claim {
@@ -57,16 +63,13 @@ interface Comment {
 const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<Claim[]>([])
   const [openClaim, setOpenClaim] = useState<string | null>(null)
+  const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
   const [comments, setComments] = useState<{ [key: string]: Comment[] }>({})
+  const { getContent } = useGoogleDrive()
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
-  const params = useParams()
-  const [fullName, setFullName] = useState<string | null>(null)
-  const [email, setEmail] = useState<string | null>(null)
-  const [fileID, setFileID] = useState<string | null>(null)
-  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
 
   useEffect(() => {
     if (accessToken) {
@@ -74,15 +77,6 @@ const ClaimsPage: React.FC = () => {
       setStorage(storageInstance)
     }
   }, [accessToken])
-
-  const getContent = useCallback(
-    async (fileID: string): Promise<ClaimDetail> => {
-      if (!storage) throw new Error('Storage is not initialized')
-      const file = await storage.retrieve(fileID)
-      return file as ClaimDetail
-    },
-    [storage]
-  )
 
   const getAllClaims = useCallback(async (): Promise<any> => {
     const claimsData = await storage?.getAllVCs()
@@ -98,7 +92,7 @@ const ClaimsPage: React.FC = () => {
     return claimsNames
   }, [getContent, storage])
 
-  const fetchComments = async (fileID: string) => {
+  const fetchComments = async (fileId: string) => {
     if (!accessToken) {
       console.log('Access Token not available.')
       return
@@ -206,7 +200,7 @@ const ClaimsPage: React.FC = () => {
       <List>
         {claims.map(claim => (
           <div key={claim.id}>
-            <ListItem button onClick={() => handleClaimClick(claim.id)}>
+            <ListItem button onClick={() => handleClaimClick(claim.id, claim)}>
               <ListItemText primary={claim.achievementName} />
               {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
