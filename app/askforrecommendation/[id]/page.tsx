@@ -7,7 +7,13 @@ import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
-import { FormLabel, TextField, Typography, Checkbox } from '@mui/material'
+import {
+  FormLabel,
+  TextField,
+  Typography,
+  Checkbox,
+  CircularProgress
+} from '@mui/material'
 import Image from 'next/image'
 import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
 import { useForm } from 'react-hook-form'
@@ -41,6 +47,8 @@ export default function HorizontalLinearStepper() {
   const { data: session } = useSession()
   const accessToken = session?.accessToken
   const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(true)
+
   const params = useParams()
   const [achievementName, setAchievementName] = React.useState<string | null>(null)
   const { getContent } = useGoogleDrive()
@@ -64,13 +72,18 @@ export default function HorizontalLinearStepper() {
       firstName: '',
       lastName: '',
       email: '',
-      reference: ''
+      reference: `Hey there! I hope you’re doing well. 
+              
+              I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
+                driveData?.credentialSubject?.achievement[0]?.name || ''
+              }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
     },
     mode: 'onChange'
   })
 
   React.useEffect(() => {
     const fetchDriveData = async () => {
+      setIsLoading(true)
       if (id && accessToken) {
         const fileId = id.split('/d/')[1]?.split('/')[0]
         console.log('File ID:', fileId)
@@ -85,51 +98,29 @@ export default function HorizontalLinearStepper() {
                 'Achievement Name:',
                 data?.credentialSubject?.achievement[0]?.name
               )
+              reset({
+                reference: `Hey there! I hope you're doing well. 
+              
+                I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
+                  data?.credentialSubject?.achievement[0]?.name || ''
+                }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+              })
             }
           } catch (error) {
             console.error('Error fetching Google Drive data:', error)
+          } finally {
+            setIsLoading(false)
           }
         }
       }
     }
 
     fetchDriveData()
-  }, [id, accessToken, getContent])
-
-  React.useEffect(() => {
-    console.log('Drive Data:', driveData)
-    if (driveData) {
-      const newReference = `Hey there! I hope you’re doing well.
-        I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-          driveData?.credentialSubject?.achievement[0]?.name || 'your field of expertise'
-        }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
-
-      console.log('New Reference:', newReference)
-
-      if (watch('reference') !== newReference) {
-        console.log('Resetting form with new reference')
-        reset(formValues => ({
-          ...formValues,
-          reference: newReference
-        }))
-      }
-    }
-  }, [driveData, reset, watch])
+  }, [id, accessToken, getContent, reset])
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log('Checkbox Changed:', event.target.checked)
     setSendCopyToSelf(event.target.checked)
-  }
-
-  const handleDataFetched = (data: any) => {
-    console.log('Data Fetched from ComprehensiveClaimDetails:', data)
-    if (data?.credentialSubject?.achievement[0]?.name) {
-      setAchievementName(data.credentialSubject.achievement[0].name)
-      reset({
-        reference: `Hey there! I hope you’re doing well.
-          I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${data.credentialSubject.achievement[0].name}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
-      })
-    }
   }
 
   const mailToLink = `mailto:${watch('email')}${
@@ -140,11 +131,18 @@ export default function HorizontalLinearStepper() {
 
   console.log('Mailto Link:', mailToLink)
 
-  if (!id) {
+  if (isLoading) {
     return (
-      <div>
-        <h2>Error: Missing credential data.</h2>
-      </div>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh'
+        }}
+      >
+        <CircularProgress />
+      </Box>
     )
   }
 
@@ -266,7 +264,11 @@ export default function HorizontalLinearStepper() {
                   setEmail={() => {}}
                   setFileID={() => {}}
                   claimId={id}
-                  onDataFetched={handleDataFetched}
+                  onDataFetched={data =>
+                    setAchievementName(
+                      data?.credentialSubject?.achievement[0]?.name || ''
+                    )
+                  }
                 />
               </Box>
             )}
