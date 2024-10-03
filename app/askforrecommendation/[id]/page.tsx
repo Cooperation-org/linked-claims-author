@@ -1,135 +1,139 @@
 'use client'
 
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import Stepper from '@mui/material/Stepper'
-import Step from '@mui/material/Step'
-import StepLabel from '@mui/material/StepLabel'
-import Button from '@mui/material/Button'
-import { styled } from '@mui/material/styles'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
-  FormLabel,
-  TextField,
+  Box,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  CircularProgress,
   Typography,
   Checkbox,
-  CircularProgress
+  TextField,
+  FormLabel,
+  styled
 } from '@mui/material'
 import Image from 'next/image'
-import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
 import { useForm } from 'react-hook-form'
-import { SVGLargeScreen } from '../../Assets/SVGs'
+import { useParams } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import useGoogleDrive from '../../hooks/useGoogleDrive'
+import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
 import {
+  StyledButton,
   formLabelStyles,
-  CustomTextField,
   customTextFieldStyles,
   TextFieldStyles,
-  StyledButton,
-  nextButtonStyle
+  nextButtonStyle,
+  CustomTextField
 } from '../../components/Styles/appStyles'
-import { useParams } from 'next/navigation'
-import useGoogleDrive from '../../hooks/useGoogleDrive'
-import { useSession } from 'next-auth/react'
 import { useStepContext } from '../../credentialForm/form/StepContext'
-import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
+import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
+import { SVGLargeScreen } from '../../Assets/SVGs'
 
 const steps = ['Message', 'Invite', '']
 
+// Custom Step styling
 const CustomStep = styled(Step)(({ theme, completed, active }) => ({
   '& .MuiStepLabel-root': {
     color: completed || active ? 'green' : theme.palette.text.primary
   }
 }))
 
-export default function HorizontalLinearStepper() {
+export default function AskForRecommendation() {
   const { activeStep, handleNext, handleBack } = useStepContext()
-  const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
-  const [driveData, setDriveData] = React.useState<any>(null)
   const { data: session } = useSession()
-  const accessToken = session?.accessToken
-  const [sendCopyToSelf, setSendCopyToSelf] = React.useState(false)
-  const [isLoading, setIsLoading] = React.useState(true)
-
+  const [sendCopyToSelf, setSendCopyToSelf] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
-  const [achievementName, setAchievementName] = React.useState<string | null>(null)
+
+  const id = useMemo(
+    () => (Array.isArray(params?.id) ? params.id[0] : params?.id || ''),
+    [params]
+  )
+
+  const memoizedParams = useMemo(
+    () => ({
+      claimId: `https://drive.google.com/file/d/${id}/view`
+    }),
+    [id]
+  )
+
   const { getContent } = useGoogleDrive()
 
-  const id = React.useMemo(() => {
-    console.log('Params:', params)
-    if (typeof params?.id === 'string') return params.id
-    if (Array.isArray(params?.id)) return params.id[0]
-    return undefined
-  }, [params])
-
-  console.log('ID:', id)
-
   const {
-    reset,
-    watch,
     register,
+    watch,
+    reset,
     formState: { errors }
   } = useForm({
     defaultValues: {
       firstName: '',
       lastName: '',
       email: '',
-      reference: `Hey there! I hope you’re doing well. 
-              
-              I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-                driveData?.credentialSubject?.achievement[0]?.name || ''
-              }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+      reference: ''
     },
     mode: 'onChange'
   })
 
-  React.useEffect(() => {
-    const fetchDriveData = async () => {
-      setIsLoading(true)
-      if (id && accessToken) {
-        const fileId = id.split('/d/')[1]?.split('/')[0]
-        console.log('File ID:', fileId)
-        if (fileId) {
-          try {
-            const data = await getContent(fileId)
-            console.log('Drive Data Fetched:', data)
-            if (data) {
-              setDriveData(data)
-              setAchievementName(data?.credentialSubject?.achievement[0]?.name || '')
-              console.log(
-                'Achievement Name:',
-                data?.credentialSubject?.achievement[0]?.name
-              )
-              reset({
-                reference: `Hey there! I hope you're doing well. 
-              
-                I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${
-                  data?.credentialSubject?.achievement[0]?.name || ''
-                }. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
-              })
-            }
-          } catch (error) {
-            console.error('Error fetching Google Drive data:', error)
-          } finally {
-            setIsLoading(false)
-          }
+  // Function to get data from local storage or fetch from Google Drive
+  const fetchOrRetrieveData = async () => {
+    try {
+      const cachedData = localStorage.getItem(`driveData_${id}`)
+
+      if (cachedData) {
+        const parsedData = JSON.parse(cachedData)
+        setDriveData(parsedData)
+
+        const achievementName = parsedData?.credentialSubject?.achievement[0]?.name || ''
+
+        reset({
+          reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+        })
+      } else {
+        const data = await getContent(id)
+
+        if (data) {
+          setDriveData(data)
+          localStorage.setItem(`driveData_${id}`, JSON.stringify(data))
+
+          const achievementName = data?.credentialSubject?.achievement[0]?.name || ''
+
+          reset({
+            reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+          })
         }
       }
+    } catch (error) {
+      console.error('Error fetching drive data:', error)
+      setIsLoading(false)
+      alert('Error fetching data. Please try again later.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Only fetch data when component mounts
+  useEffect(() => {
+    if (!id) {
+      setIsLoading(false)
+      return
     }
 
-    fetchDriveData()
-  }, [id, accessToken, getContent, reset])
+    fetchOrRetrieveData()
+  }, [id, getContent, reset])
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('Checkbox Changed:', event.target.checked)
     setSendCopyToSelf(event.target.checked)
   }
 
   const mailToLink = `mailto:${watch('email')}${
     sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
-  }?subject=${`Support Request: ${achievementName ?? ''}`}&body=${encodeURIComponent(
-    watch('reference')
-  )}`
-
-  console.log('Mailto Link:', mailToLink)
+  }?subject=Support Request: ${
+    driveData?.credentialSubject?.achievement[0]?.name || ''
+  }&body=${encodeURIComponent(watch('reference'))}`
 
   if (isLoading) {
     return (
@@ -166,14 +170,7 @@ export default function HorizontalLinearStepper() {
           mb: '20px'
         }}
       >
-        <Box
-          sx={{
-            position: 'relative',
-            width: '100%',
-            height: '100px',
-            mt: '30px'
-          }}
-        >
+        <Box sx={{ position: 'relative', width: '100%', height: '100px', mt: '30px' }}>
           <SVGLargeScreen />
           <Box
             sx={{
@@ -200,7 +197,7 @@ export default function HorizontalLinearStepper() {
       >
         <Typography
           sx={{
-            color: 'var(--T3-Body-Text, #202E5B)',
+            color: '#202E5B',
             textAlign: 'center',
             fontFamily: 'Lato',
             fontSize: '24px',
@@ -241,45 +238,38 @@ export default function HorizontalLinearStepper() {
             }}
           >
             {activeStep === 0 && (
-              <Box position='relative' width='100%'>
-                <FormLabel sx={formLabelStyles} id='description-label'>
-                  Write a message asking for a reference:{' '}
-                  <span style={{ color: 'red' }}>*</span>
-                </FormLabel>
-                <CustomTextField
-                  {...register('reference')}
-                  sx={customTextFieldStyles}
-                  multiline
-                  rows={11}
-                  value={watch('reference')}
-                  variant='outlined'
-                  FormHelperTextProps={{
-                    className: 'MuiFormHelperText-root'
-                  }}
-                  error={!!errors.reference}
-                />
+              <>
+                <Box position='relative' width='100%'>
+                  <FormLabel sx={formLabelStyles} id='description-label'>
+                    Write a message asking for a reference:{' '}
+                    <span style={{ color: 'red' }}>*</span>
+                  </FormLabel>
+                  <CustomTextField
+                    {...register('reference')}
+                    sx={customTextFieldStyles}
+                    multiline
+                    rows={11}
+                    variant='outlined'
+                    error={!!errors.reference}
+                  />
+                </Box>
                 <ComprehensiveClaimDetails
-                  params={{ claimId: `https://drive.google.com/file/d/${id}/view` }}
+                  params={memoizedParams}
                   setFullName={() => {}}
                   setEmail={() => {}}
                   setFileID={() => {}}
                   claimId={id}
-                  onDataFetched={data =>
-                    setAchievementName(
-                      data?.credentialSubject?.achievement[0]?.name || ''
-                    )
-                  }
+                  onDataFetched={setDriveData}
                 />
-              </Box>
+              </>
             )}
 
             {activeStep === 1 && (
               <Box
                 sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
-                position='relative'
                 width='100%'
               >
-                <FormLabel sx={formLabelStyles} id='description-label'>
+                <FormLabel sx={{ color: 'black', fontSize: '16px', fontWeight: 'bold' }}>
                   Who would you like to send this to?{' '}
                   <span style={{ color: 'red' }}>*</span>
                 </FormLabel>
@@ -305,11 +295,7 @@ export default function HorizontalLinearStepper() {
                   variant='outlined'
                 />
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Checkbox
-                    {...label}
-                    checked={sendCopyToSelf}
-                    onChange={handleCheckboxChange}
-                  />
+                  <Checkbox checked={sendCopyToSelf} onChange={handleCheckboxChange} />
                   <Typography
                     sx={{
                       color: '#000',
@@ -328,7 +314,7 @@ export default function HorizontalLinearStepper() {
 
           <Box
             sx={{
-              width: { xs: '100%' },
+              width: '100%',
               height: '40px',
               display: 'flex',
               gap: '15px',
@@ -359,6 +345,7 @@ export default function HorizontalLinearStepper() {
                 Next
               </Button>
             )}
+
             {activeStep === 1 && (
               <Button
                 sx={{

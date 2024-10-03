@@ -69,15 +69,12 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   const {
     getContent,
     fetchFileMetadata,
-    fileMetadata,
     ownerEmail: fetchedOwnerEmail
   } = useGoogleDrive()
 
-  // Memoize decoded ID and file ID extraction logic
-  const decodedid = useMemo(() => decodeURIComponent(params.claimId), [params.claimId])
-  const fileId = useMemo(() => decodedid.split('/d/')[1]?.split('/')[0], [decodedid])
+  const decodedId = useMemo(() => decodeURIComponent(params.claimId), [params.claimId])
+  const fileId = useMemo(() => decodedId.split('/d/')[1]?.split('/')[0], [decodedId])
 
-  // Set error if fileId is invalid
   useEffect(() => {
     if (!fileId) {
       setErrorMessage('Invalid claim ID.')
@@ -85,7 +82,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     }
   }, [fileId])
 
-  // Fetch content and metadata
   useEffect(() => {
     const fetchDriveData = async () => {
       if (!accessToken || !fileId) return
@@ -93,32 +89,33 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       try {
         setFileID(fileId)
 
-        // Check local cache for content
         const cachedContent = localStorage.getItem(`fileContent_${fileId}`)
-        const cachedMetadata = localStorage.getItem(`fileMetadata_${fileId}`)
-
-        // If cached content exists, use it
         if (cachedContent) {
           const parsedData = JSON.parse(cachedContent) as ClaimDetail
-          setClaimDetail(parsedData)
-          setFullName(parsedData.credentialSubject?.name)
-          onDataFetched && onDataFetched(parsedData)
+          if (
+            !claimDetail ||
+            JSON.stringify(parsedData) !== JSON.stringify(claimDetail)
+          ) {
+            setClaimDetail(parsedData)
+            setFullName(parsedData.credentialSubject?.name)
+            onDataFetched?.(parsedData)
+          }
         } else {
-          // Fetch content from Google Drive
           const content = await getContent(fileId)
           setClaimDetail(content)
           setFullName(content.credentialSubject?.name)
           localStorage.setItem(`fileContent_${fileId}`, JSON.stringify(content))
-          onDataFetched && onDataFetched(content)
+          onDataFetched?.(content)
         }
 
-        // If cached metadata exists, use it
+        const cachedMetadata = localStorage.getItem(`fileMetadata_${fileId}`)
         if (cachedMetadata) {
           const metadataOwnerEmail = JSON.parse(cachedMetadata)?.owners[0]?.emailAddress
-          setOwnerEmail(metadataOwnerEmail)
-          setEmail(metadataOwnerEmail)
+          if (!ownerEmail || ownerEmail !== metadataOwnerEmail) {
+            setOwnerEmail(metadataOwnerEmail)
+            setEmail(metadataOwnerEmail)
+          }
         } else {
-          // Fetch metadata from Google Drive
           await fetchFileMetadata(fileId, '')
         }
       } catch (error) {
@@ -134,36 +131,23 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     }
   }, [
     accessToken,
+    fileId,
+    claimDetail,
     getContent,
     fetchFileMetadata,
-    fileId,
+    setFileID,
+    ownerEmail,
     setFullName,
     setEmail,
-    setFileID,
     onDataFetched
   ])
 
-  // Update claim detail and metadata in state
   useEffect(() => {
-    if (claimDetail) {
-      const parsedData = claimDetail
-      setClaimDetail(parsedData)
-      setFullName(parsedData.credentialSubject?.name)
-      localStorage.setItem(`fileContent_${fileId}`, JSON.stringify(parsedData))
-    }
-
     if (fetchedOwnerEmail) {
       setOwnerEmail(fetchedOwnerEmail)
       setEmail(fetchedOwnerEmail)
-      const metadata = { owners: [{ emailAddress: fetchedOwnerEmail }] }
-      localStorage.setItem(`fileMetadata_${fileId}`, JSON.stringify(metadata))
     }
-  }, [claimDetail, fetchedOwnerEmail, setFullName, setEmail, fileId])
-
-  // Helper function to clean HTML content
-  const cleanHTML = (htmlContent: string) => {
-    return htmlContent.replace(/<p><br><\/p>|<p><\/p>|<br>|<\/?[^>]+>/g, '')
-  }
+  }, [fetchedOwnerEmail, setEmail])
 
   if (loading) {
     return (
@@ -201,7 +185,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     <Box
       sx={{
         width: '100%',
-        p: pathname?.includes('/askforrecommendation') ? '5px' : '20px', // Change padding to 5px for askforrecommendation route
+        p: pathname?.includes('/askforrecommendation') ? '5px' : '20px',
         gap: '20px',
         bgcolor: isLargeScreen ? theme.palette.t3NewWhitesmoke : 'none',
         maxWidth: '800px',
@@ -213,27 +197,25 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         alignItems: 'flex-start',
         justifyContent: pathname?.includes('/askforrecommendation')
           ? 'center'
-          : 'flex-start' // Center content for askforrecommendation route
+          : 'flex-start'
       }}
     >
       <SessionExpiryModal />
 
-      {/* Conditionally render the image only in askforrecommendation route */}
       {pathname?.includes('/askforrecommendation') && (
         <Box
           sx={{
             width: '30%',
             marginRight: '20px',
             display: 'flex',
-            justifyContent: 'center', // Center the image horizontally
-            alignItems: 'center' // Center the image vertically
+            justifyContent: 'center',
+            alignItems: 'center'
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             style={{
               borderRadius: '20px',
-              maxWidth: '100%' // Ensure the image doesn't exceed the container's width
+              maxWidth: '100%'
             }}
             src={achievement?.image?.id}
             alt='Achievement Evidence'
@@ -241,11 +223,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Box>
       )}
 
-      <Box
-        sx={{
-          flex: 1
-        }}
-      >
+      <Box sx={{ flex: 1 }}>
         <Box
           sx={{
             display: 'flex',
@@ -257,7 +235,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
           <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
             <SVGBadge />
             <Typography sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700 }}>
-              {credentialSubject.name || fileMetadata?.name} has claimed:
+              {credentialSubject.name} has claimed:
             </Typography>
           </Box>
           <Typography
@@ -290,7 +268,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
           </Box>
         )}
 
-        {/* Conditionally hide this block on the askforrecommendation route */}
         {!pathname?.includes('/askforrecommendation') && (
           <>
             {achievement?.image?.id && (
@@ -303,7 +280,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                   justifyContent: 'center'
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   style={{
                     borderRadius: '20px',
@@ -326,7 +302,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                   mt: 2
                 }}
               >
-                {cleanHTML(achievement.description)}
+                {achievement.description}
               </Typography>
             )}
 
@@ -334,7 +310,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
               <Box sx={{ mt: 2 }}>
                 <Typography>Earning criteria:</Typography>
                 <ul style={{ marginLeft: '25px' }}>
-                  <li>{cleanHTML(achievement.criteria.narrative)}</li>
+                  <li>{achievement.criteria.narrative}</li>
                 </ul>
               </Box>
             )}
