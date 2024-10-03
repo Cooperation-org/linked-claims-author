@@ -14,19 +14,18 @@ import DataPreview from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import useLocalStorage from '../../../hooks/useLocalStorage'
-import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDetails'
 import FetchedData from '../viewCredential/FetchedData'
 import { useStepContext } from '../../../credentialForm/form/StepContext'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID, signCred } from '../../../utils/signCred'
 import { useSession } from 'next-auth/react'
+import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDetails'
 
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState<string | null>(null)
   const [fileID, setFileID] = useState('')
-  const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
   const { data: session } = useSession()
   const accessToken = session?.accessToken
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
@@ -38,6 +37,7 @@ const Form = () => {
     qualifications: '',
     explainAnswer: ''
   })
+  const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
 
   const defaultValues: FormData = storedValue
 
@@ -86,24 +86,19 @@ const Form = () => {
       if (!accessToken) {
         throw new Error('No access token provided.')
       }
-
-      // Ensure formData contains the comment text
-      const commentText = formData.recommendationText // Assuming 'recommendationText' holds the comment text from the form
-
-      if (!commentText) {
-        throw new Error('No comment text provided.')
-      }
-
-      if (!fileID) {
-        throw new Error('File ID is missing.')
-      }
-
       // Step 1: Create DID
       const newDid = await createDID()
       const { didDocument, keyPair, issuerId } = newDid
 
       // Save the DID document and keyPair to Google Drive
-      await saveToGoogleDrive(storage, { didDocument, keyPair }, 'DID')
+      await saveToGoogleDrive(
+        storage,
+        {
+          didDocument,
+          keyPair
+        },
+        'DID'
+      )
 
       // Step 3: Sign the credential (recommendation)
       const signedCred = await signCred(
@@ -121,10 +116,9 @@ const Form = () => {
       // Step 5: Add a comment to a specific file in Google Drive
       const rec = await storage.addCommentToFile(fileID)
       console.log(rec)
-
       return signedCred // Return the signed credential as a result
-    } catch (error) {
-      console.error('Error during signing process:', (error as Error).message)
+    } catch (error: any) {
+      console.error('Error during signing process:', error.message)
       throw error
     }
   }
@@ -174,7 +168,6 @@ const Form = () => {
             claimId={id}
           />
         )}
-
         <Box sx={{ display: 'none' }}>
           <FetchedData setFullName={setFullName} />
         </Box>
