@@ -9,14 +9,17 @@ import {
   Collapse,
   Typography,
   CircularProgress,
-  Box
+  Box,
+  Card,
+  CardContent,
+  Button
 } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
-import ComprehensiveClaimDetails from '../test/[id]/ComprehensiveClaimDetails'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import useGoogleDrive from '../hooks/useGoogleDrive'
+import DOMPurify from 'dompurify'
+
 
 // Define types
 interface Claim {
@@ -45,7 +48,9 @@ interface ClaimDetail {
 
 interface Comment {
   author: string
-  content: string
+  howKnow: string
+  recommendationText: string
+  qualifications: string
   createdTime: string
 }
 
@@ -53,7 +58,6 @@ const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<Claim[]>([])
   const [openClaim, setOpenClaim] = useState<string | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
   const [comments, setComments] = useState<{ [key: string]: Comment[] }>({})
   const { data: session } = useSession()
@@ -81,11 +85,10 @@ const ClaimsPage: React.FC = () => {
   )
 
   const getAllClaims = useCallback(async (): Promise<any> => {
-    if (!storage) throw new Error('Storage is not initialized')
-    const claimsData = await storage.getAllVCs()
-    if (!claimsData.files) return []
+    const claimsData = await storage?.getAllVCs()
+    if (!claimsData?.files) return []
     const claimsNames: Claim[] = await Promise.all(
-      claimsData.files.map(async (claim: any) => {
+      claimsData?.files.map(async (claim: any) => {
         const content = await getContent(claim.id)
         const achievementName =
           content.credentialSubject.achievement?.[0]?.name || 'Unnamed Achievement'
@@ -102,42 +105,64 @@ const ClaimsPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        `https://www.googleapis.com/drive/v2/files/${fileID}/comments`,
-        {
-          headers: new Headers({
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-          })
+      const url = `https://www.googleapis.com/drive/v2/files/${fileId}/comments`
+      console.log('Fetching comments from URL:', url)
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
         }
-      )
-      const data = await response.json()
-      if (response.ok) {
-        const commentsData = data.items.map(
-          (comment: {
-            author: { displayName: any }
-            content: any
-            createdTime: any
-          }) => ({
-            author: comment.author.displayName,
-            content: comment.content,
-            createdTime: comment.createdTime
-          })
-        )
-        setComments(prevState => ({ ...prevState, [fileID]: commentsData }))
-      } else {
-        throw new Error(data.error.message)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error.message)
       }
+
+      const data = await response.json()
+
+      const commentsData = data.items.map((comment: any) => {
+        console.log('Raw comment content:', comment.content)
+
+        let parsedContent: Record<string, string> = {}
+        if (comment.content && comment.content.trim().startsWith('{')) {
+          try {
+            parsedContent = JSON.parse(comment.content)
+          } catch (e) {
+            console.error('Error parsing comment content:', e)
+            parsedContent = {}
+          }
+        } else {
+          console.warn('Comment content is not valid JSON:', comment.content)
+          parsedContent = {
+            recommendationText: comment.content
+          }
+        }
+
+        return {
+          author:
+            typeof comment.author === 'string'
+              ? comment.author
+              : comment.author.displayName,
+          howKnow: parsedContent['howKnow'] || '',
+          recommendationText: parsedContent['recommendationText'] || '',
+          qualifications:
+            parsedContent['qualifications'] ||
+            parsedContent['qualif'] ||
+            parsedContent['mainAnswer'] ||
+            '',
+          createdTime: comment.createdTime
+        }
+      })
+      setComments(prevState => ({ ...prevState, [fileId]: commentsData }))
+      console.log('Parsed commentsData:', commentsData)
     } catch (error) {
       console.error('Error fetching comments:', error)
     }
   }
 
   useEffect(() => {
-    if (!accessToken || !storage) {
-      setErrorMessage('Please sign in to view your claims')
-      return
-    }
     const fetchClaims = async () => {
       const claimsData = await getAllClaims()
       setClaims(claimsData)
@@ -146,25 +171,22 @@ const ClaimsPage: React.FC = () => {
     fetchClaims()
   }, [accessToken, storage, getAllClaims])
 
-  const handleClaimClick = async (claimId: string) => {
-    if (openClaim === claimId) {
-      setOpenClaim(null)
-    } else {
-      setLoadingClaims(prevState => ({ ...prevState, [claimId]: true }))
-      await getContent(claimId)
-      setOpenClaim(claimId)
-      setLoadingClaims(prevState => ({ ...prevState, [claimId]: false }))
-      fetchComments(claimId)
+  const handleClaimClick = async (claimId: string, claim: any) => {
+    try {
+      if (openClaim === claimId) {
+        setOpenClaim(null)
+        setDetailedClaim(null)
+      } else {
+        setLoadingClaims(prevState => ({ ...prevState, [claimId]: true }))
+        const claimDetails = await getContent(claimId)
+        setDetailedClaim(claimDetails)
+        setOpenClaim(claimId)
+        setLoadingClaims(prevState => ({ ...prevState, [claimId]: false }))
+        fetchComments(claimId)
+      }
+    } catch (error) {
+      console.error('Error in handleClaimClick:', error)
     }
-  }
-
-  const cleanHTML = (htmlContent: string) => {
-    return htmlContent
-      .replace(/<p><br><\/p>/g, '')
-      .replace(/<p><\/p>/g, '')
-      .replace(/<br>/g, '')
-      .replace(/class="[^"]*"/g, '')
-      .replace(/style="[^"]*"/g, '')
   }
 
   const formatCommentDate = (createdTime: string | undefined) => {
@@ -176,7 +198,7 @@ const ClaimsPage: React.FC = () => {
   return (
     <Container>
       <Typography
-        sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}
+        sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 4 }}
         variant='h4'
       >
         Previous Claims
@@ -193,111 +215,224 @@ const ClaimsPage: React.FC = () => {
                 {loadingClaims[claim.id] ? (
                   <CircularProgress />
                 ) : (
-                  <ComprehensiveClaimDetails
-                    params={{
-                      claimId: encodeURIComponent(
-                        `https://drive.google.com/file/d/${claim.id}/view`
-                      )
-                    }}
-                    setFullName={setFullName}
-                    setEmail={setEmail}
-                    setFileID={setFileID}
-                    claimId={claim.id}
-                  />
-                )}
-                {/* Comments Section */}
-                {comments[claim.id] && comments[claim.id].length > 0 && (
-                  <Box
-                    sx={{
-                      border: '1px solid #003FE0',
-                      borderRadius: '10px',
-                      p: '15px',
-                      bgcolor: '#f1f1f1'
-                    }}
-                  >
-                    <Typography variant='h6'>Comments</Typography>
-                    {comments[claim.id].map((comment, index) => {
-                      let parsedContent
-                      try {
-                        parsedContent = JSON.parse(comment.content)
-                      } catch (e) {
-                        parsedContent = comment.content
-                      }
-
-                      const filteredContent = Object.entries(parsedContent).reduce(
-                        (acc, [key, value]) => {
-                          if (Array.isArray(value)) {
-                            const nonEmptyItems = value.filter(
-                              (item: any) => item.name && item.url
-                            )
-                            if (nonEmptyItems.length > 0) {
-                              acc[key] = nonEmptyItems
-                            }
-                          } else if (typeof value === 'string' && value.trim() !== '') {
-                            acc[key] = cleanHTML(value)
-                          } else {
-                            acc[key] = value
-                          }
-                          return acc
-                        },
-                        {} as Record<string, any>
-                      )
-
-                      return (
-                        <Box key={index} mb={2}>
-                          <Typography>
-                            <strong>{comment.author}</strong>:
-                          </Typography>
-                          <ul>
-                            {Object.entries(filteredContent).map(([key, value], idx) => {
-                              if (Array.isArray(value)) {
-                                return (
-                                  <li key={idx}>
-                                    <strong>{key}:</strong>
-                                    <ul>
-                                      {value.map(
-                                        (
-                                          item: { name: string; url: string },
-                                          itemIndex: number
-                                        ) => (
-                                          <li key={itemIndex}>
-                                            <Link
-                                              href={item.url}
-                                              target='_blank'
-                                              rel='noopener noreferrer'
-                                            >
-                                              {item.name}
-                                            </Link>
-                                          </li>
-                                        )
-                                      )}
-                                    </ul>
-                                  </li>
-                                )
-                              }
-
-                              return (
-                                <li key={idx}>
-                                  <strong>{key}:</strong>{' '}
-                                  {typeof value === 'string' ? (
-                                    <span
-                                      dangerouslySetInnerHTML={{
-                                        __html: cleanHTML(value)
-                                      }}
-                                    />
-                                  ) : (
-                                    value
-                                  )}
-                                </li>
-                              )
-                            })}
-                          </ul>
-                          <Typography variant='caption'>
-                            {formatCommentDate(comment.createdTime)}
+                  <Box>
+                    {/* Claim Details Box */}
+                    <Box
+                      sx={{
+                        border: '1px solid #003FE0',
+                        borderRadius: '10px',
+                        p: '15px',
+                        mb: '10px',
+                        bgcolor: '#d5e1fb'
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          gap: '5px',
+                          alignItems: 'center'
+                        }}
+                      >
+                        <SVGBadge />
+                        <Typography
+                          sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}
+                        >
+                          {detailedClaim?.credentialSubject?.name ?? ''} has claimed:
+                        </Typography>
+                      </Box>
+                      <Typography
+                        sx={{
+                          color: '#202E5B',
+                          fontFamily: 'Inter',
+                          fontSize: '24px',
+                          fontWeight: 700,
+                          letterSpacing: '0.075px',
+                          mb: '10px'
+                        }}
+                      >
+                        {claim.achievementName}
+                      </Typography>
+                      {detailedClaim?.credentialSubject?.duration && (
+                        <Box
+                          sx={{
+                            ...credentialBoxStyles,
+                            bgcolor: '#f9f9f9'
+                          }}
+                        >
+                          <Box sx={{ mt: '2px' }}>
+                            <SVGDate />
+                          </Box>
+                          <Typography
+                            sx={{ ...commonTypographyStyles, fontSize: '13px' }}
+                          >
+                            {detailedClaim?.credentialSubject?.duration}
                           </Typography>
                         </Box>
-                      )
-                    })}
+                      )}
+                      <Typography
+                        sx={{
+                          fontFamily: 'Lato',
+                          fontSize: '17px',
+                          letterSpacing: '0.075px',
+                          lineHeight: '24px'
+                        }}
+                      >
+                        {detailedClaim?.credentialSubject?.achievement[0]?.description.replace(
+                          /<\/?[^>]+>/gi,
+                          ''
+                        )}
+                      </Typography>
+                      {detailedClaim?.credentialSubject?.achievement[0]?.criteria
+                        ?.narrative && (
+                        <Box>
+                          <Typography>Earning criteria:</Typography>
+                          <ul style={{ marginLeft: '25px' }}>
+                            <li>
+                              {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
+                                /<\/?[^>]+>/gi,
+                                ''
+                              )}
+                            </li>
+                          </ul>
+                        </Box>
+                      )}
+                      {detailedClaim?.credentialSubject?.portfolio && (
+                        <Box>
+                          <Typography>Supporting Evidence:</Typography>
+                          <ul style={evidenceListStyles}>
+                            {detailedClaim?.credentialSubject?.portfolio?.map(
+                              (porto: { url: any; name: any }) => (
+                                <li key={porto.url}>
+                                  <Link
+                                    href={porto.url}
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                  >
+                                    {porto.name}
+                                  </Link>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </Box>
+                      )}
+                      <Box
+                        sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}
+                      >
+                        <Link
+                          href={`/View/${encodeURIComponent(
+                            `https://drive.google.com/file/d/${claim.id}/view`
+                          )}`}
+                        >
+                          <Button
+                            variant='contained'
+                            sx={{
+                              backgroundColor: '#003FE0',
+                              textTransform: 'none',
+                              borderRadius: '100px'
+                            }}
+                          >
+                            View Credential
+                          </Button>
+                        </Link>
+                        <Link
+                          href={`/AskForRecommendation/${encodeURIComponent(
+                            `https://drive.google.com/file/d/${claim.id}/view`
+                          )}`}
+                        >
+                          <Button
+                            variant='contained'
+                            sx={{
+                              backgroundColor: '#003FE0',
+                              textTransform: 'none',
+                              borderRadius: '100px'
+                            }}
+                          >
+                            Ask for Recommendation
+                          </Button>
+                        </Link>
+                      </Box>
+                    </Box>
+
+                    {/* Comments Box */}
+                    {comments[claim.id] && comments[claim.id].length > 0 && (
+                      <Box sx={{ mt: 2 }}>
+                        <Typography variant='h6' sx={{ mb: 2 }}>
+                          Recommendations
+                        </Typography>
+                        {comments[claim.id].map((comment, index) => (
+                          <Card
+                            key={index}
+                            variant='outlined'
+                            sx={{
+                              mb: 4,
+                              borderRadius: 2,
+                              boxShadow: 3,
+                              borderColor: 'primary.main'
+                            }}
+                          >
+                            <CardContent>
+                              {/* Display the Author */}
+                              <Typography variant='h5' component='div' gutterBottom>
+                                {comment.author}
+                              </Typography>
+
+                              {/* How Known */}
+                              {comment.howKnow && (
+                                <Box sx={{ mt: 2 }}>
+                                  <Typography variant='subtitle1' color='text.secondary'>
+                                    How Known
+                                  </Typography>
+                                  <Typography
+                                    variant='body1'
+                                    dangerouslySetInnerHTML={{
+                                      __html: DOMPurify.sanitize(comment.howKnow)
+                                    }}
+                                  />
+                                </Box>
+                              )}
+
+                              {/* Recommendation Text */}
+                              {comment.recommendationText && (
+                                <Box sx={{ mt: 2 }}>
+                                  <Typography variant='subtitle1' color='text.secondary'>
+                                    Recommendation Text
+                                  </Typography>
+                                  <Typography
+                                    variant='body1'
+                                    dangerouslySetInnerHTML={{
+                                      __html: DOMPurify.sanitize(
+                                        comment.recommendationText
+                                      )
+                                    }}
+                                  />
+                                </Box>
+                              )}
+
+                              {/* Qualifications */}
+                              {comment.qualifications && (
+                                <Box sx={{ mt: 2 }}>
+                                  <Typography variant='subtitle1' color='text.secondary'>
+                                    Qualifications
+                                  </Typography>
+                                  <Typography
+                                    variant='body1'
+                                    dangerouslySetInnerHTML={{
+                                      __html: DOMPurify.sanitize(comment.qualifications)
+                                    }}
+                                  />
+                                </Box>
+                              )}
+
+                              {/* Created Time */}
+                              <Typography variant='caption' sx={{ mt: 2 }}>
+                                {formatCommentDate(comment.createdTime)}
+                              </Typography>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </Box>
+                    )}
                   </Box>
                 )}
               </Container>
