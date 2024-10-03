@@ -11,7 +11,7 @@ import { Step1 } from './Steps/Step1'
 import { Step2 } from './Steps/Step2'
 import { Step3 } from './Steps/Step3'
 import { Step4 } from './Steps/Step4'
-import { Step5 } from './Steps/Step5'
+import Step5 from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 
 import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
@@ -323,7 +323,7 @@ const Form = ({ onStepChange }: any) => {
             {activeStep === 5 && (
               <Slide in={true} direction={direction}>
                 <Box>
-                  <Step5 register={register} handleNext={handleNext} />
+                  <Step5 />
                 </Box>
               </Slide>
             )}
