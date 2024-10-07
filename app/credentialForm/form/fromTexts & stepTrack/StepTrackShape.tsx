@@ -3,10 +3,11 @@
 import React from 'react'
 import { Box } from '@mui/material'
 import { useStepContext } from '../StepContext'
-
-const TOTAL_STEPS = 8
+import { usePathname } from 'next/navigation'
 
 export function StepTrackShape() {
+  const pathname = usePathname()
+  const TOTAL_STEPS = pathname?.includes('/recommendations') ? 7 : 8
   const { activeStep } = useStepContext()
   const renderStepBox = (step: number) => (
     <Box

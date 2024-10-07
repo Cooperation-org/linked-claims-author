@@ -192,6 +192,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             <Button
               onClick={() => {
                 setActiveStep(0)
+                reset()
               }}
               variant='contained'
               sx={{
