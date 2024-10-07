@@ -13,7 +13,6 @@ import {
   evidenceListStyles,
   credentialBoxStyles
 } from '../../../components/Styles/appStyles'
-import Image from 'next/image'
 
 const cleanHTML = (htmlContent: string) => {
   return htmlContent
@@ -26,9 +25,10 @@ const cleanHTML = (htmlContent: string) => {
 
 interface DataPreviewProps {
   formData: FormData
+  image?: string
 }
 
-const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
+const DataPreview: React.FC<DataPreviewProps> = ({ formData, image }) => {
   console.log(':  formData', formData)
   const theme: Theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
@@ -37,8 +37,9 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
     window.open(url, target)
   }
 
-  const imageUrl = formData.evidenceLink || ''
-  const hasValidEvidence = formData.portfolio?.some(porto => porto.name && porto.url)
+  const hasValidEvidence = formData.portfolio?.some(
+    (porto: { name: any; url: any }) => porto.name && porto.url
+  )
 
   return (
     <Box
@@ -83,14 +84,14 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
           mb: '10px'
         }}
       >
-        {imageUrl ? (
+        {image ? (
           <img
             style={{
               borderRadius: '20px',
               width: !isLargeScreen ? '100%' : '179px',
               height: '100%'
             }}
-            src={imageUrl}
+            src={image}
             alt='Certification Evidence'
           />
         ) : (
@@ -118,13 +119,26 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
             <Typography sx={{ display: 'block' }}>Evidence:</Typography>
             <ul style={evidenceListStyles}>
               {formData.portfolio.map(
-                porto =>
+                (porto: {
+                  name:
+                    | string
+                    | number
+                    | bigint
+                    | boolean
+                    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+                    | Iterable<React.ReactNode>
+                    | React.ReactPortal
+                    | Promise<React.AwaitedReactNode>
+                    | null
+                    | undefined
+                  url: React.Key | null | undefined
+                }) =>
                   porto.name &&
                   porto.url && (
                     <li
                       style={{ cursor: 'pointer', width: 'fit-content' }}
                       key={porto.url}
-                      onClick={() => handleNavigate(porto.url, '_blank')}
+                      onClick={() => handleNavigate(porto.url as string, '_blank')}
                     >
                       {porto.name}
                     </li>
