@@ -62,7 +62,7 @@ const Form = ({ onStepChange }: any) => {
   } = useForm<FormData>({
     defaultValues: {
       storageOption: 'Google Drive',
-      fullName: '',
+      fullName: session?.user?.name || '',
       persons: '',
       credentialName: '',
       credentialDuration: '',

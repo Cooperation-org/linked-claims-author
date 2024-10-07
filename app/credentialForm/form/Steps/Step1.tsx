@@ -19,6 +19,7 @@ import {
 } from '../../../components/Styles/appStyles'
 import { UseFormRegister, FieldErrors } from 'react-hook-form'
 import { FormData } from '../types/Types'
+import { useSession } from 'next-auth/react'
 
 interface Step1Props {
   register: UseFormRegister<FormData>
@@ -29,6 +30,7 @@ interface Step1Props {
 
 export function Step1({ register, watch, setValue, errors }: Readonly<Step1Props>) {
   const [inputNamevalue, setInputNamevalue] = useState('Full Name or Business Name')
+  const { data: session } = useSession()
 
   function getLabel(inputNamevalue: string) {
     if (inputNamevalue === 'Individual') {
@@ -88,7 +90,9 @@ export function Step1({ register, watch, setValue, errors }: Readonly<Step1Props
           {...register('fullName', {
             required: 'Full name is required'
           })}
-          placeholder='e.g., Maria Fernández or Kumar Enterprises'
+          placeholder={
+            session?.user?.name || 'e.g., Maria Fernández or Kumar Enterprises'
+          }
           variant='outlined'
           sx={TextFieldStyles}
           aria-labelledby='name-label'
