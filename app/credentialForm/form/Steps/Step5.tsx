@@ -1,13 +1,25 @@
-import React, { useCallback } from 'react'
+/* eslint-disable @next/next/no-img-element */
+import React, { useCallback, useState } from 'react'
 import { Box, Typography, Link, Button } from '@mui/material'
 import { useDropzone } from 'react-dropzone'
 import { useStepContext } from '../StepContext'
 
-const Step5 = () => {
+interface Step5Props {
+  setImage: (imageUrl: string) => void
+}
+
+const Step5: React.FC<Step5Props> = ({ setImage }) => {
   const { handleNext } = useStepContext()
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log(acceptedFiles)
-    // Handle file processing here
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0]
+      const imageUrl = URL.createObjectURL(file)
+      console.log(':  onDrop  imageUrl', imageUrl)
+      setImage(imageUrl)
+      setSelectedImage(imageUrl)
+    }
   }, [])
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -29,35 +41,47 @@ const Step5 = () => {
         padding: '20px',
         textAlign: 'center',
         cursor: 'pointer',
-        backgroundColor: 'FFFFFF',
+        backgroundColor: '#FFFFFF',
         '&:hover': {
           borderColor: '#90caf9'
         }
       }}
     >
       <input {...getInputProps()} />
-      <Typography
-        sx={{ display: 'flex', justifyContent: 'center' }}
-        variant='body1'
-        component='div'
-      >
-        Drop your files here or{'  '}
-        <Typography
-          sx={{
-            textDecoration: 'underline',
-            ml: '4px',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}
-          color='primary'
-        >
-          {' '}
-          browse
-        </Typography>
-      </Typography>
-      <Typography variant='body2' color='textSecondary' sx={{ mt: 1 }}>
-        Maximum size: 50MB
-      </Typography>
+      {!selectedImage ? (
+        <>
+          <Typography
+            sx={{ display: 'flex', justifyContent: 'center' }}
+            variant='body1'
+            component='div'
+          >
+            Drop your files here or{'  '}
+            <Typography
+              sx={{
+                textDecoration: 'underline',
+                ml: '4px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+              color='primary'
+            >
+              {' '}
+              browse
+            </Typography>
+          </Typography>
+          <Typography variant='body2' color='textSecondary' sx={{ mt: 1 }}>
+            Maximum size: 50MB
+          </Typography>
+        </>
+      ) : (
+        <Box sx={{ mt: 2 }}>
+          <img
+            src={selectedImage}
+            alt='Selected'
+            style={{ maxWidth: '100%', maxHeight: '300px' }}
+          />
+        </Box>
+      )}
       <Button
         onClick={event => {
           event.stopPropagation()
@@ -72,4 +96,5 @@ const Step5 = () => {
     </Box>
   )
 }
+
 export default Step5

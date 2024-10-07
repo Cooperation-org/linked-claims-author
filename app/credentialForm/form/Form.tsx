@@ -43,6 +43,7 @@ const Form = ({ onStepChange }: any) => {
   const [userSessions, setUserSessions] = useState<{}[]>([])
   const [openDialog, setOpenDialog] = useState(false)
   const [refLink, setRefLink] = useState('')
+  const [image, setImage] = useState('')
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { data: session } = useSession()
@@ -323,14 +324,19 @@ const Form = ({ onStepChange }: any) => {
             {activeStep === 5 && (
               <Slide in={true} direction={direction}>
                 <Box>
-                  <Step5 />
+                  <Step5
+                    setImage={(imageUrl: string) => {
+                      setImage(imageUrl)
+                      setValue('evidenceLink', imageUrl)
+                    }}
+                  />
                 </Box>
               </Slide>
             )}
             {activeStep === 6 && (
               <Slide in={true} direction={direction}>
                 <Box>
-                  <DataComponent formData={watch()} />
+                  <DataComponent formData={watch()} image={image} />
                 </Box>
               </Slide>
             )}
