@@ -97,36 +97,12 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
 
       try {
         setFileID(fileID)
+        const content = await getContent(fileID)
+        setClaimDetail(content)
+        setFullName(content?.credentialSubject?.name)
+        onDataFetched?.(content)
 
-        const cachedContent = localStorage.getItem(`fileContent_${fileID}`)
-        if (cachedContent) {
-          const parsedData = JSON.parse(cachedContent) as ClaimDetail
-          if (
-            !claimDetail ||
-            JSON.stringify(parsedData) !== JSON.stringify(claimDetail)
-          ) {
-            setClaimDetail(parsedData)
-            setFullName(parsedData.credentialSubject?.name)
-            onDataFetched?.(parsedData)
-          }
-        } else {
-          const content = await getContent(fileID)
-          setClaimDetail(content)
-          setFullName(content.credentialSubject?.name)
-          localStorage.setItem(`fileContent_${fileID}`, JSON.stringify(content))
-          onDataFetched?.(content)
-        }
-
-        const cachedMetadata = localStorage.getItem(`fileMetadata_${fileID}`)
-        if (cachedMetadata) {
-          const metadataOwnerEmail = JSON.parse(cachedMetadata)?.owners[0]?.emailAddress
-          if (!ownerEmail || ownerEmail !== metadataOwnerEmail) {
-            setOwnerEmail(metadataOwnerEmail)
-            setEmail(metadataOwnerEmail)
-          }
-        } else {
-          await fetchFileMetadata(fileID, '')
-        }
+        await fetchFileMetadata(fileID, '')
       } catch (error) {
         console.error('Error fetching claim details:', error)
         setTimeout(() => {
@@ -140,18 +116,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     if (accessToken && fileID) {
       fetchDriveData()
     }
-  }, [
-    accessToken,
-    fileID,
-    claimDetail,
-    getContent,
-    fetchFileMetadata,
-    setFileID,
-    ownerEmail,
-    setFullName,
-    setEmail,
-    onDataFetched
-  ])
+  }, [fileID, getContent])
 
   useEffect(() => {
     if (fetchedOwnerEmail) {
@@ -183,14 +148,10 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     )
   }
 
-  if (!claimDetail) {
-    return <Typography variant='h6'>No claim details found.</Typography>
-  }
-
-  const { credentialSubject } = claimDetail
-  const achievement = credentialSubject.achievement[0]
+  const credentialSubject = claimDetail?.credentialSubject
+  const achievement = credentialSubject?.achievement[0]
   const hasValidEvidence =
-    credentialSubject.portfolio && credentialSubject.portfolio.length > 0
+    credentialSubject?.portfolio && credentialSubject?.portfolio.length > 0
 
   return (
     <Box
@@ -257,7 +218,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
           <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
             <SVGBadge />
             <Typography sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700 }}>
-              {credentialSubject.name} has claimed:
+              {credentialSubject?.name} has claimed:
             </Typography>
           </Box>
           <Typography
@@ -267,7 +228,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
           </Typography>
         </Box>
 
-        {credentialSubject.duration && (
+        {credentialSubject?.duration && (
           <Box
             sx={{
               display: 'flex',
@@ -285,7 +246,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
               <SVGDate />
             </Box>
             <Typography sx={{ color: 't3BodyText', fontSize: '13px' }}>
-              {credentialSubject.duration}
+              {credentialSubject?.duration}
             </Typography>
           </Box>
         )}
@@ -337,7 +298,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                   <li>
                     <span
                       dangerouslySetInnerHTML={{
-                        __html: cleanHTML(achievement.criteria.narrative)
+                        __html: cleanHTML(achievement?.criteria?.narrative)
                       }}
                     />
                   </li>
@@ -358,7 +319,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                     backgroundColor: '#FFFFFF'
                   }}
                 >
-                  {credentialSubject.portfolio.map(portfolioItem => (
+                  {credentialSubject?.portfolio.map(portfolioItem => (
                     <li
                       key={portfolioItem.url}
                       style={{
