@@ -1,6 +1,6 @@
 'use client'
 import { useTheme } from '@mui/material/styles'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Box, Typography, useMediaQuery, Avatar, Button } from '@mui/material'
 import ProfileImageWithLabels from './credentialForm/ProfileImageWithLabels'
 import SVGDesign, {
@@ -17,20 +17,12 @@ import {
   featuresLargeScreen
 } from './credentialForm/landingPageVariables'
 import Link from 'next/link'
-import useAutoSignOut from './hooks/useAutoSignOut'
+import { useSession } from 'next-auth/react'
 
 const Page = () => {
+  const { data: session } = useSession()
   const theme = useTheme()
-  const [accessToken, setAccessToken] = React.useState<string | null>(null)
-  useEffect(() => {
-    if (window !== undefined) {
-      setAccessToken(localStorage.getItem('accessToken'))
-    }
-  }, [])
-  useAutoSignOut()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isMediumScreen = useMediaQuery(theme.breakpoints.up('md'))
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('xl'))
 
   const features = isSmallScreen ? featuresSmallScreen : featuresLargeScreen
 
@@ -150,19 +142,20 @@ const Page = () => {
               Create a Credential
             </Button>
           </Link>
-          {
+          {session && (
             <Link href='/claims'>
               <Button
                 sx={{
                   fontSize: '1.1rem',
                   color: theme.palette.t3ButtonBlue,
-                  mt: 1
+                  mt: 1,
+                  textTransform: 'capitalize'
                 }}
               >
-                View Your Claims
+                View Your Achievements
               </Button>
             </Link>
-          }
+          )}
         </Box>
       </Box>
 
