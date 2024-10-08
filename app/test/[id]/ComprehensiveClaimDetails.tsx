@@ -9,7 +9,6 @@ import { usePathname } from 'next/navigation'
 import { SVGDate, SVGBadge, CheckMarkSVG } from '../../Assets/SVGs'
 import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
-import SessionExpiryModal from '../../components/refreshtokenPopup'
 
 interface Portfolio {
   name: string
@@ -172,8 +171,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
           : 'flex-start'
       }}
     >
-      <SessionExpiryModal />
-
       {pathname?.includes('/askforrecommendation') && (
         <Box
           sx={{
