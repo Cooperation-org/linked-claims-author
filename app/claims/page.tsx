@@ -18,7 +18,6 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
 import useGoogleDrive from '../hooks/useGoogleDrive'
-import DOMPurify from 'dompurify'
 import Link from 'next/link'
 import { SVGBadge, SVGDate } from '../Assets/SVGs'
 import {
@@ -58,6 +57,15 @@ interface Comment {
   recommendationText: string
   qualifications: string
   createdTime: string
+}
+
+const cleanHTML = (htmlContent: string) => {
+  return htmlContent
+    .replace(/<p><br><\/p>/g, '')
+    .replace(/<p><\/p>/g, '')
+    .replace(/<br>/g, '')
+    .replace(/class="[^"]*"/g, '')
+    .replace(/style="[^"]*"/g, '')
 }
 
 const ClaimsPage: React.FC = () => {
@@ -271,10 +279,14 @@ const ClaimsPage: React.FC = () => {
                           lineHeight: '24px'
                         }}
                       >
-                        {detailedClaim?.credentialSubject?.achievement[0]?.description.replace(
-                          /<\/?[^>]+>/gi,
-                          ''
-                        )}
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: cleanHTML(
+                              detailedClaim?.credentialSubject?.achievement[0]
+                                ?.description || ''
+                            )
+                          }}
+                        />
                       </Typography>
                       {detailedClaim?.credentialSubject?.achievement[0]?.criteria
                         ?.narrative && (
@@ -282,10 +294,14 @@ const ClaimsPage: React.FC = () => {
                           <Typography>Earning criteria:</Typography>
                           <ul style={{ marginLeft: '25px' }}>
                             <li>
-                              {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
-                                /<\/?[^>]+>/gi,
-                                ''
-                              )}
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: cleanHTML(
+                                    detailedClaim?.credentialSubject?.achievement[0]
+                                      ?.criteria?.narrative || ''
+                                  )
+                                }}
+                              />
                             </li>
                           </ul>
                         </Box>
@@ -369,10 +385,9 @@ const ClaimsPage: React.FC = () => {
                                   <Typography variant='subtitle1' color='text.secondary'>
                                     How Known
                                   </Typography>
-                                  <Typography
-                                    variant='body1'
+                                  <span
                                     dangerouslySetInnerHTML={{
-                                      __html: DOMPurify.sanitize(comment.howKnow)
+                                      __html: cleanHTML(comment.howKnow)
                                     }}
                                   />
                                 </Box>
@@ -384,12 +399,9 @@ const ClaimsPage: React.FC = () => {
                                   <Typography variant='subtitle1' color='text.secondary'>
                                     Recommendation Text
                                   </Typography>
-                                  <Typography
-                                    variant='body1'
+                                  <span
                                     dangerouslySetInnerHTML={{
-                                      __html: DOMPurify.sanitize(
-                                        comment.recommendationText
-                                      )
+                                      __html: cleanHTML(comment.recommendationText)
                                     }}
                                   />
                                 </Box>
@@ -401,10 +413,9 @@ const ClaimsPage: React.FC = () => {
                                   <Typography variant='subtitle1' color='text.secondary'>
                                     Qualifications
                                   </Typography>
-                                  <Typography
-                                    variant='body1'
+                                  <span
                                     dangerouslySetInnerHTML={{
-                                      __html: DOMPurify.sanitize(comment.qualifications)
+                                      __html: cleanHTML(comment.qualifications)
                                     }}
                                   />
                                 </Box>
