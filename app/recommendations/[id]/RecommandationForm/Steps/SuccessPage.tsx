@@ -20,7 +20,6 @@ interface SuccessPageProps {
   formData: FormData
   submittedFullName: string | null
   handleBack: () => void
-  link: string
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
@@ -56,8 +55,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     )
   }
 
-  // Construct the Google Drive link using the file ID
-  const link = `https://drive.google.com/file/d/${id}/view`
+  let currentDomain = window.location.origin
+  if (currentDomain === 'http://localhost:3000') {
+    currentDomain = 'https://linked-claims-author.vercel.app'
+  }
+
+  const link = `${currentDomain}/view/${id}`
 
   const message = fetchedFullName
     ? `Hi ${fullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
