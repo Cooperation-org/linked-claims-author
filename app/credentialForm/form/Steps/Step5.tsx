@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useCallback, useState } from 'react'
-import { Box, Typography, Link, Button } from '@mui/material'
+import { Box, Typography, Button } from '@mui/material'
 import { useDropzone } from 'react-dropzone'
 import { useStepContext } from '../StepContext'
 
@@ -12,15 +12,18 @@ const Step5: React.FC<Step5Props> = ({ setImage }) => {
   const { handleNext } = useStepContext()
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      const file = acceptedFiles[0]
-      const imageUrl = URL.createObjectURL(file)
-      console.log(':  onDrop  imageUrl', imageUrl)
-      setImage(imageUrl)
-      setSelectedImage(imageUrl)
-    }
-  }, [])
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 0) {
+        const file = acceptedFiles[0]
+        const imageUrl = URL.createObjectURL(file)
+        console.log(':  onDrop  imageUrl', imageUrl)
+        setImage(imageUrl)
+        setSelectedImage(imageUrl)
+      }
+    },
+    [setImage]
+  )
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -55,7 +58,7 @@ const Step5: React.FC<Step5Props> = ({ setImage }) => {
             variant='body1'
             component='div'
           >
-            Drop your files here or{'  '}
+            Drop your files here or{' '}
             <Typography
               sx={{
                 textDecoration: 'underline',
@@ -65,7 +68,6 @@ const Step5: React.FC<Step5Props> = ({ setImage }) => {
               }}
               color='primary'
             >
-              {' '}
               browse
             </Typography>
           </Typography>

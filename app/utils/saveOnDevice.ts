@@ -4,15 +4,16 @@ import { createDID, generateCredentialData } from './signCred'
 /**
  * Signs and saves the signed credential on the user's device
  * @param data
+ * @param accessToken
  * @returns
  */
-export async function signAndSaveOnDevice(data: any) {
+export async function signAndSaveOnDevice(data: any, accessToken: string) {
   if (typeof window === 'undefined') return // Ensure this only runs in the browser
 
   // Generate DID, credential data, and sign the VC
-  const newDid = await createDID()
+  const newDid = await createDID(accessToken)
   const formData = generateCredentialData(data)
-  const credentialEngine = new CredentialEngine()
+  const credentialEngine = new CredentialEngine(accessToken)
   const { didDocument, keyPair } = newDid
 
   const signedVC = await credentialEngine.signVC(formData, 'VC', keyPair, didDocument.id)

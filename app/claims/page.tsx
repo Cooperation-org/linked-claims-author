@@ -51,6 +51,11 @@ interface ClaimDetail {
   }
 }
 
+interface FileContent {
+  name: string
+  content: any
+}
+
 interface Comment {
   author: string
   howKnow: string
@@ -87,14 +92,15 @@ const ClaimsPage: React.FC = () => {
   }, [accessToken])
 
   const getAllClaims = useCallback(async (): Promise<any> => {
-    const claimsData = await storage?.getAllVCs()
-    if (!claimsData?.files) return []
+    const claimsData = await storage?.getAllFilesByType('VCs')
+    if (!claimsData?.length) return []
+
     const claimsNames: Claim[] = await Promise.all(
-      claimsData?.files.map(async (claim: any) => {
-        const content = await getContent(claim.id)
+      claimsData.map(async (claim: FileContent) => {
+        const content = await getContent(claim.name)
         const achievementName =
-          content.credentialSubject.achievement?.[0]?.name || 'Unnamed Achievement'
-        return { id: claim.id, achievementName }
+          content.credentialSubject?.achievement?.[0]?.name || 'Unnamed Achievement'
+        return { id: claim.name, achievementName }
       })
     )
     return claimsNames
@@ -208,7 +214,10 @@ const ClaimsPage: React.FC = () => {
       <List>
         {claims.map(claim => (
           <div key={claim.id}>
-            <ListItem button onClick={() => handleClaimClick(claim.id, claim)}>
+            <ListItem
+              component='button'
+              onClick={() => handleClaimClick(claim.id, claim)}
+            >
               <ListItemText primary={claim.achievementName} />
               {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
@@ -362,9 +371,9 @@ const ClaimsPage: React.FC = () => {
                         <Typography variant='h6' sx={{ mb: 2 }}>
                           Recommendations
                         </Typography>
-                        {comments[claim.id].map((comment, index) => (
+                        {comments[claim.id].map(comment => (
                           <Card
-                            key={index}
+                            key={comment.createdTime}
                             variant='outlined'
                             sx={{
                               mb: 4,

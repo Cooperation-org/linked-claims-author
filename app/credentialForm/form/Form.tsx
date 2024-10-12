@@ -63,7 +63,7 @@ const Form = ({ onStepChange }: any) => {
   } = useForm<FormData>({
     defaultValues: {
       storageOption: 'Google Drive',
-      fullName: session?.user?.name || '',
+      fullName: session?.user?.name ?? '',
       persons: '',
       credentialName: '',
       credentialDuration: '',
@@ -90,7 +90,7 @@ const Form = ({ onStepChange }: any) => {
     try {
       const storageOption = watch('storageOption')
       if (!storageOption || !accessToken) return
-      const userSessions = await storage.getAllSessions()
+      const userSessions = await storage.getAllFilesByType('SESSIONs')
       if (!userSessions) return
       console.log('userSessions', userSessions)
 
@@ -158,7 +158,7 @@ const Form = ({ onStepChange }: any) => {
       )
         await sign(data)
       else if (data.storageOption === options.Device) {
-        signAndSaveOnDevice(data)
+        signAndSaveOnDevice(data, accessToken as string)
       }
     } catch (error: any) {
       if (error.message === 'MetaMask address could not be retrieved') {
@@ -180,9 +180,9 @@ const Form = ({ onStepChange }: any) => {
 
       let newDid
       if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(metamaskAdress)
+        newDid = await createDIDWithMetaMask(metamaskAdress, accessToken)
       } else {
-        newDid = await createDID()
+        newDid = await createDID(accessToken)
       }
       const { didDocument, keyPair, issuerId } = newDid
 
