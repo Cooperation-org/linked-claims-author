@@ -96,17 +96,18 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
 
       try {
         setFileID(fileID)
+        console.log('Fetching file content...')
         const content = await getContent(fileID)
+        console.log('File content fetched:', content)
         setClaimDetail(content)
         setFullName(content?.credentialSubject?.name)
         onDataFetched?.(content)
+        setErrorMessage(null)
 
         await fetchFileMetadata(fileID, '')
       } catch (error) {
         console.error('Error fetching claim details:', error)
-        setTimeout(() => {
-          setErrorMessage('Failed to fetch claim details.')
-        }, 5000)
+        setErrorMessage('Failed to fetch claim details.')
       } finally {
         setLoading(false)
       }
@@ -148,6 +149,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   }
 
   if (errorMessage) {
+    console.error('Error:', errorMessage)
     return (
       <Typography variant='h6' color='error'>
         {errorMessage}
@@ -198,6 +200,11 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
               }}
               src={achievement?.image?.id}
               alt='Achievement Evidence'
+              onError={e => {
+                e.currentTarget.onerror = null
+                e.currentTarget.src = ''
+                e.currentTarget.alt = 'Failed to load image'
+              }}
             />
           ) : (
             <Box
@@ -206,7 +213,9 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                 height: '100px',
                 backgroundColor: 'transparent'
               }}
-            />
+            >
+              <Typography color='error'>Failed to load image</Typography>
+            </Box>
           )}
         </Box>
       )}
