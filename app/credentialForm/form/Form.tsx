@@ -90,7 +90,7 @@ const Form = ({ onStepChange }: any) => {
     try {
       const storageOption = watch('storageOption')
       if (!storageOption || !accessToken) return
-      const userSessions = await storage.getAllFilesByType('SESSIONs')
+      const userSessions = await storage.getAllSessions()
       if (!userSessions) return
       console.log('userSessions', userSessions)
 
@@ -158,7 +158,7 @@ const Form = ({ onStepChange }: any) => {
       )
         await sign(data)
       else if (data.storageOption === options.Device) {
-        signAndSaveOnDevice(data, accessToken as string)
+        signAndSaveOnDevice(data)
       }
     } catch (error: any) {
       if (error.message === 'MetaMask address could not be retrieved') {
@@ -180,9 +180,9 @@ const Form = ({ onStepChange }: any) => {
 
       let newDid
       if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(metamaskAdress, accessToken)
+        newDid = await createDIDWithMetaMask(metamaskAdress)
       } else {
-        newDid = await createDID(accessToken)
+        newDid = await createDID()
       }
       const { didDocument, keyPair, issuerId } = newDid
 

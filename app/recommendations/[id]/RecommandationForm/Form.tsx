@@ -64,7 +64,6 @@ const Form = () => {
   const formData = watch()
   const params = useParams()
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id
-  const recommendationFileId = Array.isArray(params.id) ? params.id[0] : params.id
 
   useEffect(() => {
     if (id && fullName && fileID) {
@@ -88,7 +87,7 @@ const Form = () => {
         throw new Error('No access token provided.')
       }
       // Step 1: Create DID
-      const newDid = await createDID(accessToken)
+      const newDid = await createDID()
       const { didDocument, keyPair, issuerId } = newDid
 
       // Save the DID document and keyPair to Google Drive
@@ -115,7 +114,7 @@ const Form = () => {
       console.log('🚀 ~ savedRecommendation:', savedRecommendation)
 
       // Step 5: Add a comment to a specific file in Google Drive
-      const rec = await storage.addCommentToFile(fileID, recommendationFileId)
+      const rec = await storage.addCommentToFile(fileID)
       console.log(rec)
       return signedCred // Return the signed credential as a result
     } catch (error: any) {
@@ -230,6 +229,7 @@ const Form = () => {
             {activeStep === 6 && (
               <SuccessPage
                 formData={formData}
+                link={''}
                 submittedFullName={submittedFullName}
                 handleBack={handleBack}
               />

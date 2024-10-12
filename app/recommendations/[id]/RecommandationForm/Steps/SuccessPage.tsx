@@ -20,6 +20,7 @@ interface SuccessPageProps {
   formData: FormData
   submittedFullName: string | null
   handleBack: () => void
+  link: string
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({

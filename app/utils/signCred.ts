@@ -24,17 +24,14 @@ interface RecommendationI {
   portfolio: { name: string; url: string }[]
 }
 
-export async function createDIDWithMetaMask(
-  metaMaskAddress: string,
-  accessToken: string
-) {
-  const credentialEngine = new CredentialEngine(accessToken)
+export async function createDIDWithMetaMask(metaMaskAddress: string) {
+  const credentialEngine = new CredentialEngine()
   const { didDocument, keyPair } = await credentialEngine.createWalletDID(metaMaskAddress)
   return { didDocument, keyPair, issuerId: didDocument.id }
 }
 
-const createDID = async (accessToken: string) => {
-  const credentialEngine = new CredentialEngine(accessToken)
+const createDID = async () => {
+  const credentialEngine = new CredentialEngine()
   const { didDocument, keyPair } = await credentialEngine.createDID()
   console.log('DID:', didDocument)
   return { didDocument, keyPair, issuerId: didDocument.id }
@@ -53,7 +50,7 @@ const signCred = async (
   let formData: FormDataI | RecommendationI
   let signedVC
   try {
-    const credentialEngine = new CredentialEngine(accessToken)
+    const credentialEngine = new CredentialEngine()
     if (type === 'RECOMMENDATION') {
       formData = genearteRecommendtionData(data)
       signedVC = await credentialEngine.signVC(
