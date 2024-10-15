@@ -18,7 +18,6 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
 import useGoogleDrive from '../hooks/useGoogleDrive'
-import DOMPurify from 'dompurify'
 import Link from 'next/link'
 import { SVGBadge, SVGDate } from '../Assets/SVGs'
 import {
@@ -60,6 +59,15 @@ interface Comment {
   createdTime: string
 }
 
+const cleanHTML = (htmlContent: string) => {
+  return htmlContent
+    .replace(/<p><br><\/p>/g, '')
+    .replace(/<p><\/p>/g, '')
+    .replace(/<br>/g, '')
+    .replace(/class="[^"]*"/g, '')
+    .replace(/style="[^"]*"/g, '')
+}
+
 const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<Claim[]>([])
   const [openClaim, setOpenClaim] = useState<string | null>(null)
@@ -85,7 +93,7 @@ const ClaimsPage: React.FC = () => {
       claimsData?.files.map(async (claim: any) => {
         const content = await getContent(claim.id)
         const achievementName =
-          content.credentialSubject.achievement?.[0]?.name || 'Unnamed Achievement'
+          content.credentialSubject?.achievement?.[0]?.name || 'Unnamed Achievement'
         return { id: claim.id, achievementName }
       })
     )
@@ -120,7 +128,7 @@ const ClaimsPage: React.FC = () => {
         console.log('Raw comment content:', comment.content)
 
         let parsedContent: Record<string, string> = {}
-        if (comment.content && comment.content.trim().startsWith('{')) {
+        if (comment.content?.trim().startsWith('{')) {
           try {
             parsedContent = JSON.parse(comment.content)
           } catch (e) {
@@ -200,7 +208,10 @@ const ClaimsPage: React.FC = () => {
       <List>
         {claims.map(claim => (
           <div key={claim.id}>
-            <ListItem button onClick={() => handleClaimClick(claim.id, claim)}>
+            <ListItem
+              component='button'
+              onClick={() => handleClaimClick(claim.id, claim)}
+            >
               <ListItemText primary={claim.achievementName} />
               {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
@@ -271,10 +282,14 @@ const ClaimsPage: React.FC = () => {
                           lineHeight: '24px'
                         }}
                       >
-                        {detailedClaim?.credentialSubject?.achievement[0]?.description.replace(
-                          /<\/?[^>]+>/gi,
-                          ''
-                        )}
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: cleanHTML(
+                              detailedClaim?.credentialSubject?.achievement[0]
+                                ?.description || ''
+                            )
+                          }}
+                        />
                       </Typography>
                       {detailedClaim?.credentialSubject?.achievement[0]?.criteria
                         ?.narrative && (
@@ -282,10 +297,14 @@ const ClaimsPage: React.FC = () => {
                           <Typography>Earning criteria:</Typography>
                           <ul style={{ marginLeft: '25px' }}>
                             <li>
-                              {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
-                                /<\/?[^>]+>/gi,
-                                ''
-                              )}
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: cleanHTML(
+                                    detailedClaim?.credentialSubject?.achievement[0]
+                                      ?.criteria?.narrative || ''
+                                  )
+                                }}
+                              />
                             </li>
                           </ul>
                         </Box>
@@ -346,9 +365,9 @@ const ClaimsPage: React.FC = () => {
                         <Typography variant='h6' sx={{ mb: 2 }}>
                           Recommendations
                         </Typography>
-                        {comments[claim.id].map((comment, index) => (
+                        {comments[claim.id].map(comment => (
                           <Card
-                            key={index}
+                            key={comment.createdTime}
                             variant='outlined'
                             sx={{
                               mb: 4,
@@ -369,10 +388,9 @@ const ClaimsPage: React.FC = () => {
                                   <Typography variant='subtitle1' color='text.secondary'>
                                     How Known
                                   </Typography>
-                                  <Typography
-                                    variant='body1'
+                                  <span
                                     dangerouslySetInnerHTML={{
-                                      __html: DOMPurify.sanitize(comment.howKnow)
+                                      __html: cleanHTML(comment.howKnow)
                                     }}
                                   />
                                 </Box>
@@ -384,12 +402,9 @@ const ClaimsPage: React.FC = () => {
                                   <Typography variant='subtitle1' color='text.secondary'>
                                     Recommendation Text
                                   </Typography>
-                                  <Typography
-                                    variant='body1'
+                                  <span
                                     dangerouslySetInnerHTML={{
-                                      __html: DOMPurify.sanitize(
-                                        comment.recommendationText
-                                      )
+                                      __html: cleanHTML(comment.recommendationText)
                                     }}
                                   />
                                 </Box>
@@ -401,10 +416,9 @@ const ClaimsPage: React.FC = () => {
                                   <Typography variant='subtitle1' color='text.secondary'>
                                     Qualifications
                                   </Typography>
-                                  <Typography
-                                    variant='body1'
+                                  <span
                                     dangerouslySetInnerHTML={{
-                                      __html: DOMPurify.sanitize(comment.qualifications)
+                                      __html: cleanHTML(comment.qualifications)
                                     }}
                                   />
                                 </Box>
