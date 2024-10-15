@@ -23,7 +23,6 @@ import {
 import { FormData } from '../../../credentialForm/form/types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useTheme } from '@mui/material/styles'
-import Link from 'next/link'
 import {
   successPageContainerStyles,
   successPageShareStyles,
@@ -59,7 +58,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const theme = useTheme()
-  const refLink = link ? link.match(/\/d\/(.+?)\//)?.[1] : ''
+  const refLink = link ? RegExp(/\/d\/(.+?)\//).exec(link)?.[1] : ''
 
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
