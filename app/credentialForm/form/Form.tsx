@@ -31,6 +31,16 @@ import {
 } from './fromTexts & stepTrack/FormTextSteps'
 import SuccessPage from './Steps/SuccessPage'
 
+interface SessionData {
+  fullName: string
+  credentialName: string
+}
+interface Session {
+  name: string
+  content: any
+  comments: string[]
+}
+
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [prevStep, setPrevStep] = useState(0)
@@ -40,7 +50,7 @@ const Form = ({ onStepChange }: any) => {
   const [metamaskAdress, setMetamaskAdress] = useState<string>('')
   const [disabled0, setDisabled0] = useState(false)
   const [snackMessage, setSnackMessage] = useState('')
-  const [userSessions, setUserSessions] = useState<{}[]>([])
+  const [userSessions, setUserSessions] = useState<Session[]>([])
   const [openDialog, setOpenDialog] = useState(false)
   const [refLink, setRefLink] = useState('')
   const [image, setImage] = useState('')
@@ -63,7 +73,7 @@ const Form = ({ onStepChange }: any) => {
   } = useForm<FormData>({
     defaultValues: {
       storageOption: 'Google Drive',
-      fullName: session?.user?.name || '',
+      fullName: session?.user?.name ?? '',
       persons: '',
       credentialName: '',
       credentialDuration: '',
@@ -90,7 +100,7 @@ const Form = ({ onStepChange }: any) => {
     try {
       const storageOption = watch('storageOption')
       if (!storageOption || !accessToken) return
-      const userSessions = await storage.getAllSessions()
+      const userSessions = await storage.getAllFilesByType('SESSIONs')
       if (!userSessions) return
       console.log('userSessions', userSessions)
 
@@ -100,7 +110,7 @@ const Form = ({ onStepChange }: any) => {
       }
     } catch (err) {
       console.error('Failed to fetch userSessions:', err)
-      setErrorMessage('Failed to fetch user userSessions')
+      setErrorMessage('Failed to fetch user sessions')
     }
   }
 
@@ -211,14 +221,26 @@ const Form = ({ onStepChange }: any) => {
   const handleSaveSession = async () => {
     try {
       const formData = watch() // Get the current form data
-      setSnackMessage('Successfully saved in Your ' + formData.storageOption)
+      const { fullName, credentialName, storageOption } = formData
+
+      // Validate required fields
+      if (!fullName || !credentialName) {
+        setErrorMessage('Full Name and Credential Name are required to save the session.')
+        return
+      }
+
+      const sessionData: SessionData = { fullName, credentialName }
+
+      setSnackMessage(`Successfully saved in Your ${storageOption}`)
+
       if (!accessToken) {
         setErrorMessage('Access token is missing')
         return
       }
-      await saveSession(formData, accessToken) // Save session data to Google Drive
+
+      await saveSession(sessionData, accessToken) // Save session data to Google Drive
     } catch (error: any) {
-      setSnackMessage('Someting went wrong, please try agin later')
+      setSnackMessage('Something went wrong, please try again later')
       console.error('Error saving session:', error)
     }
   }
@@ -369,18 +391,8 @@ const Form = ({ onStepChange }: any) => {
             handleSaveSession={handleSaveSession}
           />
         )}
-        {errorMessage && (
-          <div
-            style={{
-              color: errorMessage.includes('MetaMask') ? 'red' : 'black',
-              textAlign: 'center',
-              marginTop: '20px'
-            }}
-          >
-            {errorMessage}
-          </div>
-        )}
-        {snackMessage ? <SnackMessage message={snackMessage} /> : ''}
+        {errorMessage && <SnackMessage message={errorMessage} type='error' />}
+        {snackMessage && <SnackMessage message={snackMessage} type='success' />}
       </form>
     </>
   )

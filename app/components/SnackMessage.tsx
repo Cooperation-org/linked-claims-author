@@ -1,14 +1,16 @@
 'use client'
+
 import React, { useState, useEffect } from 'react'
 import { Snackbar, Alert } from '@mui/material'
 
-// Define the props interface
+// Define the props interface with an optional 'type' prop
 interface SnackMessageProps {
   message: string
+  type?: 'success' | 'error' | 'warning' | 'info'
 }
 
 // Functional component with typed props
-const SnackMessage: React.FC<SnackMessageProps> = ({ message }) => {
+const SnackMessage: React.FC<SnackMessageProps> = ({ message, type = 'info' }) => {
   const [open, setOpen] = useState<boolean>(false)
 
   // Open the Snackbar if there is a new message
@@ -32,7 +34,7 @@ const SnackMessage: React.FC<SnackMessageProps> = ({ message }) => {
       onClose={handleClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
     >
-      <Alert onClose={handleClose} severity='info' sx={{ width: '100%' }}>
+      <Alert onClose={handleClose} severity={type} sx={{ width: '100%' }}>
         {message}
       </Alert>
     </Snackbar>
