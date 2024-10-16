@@ -79,10 +79,11 @@ const ClaimsPage: React.FC = () => {
   }, [accessToken])
 
   const getAllClaims = useCallback(async (): Promise<any> => {
-    const claimsData = await storage?.getAllVCs()
-    if (!claimsData?.files) return []
+    const claimsData = await storage?.getAllFilesByType('VCs')
+    if (!claimsData?.length) return []
+
     const claimsNames: Claim[] = await Promise.all(
-      claimsData?.files.map(async (claim: any) => {
+      claimsData.map(async (claim: any) => {
         const content = await getContent(claim.id)
         const achievementName =
           content.credentialSubject.achievement?.[0]?.name || 'Unnamed Achievement'
