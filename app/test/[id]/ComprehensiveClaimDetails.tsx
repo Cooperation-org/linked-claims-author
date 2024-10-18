@@ -115,7 +115,15 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     if (accessToken && fileID) {
       fetchDriveData()
     }
-  }, [fileID, getContent])
+  }, [
+    accessToken,
+    fileID,
+    getContent,
+    fetchFileMetadata,
+    setFileID,
+    setFullName,
+    onDataFetched
+  ])
 
   useEffect(() => {
     if (fetchedOwnerEmail) {
@@ -221,7 +229,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
           <Typography
             sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700, mt: 2 }}
           >
-            {achievement?.name || 'Unnamed Achievement'}
+            {achievement?.name ?? 'Unnamed Achievement'}
           </Typography>
         </Box>
 

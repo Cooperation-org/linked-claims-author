@@ -63,7 +63,7 @@ const Form = ({ onStepChange }: any) => {
   } = useForm<FormData>({
     defaultValues: {
       storageOption: 'Google Drive',
-      fullName: session?.user?.name || '',
+      fullName: session?.user?.name ?? '',
       persons: '',
       credentialName: '',
       credentialDuration: '',
@@ -90,17 +90,16 @@ const Form = ({ onStepChange }: any) => {
     try {
       const storageOption = watch('storageOption')
       if (!storageOption || !accessToken) return
-      const userSessions = await storage.getAllSessions()
-      if (!userSessions) return
-      console.log('userSessions', userSessions)
-
-      if (userSessions.length > 0) {
-        setUserSessions(userSessions)
+      const sessionFiles = await storage.getAllFilesByType('SESSIONs')
+      if (!sessionFiles || sessionFiles.length === 0) return
+      console.log('userSessions', sessionFiles)
+      if (sessionFiles.length > 0) {
+        setUserSessions(sessionFiles)
         setOpenDialog(true)
       }
     } catch (err) {
       console.error('Failed to fetch userSessions:', err)
-      setErrorMessage('Failed to fetch user userSessions')
+      setErrorMessage('Failed to fetch user sessions')
     }
   }
 
@@ -180,9 +179,9 @@ const Form = ({ onStepChange }: any) => {
 
       let newDid
       if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(metamaskAdress)
+        newDid = await createDIDWithMetaMask(metamaskAdress, accessToken)
       } else {
-        newDid = await createDID()
+        newDid = await createDID(accessToken)
       }
       const { didDocument, keyPair, issuerId } = newDid
 

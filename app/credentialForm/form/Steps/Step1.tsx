@@ -91,7 +91,7 @@ export function Step1({ register, watch, setValue, errors }: Readonly<Step1Props
             required: 'Full name is required'
           })}
           placeholder={
-            session?.user?.name || 'e.g., Maria Fernández or Kumar Enterprises'
+            session?.user?.name ?? 'e.g., Maria Fernández or Kumar Enterprises'
           }
           variant='outlined'
           sx={TextFieldStyles}

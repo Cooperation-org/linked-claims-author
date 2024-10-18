@@ -24,19 +24,49 @@ interface RecommendationI {
   portfolio: { name: string; url: string }[]
 }
 
-export async function createDIDWithMetaMask(metaMaskAddress: string) {
-  const credentialEngine = new CredentialEngine()
+function getCredentialEngine(accessToken: string): CredentialEngine {
+  if (!accessToken) {
+    throw new Error('Access token is required to instantiate CredentialEngine.')
+  }
+  return new CredentialEngine(accessToken)
+}
+
+/**
+ * Create a DID using MetaMask address
+ * @param metaMaskAddress - The user's MetaMask address
+ * @param accessToken - The access token for authentication
+ * @returns DID Document, Key Pair, and Issuer ID
+ */
+export async function createDIDWithMetaMask(
+  metaMaskAddress: string,
+  accessToken: string
+) {
+  const credentialEngine = getCredentialEngine(accessToken)
   const { didDocument, keyPair } = await credentialEngine.createWalletDID(metaMaskAddress)
   return { didDocument, keyPair, issuerId: didDocument.id }
 }
 
-const createDID = async () => {
-  const credentialEngine = new CredentialEngine()
+/**
+ * Create a DID
+ * @param accessToken - The access token for authentication
+ * @returns DID Document, Key Pair, and Issuer ID
+ */
+export const createDID = async (accessToken: string) => {
+  const credentialEngine = getCredentialEngine(accessToken)
   const { didDocument, keyPair } = await credentialEngine.createDID()
   console.log('DID:', didDocument)
   return { didDocument, keyPair, issuerId: didDocument.id }
 }
 
+/**
+ * Sign a Verifiable Credential
+ * @param accessToken - The access token for authentication
+ * @param data - The data to include in the credential
+ * @param issuerDid - The issuer's DID
+ * @param keyPair - The key pair used for signing
+ * @param type - The type of credential ('RECOMMENDATION' or 'VC')
+ * @returns The signed Verifiable Credential
+ */
 const signCred = async (
   accessToken: string,
   data: any,
@@ -50,9 +80,9 @@ const signCred = async (
   let formData: FormDataI | RecommendationI
   let signedVC
   try {
-    const credentialEngine = new CredentialEngine()
+    const credentialEngine = getCredentialEngine(accessToken)
     if (type === 'RECOMMENDATION') {
-      formData = genearteRecommendtionData(data)
+      formData = generateRecommendationData(data)
       signedVC = await credentialEngine.signVC(
         formData,
         'RECOMMENDATION',
@@ -71,6 +101,11 @@ const signCred = async (
   }
 }
 
+/**
+ * Generate credential data for 'VC' type
+ * @param data - The form data
+ * @returns FormDataI object
+ */
 export const generateCredentialData = (data: FormData): FormDataI => {
   return {
     expirationDate: new Date(
@@ -94,7 +129,12 @@ export const generateCredentialData = (data: FormData): FormDataI => {
   }
 }
 
-const genearteRecommendtionData = (data: any): RecommendationI => {
+/**
+ * Generate credential data for 'RECOMMENDATION' type
+ * @param data - The form data
+ * @returns RecommendationI object
+ */
+const generateRecommendationData = (data: any): RecommendationI => {
   return {
     recommendationText: data.recommendationText,
     qualifications: data.howKnow,
@@ -108,4 +148,4 @@ const genearteRecommendtionData = (data: any): RecommendationI => {
   }
 }
 
-export { createDID, signCred }
+export { signCred }
