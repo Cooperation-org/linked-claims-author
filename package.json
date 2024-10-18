@@ -18,7 +18,7 @@
     "dompurify": "^3.1.7",
     "ethers": "^6.13.2",
     "lru-cache": "^11.0.1",
-    "next": "14.1.0",
+    "next": "^14.2.15",
     "next-auth": "^4.24.7",
     "nodemailer": "^6.9.14",
     "react": "^18",
