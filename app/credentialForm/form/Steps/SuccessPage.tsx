@@ -23,7 +23,6 @@ import {
 import { FormData } from '../../../credentialForm/form/types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useTheme } from '@mui/material/styles'
-import Link from 'next/link'
 import {
   successPageContainerStyles,
   successPageShareStyles,
@@ -61,7 +60,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const theme = useTheme()
-  const refLink = link ? link.match(/\/d\/(.+?)\//)?.[1] : ''
+  const refLink = link ? RegExp(/\/d\/(.+?)\//).exec(link)?.[1] : ''
 
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
@@ -194,25 +193,24 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           )}
         </Box>
         {storageOption !== options.Device && (
-          <Link href={`/askforrecommendation/${refLink}`}>
-            <Button
-              onClick={() => {
-                setActiveStep(0)
-                reset()
-              }}
-              variant='contained'
-              sx={{
-                borderRadius: '100px',
-                backgroundColor: '#003FE0',
-                textTransform: 'none',
-                fontFamily: 'Roboto, sans-serif',
-                boxShadow: '0px 0px 2px 2px #F7BC00'
-              }}
-              disabled={!link}
-            >
-              <Typography>Ask for a Recommendation</Typography>
-            </Button>
-          </Link>
+          <Button
+            onClick={() => {
+              setActiveStep(0)
+              reset()
+            }}
+            variant='contained'
+            href={`/askforrecommendation/${refLink}`}
+            sx={{
+              borderRadius: '100px',
+              backgroundColor: '#003FE0',
+              textTransform: 'none',
+              fontFamily: 'Roboto, sans-serif',
+              boxShadow: '0px 0px 2px 2px #F7BC00'
+            }}
+            disabled={!link}
+          >
+            <Typography>Ask for a Recommendation</Typography>
+          </Button>
         )}
       </Box>
       <Button
