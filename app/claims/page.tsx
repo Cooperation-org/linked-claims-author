@@ -10,15 +10,12 @@ import {
   Typography,
   CircularProgress,
   Box,
-  Card,
-  CardContent,
   Button
 } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
 import useGoogleDrive from '../hooks/useGoogleDrive'
-import DOMPurify from 'dompurify'
 import Link from 'next/link'
 import { SVGBadge, SVGDate } from '../Assets/SVGs'
 import {
@@ -66,7 +63,6 @@ const ClaimsPage: React.FC = () => {
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
-  const [comments, setComments] = useState<{ [key: string]: Comment[] }>({})
   const { getContent } = useGoogleDrive()
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
@@ -93,70 +89,6 @@ const ClaimsPage: React.FC = () => {
     return claimsNames
   }, [getContent, storage])
 
-  const fetchComments = async (fileId: string) => {
-    if (!accessToken) {
-      console.log('Access Token not available.')
-      return
-    }
-
-    try {
-      const url = `https://www.googleapis.com/drive/v2/files/${fileId}/comments`
-      console.log('Fetching comments from URL:', url)
-
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        }
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error.message)
-      }
-
-      const data = await response.json()
-
-      const commentsData = data.items.map((comment: any) => {
-        console.log('Raw comment content:', comment.content)
-
-        let parsedContent: Record<string, string> = {}
-        if (comment.content && comment.content.trim().startsWith('{')) {
-          try {
-            parsedContent = JSON.parse(comment.content)
-          } catch (e) {
-            console.error('Error parsing comment content:', e)
-            parsedContent = {}
-          }
-        } else {
-          console.warn('Comment content is not valid JSON:', comment.content)
-          parsedContent = {
-            recommendationText: comment.content
-          }
-        }
-
-        return {
-          author:
-            typeof comment.author === 'string'
-              ? comment.author
-              : comment.author.displayName,
-          howKnow: parsedContent['howKnow'] || '',
-          recommendationText: parsedContent['recommendationText'] || '',
-          qualifications:
-            parsedContent['qualifications'] ||
-            parsedContent['qualif'] ||
-            parsedContent['mainAnswer'] ||
-            '',
-          createdTime: comment.createdTime
-        }
-      })
-      setComments(prevState => ({ ...prevState, [fileId]: commentsData }))
-      console.log('Parsed commentsData:', commentsData)
-    } catch (error) {
-      console.error('Error fetching comments:', error)
-    }
-  }
-
   useEffect(() => {
     const fetchClaims = async () => {
       const claimsData = await getAllClaims()
@@ -177,17 +109,10 @@ const ClaimsPage: React.FC = () => {
         setDetailedClaim(claimDetails)
         setOpenClaim(claimId)
         setLoadingClaims(prevState => ({ ...prevState, [claimId]: false }))
-        fetchComments(claimId)
       }
     } catch (error) {
       console.error('Error in handleClaimClick:', error)
     }
-  }
-
-  const formatCommentDate = (createdTime: string | undefined) => {
-    if (!createdTime) return 'No Date Available'
-    const commentDate = new Date(createdTime)
-    return isNaN(commentDate.getTime()) ? 'Invalid Date' : commentDate.toLocaleString()
   }
 
   return (
@@ -340,86 +265,6 @@ const ClaimsPage: React.FC = () => {
                         </Link>
                       </Box>
                     </Box>
-
-                    {/* Comments Box */}
-                    {comments[claim.id] && comments[claim.id].length > 0 && (
-                      <Box sx={{ mt: 2 }}>
-                        <Typography variant='h6' sx={{ mb: 2 }}>
-                          Recommendations
-                        </Typography>
-                        {comments[claim.id].map((comment, index) => (
-                          <Card
-                            key={index}
-                            variant='outlined'
-                            sx={{
-                              mb: 4,
-                              borderRadius: 2,
-                              boxShadow: 3,
-                              borderColor: 'primary.main'
-                            }}
-                          >
-                            <CardContent>
-                              {/* Display the Author */}
-                              <Typography variant='h5' component='div' gutterBottom>
-                                {comment.author}
-                              </Typography>
-
-                              {/* How Known */}
-                              {comment.howKnow && (
-                                <Box sx={{ mt: 2 }}>
-                                  <Typography variant='subtitle1' color='text.secondary'>
-                                    How Known
-                                  </Typography>
-                                  <Typography
-                                    variant='body1'
-                                    dangerouslySetInnerHTML={{
-                                      __html: DOMPurify.sanitize(comment.howKnow)
-                                    }}
-                                  />
-                                </Box>
-                              )}
-
-                              {/* Recommendation Text */}
-                              {comment.recommendationText && (
-                                <Box sx={{ mt: 2 }}>
-                                  <Typography variant='subtitle1' color='text.secondary'>
-                                    Recommendation Text
-                                  </Typography>
-                                  <Typography
-                                    variant='body1'
-                                    dangerouslySetInnerHTML={{
-                                      __html: DOMPurify.sanitize(
-                                        comment.recommendationText
-                                      )
-                                    }}
-                                  />
-                                </Box>
-                              )}
-
-                              {/* Qualifications */}
-                              {comment.qualifications && (
-                                <Box sx={{ mt: 2 }}>
-                                  <Typography variant='subtitle1' color='text.secondary'>
-                                    Qualifications
-                                  </Typography>
-                                  <Typography
-                                    variant='body1'
-                                    dangerouslySetInnerHTML={{
-                                      __html: DOMPurify.sanitize(comment.qualifications)
-                                    }}
-                                  />
-                                </Box>
-                              )}
-
-                              {/* Created Time */}
-                              <Typography variant='caption' sx={{ mt: 2 }}>
-                                {formatCommentDate(comment.createdTime)}
-                              </Typography>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </Box>
-                    )}
                   </Box>
                 )}
               </Container>
