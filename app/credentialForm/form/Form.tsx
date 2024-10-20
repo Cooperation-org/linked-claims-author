@@ -42,7 +42,7 @@ const Form = ({ onStepChange }: any) => {
   const [snackMessage, setSnackMessage] = useState('')
   const [userSessions, setUserSessions] = useState<{}[]>([])
   const [openDialog, setOpenDialog] = useState(false)
-  const [refLink, setRefLink] = useState('')
+  const [fileId, setFileId] = useState('')
   const [image, setImage] = useState('')
   const characterLimit = 294
   const maxSteps = textGuid.length
@@ -197,7 +197,7 @@ const Form = ({ onStepChange }: any) => {
       const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
       const file = (await saveToGoogleDrive(storage, res, 'VC')) as any
       setLink(`https://drive.google.com/file/d/${file.id}/view`)
-      setRefLink(`${file.id}`)
+      setFileId(`${file.id}`)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res
@@ -348,7 +348,8 @@ const Form = ({ onStepChange }: any) => {
                     reset={reset}
                     link={link}
                     setLink={setLink}
-                    setRefLink={setRefLink}
+                    setFileId={setFileId}
+                    fileId={fileId}
                     storageOption={watch('storageOption')}
                   />
                 </Box>

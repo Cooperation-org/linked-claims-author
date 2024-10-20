@@ -193,7 +193,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
           {achievement?.image?.id ? (
             <img
               style={{
-                borderRadius: '20px',
                 maxWidth: '100%'
               }}
               src={achievement?.image?.id}
@@ -320,8 +319,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                   style={{
                     marginLeft: '25px',
                     textDecorationLine: 'underline',
-                    color: 'blue',
-                    backgroundColor: '#FFFFFF'
+                    color: 'blue'
                   }}
                 >
                   {credentialSubject?.portfolio.map(portfolioItem => (
@@ -346,12 +344,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
               </Box>
             )}
           </>
-        )}
-
-        {ownerEmail && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant='body2'>Owner Email: {ownerEmail}</Typography>
-          </Box>
         )}
 
         {pathname?.includes('/claims') && (

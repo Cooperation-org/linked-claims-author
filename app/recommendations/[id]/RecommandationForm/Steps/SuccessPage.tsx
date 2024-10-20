@@ -57,7 +57,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   }
 
   // Construct the Google Drive link using the file ID
-  const link = `https://drive.google.com/file/d/${id}/view`
+  const link = `https://linked-claims-author.vercel.app/view/${id}`
 
   const message = fetchedFullName
     ? `Hi ${fullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
@@ -186,7 +186,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
         <Button
           component={Link}
-          href='/CredentialForm'
+          href='/credentialForm'
           sx={{
             textTransform: 'capitalize',
             m: '20px 0',

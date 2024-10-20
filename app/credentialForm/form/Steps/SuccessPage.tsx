@@ -44,8 +44,9 @@ interface SuccessPageProps {
   reset: () => void
   link: string
   setLink: (link: string) => void
-  setRefLink: (link: string) => void
+  setFileId: (link: string) => void
   storageOption: string
+  fileId: string
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
@@ -53,7 +54,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   reset,
   link,
   setLink,
-  setRefLink,
+  setFileId,
+  fileId,
   storageOption
 }) => {
   const { setActiveStep } = useStepContext()
@@ -67,12 +69,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     const params = new URLSearchParams({
       startTask: 'CERTIFICATION_NAME',
       name: formData?.credentialName ?? 'Certification Name',
-      organizationName: 'LinkedTrust', // Updated to use organization name
+      organizationName: 'LinkedTrust',
       issueYear: '2024',
       issueMonth: '8',
       expirationYear: '2025',
       expirationMonth: '8',
-      certUrl: link
+      certUrl: `https://linked-claims-author.vercel.app/view/${fileId}`
     })
     return `${baseLinkedInUrl}?${params.toString()}`
   }
@@ -169,7 +171,11 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                     borderRadius: '10px'
                   }
                 }}
-                value={link || 'wait as your credentials is being processed...'}
+                value={
+                  fileId
+                    ? `https://linked-claims-author.vercel.app/view/${fileId}`
+                    : 'wait as your credentials is being processed...'
+                }
                 InputProps={{
                   endAdornment: <InputAdornment position='start'></InputAdornment>,
                   startAdornment: (
