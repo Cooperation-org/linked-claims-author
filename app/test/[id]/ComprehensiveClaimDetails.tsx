@@ -25,11 +25,6 @@ import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import DOMPurify from 'dompurify'
-import {
-  credentialBoxStyles,
-  commonTypographyStyles,
-  evidenceListStyles
-} from '../../components/Styles/appStyles'
 import useFetchComments from '../../utils/fetchComments'
 
 // Define types
@@ -92,13 +87,13 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [ownerEmail, setOwnerEmail] = useState<string | null>(null)
   const theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const pathname = usePathname()
   const { data: session } = useSession()
   const accessToken = session?.accessToken
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
+  const isView = pathname?.includes('/view')
 
   // Initialize the custom hook
   const {
@@ -156,16 +151,9 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
 
   useEffect(() => {
     if (fetchedOwnerEmail) {
-      setOwnerEmail(fetchedOwnerEmail)
       setEmail(fetchedOwnerEmail)
     }
   }, [fetchedOwnerEmail, setEmail])
-
-  const formatCommentDate = (createdTime: string | undefined) => {
-    if (!createdTime) return 'No Date Available'
-    const commentDate = new Date(createdTime)
-    return isNaN(commentDate.getTime()) ? 'Invalid Date' : commentDate.toLocaleString()
-  }
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -447,113 +435,120 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       </Box>
 
       {/* Comments Section */}
-      {commentLoading ? (
-        <Box display='flex' justifyContent='center' my={2}>
-          <CircularProgress size={24} />
-        </Box>
-      ) : commentsError ? (
-        <Typography color='error'>{commentsError}</Typography>
-      ) : comments[fileID] && comments[fileID].length > 0 ? (
-        <List sx={{ p: 0, m: 0 }}>
-          {comments[fileID].map((comment: any, index: number) => (
-            <React.Fragment key={index}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-end',
-                  pr: '30px'
-                }}
-              >
-                <LineSVG />
-              </Box>
-              <ListItem
-                sx={{ borderRadius: '10px', border: '1px solid #003FE0' }}
-                alignItems='flex-start'
-                secondaryAction={
-                  <IconButton
-                    edge='end'
-                    onClick={() => handleToggleComment(comment.id || index.toString())}
-                    aria-label='expand'
+
+      {isView && (
+        <Box>
+          {commentLoading ? (
+            <Box display='flex' justifyContent='center' my={2}>
+              <CircularProgress size={24} />
+            </Box>
+          ) : commentsError ? (
+            <Typography color='error'>{commentsError}</Typography>
+          ) : comments[fileID] && comments[fileID].length > 0 ? (
+            <List sx={{ p: 0, m: 0 }}>
+              {comments[fileID].map((comment: any, index: number) => (
+                <React.Fragment key={index}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-end',
+                      pr: '30px'
+                    }}
                   >
-                    {expandedComments[comment.id || index.toString()] ? (
-                      <ExpandLess />
-                    ) : (
-                      <ExpandMore />
-                    )}
-                  </IconButton>
-                }
-              >
-                <ListItemText
-                  primary={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <SVGBadge />
-                      <Box>
-                        <Typography variant='h6' component='div'>
-                          {comment.author}
-                        </Typography>
-                        <Typography variant='body2' color='text.secondary'>
-                          Vouched for {comment.author}
-                        </Typography>
-                      </Box>
+                    <LineSVG />
+                  </Box>
+                  <ListItem
+                    sx={{ borderRadius: '10px', border: '1px solid #003FE0' }}
+                    alignItems='flex-start'
+                    secondaryAction={
+                      <IconButton
+                        edge='end'
+                        onClick={() =>
+                          handleToggleComment(comment.id || index.toString())
+                        }
+                        aria-label='expand'
+                      >
+                        {expandedComments[comment.id || index.toString()] ? (
+                          <ExpandLess />
+                        ) : (
+                          <ExpandMore />
+                        )}
+                      </IconButton>
+                    }
+                  >
+                    <ListItemText
+                      primary={
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <SVGBadge />
+                          <Box>
+                            <Typography variant='h6' component='div'>
+                              {comment.author}
+                            </Typography>
+                            <Typography variant='body2' color='text.secondary'>
+                              Vouched for {credentialSubject?.name}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      }
+                    />
+                  </ListItem>
+                  <Collapse
+                    in={expandedComments[comment.id || index.toString()]}
+                    timeout='auto'
+                    unmountOnExit
+                  >
+                    <Box sx={{ pl: 7, pr: 2, pb: 2 }}>
+                      {comment.howKnow && (
+                        <Box sx={{ mt: 1 }}>
+                          <Typography variant='subtitle2' color='text.secondary'>
+                            How Known:
+                          </Typography>
+                          <Typography
+                            variant='body2'
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(comment.howKnow)
+                            }}
+                          />
+                        </Box>
+                      )}
+                      {comment.recommendationText && (
+                        <Box sx={{ mt: 1 }}>
+                          <Typography variant='subtitle2' color='text.secondary'>
+                            Recommendation:
+                          </Typography>
+                          <Typography
+                            variant='body2'
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(comment.recommendationText)
+                            }}
+                          />
+                        </Box>
+                      )}
+                      {comment.qualifications && (
+                        <Box sx={{ mt: 1 }}>
+                          <Typography variant='subtitle2' color='text.secondary'>
+                            Qualifications:
+                          </Typography>
+                          <Typography
+                            variant='body2'
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(comment.qualifications)
+                            }}
+                          />
+                        </Box>
+                      )}
                     </Box>
-                  }
-                />
-              </ListItem>
-              <Collapse
-                in={expandedComments[comment.id || index.toString()]}
-                timeout='auto'
-                unmountOnExit
-              >
-                <Box sx={{ pl: 7, pr: 2, pb: 2 }}>
-                  {comment.howKnow && (
-                    <Box sx={{ mt: 1 }}>
-                      <Typography variant='subtitle2' color='text.secondary'>
-                        How Known:
-                      </Typography>
-                      <Typography
-                        variant='body2'
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(comment.howKnow)
-                        }}
-                      />
-                    </Box>
-                  )}
-                  {comment.recommendationText && (
-                    <Box sx={{ mt: 1 }}>
-                      <Typography variant='subtitle2' color='text.secondary'>
-                        Recommendation:
-                      </Typography>
-                      <Typography
-                        variant='body2'
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(comment.recommendationText)
-                        }}
-                      />
-                    </Box>
-                  )}
-                  {comment.qualifications && (
-                    <Box sx={{ mt: 1 }}>
-                      <Typography variant='subtitle2' color='text.secondary'>
-                        Qualifications:
-                      </Typography>
-                      <Typography
-                        variant='body2'
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(comment.qualifications)
-                        }}
-                      />
-                    </Box>
-                  )}
-                </Box>
-              </Collapse>
-              {/* Add Divider between comments */}
-              {index < comments[fileID].length - 1 && <Divider component='li' />}
-            </React.Fragment>
-          ))}{' '}
-        </List>
-      ) : (
-        <Typography variant='body2'>No recommendations available.</Typography>
+                  </Collapse>
+                  {/* Add Divider between comments */}
+                  {index < comments[fileID].length - 1 && <Divider component='li' />}
+                </React.Fragment>
+              ))}{' '}
+            </List>
+          ) : (
+            <Typography variant='body2'>No recommendations available.</Typography>
+          )}
+        </Box>
       )}
     </Container>
   )
