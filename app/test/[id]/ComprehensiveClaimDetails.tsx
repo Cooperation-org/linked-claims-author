@@ -147,7 +147,15 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     if (accessToken && fileID) {
       fetchDriveData()
     }
-  }, [fileID, getContent])
+  }, [
+    accessToken,
+    fileID,
+    getContent,
+    fetchFileMetadata,
+    setFileID,
+    setFullName,
+    onDataFetched
+  ])
 
   useEffect(() => {
     if (fetchedOwnerEmail) {
