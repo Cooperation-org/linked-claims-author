@@ -10,8 +10,6 @@ import {
   Typography,
   CircularProgress,
   Box,
-  Card,
-  CardContent,
   Button
 } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
@@ -74,7 +72,6 @@ const ClaimsPage: React.FC = () => {
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
-  const [comments, setComments] = useState<{ [key: string]: Comment[] }>({})
   const { getContent } = useGoogleDrive()
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
@@ -87,10 +84,11 @@ const ClaimsPage: React.FC = () => {
   }, [accessToken])
 
   const getAllClaims = useCallback(async (): Promise<any> => {
-    const claimsData = await storage?.getAllVCs()
-    if (!claimsData?.files) return []
+    const claimsData = await storage?.getAllFilesByType('VCs')
+    if (!claimsData?.length) return []
+
     const claimsNames: Claim[] = await Promise.all(
-      claimsData?.files.map(async (claim: any) => {
+      claimsData.map(async (claim: any) => {
         const content = await getContent(claim.id)
         const achievementName =
           content.credentialSubject?.achievement?.[0]?.name || 'Unnamed Achievement'
@@ -99,7 +97,6 @@ const ClaimsPage: React.FC = () => {
     )
     return claimsNames
   }, [getContent, storage])
-
   const fetchComments = async (fileId: string) => {
     if (!accessToken) {
       console.log('Access Token not available.')
@@ -163,7 +160,6 @@ const ClaimsPage: React.FC = () => {
       console.error('Error fetching comments:', error)
     }
   }
-
   useEffect(() => {
     const fetchClaims = async () => {
       const claimsData = await getAllClaims()
@@ -184,17 +180,10 @@ const ClaimsPage: React.FC = () => {
         setDetailedClaim(claimDetails)
         setOpenClaim(claimId)
         setLoadingClaims(prevState => ({ ...prevState, [claimId]: false }))
-        fetchComments(claimId)
       }
     } catch (error) {
       console.error('Error in handleClaimClick:', error)
     }
-  }
-
-  const formatCommentDate = (createdTime: string | undefined) => {
-    if (!createdTime) return 'No Date Available'
-    const commentDate = new Date(createdTime)
-    return isNaN(commentDate.getTime()) ? 'Invalid Date' : commentDate.toLocaleString()
   }
 
   return (
@@ -358,7 +347,6 @@ const ClaimsPage: React.FC = () => {
                         </Link>
                       </Box>
                     </Box>
-
                     {/* Comments Box */}
                     {comments[claim.id] && comments[claim.id].length > 0 && (
                       <Box sx={{ mt: 2 }}>
@@ -433,6 +421,7 @@ const ClaimsPage: React.FC = () => {
                         ))}
                       </Box>
                     )}
+
                   </Box>
                 )}
               </Container>

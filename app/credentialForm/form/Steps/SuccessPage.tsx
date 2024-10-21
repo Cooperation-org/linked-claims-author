@@ -23,7 +23,6 @@ import {
 import { FormData } from '../../../credentialForm/form/types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useTheme } from '@mui/material/styles'
-import Link from 'next/link'
 import {
   successPageContainerStyles,
   successPageShareStyles,
@@ -44,8 +43,9 @@ interface SuccessPageProps {
   reset: () => void
   link: string
   setLink: (link: string) => void
-  setRefLink: (link: string) => void
+  setFileId: (link: string) => void
   storageOption: string
+  fileId: string
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
@@ -53,13 +53,14 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   reset,
   link,
   setLink,
-  setRefLink,
+  setFileId,
+  fileId,
   storageOption
 }) => {
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const theme = useTheme()
-  const refLink = link ? link.match(/\/d\/(.+?)\//)?.[1] : ''
+  const refLink = link ? RegExp(/\/d\/(.+?)\//).exec(link)?.[1] : ''
 
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
@@ -67,12 +68,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     const params = new URLSearchParams({
       startTask: 'CERTIFICATION_NAME',
       name: formData?.credentialName ?? 'Certification Name',
-      organizationName: 'LinkedTrust', // Updated to use organization name
+      organizationName: 'LinkedTrust',
       issueYear: '2024',
       issueMonth: '8',
       expirationYear: '2025',
       expirationMonth: '8',
-      certUrl: link
+      certUrl: `https://linked-claims-author.vercel.app/view/${fileId}`
     })
     return `${baseLinkedInUrl}?${params.toString()}`
   }
@@ -169,7 +170,11 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                     borderRadius: '10px'
                   }
                 }}
-                value={link || 'wait as your credentials is being processed...'}
+                value={
+                  fileId
+                    ? `https://linked-claims-author.vercel.app/view/${fileId}`
+                    : 'wait as your credentials is being processed...'
+                }
                 InputProps={{
                   endAdornment: <InputAdornment position='start'></InputAdornment>,
                   startAdornment: (
@@ -188,25 +193,24 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           )}
         </Box>
         {storageOption !== options.Device && (
-          <Link href={`/askforrecommendation/${refLink}`}>
-            <Button
-              onClick={() => {
-                setActiveStep(0)
-                reset()
-              }}
-              variant='contained'
-              sx={{
-                borderRadius: '100px',
-                backgroundColor: '#003FE0',
-                textTransform: 'none',
-                fontFamily: 'Roboto, sans-serif',
-                boxShadow: '0px 0px 2px 2px #F7BC00'
-              }}
-              disabled={!link}
-            >
-              <Typography>Ask for a Recommendation</Typography>
-            </Button>
-          </Link>
+          <Button
+            onClick={() => {
+              setActiveStep(0)
+              reset()
+            }}
+            variant='contained'
+            href={`/askforrecommendation/${refLink}`}
+            sx={{
+              borderRadius: '100px',
+              backgroundColor: '#003FE0',
+              textTransform: 'none',
+              fontFamily: 'Roboto, sans-serif',
+              boxShadow: '0px 0px 2px 2px #F7BC00'
+            }}
+            disabled={!link}
+          >
+            <Typography>Ask for a Recommendation</Typography>
+          </Button>
         )}
       </Box>
       <Button
