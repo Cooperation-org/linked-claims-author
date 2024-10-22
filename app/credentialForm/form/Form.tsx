@@ -42,7 +42,7 @@ const Form = ({ onStepChange }: any) => {
   const [snackMessage, setSnackMessage] = useState('')
   const [userSessions, setUserSessions] = useState<{}[]>([])
   const [openDialog, setOpenDialog] = useState(false)
-  const [refLink, setRefLink] = useState('')
+  const [fileId, setFileId] = useState('')
   const [image, setImage] = useState('')
   const characterLimit = 294
   const maxSteps = textGuid.length
@@ -63,7 +63,7 @@ const Form = ({ onStepChange }: any) => {
   } = useForm<FormData>({
     defaultValues: {
       storageOption: 'Google Drive',
-      fullName: session?.user?.name || '',
+      fullName: session?.user?.name ?? '',
       persons: '',
       credentialName: '',
       credentialDuration: '',
@@ -90,17 +90,16 @@ const Form = ({ onStepChange }: any) => {
     try {
       const storageOption = watch('storageOption')
       if (!storageOption || !accessToken) return
-      const userSessions = await storage.getAllSessions()
-      if (!userSessions) return
-      console.log('userSessions', userSessions)
-
-      if (userSessions.length > 0) {
-        setUserSessions(userSessions)
+      const sessionFiles = await storage.getAllFilesByType('SESSIONs')
+      if (!sessionFiles || sessionFiles.length === 0) return
+      console.log('userSessions', sessionFiles)
+      if (sessionFiles.length > 0) {
+        setUserSessions(sessionFiles)
         setOpenDialog(true)
       }
     } catch (err) {
       console.error('Failed to fetch userSessions:', err)
-      setErrorMessage('Failed to fetch user userSessions')
+      setErrorMessage('Failed to fetch user sessions')
     }
   }
 
@@ -180,9 +179,9 @@ const Form = ({ onStepChange }: any) => {
 
       let newDid
       if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(metamaskAdress)
+        newDid = await createDIDWithMetaMask(metamaskAdress, accessToken)
       } else {
-        newDid = await createDID()
+        newDid = await createDID(accessToken)
       }
       const { didDocument, keyPair, issuerId } = newDid
 
@@ -198,7 +197,7 @@ const Form = ({ onStepChange }: any) => {
       const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
       const file = (await saveToGoogleDrive(storage, res, 'VC')) as any
       setLink(`https://drive.google.com/file/d/${file.id}/view`)
-      setRefLink(`${file.id}`)
+      setFileId(`${file.id}`)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res
@@ -349,7 +348,8 @@ const Form = ({ onStepChange }: any) => {
                     reset={reset}
                     link={link}
                     setLink={setLink}
-                    setRefLink={setRefLink}
+                    setFileId={setFileId}
+                    fileId={fileId}
                     storageOption={watch('storageOption')}
                   />
                 </Box>

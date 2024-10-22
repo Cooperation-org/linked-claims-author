@@ -90,7 +90,9 @@ export default function AskForRecommendation() {
         const achievementName = parsedData?.credentialSubject?.achievement[0]?.name || ''
 
         reset({
-          reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+          reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!
+          
+this is the link https://linked-claims-author.vercel.app/view/${params.id}`
         })
       } else {
         const data = await getContent(id)
@@ -102,7 +104,8 @@ export default function AskForRecommendation() {
           const achievementName = data?.credentialSubject?.achievement[0]?.name || ''
 
           reset({
-            reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!`
+            reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!
+            this is the link https://linked-claims-author.vercel.app/view/${params.id}`
           })
         }
       }

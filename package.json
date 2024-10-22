@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@cooperation/vc-storage": "^1.0.2",
+    "@cooperation/vc-storage": "^1.0.7",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.14",
@@ -18,14 +18,15 @@
     "dompurify": "^3.1.7",
     "ethers": "^6.13.2",
     "lru-cache": "^11.0.1",
-    "next": "14.1.0",
+    "next": "^14.2.15",
     "next-auth": "^4.24.7",
     "nodemailer": "^6.9.14",
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.9",
     "react-hook-form": "^7.51.1",
-    "react-quill": "^2.0.0"
+    "react-quill": "^2.0.0",
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
@@ -35,6 +36,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
+    "prettier": "^3.3.3",
     "typescript": "^5"
   }
 }

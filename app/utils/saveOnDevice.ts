@@ -1,18 +1,34 @@
 import { CredentialEngine } from '@cooperation/vc-storage'
 import { createDID, generateCredentialData } from './signCred'
+import { getSession } from 'next-auth/react'
+
+/**
+ * Retrieves the access token from the current session.
+ * @returns {Promise<string | null>} The access token or null if not available.
+ */
+async function getAccessToken(): Promise<string | null> {
+  const session = await getSession()
+  return session?.accessToken ?? null
+}
 
 /**
  * Signs and saves the signed credential on the user's device
  * @param data
- * @returns
+ * @returns {Promise<void>}
  */
-export async function signAndSaveOnDevice(data: any) {
+export async function signAndSaveOnDevice(data: any): Promise<void> {
   if (typeof window === 'undefined') return // Ensure this only runs in the browser
 
+  const accessToken = await getAccessToken()
+  if (!accessToken) {
+    console.error('Access token is missing.')
+    return
+  }
+
   // Generate DID, credential data, and sign the VC
-  const newDid = await createDID()
+  const newDid = await createDID(accessToken)
   const formData = generateCredentialData(data)
-  const credentialEngine = new CredentialEngine()
+  const credentialEngine = new CredentialEngine(accessToken)
   const { didDocument, keyPair } = newDid
 
   const signedVC = await credentialEngine.signVC(formData, 'VC', keyPair, didDocument.id)
