@@ -26,6 +26,7 @@ import {
 
 // Define types
 interface Claim {
+  [x: string]: any
   id: string
   achievementName: string
 }
@@ -63,7 +64,6 @@ const ClaimsPage: React.FC = () => {
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
-  const { getContent } = useGoogleDrive()
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
 
@@ -80,33 +80,35 @@ const ClaimsPage: React.FC = () => {
 
     const claimsNames: Claim[] = await Promise.all(
       claimsData.map(async (claim: any) => {
-        const content = await getContent(claim.id)
         const achievementName =
-          content.credentialSubject.achievement?.[0]?.name || 'Unnamed Achievement'
+          claim.content?.credentialSubject?.achievement?.[0]?.name ||
+          'Unnamed Achievement'
         return { id: claim.id, achievementName }
       })
     )
-    return claimsNames
-  }, [getContent, storage])
+    console.log(':  getAllClaims  claimsNames', claimsNames)
+    return claimsData
+  }, [storage])
 
   useEffect(() => {
     const fetchClaims = async () => {
       const claimsData = await getAllClaims()
+      console.log(':  fetchClaims  claimsData', claimsData)
       setClaims(claimsData)
     }
 
     fetchClaims()
   }, [accessToken, storage, getAllClaims])
 
-  const handleClaimClick = async (claimId: string, claim: any) => {
+  const handleClaimClick = async (claimId: string, content: any) => {
+    console.log(':  handleClaimClick  claimId', claimId)
     try {
       if (openClaim === claimId) {
         setOpenClaim(null)
         setDetailedClaim(null)
       } else {
         setLoadingClaims(prevState => ({ ...prevState, [claimId]: true }))
-        const claimDetails = await getContent(claimId)
-        setDetailedClaim(claimDetails)
+        setDetailedClaim(content)
         setOpenClaim(claimId)
         setLoadingClaims(prevState => ({ ...prevState, [claimId]: false }))
       }
@@ -126,13 +128,18 @@ const ClaimsPage: React.FC = () => {
       <List>
         {claims.map(claim => (
           <div key={claim.id}>
-            <ListItem button onClick={() => handleClaimClick(claim.id, claim)}>
-              <ListItemText primary={claim.achievementName} />
-              {openClaim === claim.id ? <ExpandLess /> : <ExpandMore />}
+            <ListItem
+              button
+              onClick={() => handleClaimClick(claim.content.id, claim.content)}
+            >
+              <ListItemText
+                primary={claim.content.credentialSubject?.achievement?.[0]?.name}
+              />
+              {openClaim === claim.content.id ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
-            <Collapse in={openClaim === claim.id} timeout='auto' unmountOnExit>
+            <Collapse in={openClaim === claim.content.id} timeout='auto' unmountOnExit>
               <Container>
-                {loadingClaims[claim.id] ? (
+                {loadingClaims[claim.content.id] ? (
                   <CircularProgress />
                 ) : (
                   <Box>
@@ -239,7 +246,7 @@ const ClaimsPage: React.FC = () => {
                       <Box
                         sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}
                       >
-                        <Link href={`/view/${claim.id}`}>
+                        <Link href={`/view/${claim.content.id}`}>
                           <Button
                             variant='contained'
                             sx={{
@@ -251,7 +258,7 @@ const ClaimsPage: React.FC = () => {
                             View Credential
                           </Button>
                         </Link>
-                        <Link href={`/askforrecommendation/${claim.id}`}>
+                        <Link href={`/askforrecommendation/${claim.content.id}`}>
                           <Button
                             variant='contained'
                             sx={{
