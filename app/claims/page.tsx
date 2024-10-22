@@ -235,7 +235,7 @@ const ClaimsPage: React.FC = () => {
                         <Box
                           sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}
                         >
-                          <Link href={`/view/${claim.content.id}`}>
+                          <Link href={`/view/${claim.id}`}>
                             <Button
                               variant='contained'
                               sx={{
@@ -247,7 +247,7 @@ const ClaimsPage: React.FC = () => {
                               View Credential
                             </Button>
                           </Link>
-                          <Link href={`/askforrecommendation/${claim.content.id}`}>
+                          <Link href={`/askforrecommendation/${claim.id}`}>
                             <Button
                               variant='contained'
                               sx={{
