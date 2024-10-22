@@ -15,7 +15,6 @@ import {
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
-import useGoogleDrive from '../hooks/useGoogleDrive'
 import Link from 'next/link'
 import { SVGBadge, SVGDate } from '../Assets/SVGs'
 import {
@@ -77,16 +76,6 @@ const ClaimsPage: React.FC = () => {
   const getAllClaims = useCallback(async (): Promise<any> => {
     const claimsData = await storage?.getAllFilesByType('VCs')
     if (!claimsData?.length) return []
-
-    const claimsNames: Claim[] = await Promise.all(
-      claimsData.map(async (claim: any) => {
-        const achievementName =
-          claim.content?.credentialSubject?.achievement?.[0]?.name ||
-          'Unnamed Achievement'
-        return { id: claim.id, achievementName }
-      })
-    )
-    console.log(':  getAllClaims  claimsNames', claimsNames)
     return claimsData
   }, [storage])
 
