@@ -147,7 +147,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     if (accessToken && fileID) {
       fetchDriveData()
     }
-  }, [accessToken, fileID])
+  }, [getContent])
 
   useEffect(() => {
     if (fetchedOwnerEmail) {
@@ -553,5 +553,4 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     </Container>
   )
 }
-
 export default ComprehensiveClaimDetails

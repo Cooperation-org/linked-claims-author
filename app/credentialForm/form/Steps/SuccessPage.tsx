@@ -179,7 +179,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                 startAdornment: (
                   <InputAdornment position='start'>
                     <Box>
-                      <Button onClick={() => copyFormValuesToClipboard(link)}>
+                      <Button
+                        onClick={() =>
+                          copyFormValuesToClipboard(
+                            `https://linked-claims-author.vercel.app/view/${fileId}`
+                          )
+                        }
+                      >
                         <CopySVG />
                       </Button>
                     </Box>
