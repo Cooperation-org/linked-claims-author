@@ -32,47 +32,6 @@ const Footer = () => {
           mb: { xs: '24px', md: '24px' }
         }}
       >
-        <Box sx={{ display: 'flex', gap: '9px' }}>
-          <Box
-            sx={{
-              bgcolor: theme.palette.t3LightGray,
-              borderRadius: '20px',
-              height: '40px',
-              width: '40px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <TwitterSVG />
-          </Box>
-          <Box
-            sx={{
-              bgcolor: theme.palette.t3LightGray,
-              borderRadius: '20px',
-              height: '40px',
-              width: '40px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <LinkedinSVG />
-          </Box>
-          <Box
-            sx={{
-              bgcolor: theme.palette.t3LightGray,
-              borderRadius: '20px',
-              height: '40px',
-              width: '40px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <InstagramSVG />
-          </Box>
-        </Box>
         <Box sx={{ display: 'flex', gap: '28px' }}>
           <Typography
             sx={{
