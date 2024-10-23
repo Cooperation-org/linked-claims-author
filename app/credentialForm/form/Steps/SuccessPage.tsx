@@ -161,57 +161,53 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             </Box>
           </Box>
 
-          {storageOption !== options.Device && (
-            <Box sx={successPageCopyLinkStyles}>
-              <TextField
-                sx={{
-                  ...successPageTextFieldStyles,
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '10px'
-                  }
-                }}
-                value={
-                  fileId
-                    ? `https://linked-claims-author.vercel.app/view/${fileId}`
-                    : 'wait as your credentials is being processed...'
+          <Box sx={successPageCopyLinkStyles}>
+            <TextField
+              sx={{
+                ...successPageTextFieldStyles,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '10px'
                 }
-                InputProps={{
-                  endAdornment: <InputAdornment position='start'></InputAdornment>,
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <Box>
-                        <Button onClick={() => copyFormValuesToClipboard(link)}>
-                          <CopySVG />
-                        </Button>
-                      </Box>
-                    </InputAdornment>
-                  ),
-                  readOnly: true
-                }}
-              />
-            </Box>
-          )}
+              }}
+              value={
+                fileId
+                  ? `https://linked-claims-author.vercel.app/view/${fileId}`
+                  : 'wait as your credentials is being processed...'
+              }
+              InputProps={{
+                endAdornment: <InputAdornment position='start'></InputAdornment>,
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <Box>
+                      <Button onClick={() => copyFormValuesToClipboard(link)}>
+                        <CopySVG />
+                      </Button>
+                    </Box>
+                  </InputAdornment>
+                ),
+                readOnly: true
+              }}
+            />
+          </Box>
         </Box>
-        {storageOption !== options.Device && (
-          <Button
-            onClick={() => {
-              setActiveStep(0)
-              reset()
-            }}
-            variant='contained'
-            href={`/askforrecommendation/${refLink}`}
-            sx={{
-              borderRadius: '100px',
-              backgroundColor: '#003FE0',
-              textTransform: 'none',
-              fontFamily: 'Roboto, sans-serif',
-              boxShadow: '0px 0px 2px 2px #F7BC00'
-            }}
-            disabled={!link}
-          >
-            <Typography>Ask for a Recommendation</Typography>
-          </Button>
-        )}
+        <Button
+          onClick={() => {
+            setActiveStep(0)
+            reset()
+          }}
+          variant='contained'
+          href={`/askforrecommendation/${refLink}`}
+          sx={{
+            borderRadius: '100px',
+            backgroundColor: '#003FE0',
+            textTransform: 'none',
+            fontFamily: 'Roboto, sans-serif',
+            boxShadow: '0px 0px 2px 2px #F7BC00'
+          }}
+          disabled={!link}
+        >
+          <Typography>Ask for a Recommendation</Typography>
+        </Button>
       </Box>
       <Button
         sx={{
