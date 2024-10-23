@@ -63,6 +63,7 @@ const ClaimsPage: React.FC = () => {
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
+  const [loading, setLoading] = useState(true)
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
 
@@ -81,9 +82,11 @@ const ClaimsPage: React.FC = () => {
 
   useEffect(() => {
     const fetchClaims = async () => {
+      setLoading(true)
       const claimsData = await getAllClaims()
       console.log(':  fetchClaims  claimsData', claimsData)
       setClaims(claimsData)
+      setLoading(false) // Set loading to false after fetching the claims
     }
 
     fetchClaims()
@@ -114,7 +117,19 @@ const ClaimsPage: React.FC = () => {
         Previous Claims
       </Typography>
       <List>
-        {claims.length !== 0 ? (
+        {loading ? (
+          // Show loading spinner while claims are being fetched
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '100%'
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : claims.length !== 0 ? (
           claims.map(claim => (
             <div key={claim.id}>
               <ListItem
@@ -271,12 +286,20 @@ const ClaimsPage: React.FC = () => {
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'center',
+              flexDirection: 'column',
               alignItems: 'center',
+              justifyContent: 'center',
               minHeight: '100%'
             }}
           >
-            <CircularProgress />
+            <Typography variant='h6'>
+              There's no claims yet, try creating one now!
+            </Typography>
+            <Link href='/credentialForm'>
+              <Button variant='contained' sx={{ backgroundColor: '#003FE0', mt: 2 }}>
+                Create New Claim
+              </Button>
+            </Link>
           </Box>
         )}
       </List>
