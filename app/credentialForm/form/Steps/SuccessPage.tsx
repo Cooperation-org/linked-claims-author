@@ -17,7 +17,8 @@ import {
   LinkedinSVG,
   MailSVG,
   MessageCircleSVG,
-  CopySVG
+  CopySVG,
+  ArrowRightSVG
 } from '../../../Assets/SVGs'
 
 import { FormData } from '../../../credentialForm/form/types/Types'
@@ -196,6 +197,29 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             />
           </Box>
         </Box>
+        <Box sx={{ position: 'relative', textAlign: 'center' }}>
+          <Typography
+            sx={{
+              fontSize: '18px',
+              fontWeight: 500,
+              color: '#003FE0',
+              position: 'relative'
+            }}
+          >
+            Make your credential stand out <br /> with verified references!
+          </Typography>
+          <Box
+            sx={{
+              position: 'absolute',
+              left: '-40px',
+              bottom: '-55px',
+              width: '50px',
+              height: 'auto'
+            }}
+          >
+            <ArrowRightSVG />
+          </Box>
+        </Box>
         <Button
           onClick={() => {
             setActiveStep(0)
@@ -212,35 +236,34 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           }}
           disabled={!link}
         >
-          <Typography>Ask for a Recommendation</Typography>
+          Ask for a Recommendation
         </Button>
-      </Box>
-      <Button
-        sx={{
-          color: theme.palette.t3TitleText,
-          textTransform: 'capitalize',
-          m: '20px 0',
-          fontFamily: 'Roboto',
-          fontSize: '14px',
-          fontWeight: 600,
-          lineHeight: '20px'
-        }}
-        variant='text'
-        onClick={() => {
-          setActiveStep(0)
-          setLink('')
-          reset()
-        }}
-      >
-        Claim Another Skill
-      </Button>
+        <Button
+          sx={{
+            color: theme.palette.t3TitleText,
+            textTransform: 'capitalize',
+            fontFamily: 'Roboto',
+            fontSize: '14px',
+            fontWeight: 600,
+            lineHeight: '20px'
+          }}
+          variant='text'
+          onClick={() => {
+            setActiveStep(0)
+            setLink('')
+            reset()
+          }}
+        >
+          Claim Another Skill
+        </Button>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        message='Text copied to clipboard. Ready to paste in Instagram!'
-      />
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={3000}
+          onClose={() => setSnackbarOpen(false)}
+          message='Text copied to clipboard. Ready to paste in Instagram!'
+        />
+      </Box>
     </>
   )
 }

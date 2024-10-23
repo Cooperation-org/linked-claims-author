@@ -724,6 +724,32 @@ export const CopySVG = () => {
     </Box>
   )
 }
+export const ArrowRightSVG = () => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <svg
+        width='59'
+        height='92'
+        viewBox='0 0 59 92'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path
+          d='M32.4869 2.4998C15 9.5 -0.0162848 53.912 17.7199 70.8544C23.2532 76.14 31.5536 82.6785 39.0984 83.9702'
+          stroke='#0A57CE'
+          strokeWidth='3'
+          strokeLinecap='round'
+        />
+        <path
+          d='M27.4468 90.0303C32.1282 88.5356 36.8095 87.041 41.4908 85.5463C44.5029 84.5846 44.077 84.4562 41.7255 83.5241C36.6875 81.5272 35.3995 76.1223 33.552 72.1493'
+          stroke='#0A57CE'
+          strokeWidth='3'
+          strokeLinecap='round'
+        />
+      </svg>
+    </Box>
+  )
+}
 export const TwoPhonesTabletSVG = () => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>

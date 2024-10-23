@@ -86,7 +86,7 @@ const ClaimsPage: React.FC = () => {
       const claimsData = await getAllClaims()
       console.log(':  fetchClaims  claimsData', claimsData)
       setClaims(claimsData)
-      setLoading(false) // Set loading to false after fetching the claims
+      setLoading(false)
     }
 
     fetchClaims()
@@ -118,7 +118,6 @@ const ClaimsPage: React.FC = () => {
       </Typography>
       <List>
         {loading ? (
-          // Show loading spinner while claims are being fetched
           <Box
             sx={{
               display: 'flex',
