@@ -292,7 +292,7 @@ const ClaimsPage: React.FC = () => {
             }}
           >
             <Typography variant='h6'>
-              There's no claims yet, try creating one now!
+              There&apos;s no claims yet, try creating one now!
             </Typography>
             <Link href='/credentialForm'>
               <Button variant='contained' sx={{ backgroundColor: '#003FE0', mt: 2 }}>
