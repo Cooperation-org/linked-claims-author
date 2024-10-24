@@ -24,7 +24,6 @@ import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import DOMPurify from 'dompurify'
 import useFetchComments from '../../utils/fetchComments'
 import { useParams } from 'next/navigation'
 
@@ -477,10 +476,9 @@ const ComprehensiveClaimDetails = ({}) => {
                           <Typography variant='subtitle2' color='text.secondary'>
                             How Known:
                           </Typography>
-                          <Typography
-                            variant='body2'
+                          <span
                             dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(comment.howKnow)
+                              __html: cleanHTML(comment.howKnow)
                             }}
                           />
                         </Box>
@@ -490,10 +488,9 @@ const ComprehensiveClaimDetails = ({}) => {
                           <Typography variant='subtitle2' color='text.secondary'>
                             Recommendation:
                           </Typography>
-                          <Typography
-                            variant='body2'
+                          <span
                             dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(comment.recommendationText)
+                              __html: cleanHTML(comment.recommendationText)
                             }}
                           />
                         </Box>
@@ -503,10 +500,9 @@ const ComprehensiveClaimDetails = ({}) => {
                           <Typography variant='subtitle2' color='text.secondary'>
                             Qualifications:
                           </Typography>
-                          <Typography
-                            variant='body2'
+                          <span
                             dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(comment.qualifications)
+                              __html: cleanHTML(comment.qualifications)
                             }}
                           />
                         </Box>
