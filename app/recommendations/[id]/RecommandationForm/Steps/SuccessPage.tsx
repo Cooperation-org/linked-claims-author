@@ -92,7 +92,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
           setSnackbarMessage('Failed to copy text')
           setSnackbarOpen(true)
         })
-    }, 500)
+    }, 2000)
 
     window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
   }, [email, message])
