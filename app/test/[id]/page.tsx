@@ -5,15 +5,12 @@ import { useParams } from 'next/navigation'
 import ComprehensiveClaimDetails from './ComprehensiveClaimDetails'
 const ClaimPage = () => {
   const params = useParams()
-  const [fullName, setFullName] = useState<string | null>(null)
-  const [email, setEmail] = useState<string | null>(null)
-  const [fileID, setFileID] = useState<string | null>(null)
   const id =
     typeof params?.id === 'string'
       ? params.id
       : Array.isArray(params?.id)
-      ? params.id[0]
-      : undefined
+        ? params.id[0]
+        : undefined
 
   if (!id) {
     return (
@@ -22,17 +19,7 @@ const ClaimPage = () => {
       </div>
     )
   }
-  return (
-    <ComprehensiveClaimDetails
-      params={{
-        claimId: `https://drive.google.com/file/d/${id}/view`
-      }}
-      setFullName={setFullName}
-      setEmail={setEmail}
-      setFileID={setFileID}
-      claimId={id}
-    />
-  )
+  return <ComprehensiveClaimDetails />
 }
 
 export default ClaimPage
