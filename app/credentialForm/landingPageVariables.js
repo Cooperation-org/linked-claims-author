@@ -82,10 +82,9 @@ export const featuresSmallScreen = [
 ]
 
 export const featuresLargeScreen = [
-  { id: 1, name: 'AI-generated skill descriptions' },
-  { id: 2, name: 'Instant insight into your strengths' },
-  { id: 3, name: 'Build your network' },
-  { id: 4, name: 'Increase employer visibility' },
-  { id: 5, name: 'Dynamically build a resume' },
-  { id: 6, name: 'Faster background checks' }
+  { id: 1, name: 'Capture any skill or experience' },
+  { id: 2, name: 'Describe things in your own words' },
+  { id: 3, name: 'Add portfolio pieces and evidence' },
+  { id: 4, name: 'Request recommendations' },
+  { id: 5, name: 'Share with people or on any platform' }
 ]

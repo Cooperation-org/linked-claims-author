@@ -23,17 +23,13 @@ interface SuccessPageProps {
   link: string
 }
 
-const SuccessPage: React.FC<SuccessPageProps> = ({
-  formData,
-  submittedFullName,
-  handleBack
-}) => {
+const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [fetchedFullName, setFetchedFullName] = useState<string | null>(submittedFullName)
   const [fullName, setFullName] = useState<string | null>(null)
   const [email, setEmail] = useState<string | null>(null)
-  const [fileID, setFileID] = useState<string | null>(null)
   const params = useParams()
+  const id = params.id
 
   useEffect(() => {
     if (submittedFullName) {
@@ -41,23 +37,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     }
   }, [submittedFullName])
 
-  const id =
-    typeof params?.id === 'string'
-      ? params.id
-      : Array.isArray(params?.id)
-      ? params.id[0]
-      : undefined
-
-  if (!id) {
-    return (
-      <div>
-        <h2>Error: Missing credential data.</h2>
-      </div>
-    )
-  }
-
   // Construct the Google Drive link using the file ID
-  const link = `https://linked-claims-author.vercel.app/view/${id}`
+  const link = `https://opencreds.net/view/${id}`
 
   const message = fetchedFullName
     ? `Hi ${fullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
@@ -89,15 +70,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         }}
       >
         <Box sx={{ display: 'none' }}>
-          <ComprehensiveClaimDetails
-            params={{
-              claimId: link
-            }}
-            setFullName={setFullName}
-            setEmail={setEmail}
-            setFileID={setFileID}
-            claimId={id}
-          />
+          <ComprehensiveClaimDetails />
         </Box>
 
         <Typography sx={{ fontSize: '16px', letterSpacing: '0.01em', textAlign: 'left' }}>

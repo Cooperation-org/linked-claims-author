@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   CircularProgress,
@@ -24,8 +24,7 @@ import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import DOMPurify from 'dompurify'
-import useFetchComments from '../../utils/fetchComments'
+import { useParams } from 'next/navigation'
 
 // Define types
 interface Portfolio {
@@ -56,17 +55,6 @@ interface ClaimDetail {
   credentialSubject: CredentialSubject
 }
 
-interface ComprehensiveClaimDetailsProps {
-  params: {
-    claimId: string
-  }
-  setFullName: (name: string) => void
-  setEmail?: (email: string) => void
-  setFileID?: (fileID: string) => void
-  claimId?: string
-  onDataFetched?: (data: ClaimDetail | null) => void
-}
-
 const cleanHTML = (htmlContent: string) => {
   return htmlContent
     .replace(/<p><br><\/p>/g, '')
@@ -76,15 +64,11 @@ const cleanHTML = (htmlContent: string) => {
     .replace(/style="[^"]*"/g, '')
 }
 
-const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
-  params,
-  setFullName,
-  setEmail = () => {},
-  setFileID = () => {},
-  claimId,
-  onDataFetched
-}) => {
+const ComprehensiveClaimDetails = ({}) => {
+  const params = useParams()
+  const fileID = params?.id as any
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
+  const [comments, setComments] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const theme = useTheme()
@@ -95,22 +79,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
   const isView = pathname?.includes('/view')
 
-  // Initialize the custom hook
-  const {
-    comments,
-    fetchComments,
-    commentLoading,
-    error: commentsError
-  } = useFetchComments(accessToken as string)
-
-  const {
-    getContent,
-    fetchFileMetadata,
-    ownerEmail: fetchedOwnerEmail
-  } = useGoogleDrive()
-
-  const decodedId = useMemo(() => decodeURIComponent(params.claimId), [params.claimId])
-  const fileID = useMemo(() => decodedId.split('/d/')[1]?.split('/')[0], [decodedId])
+  const { getContent, fetchFileMetadata, getComments } = useGoogleDrive()
 
   // State to manage expanded comments
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
@@ -127,15 +96,15 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       if (!accessToken || !fileID) return
 
       try {
-        setFileID(fileID)
         const content = await getContent(fileID)
         setClaimDetail(content)
-        setFullName(content?.credentialSubject?.name || '')
-        onDataFetched?.(content)
 
         await fetchFileMetadata(fileID, '')
         // Fetch comments for the current fileID
-        await fetchComments(fileID)
+
+        const commentsData = await getComments(fileID)
+        console.log(':  fetchDriveData  commentsData', commentsData)
+        setComments(commentsData as any)
       } catch (error) {
         console.error('Error fetching claim details:', error)
         setErrorMessage('Failed to fetch claim details.')
@@ -147,13 +116,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     if (accessToken && fileID) {
       fetchDriveData()
     }
-  }, [accessToken, fileID])
-
-  useEffect(() => {
-    if (fetchedOwnerEmail) {
-      setEmail(fetchedOwnerEmail)
-    }
-  }, [fetchedOwnerEmail, setEmail])
+  }, [getContent])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -377,7 +340,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
 
           {pathname?.includes('/claims') && (
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-              <Link href={`/view/${claimId}`}>
+              <Link href={`/view/${fileID}`}>
                 <Button
                   variant='contained'
                   sx={{
@@ -389,7 +352,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                   View Credential
                 </Button>
               </Link>
-              <Link href={`/askforrecommendation/${claimId}`}>
+              <Link href={`/askforrecommendation/${fileID}`}>
                 <Button
                   variant='contained'
                   sx={{
@@ -438,15 +401,13 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
 
       {isView && (
         <Box>
-          {commentLoading ? (
+          {!comments ? (
             <Box display='flex' justifyContent='center' my={2}>
               <CircularProgress size={24} />
             </Box>
-          ) : commentsError ? (
-            <Typography color='error'>{commentsError}</Typography>
-          ) : comments[fileID] && comments[fileID].length > 0 ? (
+          ) : comments && comments?.length > 0 ? (
             <List sx={{ p: 0, m: 0 }}>
-              {comments[fileID].map((comment: any, index: number) => (
+              {comments?.map((comment: any, index: number) => (
                 <React.Fragment key={index}>
                   <Box
                     sx={{
@@ -483,7 +444,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                           <SVGBadge />
                           <Box>
                             <Typography variant='h6' component='div'>
-                              {comment.author}
+                              {comment.credentialSubject?.name}
                             </Typography>
                             <Typography variant='body2' color='text.secondary'>
                               Vouched for {credentialSubject?.name}
@@ -499,49 +460,57 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                     unmountOnExit
                   >
                     <Box sx={{ pl: 7, pr: 2, pb: 2 }}>
-                      {comment.howKnow && (
+                      {comment?.credentialSubject?.howKnow && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             How Known:
                           </Typography>
-                          <Typography
-                            variant='body2'
-                            dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(comment.howKnow)
-                            }}
-                          />
+                          <Typography variant='body2'>
+                            {' '}
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: cleanHTML(comment?.credentialSubject?.howKnow)
+                              }}
+                            />
+                          </Typography>
                         </Box>
                       )}
-                      {comment.recommendationText && (
+                      {comment?.credentialSubject?.recommendationText && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Recommendation:
                           </Typography>
-                          <Typography
-                            variant='body2'
-                            dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(comment.recommendationText)
-                            }}
-                          />
+                          <Typography variant='body2'>
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: cleanHTML(
+                                  comment?.credentialSubject?.recommendationText
+                                )
+                              }}
+                            />
+                          </Typography>
                         </Box>
                       )}
-                      {comment.qualifications && (
+                      {comment?.credentialSubject?.qualifications && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Qualifications:
                           </Typography>
-                          <Typography
-                            variant='body2'
-                            dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(comment.qualifications)
-                            }}
-                          />
+                          <Typography variant='body2'>
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: cleanHTML(
+                                  comment?.credentialSubject?.qualifications
+                                )
+                              }}
+                            />
+                          </Typography>
                         </Box>
                       )}
                     </Box>
                   </Collapse>
                   {/* Add Divider between comments */}
-                  {index < comments[fileID].length - 1 && <Divider component='li' />}
+                  {index < comments.length - 1 && <Divider component='li' />}
                 </React.Fragment>
               ))}{' '}
             </List>
@@ -553,5 +522,4 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     </Container>
   )
 }
-
 export default ComprehensiveClaimDetails

@@ -18,7 +18,6 @@ import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { useSession, signIn } from 'next-auth/react'
 import { handleSign } from '../../utils/formUtils'
-import { signAndSaveOnDevice } from '../../utils/saveOnDevice'
 import { saveSession } from '../../utils/saveSession'
 import SnackMessage from '../../components/SnackMessage'
 import SessionDialog from '../../components/SessionDialog'
@@ -156,9 +155,6 @@ const Form = ({ onStepChange }: any) => {
         data.storageOption === options.DigitalWallet
       )
         await sign(data)
-      else if (data.storageOption === options.Device) {
-        signAndSaveOnDevice(data)
-      }
     } catch (error: any) {
       if (error.message === 'MetaMask address could not be retrieved') {
         setErrorMessage('Please make sure you have MetaMask installed and connected.')

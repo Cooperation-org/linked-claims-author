@@ -42,6 +42,37 @@ const useGoogleDrive = () => {
     },
     [storage]
   )
+  function extractGoogleDriveId(url: string) {
+    const marker = '/file/d/'
+    const startIndex = url.indexOf(marker)
+
+    if (startIndex !== -1) {
+      const idPart = url.substring(startIndex + marker.length)
+      const endIndex = idPart.indexOf('/')
+      if (endIndex !== -1) {
+        return idPart.substring(0, endIndex)
+      } else {
+        return idPart
+      }
+    } else {
+      return null
+    }
+  }
+  const getComments = useCallback(
+    async (fileID: string): Promise<ClaimDetail> => {
+      const file = await storage?.getFileComments(fileID)
+      const comments: any[] = []
+      await Promise.all(
+        file?.map(async (file: any) => {
+          const ID = extractGoogleDriveId(file.content)
+          const comment = await storage?.retrieve(ID as any)
+          if (comment) comments.push(comment)
+        }) ?? []
+      )
+      return comments as unknown as ClaimDetail
+    },
+    [storage]
+  )
 
   const fetchFileMetadata = async (fileID: string, resourceKey: string = '') => {
     if (!fileID || !accessToken) {
@@ -81,7 +112,8 @@ const useGoogleDrive = () => {
     getContent,
     fetchFileMetadata,
     fileMetadata,
-    ownerEmail
+    ownerEmail,
+    getComments
   }
 }
 

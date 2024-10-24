@@ -3,11 +3,15 @@ import GoogleProvider from 'next-auth/providers/google'
 
 declare module 'next-auth' {
   interface Session {
-    [x: string]: any
     accessToken?: string
     refreshToken?: string
     expires?: number
     error?: string
+    user?: {
+      name?: string
+      email?: string
+      image?: string
+    }
   }
 
   interface Token {
@@ -15,6 +19,11 @@ declare module 'next-auth' {
     refreshToken?: string
     expires?: number
     error?: string
+    user?: {
+      name?: string
+      email?: string
+      image?: string
+    }
   }
 }
 
@@ -39,7 +48,12 @@ const handler = NextAuth({
         return {
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
-          expires: Date.now() + (account.expires_in as number) * 1000
+          expires: Date.now() + (account.expires_in as number) * 1000,
+          user: {
+            name: user.name,
+            email: user.email,
+            image: user.image
+          }
         }
       }
 
@@ -69,6 +83,7 @@ const handler = NextAuth({
       if (typeof token.error === 'string') {
         session.error = token.error
       }
+      session.user = token.user
 
       console.log('🚀 ~ session ~ session:', session)
       return session

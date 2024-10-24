@@ -15,7 +15,6 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
   const theme = useTheme()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
-  const [fileID, setFileID] = useState<string | null>(null)
   const [showDeclineRequest, setShowDeclineRequest] = useState(false)
 
   const params = useParams()
@@ -23,8 +22,8 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
     typeof params?.id === 'string'
       ? params.id
       : Array.isArray(params?.id)
-      ? params.id[0]
-      : undefined
+        ? params.id[0]
+        : undefined
 
   if (!id) {
     return (
@@ -152,15 +151,7 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
           </Box>
         ))}
       </Box>
-      <ComprehensiveClaimDetails
-        params={{
-          claimId: `https://drive.google.com/file/d/${id}/view`
-        }}
-        setFullName={setFullName}
-        setEmail={setEmail}
-        setFileID={setFileID}
-        claimId={id}
-      />
+      <ComprehensiveClaimDetails />
     </Box>
   )
 }

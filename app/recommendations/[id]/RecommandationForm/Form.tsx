@@ -24,8 +24,6 @@ import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDeta
 const Form = () => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState<string | null>(null)
-  const [fileID, setFileID] = useState('')
   const { data: session } = useSession()
   const accessToken = session?.accessToken
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
@@ -63,17 +61,8 @@ const Form = () => {
 
   const formData = watch()
   const params = useParams()
-  const id = Array.isArray(params?.id) ? params.id[0] : params?.id
-  const recommendationFileId = Array.isArray(params?.recommendationFileId)
-    ? params.recommendationFileId[0]
-    : params?.recommendationFileId
+  const VSFileId = params?.id as string
 
-  useEffect(() => {
-    if (id && fullName && fileID) {
-      setValue('fullName', fullName)
-      setValue('fileID', fileID)
-    }
-  }, [id, fullName, fileID, setValue])
   useEffect(() => {
     if (JSON.stringify(formData) !== JSON.stringify(storedValue)) {
       setStoreNewValue(formData)
@@ -114,10 +103,11 @@ const Form = () => {
 
       // Step 4: Save the signed recommendation to Google Drive
       const savedRecommendation = await saveToGoogleDrive(storage, signedCred, 'SESSION')
+      const commentFileID = (savedRecommendation as { id: string }).id
       console.log('🚀 ~ savedRecommendation:', savedRecommendation)
 
       // Step 5: Add a comment to a specific file in Google Drive
-      const rec = await storage.addCommentToFile(fileID, recommendationFileId)
+      const rec = await storage.addCommentToFile(VSFileId, commentFileID)
       console.log(rec)
       return signedCred // Return the signed credential as a result
     } catch (error: any) {
@@ -160,17 +150,7 @@ const Form = () => {
         }}
         onSubmit={handleFormSubmit}
       >
-        {activeStep === 0 && (
-          <ComprehensiveClaimDetails
-            params={{
-              claimId: `https://drive.google.com/file/d/${id}/view`
-            }}
-            setFullName={setFullName}
-            setEmail={setEmail}
-            setFileID={setFileID}
-            claimId={id}
-          />
-        )}
+        {activeStep === 0 && <ComprehensiveClaimDetails />}
         <Box sx={{ display: 'none' }}>
           <FetchedData setFullName={setFullName} />
         </Box>

@@ -17,7 +17,8 @@ import {
   LinkedinSVG,
   MailSVG,
   MessageCircleSVG,
-  CopySVG
+  CopySVG,
+  ArrowRightSVG
 } from '../../../Assets/SVGs'
 
 import { FormData } from '../../../credentialForm/form/types/Types'
@@ -73,7 +74,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       issueMonth: '8',
       expirationYear: '2025',
       expirationMonth: '8',
-      certUrl: `https://linked-claims-author.vercel.app/view/${fileId}`
+      certUrl: `https://opencreds.net/view/${fileId}`
     })
     return `${baseLinkedInUrl}?${params.toString()}`
   }
@@ -161,84 +162,108 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             </Box>
           </Box>
 
-          {storageOption !== options.Device && (
-            <Box sx={successPageCopyLinkStyles}>
-              <TextField
-                sx={{
-                  ...successPageTextFieldStyles,
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '10px'
-                  }
-                }}
-                value={
-                  fileId
-                    ? `https://linked-claims-author.vercel.app/view/${fileId}`
-                    : 'wait as your credentials is being processed...'
+          <Box sx={successPageCopyLinkStyles}>
+            <TextField
+              sx={{
+                ...successPageTextFieldStyles,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '10px'
                 }
-                InputProps={{
-                  endAdornment: <InputAdornment position='start'></InputAdornment>,
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <Box>
-                        <Button onClick={() => copyFormValuesToClipboard(link)}>
-                          <CopySVG />
-                        </Button>
-                      </Box>
-                    </InputAdornment>
-                  ),
-                  readOnly: true
-                }}
-              />
-            </Box>
-          )}
+              }}
+              value={
+                fileId
+                  ? `https://opencreds.net/view/${fileId}`
+                  : 'wait as your credentials is being processed...'
+              }
+              InputProps={{
+                endAdornment: <InputAdornment position='start'></InputAdornment>,
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <Box>
+                      <Button
+                        onClick={() =>
+                          copyFormValuesToClipboard(
+                            `https://opencreds.net/view/${fileId}`
+                          )
+                        }
+                      >
+                        <CopySVG />
+                      </Button>
+                    </Box>
+                  </InputAdornment>
+                ),
+                readOnly: true
+              }}
+            />
+          </Box>
         </Box>
-        {storageOption !== options.Device && (
-          <Button
-            onClick={() => {
-              setActiveStep(0)
-              reset()
-            }}
-            variant='contained'
-            href={`/askforrecommendation/${refLink}`}
+        <Box sx={{ position: 'relative', textAlign: 'center' }}>
+          <Typography
             sx={{
-              borderRadius: '100px',
-              backgroundColor: '#003FE0',
-              textTransform: 'none',
-              fontFamily: 'Roboto, sans-serif',
-              boxShadow: '0px 0px 2px 2px #F7BC00'
+              fontSize: '18px',
+              fontWeight: 500,
+              color: '#003FE0',
+              position: 'relative'
             }}
-            disabled={!link}
           >
-            <Typography>Ask for a Recommendation</Typography>
-          </Button>
-        )}
-      </Box>
-      <Button
-        sx={{
-          color: theme.palette.t3TitleText,
-          textTransform: 'capitalize',
-          m: '20px 0',
-          fontFamily: 'Roboto',
-          fontSize: '14px',
-          fontWeight: 600,
-          lineHeight: '20px'
-        }}
-        variant='text'
-        onClick={() => {
-          setActiveStep(0)
-          setLink('')
-          reset()
-        }}
-      >
-        Claim Another Skill
-      </Button>
+            Make your credential stand out <br /> with verified references!
+          </Typography>
+          <Box
+            sx={{
+              position: 'absolute',
+              left: '-40px',
+              bottom: '-55px',
+              width: '50px',
+              height: 'auto'
+            }}
+          >
+            <ArrowRightSVG />
+          </Box>
+        </Box>
+        <Button
+          onClick={() => {
+            setActiveStep(0)
+            reset()
+          }}
+          variant='contained'
+          href={`/askforrecommendation/${refLink}`}
+          sx={{
+            borderRadius: '100px',
+            backgroundColor: '#003FE0',
+            textTransform: 'none',
+            fontFamily: 'Roboto, sans-serif',
+            boxShadow: '0px 0px 2px 2px #F7BC00'
+          }}
+          disabled={!link}
+        >
+          Ask for a Recommendation
+        </Button>
+        <Button
+          sx={{
+            color: theme.palette.t3TitleText,
+            textTransform: 'capitalize',
+            fontFamily: 'Roboto',
+            fontSize: '14px',
+            fontWeight: 600,
+            lineHeight: '20px'
+          }}
+          variant='text'
+          onClick={() => {
+            setActiveStep(0)
+            setLink('')
+            reset()
+          }}
+        >
+          Claim Another Skill
+        </Button>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        message='Text copied to clipboard. Ready to paste in Instagram!'
-      />
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={3000}
+          onClose={() => setSnackbarOpen(false)}
+          message='Text copied to clipboard. Ready to paste in Instagram!'
+        />
+      </Box>
     </>
   )
 }
