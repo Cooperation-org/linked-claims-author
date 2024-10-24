@@ -160,17 +160,7 @@ const Form = () => {
         }}
         onSubmit={handleFormSubmit}
       >
-        {activeStep === 0 && (
-          <ComprehensiveClaimDetails
-            params={{
-              claimId: `https://drive.google.com/file/d/${id}/view`
-            }}
-            setFullName={setFullName}
-            setEmail={setEmail}
-            setFileID={setFileID}
-            claimId={id}
-          />
-        )}
+        {activeStep === 0 && <ComprehensiveClaimDetails />}
         <Box sx={{ display: 'none' }}>
           <FetchedData setFullName={setFullName} />
         </Box>
