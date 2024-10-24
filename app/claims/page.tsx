@@ -56,7 +56,14 @@ interface Comment {
   qualifications: string
   createdTime: string
 }
-
+const cleanHTML = (htmlContent: string) => {
+  return htmlContent
+    .replace(/<p><br><\/p>/g, '')
+    .replace(/<p><\/p>/g, '')
+    .replace(/<br>/g, '')
+    .replace(/class="[^"]*"/g, '')
+    .replace(/style="[^"]*"/g, '')
+}
 const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<Claim[]>([])
   const [openClaim, setOpenClaim] = useState<string | null>(null)
@@ -207,10 +214,14 @@ const ClaimsPage: React.FC = () => {
                             lineHeight: '24px'
                           }}
                         >
-                          {detailedClaim?.credentialSubject?.achievement[0]?.description.replace(
-                            /<\/?[^>]+>/gi,
-                            ''
-                          )}
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: cleanHTML(
+                                detailedClaim?.credentialSubject?.achievement[0]
+                                  ?.description || ''
+                              )
+                            }}
+                          />
                         </Typography>
                         {detailedClaim?.credentialSubject?.achievement[0]?.criteria
                           ?.narrative && (
@@ -218,10 +229,14 @@ const ClaimsPage: React.FC = () => {
                             <Typography>Earning criteria:</Typography>
                             <ul style={{ marginLeft: '25px' }}>
                               <li>
-                                {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
-                                  /<\/?[^>]+>/gi,
-                                  ''
-                                )}
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: cleanHTML(
+                                      detailedClaim?.credentialSubject?.achievement[0]
+                                        ?.criteria?.narrative || ''
+                                    )
+                                  }}
+                                />
                               </li>
                             </ul>
                           </Box>
