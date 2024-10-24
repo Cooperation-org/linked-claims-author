@@ -33,8 +33,8 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) 
     typeof params?.id === 'string'
       ? params.id
       : Array.isArray(params?.id)
-      ? params.id[0]
-      : undefined
+        ? params.id[0]
+        : undefined
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -63,13 +63,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) 
         <Form />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <ComprehensiveClaimDetails
-          params={{ claimId: `https://drive.google.com/file/d/${id}/view` }}
-          setFullName={setFullName}
-          setEmail={setEmail}
-          setFileID={setFileID}
-          claimId={id}
-        />
+        <ComprehensiveClaimDetails />
       </TabPanel>
     </Box>
   )

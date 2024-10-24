@@ -56,13 +56,21 @@ interface Comment {
   qualifications: string
   createdTime: string
 }
-
+const cleanHTML = (htmlContent: string) => {
+  return htmlContent
+    .replace(/<p><br><\/p>/g, '')
+    .replace(/<p><\/p>/g, '')
+    .replace(/<br>/g, '')
+    .replace(/class="[^"]*"/g, '')
+    .replace(/style="[^"]*"/g, '')
+}
 const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<Claim[]>([])
   const [openClaim, setOpenClaim] = useState<string | null>(null)
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
+  const [loading, setLoading] = useState(true)
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
 
@@ -81,9 +89,11 @@ const ClaimsPage: React.FC = () => {
 
   useEffect(() => {
     const fetchClaims = async () => {
+      setLoading(true)
       const claimsData = await getAllClaims()
       console.log(':  fetchClaims  claimsData', claimsData)
       setClaims(claimsData)
+      setLoading(false)
     }
 
     fetchClaims()
@@ -114,7 +124,18 @@ const ClaimsPage: React.FC = () => {
         Previous Claims
       </Typography>
       <List>
-        {claims.length !== 0 ? (
+        {loading ? (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '100%'
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
           claims.map(claim => (
             <div key={claim.id}>
               <ListItem
@@ -193,10 +214,14 @@ const ClaimsPage: React.FC = () => {
                             lineHeight: '24px'
                           }}
                         >
-                          {detailedClaim?.credentialSubject?.achievement[0]?.description.replace(
-                            /<\/?[^>]+>/gi,
-                            ''
-                          )}
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: cleanHTML(
+                                detailedClaim?.credentialSubject?.achievement[0]
+                                  ?.description || ''
+                              )
+                            }}
+                          />
                         </Typography>
                         {detailedClaim?.credentialSubject?.achievement[0]?.criteria
                           ?.narrative && (
@@ -204,10 +229,14 @@ const ClaimsPage: React.FC = () => {
                             <Typography>Earning criteria:</Typography>
                             <ul style={{ marginLeft: '25px' }}>
                               <li>
-                                {detailedClaim?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
-                                  /<\/?[^>]+>/gi,
-                                  ''
-                                )}
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: cleanHTML(
+                                      detailedClaim?.credentialSubject?.achievement[0]
+                                        ?.criteria?.narrative || ''
+                                    )
+                                  }}
+                                />
                               </li>
                             </ul>
                           </Box>
@@ -267,17 +296,6 @@ const ClaimsPage: React.FC = () => {
               </Collapse>
             </div>
           ))
-        ) : (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '100%'
-            }}
-          >
-            <CircularProgress />
-          </Box>
         )}
       </List>
     </Container>

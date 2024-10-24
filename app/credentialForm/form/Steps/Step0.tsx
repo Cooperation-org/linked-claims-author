@@ -20,9 +20,7 @@ interface StoringMethodRadiosProps {
 
 export const options = {
   GoogleDrive: 'Google Drive',
-  Device: 'Device',
-  DigitalWallet: 'Digital Wallet',
-  Dropbox: 'Dropbox'
+  DigitalWallet: 'Digital Wallet'
 }
 
 export function Step0({
@@ -75,13 +73,6 @@ export function Step0({
       value={selectedOption}
       onChange={handleChange}
     >
-      <FormControlLabel
-        value={options.Device}
-        sx={boxStyles}
-        control={<Radio sx={radioCheckedStyles} />}
-        label='Save to My Device'
-      />
-
       {/* Google Drive Option */}
       <FormControlLabel
         value={options.GoogleDrive}
@@ -104,22 +95,8 @@ export function Step0({
             <DigitalWallet /> Your Digital Wallet (With MetaMask)
           </Box>
         }
+        disabled={true}
       />
-
-      {/* Dropbox Option */}
-      <Tooltip title='Under Development' arrow>
-        <FormControlLabel
-          value={options.Dropbox}
-          sx={boxStyles}
-          control={<Radio sx={radioCheckedStyles} />}
-          label={
-            <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <Dropbox /> Dropbox
-            </Box>
-          }
-          disabled
-        />
-      </Tooltip>
 
       {/* Display loading message if MetaMask is connecting */}
       {loading && (

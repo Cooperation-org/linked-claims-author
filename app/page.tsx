@@ -73,14 +73,14 @@ const Page = () => {
               sx={{
                 color: theme.palette.t3DarkSlateBlue,
                 fontFamily: 'Poppins',
-                fontSize: { xs: '30px', md: '70px' },
+                fontSize: { xs: '30px', md: '60px' },
                 fontWeight: 600,
                 lineHeight: '110%',
                 textAlign: 'center',
                 mb: { xs: '15px', md: '30px' }
               }}
             >
-              Verified Skills For Your Resume
+              Claim your life skills & unlock opportunities
             </Typography>
           </Box>
           <Box

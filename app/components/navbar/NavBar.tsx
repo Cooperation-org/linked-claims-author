@@ -2,7 +2,7 @@ import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import Link from 'next/link'
-import SigninButton from '../../components/signing/SigninButton'
+import HumborgerMenu from '../humborgerMenu/HumborgerMenu'
 
 const NavBar = () => {
   const theme = useTheme()
@@ -27,27 +27,7 @@ const NavBar = () => {
           alignItems: 'center'
         }}
       >
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          width='24'
-          height='24'
-          viewBox='0 0 24 24'
-          fill='none'
-        >
-          <path
-            d='M4 12H20'
-            stroke='black'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-          <path d='M4 6H20' stroke='black' strokeLinecap='round' strokeLinejoin='round' />
-          <path
-            d='M4 18H20'
-            stroke='black'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-        </svg>
+        <HumborgerMenu />
       </Box>
 
       <Box
@@ -84,29 +64,8 @@ const NavBar = () => {
           alignItems: 'center'
         }}
       >
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          width='24'
-          height='24'
-          viewBox='0 0 24 24'
-          fill='none'
-        >
-          <path
-            d='M4 12H20'
-            stroke='black'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-          <path d='M4 6H20' stroke='black' strokeLinecap='round' strokeLinejoin='round' />
-          <path
-            d='M4 18H20'
-            stroke='black'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-        </svg>
+        <HumborgerMenu />
       </Box>
-      <SigninButton />
     </Box>
   )
 }

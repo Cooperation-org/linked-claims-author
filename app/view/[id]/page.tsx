@@ -1,35 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Typography, useMediaQuery } from '@mui/material'
 import Image from 'next/image'
 import theme from '../../theme'
 import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
-import { useParams } from 'next/navigation'
 
 const Page: React.FC = () => {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const fram = require('../../Assets/Images/Frame 35278.png')
   const vector = require('../../Assets/Images/Vector 145.png')
-  const [fullName, setFullName] = useState<string | null>(null)
-  const [email, setEmail] = useState<string | null>(null)
-  const [fileID, setFileID] = useState<string | null>(null)
-
-  const params = useParams()
-  const id =
-    typeof params?.id === 'string'
-      ? params.id
-      : Array.isArray(params?.id)
-      ? params.id[0]
-      : undefined
-
-  if (!id) {
-    return (
-      <div>
-        <h2>Error: Missing credential data.</h2>
-      </div>
-    )
-  }
 
   return (
     <Box
@@ -46,15 +26,7 @@ const Page: React.FC = () => {
         pt: '50px'
       }}
     >
-      <ComprehensiveClaimDetails
-        params={{
-          claimId: `https://drive.google.com/file/d/${id}/view`
-        }}
-        setFullName={setFullName}
-        setEmail={setEmail}
-        setFileID={setFileID}
-        claimId={id}
-      />
+      <ComprehensiveClaimDetails />
 
       {/* Footer section only for small screens */}
       {!isLargeScreen && (
