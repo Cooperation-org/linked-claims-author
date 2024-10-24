@@ -135,7 +135,7 @@ const ClaimsPage: React.FC = () => {
           >
             <CircularProgress />
           </Box>
-        ) : claims.length !== 0 ? (
+        ) : (
           claims.map(claim => (
             <div key={claim.id}>
               <ListItem
@@ -296,25 +296,6 @@ const ClaimsPage: React.FC = () => {
               </Collapse>
             </div>
           ))
-        ) : (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minHeight: '100%'
-            }}
-          >
-            <Typography variant='h6'>
-              There&apos;s no claims yet, try creating one now!
-            </Typography>
-            <Link href='/credentialForm'>
-              <Button variant='contained' sx={{ backgroundColor: '#003FE0', mt: 2 }}>
-                Create New Claim
-              </Button>
-            </Link>
-          </Box>
         )}
       </List>
     </Container>
