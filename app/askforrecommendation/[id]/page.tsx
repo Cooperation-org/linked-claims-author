@@ -265,14 +265,7 @@ this is the link https://linked-claims-author.vercel.app/view/${params.id}`
                     error={!!errors.reference}
                   />
                 </Box>
-                <ComprehensiveClaimDetails
-                  params={memoizedParams}
-                  setFullName={() => {}}
-                  setEmail={() => {}}
-                  setFileID={() => {}}
-                  claimId={id}
-                  onDataFetched={setDriveData}
-                />
+                <ComprehensiveClaimDetails />
               </>
             )}
 
