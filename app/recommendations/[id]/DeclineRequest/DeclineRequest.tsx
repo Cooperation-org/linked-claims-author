@@ -1,7 +1,7 @@
 'use client'
 
-import React from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Button, Typography, Snackbar, Alert } from '@mui/material'
 
 interface DeclineRequestProps {
   fullName: string
@@ -14,14 +14,46 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({
   email,
   handleBack
 }) => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+
+  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnackbarOpen(false)
+  }
+
   const handleSendEmail = () => {
     const subject = `Unable to Provide Recommendation at this Time for ${fullName}`
     const body = `Hi ${fullName},\n\nI'm currently unable to provide a recommendation. I apologize for the inconvenience.\n\nBest regards.`
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(
+    const mailToLink = `mailto:${email}?subject=${encodeURIComponent(
       subject
     )}&body=${encodeURIComponent(body)}`
 
-    window.location.href = mailtoLink
+    window.location.href = mailToLink
+
+    const timeout = setTimeout(() => {
+      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+        email
+      )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+
+      window.open(gmailLink, '_blank')
+
+      navigator.clipboard
+        .writeText(body)
+        .then(() => {
+          setSnackbarMessage('Email body copied to clipboard. Ready to paste in Gmail!')
+          setSnackbarOpen(true)
+        })
+        .catch(err => {
+          console.error('Failed to copy text: ', err)
+          setSnackbarMessage('Failed to copy text')
+          setSnackbarOpen(true)
+        })
+    }, 500)
+
+    window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
   }
 
   return (
@@ -112,6 +144,18 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({
       >
         Back
       </Button>
+
+      {/* Snackbar for success or error messages */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity='success' sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

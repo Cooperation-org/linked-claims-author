@@ -12,7 +12,9 @@ import {
   Checkbox,
   TextField,
   FormLabel,
-  styled
+  styled,
+  Snackbar,
+  Alert
 } from '@mui/material'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
@@ -48,6 +50,8 @@ export default function AskForRecommendation() {
   const [isLoading, setIsLoading] = useState(true)
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
 
   const id = useMemo(
     () => (Array.isArray(params?.id) ? params.id[0] : params?.id || ''),
@@ -146,6 +150,41 @@ this is the link https://opencreds.net/recommendations/${params.id}`
   }?subject=Support Request: ${
     driveData?.credentialSubject?.achievement[0]?.name || ''
   }&body=${encodeURIComponent(watch('reference'))}`
+
+  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnackbarOpen(false)
+  }
+
+  const handleOpenMail = () => {
+    window.location.href = mailToLink
+
+    const timeout = setTimeout(() => {
+      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+        watch('email')
+      )}${sendCopyToSelf && session?.user?.email ? `,${encodeURIComponent(session.user.email)}` : ''}&su=${encodeURIComponent(
+        `Support Request: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
+      )}&body=${encodeURIComponent(watch('reference'))}`
+
+      window.open(gmailLink, '_blank')
+
+      navigator.clipboard
+        .writeText(watch('reference'))
+        .then(() => {
+          setSnackbarMessage('Text Copied Successfully')
+          setSnackbarOpen(true)
+        })
+        .catch(err => {
+          console.error('Failed to copy text: ', err)
+          setSnackbarMessage('Failed to copy text')
+          setSnackbarOpen(true)
+        })
+    }, 500)
+
+    window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
+  }
 
   if (isLoading) {
     return (
@@ -359,7 +398,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
                 }}
                 color='primary'
                 variant='contained'
-                onClick={() => (window.location.href = mailToLink)}
+                onClick={handleOpenMail}
               >
                 Open Mail
               </Button>
@@ -367,6 +406,16 @@ this is the link https://opencreds.net/recommendations/${params.id}`
           </Box>
         </Box>
       </Box>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity='success' sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

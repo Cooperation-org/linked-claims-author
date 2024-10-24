@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   Box,
   Typography,
   Button,
   TextField,
   Snackbar,
+  Alert,
   InputAdornment
 } from '@mui/material'
 import { SVGBadge, CopySVG } from '../../../../Assets/SVGs'
@@ -25,6 +26,7 @@ interface SuccessPageProps {
 
 const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
   const [fetchedFullName, setFetchedFullName] = useState<string | null>(submittedFullName)
   const [fullName, setFullName] = useState<string | null>(null)
   const [email, setEmail] = useState<string | null>(null)
@@ -46,14 +48,54 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
 
   const handleCopy = () => {
     copyFormValuesToClipboard(message)
+    setSnackbarMessage('Text copied to clipboard.')
     setSnackbarOpen(true)
   }
 
-  const mailtoLink = email
-    ? `mailto:${email}?subject=Recommendation Complete&body=${encodeURIComponent(
-        message
-      )}`
-    : '#'
+  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnackbarOpen(false)
+  }
+
+  const handleOpenMail = useCallback(() => {
+    if (!email) {
+      setSnackbarMessage('Email is not available.')
+      setSnackbarOpen(true)
+      return
+    }
+
+    const subject = 'Recommendation Complete'
+    const body = message
+    const mailToLink = `mailto:${email}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`
+
+    window.location.href = mailToLink
+
+    const timeout = setTimeout(() => {
+      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+        email
+      )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+
+      window.open(gmailLink, '_blank')
+
+      navigator.clipboard
+        .writeText(body)
+        .then(() => {
+          setSnackbarMessage('Text copied to clipboard. Ready to paste in Gmail!')
+          setSnackbarOpen(true)
+        })
+        .catch(err => {
+          console.error('Failed to copy text: ', err)
+          setSnackbarMessage('Failed to copy text')
+          setSnackbarOpen(true)
+        })
+    }, 500)
+
+    window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
+  }, [email, message])
 
   return (
     <>
@@ -140,8 +182,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
         </Box>
 
         <Button
-          href={mailtoLink}
-          target='_blank'
+          onClick={handleOpenMail}
           variant='contained'
           sx={{
             width: '100%',
@@ -177,9 +218,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        message='Text copied to clipboard.'
-      />
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity='success' sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   )
 }

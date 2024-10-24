@@ -8,7 +8,8 @@ import {
   InputAdornment,
   Box,
   Button,
-  Snackbar
+  Snackbar,
+  Alert
 } from '@mui/material'
 import {
   SVGDate,
@@ -60,6 +61,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 }) => {
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
   const theme = useTheme()
   const refLink = link ? RegExp(/\/d\/(.+?)\//).exec(link)?.[1] : ''
 
@@ -79,6 +81,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     return `${baseLinkedInUrl}?${params.toString()}`
   }
 
+  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnackbarOpen(false)
+  }
+
   const handleShare = (IconComponent: any) => {
     if (IconComponent === LinkedinSVG) {
       const linkedInUrl = generateLinkedInUrl()
@@ -89,20 +98,70 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       )}&text=Check out my new certification!`
       window.open(twitterUrl, '_blank', 'noopener noreferrer')
     } else if (IconComponent === MailSVG) {
-      const mailUrl = `mailto:?subject=Check%20out%20my%20new%20certification&body=You%20can%20view%20my%20certification%20here:%20${encodeURIComponent(
-        link
-      )}`
-      window.location.href = mailUrl
+      handleSendMail()
     } else if (IconComponent === MessageCircleSVG) {
-      const smsUrl = `sms:?&body=Check%20out%20my%20new%20certification:%20${encodeURIComponent(
-        link
-      )}`
-      window.location.href = smsUrl
+      handleSendSMS()
     } else if (IconComponent === InstagramSVG) {
       const instagramText = `Check out my new certification! ${link}`
       copyFormValuesToClipboard(instagramText)
+      setSnackbarMessage('Text copied to clipboard. Ready to paste in Instagram!')
       setSnackbarOpen(true)
     }
+  }
+
+  const handleSendMail = () => {
+    const subject = `Check out my new certification!`
+    const body = `I just earned a new certification! You can view it here: ${link}`
+    const mailToLink = `mailto:?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`
+
+    window.location.href = mailToLink
+
+    const timeout = setTimeout(() => {
+      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=&su=${encodeURIComponent(
+        subject
+      )}&body=${encodeURIComponent(body)}`
+
+      window.open(gmailLink, '_blank')
+
+      navigator.clipboard
+        .writeText(body)
+        .then(() => {
+          setSnackbarMessage('Text copied to clipboard. Ready to paste in Gmail!')
+          setSnackbarOpen(true)
+        })
+        .catch(err => {
+          console.error('Failed to copy text: ', err)
+          setSnackbarMessage('Failed to copy text')
+          setSnackbarOpen(true)
+        })
+    }, 500)
+
+    window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
+  }
+
+  const handleSendSMS = () => {
+    const body = `Check out my new certification: ${link}`
+    const smsUrl = `sms:?&body=${encodeURIComponent(body)}`
+
+    window.location.href = smsUrl
+
+    const timeout = setTimeout(() => {
+      navigator.clipboard
+        .writeText(body)
+        .then(() => {
+          setSnackbarMessage('Text copied to clipboard. Ready to paste in SMS!')
+          setSnackbarOpen(true)
+        })
+        .catch(err => {
+          console.error('Failed to copy text: ', err)
+          setSnackbarMessage('Failed to copy text')
+          setSnackbarOpen(true)
+        })
+    }, 500)
+
+    window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
   }
 
   return (
@@ -173,7 +232,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
               value={
                 fileId
                   ? `https://opencreds.net/view/${fileId}`
-                  : 'wait as your credentials is being processed...'
+                  : 'wait as your credentials are being processed...'
               }
               InputProps={{
                 endAdornment: <InputAdornment position='start'></InputAdornment>,
@@ -260,9 +319,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={3000}
-          onClose={() => setSnackbarOpen(false)}
-          message='Text copied to clipboard. Ready to paste in Instagram!'
-        />
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert onClose={handleSnackbarClose} severity='success' sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   )
