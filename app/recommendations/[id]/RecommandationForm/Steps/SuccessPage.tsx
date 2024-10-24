@@ -38,7 +38,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
   }, [submittedFullName])
 
   // Construct the Google Drive link using the file ID
-  const link = `https://linked-claims-author.vercel.app/view/${id}`
+  const link = `https://opencreds.net/view/${id}`
 
   const message = fetchedFullName
     ? `Hi ${fullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`

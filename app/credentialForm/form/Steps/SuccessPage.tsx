@@ -74,7 +74,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       issueMonth: '8',
       expirationYear: '2025',
       expirationMonth: '8',
-      certUrl: `https://linked-claims-author.vercel.app/view/${fileId}`
+      certUrl: `https://opencreds.net/view/${fileId}`
     })
     return `${baseLinkedInUrl}?${params.toString()}`
   }
@@ -172,7 +172,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
               }}
               value={
                 fileId
-                  ? `https://linked-claims-author.vercel.app/view/${fileId}`
+                  ? `https://opencreds.net/view/${fileId}`
                   : 'wait as your credentials is being processed...'
               }
               InputProps={{
@@ -183,7 +183,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                       <Button
                         onClick={() =>
                           copyFormValuesToClipboard(
-                            `https://linked-claims-author.vercel.app/view/${fileId}`
+                            `https://opencreds.net/view/${fileId}`
                           )
                         }
                       >
