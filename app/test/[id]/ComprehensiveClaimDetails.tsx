@@ -26,6 +26,7 @@ import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import DOMPurify from 'dompurify'
 import useFetchComments from '../../utils/fetchComments'
+import { useParams } from 'next/navigation'
 
 // Define types
 interface Portfolio {
@@ -56,17 +57,6 @@ interface ClaimDetail {
   credentialSubject: CredentialSubject
 }
 
-interface ComprehensiveClaimDetailsProps {
-  params: {
-    claimId: string
-  }
-  setFullName: (name: string) => void
-  setEmail?: (email: string) => void
-  setFileID?: (fileID: string) => void
-  claimId?: string
-  onDataFetched?: (data: ClaimDetail | null) => void
-}
-
 const cleanHTML = (htmlContent: string) => {
   return htmlContent
     .replace(/<p><br><\/p>/g, '')
@@ -76,14 +66,9 @@ const cleanHTML = (htmlContent: string) => {
     .replace(/style="[^"]*"/g, '')
 }
 
-const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
-  params,
-  setFullName,
-  setEmail = () => {},
-  setFileID = () => {},
-  claimId,
-  onDataFetched
-}) => {
+const ComprehensiveClaimDetails = ({}) => {
+  const params = useParams()
+  const fileID = params?.id as any
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -109,9 +94,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     ownerEmail: fetchedOwnerEmail
   } = useGoogleDrive()
 
-  const decodedId = useMemo(() => decodeURIComponent(params.claimId), [params.claimId])
-  const fileID = useMemo(() => decodedId.split('/d/')[1]?.split('/')[0], [decodedId])
-
   // State to manage expanded comments
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
 
@@ -127,11 +109,8 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       if (!accessToken || !fileID) return
 
       try {
-        setFileID(fileID)
         const content = await getContent(fileID)
         setClaimDetail(content)
-        setFullName(content?.credentialSubject?.name || '')
-        onDataFetched?.(content)
 
         await fetchFileMetadata(fileID, '')
         // Fetch comments for the current fileID
@@ -148,12 +127,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       fetchDriveData()
     }
   }, [getContent])
-
-  useEffect(() => {
-    if (fetchedOwnerEmail) {
-      setEmail(fetchedOwnerEmail)
-    }
-  }, [fetchedOwnerEmail, setEmail])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -377,7 +350,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
 
           {pathname?.includes('/claims') && (
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-              <Link href={`/view/${claimId}`}>
+              <Link href={`/view/${fileID}`}>
                 <Button
                   variant='contained'
                   sx={{
@@ -389,7 +362,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                   View Credential
                 </Button>
               </Link>
-              <Link href={`/askforrecommendation/${claimId}`}>
+              <Link href={`/askforrecommendation/${fileID}`}>
                 <Button
                   variant='contained'
                   sx={{
