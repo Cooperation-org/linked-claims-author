@@ -282,6 +282,7 @@ const Form = ({ onStepChange }: any) => {
                   <Step2
                     register={register}
                     watch={watch}
+                    control={control}
                     handleTextEditorChange={value =>
                       setValue('credentialDescription', value ?? '')
                     }
