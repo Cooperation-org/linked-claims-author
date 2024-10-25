@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo, useState, useCallback } from 'react'
+import React, { useEffect, useMemo, useState, useCallback, MouseEvent } from 'react'
 import {
   Box,
   Stepper,
@@ -14,7 +14,12 @@ import {
   FormLabel,
   styled,
   Snackbar,
-  Alert
+  Alert,
+  ButtonGroup,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
@@ -33,6 +38,9 @@ import {
 import { useStepContext } from '../../credentialForm/form/StepContext'
 import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
 import { SVGLargeScreen } from '../../Assets/SVGs'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import EmailIcon from '@mui/icons-material/Email' // Placeholder for Gmail icon
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 
 const steps = ['Message', 'Invite', '']
 
@@ -52,6 +60,8 @@ export default function AskForRecommendation() {
   const params = useParams()
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null)
+  const menuOpen = Boolean(menuAnchorEl)
 
   const id = useMemo(
     () => (Array.isArray(params?.id) ? params.id[0] : params?.id || ''),
@@ -109,7 +119,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
 
           reset({
             reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!
-            this is the link https://opencreds.net/recommendations/${params.id}`
+this is the link https://opencreds.net/recommendations/${params.id}`
           })
         }
       }
@@ -145,12 +155,6 @@ this is the link https://opencreds.net/recommendations/${params.id}`
     setSendCopyToSelf(event.target.checked)
   }
 
-  const mailToLink = `mailto:${watch('email')}${
-    sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
-  }?subject=Support Request: ${
-    driveData?.credentialSubject?.achievement[0]?.name || ''
-  }&body=${encodeURIComponent(watch('reference'))}`
-
   const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return
@@ -158,32 +162,75 @@ this is the link https://opencreds.net/recommendations/${params.id}`
     setSnackbarOpen(false)
   }
 
-  const handleOpenMail = () => {
+  const handleMenuClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setMenuAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null)
+  }
+
+  const handleSendMailto = () => {
+    const subject = `Support Request: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
+    const body = watch('reference')
+    const mailToLink = `mailto:${watch('email')}${
+      sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
+    }?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+
     window.location.href = mailToLink
+    setSnackbarMessage('Mail client opened.')
+    setSnackbarOpen(true)
+    handleMenuClose()
+  }
 
-    const timeout = setTimeout(() => {
-      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-        watch('email')
-      )}${sendCopyToSelf && session?.user?.email ? `,${encodeURIComponent(session.user.email)}` : ''}&su=${encodeURIComponent(
-        `Support Request: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
-      )}&body=${encodeURIComponent(watch('reference'))}`
+  const handleSendGmail = () => {
+    const subject = `Support Request: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
+    const body = watch('reference')
+    const toEmails =
+      sendCopyToSelf && session?.user?.email
+        ? `${encodeURIComponent(watch('email'))},${encodeURIComponent(session.user.email)}`
+        : encodeURIComponent(watch('email'))
 
-      window.open(gmailLink, '_blank')
+    const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${toEmails}&su=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`
 
-      navigator.clipboard
-        .writeText(watch('reference'))
-        .then(() => {
-          setSnackbarMessage('Text Copied Successfully')
-          setSnackbarOpen(true)
-        })
-        .catch(err => {
-          console.error('Failed to copy text: ', err)
-          setSnackbarMessage('Failed to copy text')
-          setSnackbarOpen(true)
-        })
-    }, 2000)
+    window.open(gmailLink, '_blank')
 
-    window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
+    navigator.clipboard
+      .writeText(body)
+      .then(() => {
+        setSnackbarMessage('Email body copied to clipboard. Ready to paste in Gmail!')
+        setSnackbarOpen(true)
+      })
+      .catch(err => {
+        console.error('Failed to copy text: ', err)
+        setSnackbarMessage('Failed to copy text')
+        setSnackbarOpen(true)
+      })
+
+    handleMenuClose()
+  }
+
+  const handleCopy = () => {
+    const body = watch('reference')
+    navigator.clipboard
+      .writeText(body)
+      .then(() => {
+        setSnackbarMessage('Email body copied to clipboard.')
+        setSnackbarOpen(true)
+      })
+      .catch(err => {
+        console.error('Failed to copy text: ', err)
+        setSnackbarMessage('Failed to copy text')
+        setSnackbarOpen(true)
+      })
+
+    handleMenuClose()
+  }
+
+  const handleSendEmail = () => {
+    handleSendMailto()
   }
 
   if (isLoading) {
@@ -356,6 +403,78 @@ this is the link https://opencreds.net/recommendations/${params.id}`
             )}
           </form>
 
+          {activeStep === 1 && (
+            <ButtonGroup
+              variant='contained'
+              sx={{ mb: 2, width: '100%', boxShadow: 'none' }}
+            >
+              <Button
+                onClick={handleSendMailto}
+                sx={{
+                  padding: '10px 24px',
+                  borderRadius: '100px 0 0 100px',
+                  fontFamily: 'Roboto',
+                  textTransform: 'capitalize',
+                  fontSize: '16px',
+                  backgroundColor: '#003FE0',
+                  color: '#fff',
+                  '&:hover': {
+                    backgroundColor: '#002bb5'
+                  },
+                  flexGrow: 1
+                }}
+              >
+                Send Email to {watch('firstName')} {watch('lastName')}
+              </Button>
+              <Button
+                size='small'
+                aria-controls={menuOpen ? 'email-menu' : undefined}
+                aria-haspopup='true'
+                aria-expanded={menuOpen ? 'true' : undefined}
+                onClick={handleMenuClick}
+                sx={{
+                  borderRadius: '0 100px 100px 0',
+                  backgroundColor: '#003FE0',
+                  color: '#fff',
+                  '&:hover': {
+                    backgroundColor: '#002bb5'
+                  },
+                  minWidth: '40px'
+                }}
+              >
+                <ArrowDropDownIcon />
+              </Button>
+            </ButtonGroup>
+          )}
+
+          <Menu
+            id='email-menu'
+            anchorEl={menuAnchorEl}
+            open={menuOpen}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left'
+            }}
+          >
+            <MenuItem onClick={handleSendGmail}>
+              <ListItemIcon>
+                <EmailIcon fontSize='small' />
+              </ListItemIcon>
+              <ListItemText>Gmail</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleCopy}>
+              <ListItemIcon>
+                <ContentCopyIcon fontSize='small' />
+              </ListItemIcon>
+              <ListItemText>Copy</ListItemText>
+            </MenuItem>
+          </Menu>
+
           <Box
             sx={{
               width: '100%',
@@ -387,20 +506,6 @@ this is the link https://opencreds.net/recommendations/${params.id}`
                 variant='contained'
               >
                 Next
-              </Button>
-            )}
-
-            {activeStep === 1 && (
-              <Button
-                sx={{
-                  ...nextButtonStyle,
-                  maxWidth: '355px'
-                }}
-                color='primary'
-                variant='contained'
-                onClick={handleOpenMail}
-              >
-                Open Mail
               </Button>
             )}
           </Box>

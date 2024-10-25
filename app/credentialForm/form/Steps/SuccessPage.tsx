@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, MouseEvent } from 'react'
 import {
   Typography,
   TextField,
@@ -9,7 +9,12 @@ import {
   Box,
   Button,
   Snackbar,
-  Alert
+  Alert,
+  ButtonGroup,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material'
 import {
   SVGDate,
@@ -38,6 +43,9 @@ import {
 } from '../../../components/Styles/appStyles'
 import { options } from './Step0'
 import { useStepContext } from '../StepContext'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import EmailIcon from '@mui/icons-material/Email'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void
@@ -64,6 +72,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const theme = useTheme()
   const refLink = link ? RegExp(/\/d\/(.+?)\//).exec(link)?.[1] : ''
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null)
+  const menuOpen = Boolean(menuAnchorEl)
 
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
@@ -98,7 +108,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       )}&text=Check out my new certification!`
       window.open(twitterUrl, '_blank', 'noopener noreferrer')
     } else if (IconComponent === MailSVG) {
-      handleSendMail()
+      handleSendMailto()
     } else if (IconComponent === MessageCircleSVG) {
       handleSendSMS()
     } else if (IconComponent === InstagramSVG) {
@@ -109,7 +119,15 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     }
   }
 
-  const handleSendMail = () => {
+  const handleMenuClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setMenuAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null)
+  }
+
+  const handleSendMailto = () => {
     const subject = `Check out my new certification!`
     const body = `I just earned a new certification! You can view it here: ${link}`
     const mailToLink = `mailto:?subject=${encodeURIComponent(
@@ -117,28 +135,51 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     )}&body=${encodeURIComponent(body)}`
 
     window.location.href = mailToLink
+    setSnackbarMessage('Mail client opened.')
+    setSnackbarOpen(true)
+    handleMenuClose()
+  }
 
-    const timeout = setTimeout(() => {
-      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=&su=${encodeURIComponent(
-        subject
-      )}&body=${encodeURIComponent(body)}`
+  const handleSendGmail = () => {
+    const subject = `Check out my new certification!`
+    const body = `I just earned a new certification! You can view it here: ${link}`
 
-      window.open(gmailLink, '_blank')
+    const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`
 
-      navigator.clipboard
-        .writeText(body)
-        .then(() => {
-          setSnackbarMessage('Text copied to clipboard. Ready to paste in Gmail!')
-          setSnackbarOpen(true)
-        })
-        .catch(err => {
-          console.error('Failed to copy text: ', err)
-          setSnackbarMessage('Failed to copy text')
-          setSnackbarOpen(true)
-        })
-    }, 2000)
+    window.open(gmailLink, '_blank')
 
-    window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
+    navigator.clipboard
+      .writeText(body)
+      .then(() => {
+        setSnackbarMessage('Email body copied to clipboard. Ready to paste in Gmail!')
+        setSnackbarOpen(true)
+      })
+      .catch(err => {
+        console.error('Failed to copy text:', err)
+        setSnackbarMessage('Failed to copy text')
+        setSnackbarOpen(true)
+      })
+
+    handleMenuClose()
+  }
+
+  const handleCopy = () => {
+    const body = `Check out my new certification: ${link}`
+    navigator.clipboard
+      .writeText(body)
+      .then(() => {
+        setSnackbarMessage('Text copied to clipboard.')
+        setSnackbarOpen(true)
+      })
+      .catch(err => {
+        console.error('Failed to copy text:', err)
+        setSnackbarMessage('Failed to copy text')
+        setSnackbarOpen(true)
+      })
+
+    handleMenuClose()
   }
 
   const handleSendSMS = () => {
@@ -147,21 +188,17 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
     window.location.href = smsUrl
 
-    const timeout = setTimeout(() => {
-      navigator.clipboard
-        .writeText(body)
-        .then(() => {
-          setSnackbarMessage('Text copied to clipboard. Ready to paste in SMS!')
-          setSnackbarOpen(true)
-        })
-        .catch(err => {
-          console.error('Failed to copy text: ', err)
-          setSnackbarMessage('Failed to copy text')
-          setSnackbarOpen(true)
-        })
-    }, 2000)
-
-    window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
+    navigator.clipboard
+      .writeText(body)
+      .then(() => {
+        setSnackbarMessage('Text copied to clipboard. Ready to paste in SMS!')
+        setSnackbarOpen(true)
+      })
+      .catch(err => {
+        console.error('Failed to copy text:', err)
+        setSnackbarMessage('Failed to copy text')
+        setSnackbarOpen(true)
+      })
   }
 
   return (
@@ -180,6 +217,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             )
           )}
         </Box>
+
         <Box sx={{ width: '100%' }}>
           <Box sx={successPageHeaderStyles}>
             {formData?.evidenceLink ? (
@@ -235,27 +273,39 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                   : 'wait as your credentials are being processed...'
               }
               InputProps={{
+                readOnly: true,
                 endAdornment: <InputAdornment position='start'></InputAdornment>,
                 startAdornment: (
                   <InputAdornment position='start'>
                     <Box>
-                      <Button
-                        onClick={() =>
-                          copyFormValuesToClipboard(
-                            `https://opencreds.net/view/${fileId}`
-                          )
-                        }
-                      >
-                        <CopySVG />
-                      </Button>
+                      <ButtonGroup variant='contained' sx={{ boxShadow: 'none' }}>
+                        <Button
+                          onClick={() =>
+                            copyFormValuesToClipboard(
+                              `https://opencreds.net/view/${fileId}`
+                            )
+                          }
+                          sx={{
+                            padding: '5px 10px',
+                            borderRadius: '10px 0 0 10px',
+                            backgroundColor: '#003FE0',
+                            color: '#fff',
+                            '&:hover': {
+                              backgroundColor: '#002bb5'
+                            }
+                          }}
+                        >
+                          <CopySVG />
+                        </Button>
+                      </ButtonGroup>
                     </Box>
                   </InputAdornment>
-                ),
-                readOnly: true
+                )
               }}
             />
           </Box>
         </Box>
+
         <Box sx={{ position: 'relative', textAlign: 'center' }}>
           <Typography
             sx={{
@@ -279,6 +329,75 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             <ArrowRightSVG />
           </Box>
         </Box>
+
+        <ButtonGroup variant='contained' sx={{ width: '100%', boxShadow: 'none', mt: 2 }}>
+          <Button
+            onClick={() => {
+              window.location.href = `mailto:?subject=Check out my new certification!&body=I just earned a new certification! You can view it here: ${link}`
+            }}
+            sx={{
+              borderRadius: '100px 0 0 100px',
+              backgroundColor: '#003FE0',
+              color: '#fff',
+              textTransform: 'none',
+              fontFamily: 'Roboto, sans-serif',
+              fontSize: '16px',
+              '&:hover': {
+                backgroundColor: '#002bb5'
+              },
+              flexGrow: 1
+            }}
+          >
+            Ask for a Recommendation
+          </Button>
+          <Button
+            size='small'
+            aria-controls={menuOpen ? 'email-menu-success' : undefined}
+            aria-haspopup='true'
+            aria-expanded={menuOpen ? 'true' : undefined}
+            onClick={handleMenuClick}
+            sx={{
+              borderRadius: '0 100px 100px 0',
+              backgroundColor: '#003FE0',
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: '#002bb5'
+              },
+              minWidth: '40px'
+            }}
+          >
+            <ArrowDropDownIcon />
+          </Button>
+        </ButtonGroup>
+
+        <Menu
+          id='email-menu-success'
+          anchorEl={menuAnchorEl}
+          open={menuOpen}
+          onClose={handleMenuClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left'
+          }}
+        >
+          <MenuItem onClick={handleSendGmail}>
+            <ListItemIcon>
+              <EmailIcon fontSize='small' />
+            </ListItemIcon>
+            <ListItemText>Gmail</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleCopy}>
+            <ListItemIcon>
+              <ContentCopyIcon fontSize='small' />
+            </ListItemIcon>
+            <ListItemText>Copy</ListItemText>
+          </MenuItem>
+        </Menu>
+
         <Button
           onClick={() => {
             setActiveStep(0)
@@ -291,12 +410,18 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             backgroundColor: '#003FE0',
             textTransform: 'none',
             fontFamily: 'Roboto, sans-serif',
-            boxShadow: '0px 0px 2px 2px #F7BC00'
+            boxShadow: '0px 0px 2px 2px #F7BC00',
+
+            '&:hover': {
+              backgroundColor: '#002bb5'
+            },
+            mt: 2
           }}
           disabled={!link}
         >
           Ask for a Recommendation
         </Button>
+
         <Button
           sx={{
             color: theme.palette.t3TitleText,
@@ -304,7 +429,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             fontFamily: 'Roboto',
             fontSize: '14px',
             fontWeight: 600,
-            lineHeight: '20px'
+            lineHeight: '20px',
+            mt: 1
           }}
           variant='text'
           onClick={() => {
@@ -315,18 +441,18 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         >
           Claim Another Skill
         </Button>
-
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-          <Alert onClose={handleSnackbarClose} severity='success' sx={{ width: '100%' }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
       </Box>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity='success' sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   )
 }

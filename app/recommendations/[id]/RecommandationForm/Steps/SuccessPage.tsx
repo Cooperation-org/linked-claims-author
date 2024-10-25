@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, MouseEvent } from 'react'
 import {
   Box,
   Typography,
@@ -8,7 +8,12 @@ import {
   TextField,
   Snackbar,
   Alert,
-  InputAdornment
+  InputAdornment,
+  ButtonGroup,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material'
 import { SVGBadge, CopySVG } from '../../../../Assets/SVGs'
 import { copyFormValuesToClipboard } from '../../../../utils/formUtils'
@@ -16,6 +21,9 @@ import { FormData } from '../../../../credentialForm/form/types/Types'
 import ComprehensiveClaimDetails from '../../../../test/[id]/ComprehensiveClaimDetails'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import EmailIcon from '@mui/icons-material/Email'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 
 interface SuccessPageProps {
   formData: FormData
@@ -32,6 +40,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
   const [email, setEmail] = useState<string | null>(null)
   const params = useParams()
   const id = params.id
+
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null)
+  const menuOpen = Boolean(menuAnchorEl)
 
   useEffect(() => {
     if (submittedFullName) {
@@ -59,7 +70,15 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
     setSnackbarOpen(false)
   }
 
-  const handleOpenMail = useCallback(() => {
+  const handleMenuClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setMenuAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null)
+  }
+
+  const handleSendMailto = () => {
     if (!email) {
       setSnackbarMessage('Email is not available.')
       setSnackbarOpen(true)
@@ -73,29 +92,55 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
     )}&body=${encodeURIComponent(body)}`
 
     window.location.href = mailToLink
+    setSnackbarMessage('Mail client opened.')
+    setSnackbarOpen(true)
+    handleMenuClose()
+  }
 
-    const timeout = setTimeout(() => {
-      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-        email
-      )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  const handleSendGmail = () => {
+    if (!email) {
+      setSnackbarMessage('Email is not available.')
+      setSnackbarOpen(true)
+      return
+    }
 
-      window.open(gmailLink, '_blank')
+    const subject = 'Recommendation Complete'
+    const body = message
+    const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+      email
+    )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
 
-      navigator.clipboard
-        .writeText(body)
-        .then(() => {
-          setSnackbarMessage('Text copied to clipboard. Ready to paste in Gmail!')
-          setSnackbarOpen(true)
-        })
-        .catch(err => {
-          console.error('Failed to copy text: ', err)
-          setSnackbarMessage('Failed to copy text')
-          setSnackbarOpen(true)
-        })
-    }, 2000)
+    window.open(gmailLink, '_blank')
 
-    window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
-  }, [email, message])
+    navigator.clipboard
+      .writeText(body)
+      .then(() => {
+        setSnackbarMessage('Text copied to clipboard. Ready to paste in Gmail!')
+        setSnackbarOpen(true)
+      })
+      .catch(err => {
+        console.error('Failed to copy text:', err)
+        setSnackbarMessage('Failed to copy text')
+        setSnackbarOpen(true)
+      })
+
+    handleMenuClose()
+  }
+
+  const handleCopyBody = () => {
+    copyFormValuesToClipboard(message)
+    setSnackbarMessage('Text copied to clipboard.')
+    setSnackbarOpen(true)
+    handleMenuClose()
+  }
+
+  const handleSendEmail = () => {
+    handleSendMailto()
+  }
+
+  const handleOpenMail = useCallback(() => {
+    handleSendMailto()
+  }, [handleSendMailto])
 
   return (
     <>
@@ -181,22 +226,82 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
           />
         </Box>
 
-        <Button
-          onClick={handleOpenMail}
-          variant='contained'
-          sx={{
-            width: '100%',
-            backgroundColor: '#003FE0',
-            borderRadius: '100px',
-            textTransform: 'none',
-            fontFamily: 'Roboto, sans-serif',
-            boxShadow: '0px 0px 2px 2px #F7BC00',
-            marginTop: '15px'
+        <ButtonGroup variant='contained' sx={{ width: '100%', boxShadow: 'none' }}>
+          <Button
+            onClick={handleSendEmail}
+            sx={{
+              padding: '10px 24px',
+              borderRadius: '100px 0 0 100px',
+              fontFamily: 'Roboto',
+              textTransform: 'capitalize',
+              fontSize: '16px',
+              backgroundColor: '#003FE0',
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: '#002bb5'
+              },
+              flexGrow: 1
+            }}
+            disabled={!email}
+          >
+            Open Email
+          </Button>
+          <Button
+            size='small'
+            aria-controls={menuOpen ? 'email-menu-success' : undefined}
+            aria-haspopup='true'
+            aria-expanded={menuOpen ? 'true' : undefined}
+            onClick={handleMenuClick}
+            sx={{
+              borderRadius: '0 100px 100px 0',
+              backgroundColor: '#003FE0',
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: '#002bb5'
+              },
+              minWidth: '40px'
+            }}
+          >
+            <ArrowDropDownIcon />
+          </Button>
+        </ButtonGroup>
+        <Menu
+          id='email-menu-success'
+          anchorEl={menuAnchorEl}
+          open={menuOpen}
+          onClose={handleMenuClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left'
           }}
-          disabled={!email}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left'
+          }}
         >
-          Open email
-        </Button>
+          <MenuItem onClick={handleSendGmail}>
+            <ListItemIcon>
+              <EmailIcon fontSize='small' />
+            </ListItemIcon>
+            <ListItemText>Gmail</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleCopyBody}>
+            <ListItemIcon>
+              <ContentCopyIcon fontSize='small' />
+            </ListItemIcon>
+            <ListItemText>Copy</ListItemText>
+          </MenuItem>
+        </Menu>
+
+        <Box
+          sx={{
+            display: 'flex',
+            gap: '15px',
+            justifyContent: 'space-between',
+            width: '100%',
+            p: '0 10px'
+          }}
+        ></Box>
 
         <Button
           component={Link}
@@ -208,7 +313,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
             fontSize: '14px',
             fontWeight: 600,
             lineHeight: '20px',
-            color: '#202e5b'
+            color: '#202e5b',
+            backgroundColor: 'transparent',
+            '&:hover': {
+              backgroundColor: 'transparent',
+              textDecoration: 'underline'
+            }
           }}
           variant='text'
         >
