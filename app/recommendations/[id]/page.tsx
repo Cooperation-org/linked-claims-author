@@ -63,7 +63,12 @@ const CredentialData = ({ params }: { params: { id: any } }) => {
               transform: 'translate(-50%, -50%)'
             }}
           >
-            <Image src={img3} alt='logo' style={{ width: '100px', height: '100px' }} />
+            <Image
+              src={img3}
+              priority
+              alt='logo'
+              style={{ width: '100px', height: '100px' }}
+            />
           </Box>
         </Box>
       </Box>

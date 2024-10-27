@@ -357,6 +357,7 @@ const Page = () => {
                   alt='Add Icon'
                   style={{
                     width: '40px',
+                    height: '40px',
                     display: 'block',
                     position: 'absolute',
                     top: '-30px',
