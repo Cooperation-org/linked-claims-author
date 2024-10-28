@@ -43,6 +43,10 @@ interface CredentialSubject {
   achievement: Achievement[]
   duration: string
   portfolio: Portfolio[]
+  howKnow: string
+  recommendationText: string
+  qualifications: string
+  createdTime: string
 }
 
 interface ClaimDetail {
@@ -67,7 +71,7 @@ const ComprehensiveClaimDetails = () => {
   const params = useParams()
   const fileID = params?.id as string
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
-  const [comments, setComments] = useState<any[]>([])
+  const [comments, setComments] = useState<ClaimDetail[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const theme = useTheme()
@@ -96,14 +100,17 @@ const ComprehensiveClaimDetails = () => {
 
       try {
         const content = await getContent(fileID)
-        setClaimDetail(content)
+        if (content) {
+          setClaimDetail(content)
+        }
 
         await fetchFileMetadata(fileID, '')
-        // Fetch comments for the current fileID
 
         const commentsData = await getComments(fileID)
         console.log(':  fetchDriveData  commentsData', commentsData)
-        setComments(commentsData as any)
+        if (commentsData) {
+          setComments(commentsData as any)
+        }
       } catch (error) {
         console.error('Error fetching claim details:', error)
         setErrorMessage('Failed to fetch claim details.')
@@ -398,13 +405,13 @@ const ComprehensiveClaimDetails = () => {
 
       {isView && (
         <Box>
-          {!comments ? (
+          {loading ? (
             <Box display='flex' justifyContent='center' my={2}>
               <CircularProgress size={24} />
             </Box>
-          ) : comments && comments?.length > 0 ? (
+          ) : comments && comments.length > 0 ? (
             <List sx={{ p: 0, m: 0 }}>
-              {comments?.map((comment: any, index: number) => (
+              {comments.map((comment: ClaimDetail, index: number) => (
                 <React.Fragment key={index}>
                   <Box
                     sx={{
@@ -457,22 +464,21 @@ const ComprehensiveClaimDetails = () => {
                     unmountOnExit
                   >
                     <Box sx={{ pl: 7, pr: 2, pb: 2 }}>
-                      {comment?.credentialSubject?.howKnow && (
+                      {comment.credentialSubject?.howKnow && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             How Known:
                           </Typography>
                           <Typography variant='body2'>
-                            {' '}
                             <span
                               dangerouslySetInnerHTML={{
-                                __html: cleanHTML(comment?.credentialSubject?.howKnow)
+                                __html: cleanHTML(comment.credentialSubject.howKnow)
                               }}
                             />
                           </Typography>
                         </Box>
                       )}
-                      {comment?.credentialSubject?.recommendationText && (
+                      {comment.credentialSubject?.recommendationText && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Recommendation:
@@ -481,14 +487,14 @@ const ComprehensiveClaimDetails = () => {
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: cleanHTML(
-                                  comment?.credentialSubject?.recommendationText
+                                  comment.credentialSubject.recommendationText
                                 )
                               }}
                             />
                           </Typography>
                         </Box>
                       )}
-                      {comment?.credentialSubject?.qualifications && (
+                      {comment.credentialSubject?.qualifications && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Qualifications:
@@ -497,7 +503,7 @@ const ComprehensiveClaimDetails = () => {
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: cleanHTML(
-                                  comment?.credentialSubject?.qualifications
+                                  comment.credentialSubject.qualifications
                                 )
                               }}
                             />
@@ -509,7 +515,7 @@ const ComprehensiveClaimDetails = () => {
                   {/* Add Divider between comments */}
                   {index < comments.length - 1 && <Divider component='li' />}
                 </React.Fragment>
-              ))}{' '}
+              ))}
             </List>
           ) : (
             <Typography variant='body2'>No recommendations available.</Typography>
@@ -519,4 +525,5 @@ const ComprehensiveClaimDetails = () => {
     </Container>
   )
 }
+
 export default ComprehensiveClaimDetails
