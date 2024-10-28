@@ -93,7 +93,7 @@ const useGoogleDrive = () => {
 
       if (response.ok) {
         const metadata = await response.json()
-        console.log('Fetched Metadata:', metadata)
+        // console.log('Fetched Metadata:', metadata)
 
         setFileMetadata(metadata)
 

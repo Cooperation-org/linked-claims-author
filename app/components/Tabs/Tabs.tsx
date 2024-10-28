@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { Tabs, Tab, Box } from '@mui/material'
-import { useParams } from 'next/navigation'
+// import { useParams } from 'next/navigation'
 import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
 import Form from '../../recommendations/[id]/RecommandationForm/Form'
 
@@ -27,18 +27,18 @@ interface TabsComponentProps {
 
 const TabsComponent: React.FC<TabsComponentProps> = ({
   fullName,
-  setFullName,
+  // setFullName,
   email
 }) => {
   const [value, setValue] = useState(0)
-  const [fileID, setFileID] = useState<string | null>(null)
-  const params = useParams()
-  const id =
-    typeof params?.id === 'string'
-      ? params.id
-      : Array.isArray(params?.id)
-        ? params.id[0]
-        : undefined
+  // const [fileID, setFileID] = useState<string | null>(null)
+  // const params = useParams()
+  // const id =
+  //   typeof params?.id === 'string'
+  //     ? params.id
+  //     : Array.isArray(params?.id)
+  //       ? params.id[0]
+  //       : undefined
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
