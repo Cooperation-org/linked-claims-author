@@ -64,7 +64,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({
         />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <Form fullName={fullName} />
+        <Form fullName={fullName} email={email} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ComprehensiveClaimDetails />

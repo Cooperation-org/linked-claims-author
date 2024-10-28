@@ -22,9 +22,10 @@ import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDeta
 
 interface FormProps {
   fullName: string
+  email: string
 }
 
-const Form: React.FC<FormProps> = ({ fullName }) => {
+const Form: React.FC<FormProps> = ({ fullName, email }) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const { data: session } = useSession()
   const accessToken = session?.accessToken
@@ -214,8 +215,9 @@ const Form: React.FC<FormProps> = ({ fullName }) => {
             {activeStep === 6 && (
               <SuccessPage
                 formData={formData}
-                link={''}
                 submittedFullName={submittedFullName}
+                fullName={fullName}
+                email={email}
                 handleBack={handleBack}
               />
             )}
