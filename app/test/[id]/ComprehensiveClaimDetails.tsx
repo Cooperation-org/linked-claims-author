@@ -18,13 +18,12 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useParams } from 'next/navigation'
 import { SVGDate, SVGBadge, CheckMarkSVG, LineSVG } from '../../Assets/SVGs'
 import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import { useParams } from 'next/navigation'
 
 // Define types
 interface Portfolio {
@@ -64,9 +63,9 @@ const cleanHTML = (htmlContent: string) => {
     .replace(/style="[^"]*"/g, '')
 }
 
-const ComprehensiveClaimDetails = ({}) => {
+const ComprehensiveClaimDetails = () => {
   const params = useParams()
-  const fileID = params?.id as any
+  const fileID = params?.id as string
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [comments, setComments] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -113,10 +112,8 @@ const ComprehensiveClaimDetails = ({}) => {
       }
     }
 
-    if (accessToken && fileID) {
-      fetchDriveData()
-    }
-  }, [getContent])
+    fetchDriveData()
+  }, [accessToken, fileID, getContent, fetchFileMetadata, getComments])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -125,7 +122,7 @@ const ComprehensiveClaimDetails = ({}) => {
     }))
   }
 
-  if (loading) {
+  if (loading || !claimDetail) {
     return (
       <Box
         sx={{
@@ -148,7 +145,7 @@ const ComprehensiveClaimDetails = ({}) => {
     )
   }
 
-  const credentialSubject = claimDetail?.credentialSubject
+  const credentialSubject = claimDetail.credentialSubject
   const achievement = credentialSubject?.achievement[0]
   const hasValidEvidence =
     credentialSubject?.portfolio && credentialSubject?.portfolio.length > 0
