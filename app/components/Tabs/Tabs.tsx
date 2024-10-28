@@ -77,12 +77,13 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other })
   return (
     <div
       role='tabpanel'
-      hidden={value !== index}
+      hidden={false}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      style={{ display: value === index ? 'block' : 'none' }}
       {...other}
     >
-      {value === index && <Box p={3}>{children}</Box>}
+      {children}
     </div>
   )
 }
