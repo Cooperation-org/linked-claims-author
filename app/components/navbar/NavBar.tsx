@@ -2,7 +2,7 @@ import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import Link from 'next/link'
-import HumborgerMenu from '../humborgerMenu/HumborgerMenu'
+import HamburgerMenu from '../hamburgerMenu/HamburgerMenu'
 
 const NavBar = () => {
   const theme = useTheme()
@@ -27,7 +27,7 @@ const NavBar = () => {
           alignItems: 'center'
         }}
       >
-        <HumborgerMenu />
+        <HamburgerMenu />
       </Box>
 
       <Box
@@ -64,7 +64,7 @@ const NavBar = () => {
           alignItems: 'center'
         }}
       >
-        <HumborgerMenu />
+        <HamburgerMenu />
       </Box>
     </Box>
   )

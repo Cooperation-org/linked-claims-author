@@ -674,7 +674,7 @@ export const LineSVG = () => {
     </Box>
   )
 }
-export const HumborgerMenuSVG = () => {
+export const HamburgerMenuSVG = () => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <svg
