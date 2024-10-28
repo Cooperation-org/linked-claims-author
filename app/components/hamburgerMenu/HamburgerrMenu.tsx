@@ -1,10 +1,10 @@
 import React from 'react'
 import { MenuItem, Menu, Button, Box } from '@mui/material'
-import { HumborgerMenuSVG } from '../../Assets/SVGs'
+import { HamburgerMenuSVG } from '../../Assets/SVGs'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import Link from 'next/link'
 
-const HumborgerMenu = () => {
+const HamburgerMenu = () => {
   const { data: session } = useSession()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -25,7 +25,7 @@ const HumborgerMenu = () => {
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
           >
-            <HumborgerMenuSVG />
+            <HamburgerMenuSVG />
           </Button>
           <Menu
             id='basic-menu'
@@ -77,4 +77,4 @@ const HumborgerMenu = () => {
   )
 }
 
-export default HumborgerMenu
+export default HamburgerMenu
