@@ -47,6 +47,7 @@ interface SuccessPageProps {
   setFileId: (link: string) => void
   storageOption: string
   fileId: string
+  selectedImage: string
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
@@ -56,8 +57,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   setLink,
   setFileId,
   fileId,
-  storageOption
+  storageOption,
+  selectedImage
 }) => {
+  console.log('🚀 ~ formData:', formData)
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = React.useState(false)
   const theme = useTheme()
@@ -138,7 +141,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                     width: '100px',
                     height: '100px'
                   }}
-                  src={formData.evidenceLink}
+                  src={selectedImage}
                   alt='Certification Evidence'
                 />
               </Box>

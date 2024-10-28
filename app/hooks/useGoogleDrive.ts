@@ -123,7 +123,8 @@ const useGoogleDrive = () => {
     fetchFileMetadata,
     fileMetadata,
     ownerEmail,
-    getComments
+    getComments,
+    storage
   }
 }
 
