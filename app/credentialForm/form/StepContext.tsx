@@ -1,16 +1,30 @@
-'use client'
-
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
-const StepContext = createContext({
+// Define the context structure
+interface StepContextType {
+  activeStep: number
+  loading: boolean
+  setActiveStep: (step: number) => void
+  handleNext: () => void
+  handleBack: () => void
+  setUploadImageFn: (fn: () => Promise<void>) => void // Corrected type
+}
+
+const StepContext = createContext<StepContextType>({
   activeStep: 0,
-  setActiveStep: (step: number) => {},
-  handleNext: () => {},
-  handleBack: () => {}
+  loading: false,
+  setActiveStep: () => {},
+  handleNext: async () => {},
+  handleBack: () => {},
+  setUploadImageFn: () => () => {}
 })
 
 export const StepProvider = ({ children }: { children: any }) => {
   const [activeStep, setActiveStep] = useState(0)
+  const [uploadImageFn, setUploadImageFn] = useState<() => Promise<void>>(
+    () => async () => {}
+  )
+  const [loading, setLoading] = useState(false)
 
   const getStepFromHash = () => {
     const hash = window.location.hash
@@ -48,8 +62,18 @@ export const StepProvider = ({ children }: { children: any }) => {
     window.location.hash = `#step${activeStep}`
   }, [activeStep])
 
-  const handleNext = () => {
-    setActiveStep(prevStep => prevStep + 1)
+  const handleNext = async () => {
+    if (activeStep === 5 && typeof uploadImageFn === 'function') {
+      setLoading(true) // Start loading
+      try {
+        await uploadImageFn() // Wait for image upload to complete
+      } catch (error) {
+        console.error('Error during image upload:', error)
+      } finally {
+        setLoading(false) // End loading
+      }
+    }
+    setActiveStep(prevStep => prevStep + 1) // Move to the next step
   }
 
   const handleBack = () => {
@@ -57,7 +81,16 @@ export const StepProvider = ({ children }: { children: any }) => {
   }
 
   return (
-    <StepContext.Provider value={{ activeStep, setActiveStep, handleNext, handleBack }}>
+    <StepContext.Provider
+      value={{
+        activeStep,
+        setActiveStep,
+        handleNext,
+        handleBack,
+        setUploadImageFn,
+        loading
+      }}
+    >
       {children}
     </StepContext.Provider>
   )

@@ -47,6 +47,7 @@ interface CredentialSubject {
   recommendationText: string
   qualifications: string
   createdTime: string
+  evidenceLink: string
 }
 
 interface ClaimDetail {
@@ -100,6 +101,7 @@ const ComprehensiveClaimDetails = () => {
 
       try {
         const content = await getContent(fileID)
+
         if (content) {
           setClaimDetail(content as any)
         }
@@ -153,7 +155,9 @@ const ComprehensiveClaimDetails = () => {
   }
 
   const credentialSubject = claimDetail.credentialSubject
+  console.log('🚀 ~ ComprehensiveClaimDetails ~ credentialSubject:', credentialSubject)
   const achievement = credentialSubject?.achievement[0]
+
   const hasValidEvidence =
     credentialSubject?.portfolio && credentialSubject?.portfolio.length > 0
 
@@ -183,10 +187,10 @@ const ComprehensiveClaimDetails = () => {
               overflow: 'hidden'
             }}
           >
-            {achievement?.image?.id ? (
+            {claimDetail?.credentialSubject?.evidenceLink ? (
               <Image
-                src={achievement.image.id}
-                alt='Achievement Evidence'
+                src={claimDetail?.credentialSubject?.evidenceLink}
+                alt='Achievement'
                 width={500}
                 height={300}
                 style={{ borderRadius: '10px', objectFit: 'cover' }}
@@ -267,7 +271,7 @@ const ComprehensiveClaimDetails = () => {
                       height: 'auto',
                       objectFit: 'cover'
                     }}
-                    src={achievement.image.id}
+                    src={claimDetail?.credentialSubject?.evidenceLink}
                     alt='Achievement Evidence'
                   />
                 </Box>
