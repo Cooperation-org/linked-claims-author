@@ -22,11 +22,15 @@ interface TabPanelProps {
 interface TabsComponentProps {
   fullName: string
   setFullName: (name: string) => void
+  email: string
 }
 
-const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) => {
+const TabsComponent: React.FC<TabsComponentProps> = ({
+  fullName,
+  setFullName,
+  email
+}) => {
   const [value, setValue] = useState(0)
-  const [email, setEmail] = useState<string | null>(null)
   const [fileID, setFileID] = useState<string | null>(null)
   const params = useParams()
   const id =
@@ -60,7 +64,7 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, setFullName }) 
         />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <Form />
+        <Form fullName={fullName} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ComprehensiveClaimDetails />

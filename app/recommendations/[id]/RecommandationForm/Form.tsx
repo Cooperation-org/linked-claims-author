@@ -14,16 +14,18 @@ import DataPreview from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import useLocalStorage from '../../../hooks/useLocalStorage'
-import FetchedData from '../viewCredential/FetchedData'
 import { useStepContext } from '../../../credentialForm/form/StepContext'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID, signCred } from '../../../utils/signCred'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDetails'
 
-const Form = () => {
+interface FormProps {
+  fullName: string
+}
+
+const Form: React.FC<FormProps> = ({ fullName }) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
-  const [fullName, setFullName] = useState('')
   const { data: session } = useSession()
   const accessToken = session?.accessToken
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
@@ -73,7 +75,8 @@ const Form = () => {
   }, [activeStep])
 
   const storage = new GoogleDriveStorage(accessToken as string)
-  const saveAndAddcomment = async () => {
+
+  const saveAndAddComment = async () => {
     try {
       if (!accessToken) {
         throw new Error('No access token provided.')
@@ -119,7 +122,7 @@ const Form = () => {
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
       setSubmittedFullName(data.fullName)
-      await saveAndAddcomment()
+      await saveAndAddComment()
       clearValue()
       reset({
         storageOption: 'Google Drive',
@@ -151,9 +154,7 @@ const Form = () => {
         onSubmit={handleFormSubmit}
       >
         {activeStep === 0 && <ComprehensiveClaimDetails />}
-        <Box sx={{ display: 'none' }}>
-          <FetchedData setFullName={setFullName} />
-        </Box>
+        {/* Removed FetchedData component since we're passing fullName via props */}
         {activeStep === 2 && <NoteText />}
         {activeStep === 1 && (
           <Typography sx={{ fontWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>
@@ -173,7 +174,7 @@ const Form = () => {
                 watch={watch}
                 errors={errors}
                 handleTextEditorChange={value => setValue('howKnow', value ?? '')}
-                fullName={fullName ?? ''}
+                fullName={fullName}
               />
             )}
             {activeStep === 3 && (
@@ -190,7 +191,7 @@ const Form = () => {
                 }
                 handleNext={handleNext}
                 handleBack={handleBack}
-                fullName={fullName ?? ''}
+                fullName={fullName}
               />
             )}
             {activeStep === 4 && (
@@ -198,12 +199,13 @@ const Form = () => {
                 watch={watch}
                 setValue={setValue}
                 errors={errors}
-                fullName={fullName ?? ''}
+                fullName={fullName}
               />
             )}
             {activeStep === 5 && (
               <DataPreview
                 formData={formData}
+                fullName={fullName}
                 handleNext={handleNext}
                 handleBack={handleBack}
                 handleSign={handleFormSubmit}
@@ -222,7 +224,7 @@ const Form = () => {
 
         <Buttons
           activeStep={activeStep}
-          maxSteps={textGuid(fullName ?? '').length}
+          maxSteps={textGuid(fullName).length}
           handleNext={handleNext}
           handleSign={handleFormSubmit}
           handleBack={handleBack}

@@ -11,10 +11,14 @@ import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDeta
 import DeclineRequest from '../DeclineRequest/DeclineRequest'
 import { useParams } from 'next/navigation'
 
-const Credential = ({ setactivStep }: { setactivStep: any }) => {
+interface CredentialProps {
+  setactivStep: (step: number) => void
+  fullName: string
+  email: string
+}
+
+const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }) => {
   const theme = useTheme()
-  const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
   const [showDeclineRequest, setShowDeclineRequest] = useState(false)
 
   const params = useParams()
@@ -26,10 +30,13 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
         : undefined
 
   if (!id) {
+    console.error('Error: Missing credential data.')
     return (
-      <div>
-        <h2>Error: Missing credential data.</h2>
-      </div>
+      <Box sx={{ padding: '20px', textAlign: 'center' }}>
+        <Typography variant='h6' color='error'>
+          Error: Missing credential data.
+        </Typography>
+      </Box>
     )
   }
   const handleClick = () => {
@@ -46,17 +53,6 @@ const Credential = ({ setactivStep }: { setactivStep: any }) => {
 
   if (showDeclineRequest) {
     return <DeclineRequest fullName={fullName} email={email} handleBack={handleBack} />
-  }
-
-  if (!id) {
-    console.error('Error: Missing credential data.')
-    return (
-      <Box sx={{ padding: '20px', textAlign: 'center' }}>
-        <Typography variant='h6' color='error'>
-          Error: Missing credential data.
-        </Typography>
-      </Box>
-    )
   }
 
   return (

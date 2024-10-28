@@ -8,6 +8,7 @@ import ComprehensiveClaimDetails from '../../../../test/[id]/ComprehensiveClaimD
 
 interface DataPreviewProps {
   formData: FormData
+  fullName: string
   handleNext: () => void
   handleBack: () => void
   handleSign: () => void
@@ -22,7 +23,7 @@ const cleanHTML = (htmlContent: string) => {
     .replace(/style="[^"]*"/g, '')
 }
 
-const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
+const DataPreview: React.FC<DataPreviewProps> = ({ formData, fullName }) => {
   return (
     <Container maxWidth='sm' sx={{ mt: 4, mb: 4 }}>
       <Typography
@@ -60,7 +61,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
                 position: 'relative'
               }}
             >
-              {formData.fullName} vouched for {'fetchedName'}.
+              {formData.fullName} vouched for {fullName}.
             </Typography>
           </Box>
         </Card>
@@ -139,6 +140,46 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
         </Card>
       )}
 
+      {/* Your Qualifications */}
+      {formData.qualifications && (
+        <Card
+          variant='outlined'
+          sx={{
+            p: '10px',
+            mb: '10px',
+            border: '1px solid #003fe0',
+            borderRadius: '10px'
+          }}
+        >
+          <Typography
+            variant='subtitle1'
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '15px',
+              letterSpacing: '0.01em',
+              mb: 1
+            }}
+          >
+            Your Qualifications
+          </Typography>
+          <Typography
+            variant='body2'
+            sx={{
+              fontSize: '15px',
+              lineHeight: '24px',
+              color: '#000e40',
+              letterSpacing: '0.01em'
+            }}
+          >
+            <span
+              dangerouslySetInnerHTML={{
+                __html: cleanHTML(formData.qualifications as string)
+              }}
+            />
+          </Typography>
+        </Card>
+      )}
+
       {/* Supporting Evidence */}
       {formData.portfolio &&
         formData.portfolio.filter(item => item.name || item.url).length > 0 && (
@@ -163,8 +204,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
             </Typography>
             {formData.portfolio
               .filter(item => item.name || item.url)
-              .map(item => (
-                <Box key={item.url} sx={{ mt: 1 }}>
+              .map((item, index) => (
+                <Box key={index} sx={{ mt: 1 }}>
                   {item.name && item.url ? (
                     <Link
                       href={item.url}
