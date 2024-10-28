@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { FormLabel, Autocomplete, TextField, Box } from '@mui/material'
 import {
   inputPropsStyles,
@@ -19,24 +19,21 @@ interface Step2Props {
   errors: FieldErrors<FormData>
 }
 
-// Example list of skills for auto-search
-const skillsList = [
-  'Software Developer',
-  'Project Manager',
-  'Data Analyst',
-  'Marketing Coordinator',
-  'Community Gardening Coordinator',
-  'UX/UI Designer',
-  'Product Manager',
-  'Financial Analyst'
-]
-
 export function Step2({
   register,
   watch,
   handleTextEditorChange,
   errors
 }: Readonly<Step2Props>) {
+  const [skillsList, setSkillsList] = useState<string[]>([])
+
+  useEffect(() => {
+    fetch('/skills.json')
+      .then(response => response.json())
+      .then(data => setSkillsList(data))
+      .catch(error => console.error('Error loading skills:', error))
+  }, [])
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <Box>
@@ -44,10 +41,14 @@ export function Step2({
           Skill Name <span style={formLabelSpanStyles}> *</span>
         </FormLabel>
 
-        {/* Autocomplete Component for Skill Name with Auto-Search */}
         <Autocomplete
           freeSolo
           options={skillsList}
+          filterOptions={(options, { inputValue }) =>
+            options
+              .filter(option => option.toLowerCase().includes(inputValue.toLowerCase()))
+              .slice(0, 10)
+          }
           renderInput={params => (
             <TextField
               {...params}
@@ -60,7 +61,7 @@ export function Step2({
               aria-labelledby='name-label'
               inputProps={{
                 ...params.inputProps,
-                'aria-label': 'weight',
+                'aria-label': 'Skill Name',
                 style: inputPropsStyles
               }}
               error={!!errors.credentialName}
@@ -86,7 +87,7 @@ export function Step2({
           sx={TextFieldStyles}
           aria-labelledby='duration-label'
           inputProps={{
-            'aria-label': 'weight',
+            'aria-label': 'Time Duration',
             style: inputPropsStyles
           }}
           error={!!errors.credentialDuration}
