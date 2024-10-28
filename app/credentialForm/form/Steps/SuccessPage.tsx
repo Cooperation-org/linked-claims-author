@@ -1,14 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Typography,
   TextField,
   InputAdornment,
   Box,
   Button,
-  Snackbar
+  Snackbar,
+  CircularProgress
 } from '@mui/material'
 import {
   SVGDate,
@@ -35,7 +36,6 @@ import {
   successPageCopyLinkStyles,
   successPageTextFieldStyles
 } from '../../../components/Styles/appStyles'
-import { options } from './Step0'
 import { useStepContext } from '../StepContext'
 
 interface SuccessPageProps {
@@ -59,7 +59,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   storageOption
 }) => {
   const { setActiveStep } = useStepContext()
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false)
   const theme = useTheme()
   const refLink = link ? RegExp(/\/d\/(.+?)\//).exec(link)?.[1] : ''
 
@@ -173,10 +173,14 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
               value={
                 fileId
                   ? `https://opencreds.net/view/${fileId}`
-                  : 'wait as your credentials is being processed...'
+                  : 'Wait as your credentials are being processed...'
               }
               InputProps={{
-                endAdornment: <InputAdornment position='start'></InputAdornment>,
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    {!fileId && <CircularProgress size={20} />}
+                  </InputAdornment>
+                ),
                 startAdornment: (
                   <InputAdornment position='start'>
                     <Box>
@@ -186,6 +190,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                             `https://opencreds.net/view/${fileId}`
                           )
                         }
+                        disabled={!fileId}
                       >
                         <CopySVG />
                       </Button>
@@ -220,42 +225,49 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             <ArrowRightSVG />
           </Box>
         </Box>
-        <Button
-          onClick={() => {
-            setActiveStep(0)
-            reset()
-          }}
-          variant='contained'
-          href={`/askforrecommendation/${refLink}`}
-          sx={{
-            borderRadius: '100px',
-            backgroundColor: '#003FE0',
-            textTransform: 'none',
-            fontFamily: 'Roboto, sans-serif',
-            boxShadow: '0px 0px 2px 2px #F7BC00'
-          }}
-          disabled={!link}
+
+        <Box
+          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}
         >
-          Ask for a Recommendation
-        </Button>
-        <Button
-          sx={{
-            color: theme.palette.t3TitleText,
-            textTransform: 'capitalize',
-            fontFamily: 'Roboto',
-            fontSize: '14px',
-            fontWeight: 600,
-            lineHeight: '20px'
-          }}
-          variant='text'
-          onClick={() => {
-            setActiveStep(0)
-            setLink('')
-            reset()
-          }}
-        >
-          Claim Another Skill
-        </Button>
+          <Button
+            onClick={() => {
+              window.location.href = `/askforrecommendation/${refLink}`
+            }}
+            variant='contained'
+            sx={{
+              borderRadius: '100px',
+              backgroundColor: '#003FE0',
+              textTransform: 'none',
+              fontFamily: 'Roboto, sans-serif',
+              boxShadow: '0px 0px 2px 2px #F7BC00',
+              width: '250px'
+            }}
+            disabled={!link}
+          >
+            Ask for a Recommendation
+          </Button>
+
+          <Button
+            sx={{
+              color: theme.palette.t3TitleText,
+              textTransform: 'capitalize',
+              fontFamily: 'Roboto',
+              fontSize: '14px',
+              fontWeight: 600,
+              lineHeight: '20px'
+            }}
+            variant='text'
+            onClick={() => {
+              setActiveStep(0)
+              setLink('')
+              setFileId('')
+              reset()
+            }}
+            disabled={false}
+          >
+            Claim Another Skill
+          </Button>
+        </Box>
 
         <Snackbar
           open={snackbarOpen}
