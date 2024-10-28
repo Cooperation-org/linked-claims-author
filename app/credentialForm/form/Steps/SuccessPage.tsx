@@ -61,7 +61,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = React.useState(false)
   const theme = useTheme()
-  const refLink = link ? RegExp(/\/d\/(.+?)\//).exec(link)?.[1] : ''
+  const refLink = fileId
 
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
@@ -80,26 +80,27 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   }
 
   const handleShare = (IconComponent: any) => {
+    const credentialLink = `https://opencreds.net/view/${fileId}`
     if (IconComponent === LinkedinSVG) {
       const linkedInUrl = generateLinkedInUrl()
       window.open(linkedInUrl, '_blank', 'noopener noreferrer')
     } else if (IconComponent === TwitterSVG) {
       const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-        link
+        credentialLink
       )}&text=Check out my new certification!`
       window.open(twitterUrl, '_blank', 'noopener noreferrer')
     } else if (IconComponent === MailSVG) {
       const mailUrl = `mailto:?subject=Check%20out%20my%20new%20certification&body=You%20can%20view%20my%20certification%20here:%20${encodeURIComponent(
-        link
+        credentialLink
       )}`
       window.location.href = mailUrl
     } else if (IconComponent === MessageCircleSVG) {
       const smsUrl = `sms:?&body=Check%20out%20my%20new%20certification:%20${encodeURIComponent(
-        link
+        credentialLink
       )}`
       window.location.href = smsUrl
     } else if (IconComponent === InstagramSVG) {
-      const instagramText = `Check out my new certification! ${link}`
+      const instagramText = `Check out my new certification! ${credentialLink}`
       copyFormValuesToClipboard(instagramText)
       setSnackbarOpen(true)
     }
