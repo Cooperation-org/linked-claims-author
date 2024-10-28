@@ -101,7 +101,7 @@ const ComprehensiveClaimDetails = () => {
       try {
         const content = await getContent(fileID)
         if (content) {
-          setClaimDetail(content)
+          setClaimDetail(content as any)
         }
 
         await fetchFileMetadata(fileID, '')
