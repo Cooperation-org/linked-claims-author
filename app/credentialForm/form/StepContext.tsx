@@ -7,7 +7,7 @@ interface StepContextType {
   setActiveStep: (step: number) => void
   handleNext: () => void
   handleBack: () => void
-  setUploadImageFn: (fn: () => Promise<void>) => void // Corrected type
+  setUploadImageFn: (fn: () => Promise<void>) => void
 }
 
 const StepContext = createContext<StepContextType>({
@@ -29,37 +29,46 @@ export const StepProvider = ({ children }: { children: any }) => {
   const getStepFromHash = () => {
     const hash = window.location.hash
     const step = Number(hash.replace('#step', ''))
-    return isNaN(step) ? 0 : step
+    return isNaN(step) ? null : step
   }
 
   useEffect(() => {
-    const savedStep = localStorage.getItem('activeStep')
-    const hashStep = getStepFromHash()
+    const updateActiveStep = () => {
+      const pathname = window.location.pathname
+      const hashStep = getStepFromHash()
+      const savedStep = localStorage.getItem('activeStep')
 
-    if (savedStep) {
-      setActiveStep(Number(savedStep))
+      if (pathname === '/' || pathname === '/claims') {
+        setActiveStep(0)
+      } else if (hashStep !== null) {
+        setActiveStep(hashStep)
+      } else if (savedStep) {
+        setActiveStep(Number(savedStep))
+      }
     }
 
-    if (hashStep !== null) {
-      setActiveStep(hashStep)
+    updateActiveStep()
+
+    const handleLocationChange = () => {
+      updateActiveStep()
     }
 
-    const handleHashChange = () => {
-      const step = getStepFromHash()
-      setActiveStep(step)
-    }
-
-    window.addEventListener('hashchange', handleHashChange)
+    window.addEventListener('popstate', handleLocationChange)
+    window.addEventListener('hashchange', handleLocationChange)
 
     return () => {
-      window.removeEventListener('hashchange', handleHashChange)
+      window.removeEventListener('popstate', handleLocationChange)
+      window.removeEventListener('hashchange', handleLocationChange)
     }
   }, [])
 
   // Update localStorage and URL hash when the active step changes
   useEffect(() => {
     localStorage.setItem('activeStep', String(activeStep))
-    window.location.hash = `#step${activeStep}`
+    const pathname = window.location.pathname
+    if (pathname !== '/' && pathname !== '/claims') {
+      window.location.hash = `#step${activeStep}`
+    }
   }, [activeStep])
 
   const handleNext = async () => {
