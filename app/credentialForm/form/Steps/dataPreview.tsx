@@ -106,7 +106,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, image }) => {
         </Typography>
         {formData.credentialDescription && (
           <Box sx={commonTypographyStyles}>
-            <span style={{ display: 'block' }}>Earning criteria:</span>
+            <span style={{ display: 'block' }}>What does that entail?:</span>
             <span
               dangerouslySetInnerHTML={{
                 __html: cleanHTML(formData.credentialDescription as any)

@@ -297,7 +297,7 @@ const ComprehensiveClaimDetails = () => {
 
               {achievement?.criteria?.narrative && (
                 <Box sx={{ mt: 2 }}>
-                  <Typography>Earning criteria:</Typography>
+                  <Typography>What does that entail?:</Typography>
                   <ul style={{ marginLeft: '25px' }}>
                     <li>
                       <span

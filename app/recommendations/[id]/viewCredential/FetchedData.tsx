@@ -135,7 +135,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
               )}
               {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative && (
                 <Box>
-                  <Typography>Earning criteria:</Typography>
+                  <Typography>What does that entail?:</Typography>
                   <ul style={{ marginLeft: '25px' }}>
                     <li>
                       {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(

@@ -194,7 +194,7 @@ const Page = () => {
             padding: { xs: '0 20px', md: '0 50px' }
           }}
         >
-          Building your story in the age of AI.
+          building your story in the world of skills-based hiring.
         </Typography>
         <Typography
           sx={{
