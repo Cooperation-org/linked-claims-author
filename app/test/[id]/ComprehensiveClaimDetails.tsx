@@ -155,7 +155,10 @@ const ComprehensiveClaimDetails = () => {
   }
 
   const credentialSubject = claimDetail.credentialSubject
-  console.log('🚀 ~ ComprehensiveClaimDetails ~ credentialSubject:', credentialSubject)
+  console.log(
+    '🚀 ~ ComprehensiveClaimDetails ~ credentialSubject:',
+    credentialSubject.evidenceLink
+  )
   const achievement = credentialSubject?.achievement[0]
 
   const hasValidEvidence =
@@ -179,18 +182,18 @@ const ComprehensiveClaimDetails = () => {
         {isAskForRecommendation && (
           <Box
             sx={{
-              width: achievement?.image?.id ? '30%' : '0',
-              marginRight: achievement?.image?.id ? '20px' : '15px',
+              width: credentialSubject.evidenceLink ? '30%' : '0',
+              marginRight: credentialSubject.evidenceLink ? '20px' : '15px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               overflow: 'hidden'
             }}
           >
-            {claimDetail?.credentialSubject?.evidenceLink ? (
+            {credentialSubject.evidenceLink ? (
               <Image
-                src={claimDetail?.credentialSubject?.evidenceLink}
-                alt='Achievement'
+                src={credentialSubject.evidenceLink}
+                alt='Achievement Evidence'
                 width={500}
                 height={300}
                 style={{ borderRadius: '10px', objectFit: 'cover' }}
@@ -254,7 +257,7 @@ const ComprehensiveClaimDetails = () => {
 
           {!isAskForRecommendation && (
             <>
-              {achievement?.image?.id && (
+              {credentialSubject.evidenceLink && (
                 <Box
                   sx={{
                     display: 'flex',
@@ -264,15 +267,12 @@ const ComprehensiveClaimDetails = () => {
                     justifyContent: 'center'
                   }}
                 >
-                  <img
-                    style={{
-                      borderRadius: '20px',
-                      width: isLargeScreen ? '179px' : '100%',
-                      height: 'auto',
-                      objectFit: 'cover'
-                    }}
-                    src={claimDetail?.credentialSubject?.evidenceLink}
+                  <Image
+                    src={credentialSubject.evidenceLink}
                     alt='Achievement Evidence'
+                    width={180}
+                    height={150}
+                    style={{ borderRadius: '10px', objectFit: 'cover' }}
                   />
                 </Box>
               )}
