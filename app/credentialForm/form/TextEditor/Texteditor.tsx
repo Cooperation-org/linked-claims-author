@@ -78,7 +78,7 @@ function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
         }}
         id='editor-label'
       >
-        Earning Criteria
+        What does that entail?
       </FormLabel>
       <Box className='text-editor-container' sx={{ borderRadius: '8px' }}>
         <ReactQuill
@@ -89,7 +89,7 @@ function TextEditor({ value, onChange }: Readonly<TextEditorProps>) {
           modules={modules}
           formats={formats}
           style={{ marginTop: '4px', borderRadius: '8px' }}
-          placeholder='e.g., Managed a local garden for 2 years, Organized weekly gardening workshops, Led a community clean-up initiative'
+          placeholder='e.g., Cared for the plants I was responsible for across their full growing season and interacted with customers who were looking for plants suitable for particular conditions in their gardens'
         />
       </Box>
     </Box>
