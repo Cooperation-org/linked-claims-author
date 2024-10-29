@@ -294,7 +294,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
                   {...register('lastName')}
                   sx={TextFieldStyles}
                   id='outlined-basic'
-                  label='Second Name'
+                  label='Last Name'
                   variant='outlined'
                 />
                 <TextField

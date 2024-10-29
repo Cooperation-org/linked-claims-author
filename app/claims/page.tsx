@@ -121,7 +121,7 @@ const ClaimsPage: React.FC = () => {
         sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 4 }}
         variant='h4'
       >
-        Previous Claims
+        My Skills
       </Typography>
       <List>
         {loading ? (
