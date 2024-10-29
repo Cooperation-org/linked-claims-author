@@ -34,7 +34,7 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
       authorization: {
         params: {
-          scope: 'openid email profile https://www.googleapis.com/auth/drive',
+          scope: 'openid email profile https://www.googleapis.com/auth/drive.file',
           access_type: 'offline',
           prompt: 'consent'
         }

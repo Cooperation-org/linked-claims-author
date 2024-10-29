@@ -16,8 +16,15 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "target": "ES2017"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/Assets/SVGs/index.jsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/Assets/SVGs/index.jsx"
+  ],
   "exclude": ["node_modules"]
 }

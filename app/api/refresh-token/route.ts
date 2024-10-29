@@ -22,8 +22,7 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
       authorization: {
         params: {
-          scope:
-            'openid email profile https://www.googleapis.com/auth/drive'
+          scope: 'openid email profile https://www.googleapis.com/auth/drive.file'
         }
       }
     })
@@ -46,8 +45,8 @@ const handler = NextAuth({
   },
   session: {
     strategy: 'jwt',
-    maxAge: 60 , // 7 days
-    updateAge: 60 * 60 * 24, // try one day
+    maxAge: 60, // 7 days
+    updateAge: 60 * 60 * 24 // try one day
   }
 })
 
