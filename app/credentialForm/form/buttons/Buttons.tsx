@@ -37,7 +37,7 @@ export function Buttons({
         justifyContent: activeStep !== 0 ? 'space-between' : 'center'
       }}
     >
-      {activeStep === 0 && (
+      {/* {activeStep === 0 && (
         <Button
           sx={{
             ...nextButtonStyle,
@@ -50,7 +50,7 @@ export function Buttons({
         >
           Next
         </Button>
-      )}
+      )} */}
       {activeStep !== 0 && (
         <>
           <Button sx={StyledButton} onClick={handleBack} color='secondary'>
