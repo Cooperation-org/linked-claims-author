@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   Typography,
@@ -19,28 +19,25 @@ import Link from 'next/link'
 interface SuccessPageProps {
   formData: FormData
   submittedFullName: string | null
+  fullName: string
+  email: string
   handleBack: () => void
-  link: string
 }
 
-const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
+const SuccessPage: React.FC<SuccessPageProps> = ({
+  submittedFullName,
+  fullName,
+  email,
+  handleBack
+}) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const [fetchedFullName, setFetchedFullName] = useState<string | null>(submittedFullName)
-  const [fullName, setFullName] = useState<string | null>(null)
-  const [email, setEmail] = useState<string | null>(null)
   const params = useParams()
   const id = params.id
 
-  useEffect(() => {
-    if (submittedFullName) {
-      setFetchedFullName(submittedFullName)
-    }
-  }, [submittedFullName])
-
-  // Construct the Google Drive link using the file ID
+  // Construct the link to the credential
   const link = `https://opencreds.net/view/${id}`
 
-  const message = fetchedFullName
+  const message = submittedFullName
     ? `Hi ${fullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
     : 'Loading...'
 
@@ -74,8 +71,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ submittedFullName }) => {
         </Box>
 
         <Typography sx={{ fontSize: '16px', letterSpacing: '0.01em', textAlign: 'left' }}>
-          Now let {fullName ?? 'loading...'} know that you’ve completed the
-          recommendation.
+          Now let {fullName} know that you’ve completed the recommendation.
         </Typography>
 
         <Box

@@ -34,15 +34,18 @@ const useGoogleDrive = () => {
       setStorage(storageInstance)
     }
   }, [accessToken])
+  const memoizedStorage = storage
 
   const getContent = useCallback(
-    async (fileID: string): Promise<ClaimDetail> => {
-      const file = await storage?.retrieve(fileID)
+    async (fileID: string): Promise<ClaimDetail | null> => {
+      if (!memoizedStorage) return null
+      const file = await memoizedStorage.retrieve(fileID)
       return file as ClaimDetail
     },
-    [storage]
+    [memoizedStorage]
   )
-  function extractGoogleDriveId(url: string) {
+
+  const extractGoogleDriveId = (url: string) => {
     const marker = '/file/d/'
     const startIndex = url.indexOf(marker)
 
@@ -59,61 +62,69 @@ const useGoogleDrive = () => {
     }
   }
   const getComments = useCallback(
-    async (fileID: string): Promise<ClaimDetail> => {
-      const file = await storage?.getFileComments(fileID)
-      const comments: any[] = []
-      await Promise.all(
-        file?.map(async (file: any) => {
-          const ID = extractGoogleDriveId(file.content)
-          const comment = await storage?.retrieve(ID as any)
-          if (comment) comments.push(comment)
-        }) ?? []
-      )
-      return comments as unknown as ClaimDetail
+    async (fileID: string): Promise<ClaimDetail[]> => {
+      if (!memoizedStorage) return []
+      const fileComments = await memoizedStorage.getFileComments(fileID)
+      const comments: ClaimDetail[] = []
+
+      if (fileComments) {
+        await Promise.all(
+          fileComments.map(async (fileComment: any) => {
+            const ID = extractGoogleDriveId(fileComment.content)
+            if (ID) {
+              const comment = await memoizedStorage.retrieve(ID)
+              if (comment) comments.push(comment as ClaimDetail)
+            }
+          })
+        )
+      }
+      return comments
     },
-    [storage]
+    [memoizedStorage]
   )
 
-  const fetchFileMetadata = async (fileID: string, resourceKey: string = '') => {
-    if (!fileID || !accessToken) {
-      console.error('FileId or Access token is missing or invalid')
-      return
-    }
-
-    try {
-      const response = await fetch(
-        `https://www.googleapis.com/drive/v3/files/${fileID}?fields=id,name,mimeType,owners&supportsAllDrives=true`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
-      )
-
-      if (response.ok) {
-        const metadata = await response.json()
-        console.log('Fetched Metadata:', metadata)
-
-        setFileMetadata(metadata)
-
-        if (metadata.owners && metadata.owners.length > 0) {
-          setOwnerEmail(metadata.owners[0].emailAddress)
-        }
-      } else {
-        console.error('Error fetching file metadata:', response.statusText)
+  const fetchFileMetadata = useCallback(
+    async (fileID: string, resourceKey: string = '') => {
+      if (!fileID || !accessToken) {
+        console.error('FileId or Access token is missing or invalid')
+        return
       }
-    } catch (error) {
-      console.error('Error fetching file metadata:', error)
-    }
-  }
+
+      try {
+        const response = await fetch(
+          `https://www.googleapis.com/drive/v3/files/${fileID}?fields=id,name,mimeType,owners&supportsAllDrives=true`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          }
+        )
+
+        if (response.ok) {
+          const metadata = await response.json()
+          setFileMetadata(metadata)
+
+          if (metadata.owners && metadata.owners.length > 0) {
+            setOwnerEmail(metadata.owners[0].emailAddress)
+          }
+        } else {
+          console.error('Error fetching file metadata:', response.statusText)
+        }
+      } catch (error) {
+        console.error('Error fetching file metadata:', error)
+      }
+    },
+    [accessToken]
+  )
 
   return {
     getContent,
     fetchFileMetadata,
     fileMetadata,
     ownerEmail,
-    getComments
+    getComments,
+    storage
   }
 }
 

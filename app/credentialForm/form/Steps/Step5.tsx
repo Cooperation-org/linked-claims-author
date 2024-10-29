@@ -1,29 +1,51 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Typography, Button } from '@mui/material'
 import { useDropzone } from 'react-dropzone'
 import { useStepContext } from '../StepContext'
+import useGoogleDrive from '../../../hooks/useGoogleDrive'
+import { uploadImageToGoogleDrive } from '@cooperation/vc-storage'
 
 interface Step5Props {
-  setImage: (imageUrl: string) => void
+  setImage: (selectedImage: string, imageUrl: string) => void
+  setUploadImageFn: (uploadImageFn: () => Promise<void>) => void
 }
 
-const Step5: React.FC<Step5Props> = ({ setImage }) => {
+const Step5: React.FC<Step5Props> = ({ setImage, setUploadImageFn }) => {
   const { handleNext } = useStepContext()
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const { storage } = useGoogleDrive()
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      if (acceptedFiles.length > 0) {
-        const file = acceptedFiles[0]
-        const imageUrl = URL.createObjectURL(file)
-        console.log(':  onDrop  imageUrl', imageUrl)
-        setImage(imageUrl)
-        setSelectedImage(imageUrl)
-      }
-    },
-    [setImage]
-  )
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
+  // Handle the drop event and set the image and file
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0]
+      const imageUrl = URL.createObjectURL(file)
+      console.log(':  onDrop  imageUrl', imageUrl)
+      setSelectedImage(imageUrl)
+      setSelectedFile(file) // Store the file for upload
+    }
+  }, [])
+
+  const uploadImage = useCallback(async () => {
+    if (!selectedFile) return
+
+    try {
+      // @ts-ignore
+      const uploadedImage = await uploadImageToGoogleDrive(storage, selectedFile)
+      // @ts-ignore
+      const dynamicUrl = `https://drive.google.com/uc?export=view&id=${uploadedImage.id}`
+      setImage(selectedImage as string, dynamicUrl)
+    } catch (error) {
+      console.error('Error uploading image:', error)
+    }
+  }, [selectedFile, setImage, storage])
+  useEffect(() => {
+    // @ts-ignore-next-line
+    setUploadImageFn(() => uploadImage) // Properly set the uploadImage function
+  }, [uploadImage, setUploadImageFn])
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -68,7 +90,6 @@ const Step5: React.FC<Step5Props> = ({ setImage }) => {
               }}
               color='primary'
             >
-              {' '}
               browse
             </Typography>
           </Typography>

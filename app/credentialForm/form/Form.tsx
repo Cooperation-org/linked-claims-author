@@ -31,7 +31,8 @@ import {
 import SuccessPage from './Steps/SuccessPage'
 
 const Form = ({ onStepChange }: any) => {
-  const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
+  const { activeStep, handleNext, handleBack, setActiveStep, setUploadImageFn, loading } =
+    useStepContext()
   const [prevStep, setPrevStep] = useState(0)
   const [link, setLink] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
@@ -43,6 +44,7 @@ const Form = ({ onStepChange }: any) => {
   const [openDialog, setOpenDialog] = useState(false)
   const [fileId, setFileId] = useState('')
   const [image, setImage] = useState('')
+
   const characterLimit = 294
   const maxSteps = textGuid.length
   const { data: session } = useSession()
@@ -320,10 +322,11 @@ const Form = ({ onStepChange }: any) => {
               <Slide in={true} direction={direction}>
                 <Box>
                   <Step5
-                    setImage={(imageUrl: string) => {
-                      setImage(imageUrl)
+                    setImage={(selectedImage: string, imageUrl: string) => {
+                      setImage(selectedImage)
                       setValue('evidenceLink', imageUrl)
                     }}
+                    setUploadImageFn={setUploadImageFn}
                   />
                 </Box>
               </Slide>
@@ -347,6 +350,7 @@ const Form = ({ onStepChange }: any) => {
                     setFileId={setFileId}
                     fileId={fileId}
                     storageOption={watch('storageOption')}
+                    selectedImage={image}
                   />
                 </Box>
               </Slide>
@@ -363,6 +367,7 @@ const Form = ({ onStepChange }: any) => {
             isValid={isValid}
             disabled0={disabled0}
             handleSaveSession={handleSaveSession}
+            loading={loading}
           />
         )}
         {errorMessage && (

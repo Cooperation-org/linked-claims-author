@@ -192,7 +192,12 @@ this is the link https://opencreds.net/recommendations/${params.id}`
               transform: 'translate(-50%, -50%)'
             }}
           >
-            <Image src={img3} alt='logo' style={{ width: '100px', height: '100px' }} />
+            <Image
+              src={img3}
+              priority
+              alt='logo'
+              style={{ width: '100px', height: '100px' }}
+            />
           </Box>
         </Box>
       </Box>
@@ -289,7 +294,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
                   {...register('lastName')}
                   sx={TextFieldStyles}
                   id='outlined-basic'
-                  label='Second Name'
+                  label='Last Name'
                   variant='outlined'
                 />
                 <TextField

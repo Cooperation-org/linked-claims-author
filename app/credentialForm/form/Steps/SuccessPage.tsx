@@ -1,14 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Typography,
   TextField,
   InputAdornment,
   Box,
   Button,
-  Snackbar
+  Snackbar,
+  CircularProgress
 } from '@mui/material'
 import {
   SVGDate,
@@ -35,7 +36,6 @@ import {
   successPageCopyLinkStyles,
   successPageTextFieldStyles
 } from '../../../components/Styles/appStyles'
-import { options } from './Step0'
 import { useStepContext } from '../StepContext'
 
 interface SuccessPageProps {
@@ -47,6 +47,7 @@ interface SuccessPageProps {
   setFileId: (link: string) => void
   storageOption: string
   fileId: string
+  selectedImage: string
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
@@ -56,12 +57,14 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   setLink,
   setFileId,
   fileId,
-  storageOption
+  storageOption,
+  selectedImage
 }) => {
+  console.log('🚀 ~ formData:', formData)
   const { setActiveStep } = useStepContext()
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false)
   const theme = useTheme()
-  const refLink = link ? RegExp(/\/d\/(.+?)\//).exec(link)?.[1] : ''
+  const refLink = fileId
 
   // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
@@ -80,26 +83,27 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   }
 
   const handleShare = (IconComponent: any) => {
+    const credentialLink = `https://opencreds.net/view/${fileId}`
     if (IconComponent === LinkedinSVG) {
       const linkedInUrl = generateLinkedInUrl()
       window.open(linkedInUrl, '_blank', 'noopener noreferrer')
     } else if (IconComponent === TwitterSVG) {
       const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-        link
+        credentialLink
       )}&text=Check out my new certification!`
       window.open(twitterUrl, '_blank', 'noopener noreferrer')
     } else if (IconComponent === MailSVG) {
       const mailUrl = `mailto:?subject=Check%20out%20my%20new%20certification&body=You%20can%20view%20my%20certification%20here:%20${encodeURIComponent(
-        link
+        credentialLink
       )}`
       window.location.href = mailUrl
     } else if (IconComponent === MessageCircleSVG) {
       const smsUrl = `sms:?&body=Check%20out%20my%20new%20certification:%20${encodeURIComponent(
-        link
+        credentialLink
       )}`
       window.location.href = smsUrl
     } else if (IconComponent === InstagramSVG) {
-      const instagramText = `Check out my new certification! ${link}`
+      const instagramText = `Check out my new certification! ${credentialLink}`
       copyFormValuesToClipboard(instagramText)
       setSnackbarOpen(true)
     }
@@ -137,7 +141,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                     width: '100px',
                     height: '100px'
                   }}
-                  src={formData.evidenceLink}
+                  src={selectedImage}
                   alt='Certification Evidence'
                 />
               </Box>
@@ -173,10 +177,14 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
               value={
                 fileId
                   ? `https://opencreds.net/view/${fileId}`
-                  : 'wait as your credentials is being processed...'
+                  : 'Wait as your credentials are being processed...'
               }
               InputProps={{
-                endAdornment: <InputAdornment position='start'></InputAdornment>,
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    {!fileId && <CircularProgress size={20} />}
+                  </InputAdornment>
+                ),
                 startAdornment: (
                   <InputAdornment position='start'>
                     <Box>
@@ -186,6 +194,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                             `https://opencreds.net/view/${fileId}`
                           )
                         }
+                        disabled={!fileId}
                       >
                         <CopySVG />
                       </Button>
@@ -220,42 +229,49 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             <ArrowRightSVG />
           </Box>
         </Box>
-        <Button
-          onClick={() => {
-            setActiveStep(0)
-            reset()
-          }}
-          variant='contained'
-          href={`/askforrecommendation/${refLink}`}
-          sx={{
-            borderRadius: '100px',
-            backgroundColor: '#003FE0',
-            textTransform: 'none',
-            fontFamily: 'Roboto, sans-serif',
-            boxShadow: '0px 0px 2px 2px #F7BC00'
-          }}
-          disabled={!link}
+
+        <Box
+          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}
         >
-          Ask for a Recommendation
-        </Button>
-        <Button
-          sx={{
-            color: theme.palette.t3TitleText,
-            textTransform: 'capitalize',
-            fontFamily: 'Roboto',
-            fontSize: '14px',
-            fontWeight: 600,
-            lineHeight: '20px'
-          }}
-          variant='text'
-          onClick={() => {
-            setActiveStep(0)
-            setLink('')
-            reset()
-          }}
-        >
-          Claim Another Skill
-        </Button>
+          <Button
+            onClick={() => {
+              window.location.href = `/askforrecommendation/${refLink}`
+            }}
+            variant='contained'
+            sx={{
+              borderRadius: '100px',
+              backgroundColor: '#003FE0',
+              textTransform: 'none',
+              fontFamily: 'Roboto, sans-serif',
+              boxShadow: '0px 0px 2px 2px #F7BC00',
+              width: '250px'
+            }}
+            disabled={!link}
+          >
+            Ask for a Recommendation
+          </Button>
+
+          <Button
+            sx={{
+              color: theme.palette.t3TitleText,
+              textTransform: 'capitalize',
+              fontFamily: 'Roboto',
+              fontSize: '14px',
+              fontWeight: 600,
+              lineHeight: '20px'
+            }}
+            variant='text'
+            onClick={() => {
+              setActiveStep(0)
+              setLink('')
+              setFileId('')
+              reset()
+            }}
+            disabled={false}
+          >
+            Claim Another Skill
+          </Button>
+        </Box>
 
         <Snackbar
           open={snackbarOpen}

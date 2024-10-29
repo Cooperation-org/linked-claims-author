@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Box, Button } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 import { nextButtonStyle, StyledButton } from '../../../components/Styles/appStyles'
 
 interface ButtonsProps {
@@ -13,6 +13,7 @@ interface ButtonsProps {
   isValid: boolean
   disabled0: boolean
   handleSaveSession: () => void
+  loading: boolean
 }
 
 export function Buttons({
@@ -23,7 +24,8 @@ export function Buttons({
   maxSteps,
   isValid,
   disabled0,
-  handleSaveSession
+  handleSaveSession,
+  loading
 }: Readonly<ButtonsProps>) {
   return (
     <Box
@@ -82,10 +84,16 @@ export function Buttons({
         <Button
           sx={nextButtonStyle}
           onClick={handleNext}
-          disabled={activeStep === maxSteps - 1}
+          disabled={loading} // Disable button during loading
           color='primary'
         >
-          Preview
+          {loading ? (
+            <>
+              <CircularProgress size={20} sx={{ mr: 1 }} /> Uploading...
+            </>
+          ) : (
+            'Preview'
+          )}
         </Button>
       )}
     </Box>
