@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import { SVGBadge } from '../../Assets/SVGs'
 
 const Card = ({ text, color, rotation }: any) => (
   <Box
@@ -19,8 +19,8 @@ const Card = ({ text, color, rotation }: any) => (
       zIndex: 1
     }}
   >
-    <CheckCircleIcon sx={{ color: color, marginRight: '8px' }} />
-    <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+    <SVGBadge />
+    <Typography variant='h6' sx={{ fontWeight: 'bold', ml: '8px' }}>
       {text}
     </Typography>
   </Box>
@@ -28,15 +28,15 @@ const Card = ({ text, color, rotation }: any) => (
 
 const OverlappingCards = () => {
   return (
-    <Box sx={{ position: 'relative', padding: '90px', right: '50px' }}>
+    <Box sx={{ position: 'relative', padding: '90px', right: '80px' }}>
       <Box sx={{ position: 'absolute', top: 0, left: 0, zIndex: 3 }}>
-        <Card text='Barista Training' color='#14B8A6' rotation={-7} />
+        <Card text='Barista Training' color='#14B8A6' rotation={-4.8} />
       </Box>
       <Box sx={{ position: 'absolute', top: 60, left: 0, zIndex: 2 }}>
-        <Card text='Cashier' color='#FB8C00' rotation={-1} />
+        <Card text='Cashier' color='#FB8C00' rotation={0} />
       </Box>
       <Box sx={{ position: 'absolute', top: 120, left: 0, zIndex: 1 }}>
-        <Card text='Team Leader' color='#8E24AA' rotation={7} />
+        <Card text='Team Leader' color='#8E24AA' rotation={4.993} />
       </Box>
     </Box>
   )

@@ -4,6 +4,7 @@ import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { SVGCheckMarks } from './Assets/SVGs'
 import OverlappingCards from './components/OverLappingCards/OverLappingCards'
+import background from './Assets/Images/backgound.jpeg'
 
 import Link from 'next/link'
 
@@ -24,7 +25,11 @@ const Page = () => {
         flexDirection: 'column',
         gap: '37px',
         alignItems: 'center',
-        pt: '37px'
+        pt: '37px',
+        backgroundImage: `url(${background.src})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
       }}
     >
       {/* Header Component */}
@@ -32,18 +37,18 @@ const Page = () => {
         sx={{
           alignItems: 'center',
           width: { xs: '92.308vw', md: '712px' },
-          mb: '20px'
+          ml: '10px'
         }}
       >
         <Typography
           sx={{
-            color: theme.palette.t3DarkSlateBlue,
+            color: '#000',
             fontFamily: 'Poppins',
             fontSize: { xs: '24px', md: '50px' },
             fontWeight: 700,
             lineHeight: '110%',
-            textAlign: 'left'
-
+            textAlign: 'left',
+            width: { xs: '360px', md: '720px' }
           }}
         >
           Capture your life highlights, add proof & unlock new opportunities.{' '}
@@ -64,7 +69,7 @@ const Page = () => {
         <Link href='/credentialForm'>
           <Button
             sx={{
-              width: '300px',
+              width: '360px',
               height: '40px',
               fontFamily: 'Lato',
               fontSize: '16px',
