@@ -23,12 +23,22 @@ export default function RootLayout({
         <Head>
           <script src='https://accounts.google.com/gsi/client' async defer></script>
         </Head>
-        <body>
+        <body
+          style={{
+            margin: 0,
+            padding: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh'
+          }}
+        >
           <Providers>
             <StepProvider>
               <NavBar />
               <Box
+                component='main'
                 sx={{
+                  flexGrow: 1,
                   minHeight: {
                     xs: 'calc(100vh - 190px)',
                     md: 'calc(100vh - 381px)'
