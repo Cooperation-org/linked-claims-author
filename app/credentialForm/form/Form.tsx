@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FormControl, Box, Slide } from '@mui/material'
 import { FormData } from './types/Types'
-import { options, Step0 } from './Steps/Step0'
+import { Step0 } from './Steps/Step0_connectToGoogle'
 import { Buttons } from './buttons/Buttons'
 import { Step1 } from './Steps/Step1'
 import { Step2 } from './Steps/Step2'
@@ -89,8 +89,7 @@ const Form = ({ onStepChange }: any) => {
 
   const handleFetchinguserSessions = async () => {
     try {
-      const storageOption = watch('storageOption')
-      if (!storageOption || !accessToken) return
+      if (!accessToken) return
       const sessionFiles = await storage.getAllFilesByType('SESSIONs')
       if (!sessionFiles || sessionFiles.length === 0) return
       console.log('userSessions', sessionFiles)
@@ -106,7 +105,6 @@ const Form = ({ onStepChange }: any) => {
 
   const handleuserSessionselect = (session: any) => {
     // Set the selected session values into the form
-    setValue('storageOption', session.storageOption)
     setValue('fullName', session.fullName)
     setValue('persons', session.persons)
     setValue('credentialName', session.credentialName)
@@ -152,11 +150,7 @@ const Form = ({ onStepChange }: any) => {
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
-      if (
-        data.storageOption === options.GoogleDrive ||
-        data.storageOption === options.DigitalWallet
-      )
-        await sign(data)
+      await sign(data)
     } catch (error: any) {
       if (error.message === 'MetaMask address could not be retrieved') {
         setErrorMessage('Please make sure you have MetaMask installed and connected.')
@@ -175,13 +169,7 @@ const Form = ({ onStepChange }: any) => {
         return
       }
 
-      let newDid
-      if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(metamaskAdress, accessToken)
-      } else {
-        newDid = await createDID(accessToken)
-      }
-      const { didDocument, keyPair, issuerId } = newDid
+      const { didDocument, keyPair, issuerId } = await createDID(accessToken)
 
       const saveResponse = await saveToGoogleDrive(
         storage,
@@ -256,14 +244,7 @@ const Form = ({ onStepChange }: any) => {
             {activeStep === 0 && (
               <Slide in={true} direction={direction} timeout={500}>
                 <Box>
-                  <Step0
-                    activeStep={activeStep}
-                    watch={watch}
-                    setValue={setValue}
-                    setMetaMaskAddres={setMetamaskAdress}
-                    setErrorMessage={setErrorMessage}
-                    setDisabled0={setDisabled0}
-                  />
+                  <Step0 />
                 </Box>
               </Slide>
             )}
