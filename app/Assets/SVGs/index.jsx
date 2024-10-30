@@ -1425,3 +1425,109 @@ export const Logo = () => {
     </Box>
   )
 }
+
+export const FileUploadIcon = () => {
+  return (
+    <Box>
+      <svg
+        width='71'
+        height='53'
+        viewBox='0 0 71 53'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+      >
+        <path
+          d='M6.55172 9.24547L17.7131 7.38524V41.2377L12.8018 42.2717C9.51306 42.964 6.29705 40.8203 5.67081 37.5184L1.64319 16.2818C1.01599 12.9748 3.23148 9.79884 6.55172 9.24547Z'
+          stroke='#2563EB'
+          stroke-width='2'
+        />
+        <path
+          d='M64.4483 9.24547L53.2869 7.38524V41.2377L58.1982 42.2717C61.4869 42.964 64.703 40.8203 65.3292 37.5184L69.3568 16.2818C69.984 12.9748 67.7685 9.79884 64.4483 9.24547Z'
+          stroke='#2563EB'
+          stroke-width='2'
+        />
+        <g filter='url(#filter0_dd_6125_881)'>
+          <rect
+            x='17.5664'
+            y='1.5'
+            width='35.8689'
+            height='42.7541'
+            rx='5'
+            stroke='#2563EB'
+            stroke-width='2'
+            shape-rendering='crispEdges'
+          />
+        </g>
+        <path
+          d='M48.4353 44.2541H22.5664C19.805 44.2541 17.5664 42.0155 17.5664 39.2541L17.5664 35.793L29.9732 22.6451L39.4834 33.5891C40.2841 34.5105 41.7162 34.5059 42.511 33.5794L47.7464 27.4765L53.4353 33.5978V39.2541C53.4353 42.0155 51.1967 44.2541 48.4353 44.2541Z'
+          fill='#EFF6FF'
+          stroke='#2563EB'
+          stroke-width='2'
+        />
+        <circle
+          cx='40.0897'
+          cy='14.8443'
+          r='4.16393'
+          fill='#EFF6FF'
+          stroke='#2563EB'
+          stroke-width='2'
+        />
+        <defs>
+          <filter
+            id='filter0_dd_6125_881'
+            x='13.5664'
+            y='0.5'
+            width='43.8691'
+            height='51.7541'
+            filterUnits='userSpaceOnUse'
+            color-interpolation-filters='sRGB'
+          >
+            <feFlood flood-opacity='0' result='BackgroundImageFix' />
+            <feColorMatrix
+              in='SourceAlpha'
+              type='matrix'
+              values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0'
+              result='hardAlpha'
+            />
+            <feOffset dy='2' />
+            <feGaussianBlur stdDeviation='1' />
+            <feComposite in2='hardAlpha' operator='out' />
+            <feColorMatrix
+              type='matrix'
+              values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'
+            />
+            <feBlend
+              mode='normal'
+              in2='BackgroundImageFix'
+              result='effect1_dropShadow_6125_881'
+            />
+            <feColorMatrix
+              in='SourceAlpha'
+              type='matrix'
+              values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0'
+              result='hardAlpha'
+            />
+            <feOffset dy='4' />
+            <feGaussianBlur stdDeviation='1.5' />
+            <feComposite in2='hardAlpha' operator='out' />
+            <feColorMatrix
+              type='matrix'
+              values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0'
+            />
+            <feBlend
+              mode='normal'
+              in2='effect1_dropShadow_6125_881'
+              result='effect2_dropShadow_6125_881'
+            />
+            <feBlend
+              mode='normal'
+              in='SourceGraphic'
+              in2='effect2_dropShadow_6125_881'
+              result='shape'
+            />
+          </filter>
+        </defs>
+      </svg>
+    </Box>
+  )
+}

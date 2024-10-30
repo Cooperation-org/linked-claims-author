@@ -10,11 +10,11 @@ import { Buttons } from './buttons/Buttons'
 import { Step1 } from './Steps/Step1'
 import { Step2 } from './Steps/Step2'
 import { Step3 } from './Steps/Step3'
-import { Step4 } from './Steps/Step4'
+import Step4 from './Steps/Step3_uploadEvidence'
 import Step5 from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 
-import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
+import { createDID, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { useSession, signIn } from 'next-auth/react'
 import { handleSign } from '../../utils/formUtils'
@@ -37,7 +37,6 @@ const Form = ({ onStepChange }: any) => {
   const [link, setLink] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
-  const [metamaskAdress, setMetamaskAdress] = useState<string>('')
   const [disabled0, setDisabled0] = useState(false)
   const [snackMessage, setSnackMessage] = useState('')
   const [userSessions, setUserSessions] = useState<{}[]>([])
@@ -290,18 +289,23 @@ const Form = ({ onStepChange }: any) => {
             {activeStep === 4 && (
               <Slide in={true} direction={direction}>
                 <Box>
-                  <Step4
+                  {/* <Step4
                     register={register}
                     fields={fields}
                     append={append}
                     handleNext={handleNext}
                     errors={errors}
                     remove={remove}
+                  /> */}
+                  <Step4
+                    setValue={setValue}
+                    watch={watch}
+                    setUploadImageFn={setUploadImageFn}
                   />
                 </Box>
               </Slide>
             )}
-            {activeStep === 5 && (
+            {/* {activeStep === 5 && (
               <Slide in={true} direction={direction}>
                 <Box>
                   <Step5
@@ -313,7 +317,7 @@ const Form = ({ onStepChange }: any) => {
                   />
                 </Box>
               </Slide>
-            )}
+            )} */}
             {activeStep === 6 && (
               <Slide in={true} direction={direction}>
                 <Box>
