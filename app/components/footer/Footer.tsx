@@ -44,8 +44,11 @@ const Footer = () => {
       <Box
         sx={{
           display: 'flex',
-          gap: '28px',
-          justifyContent: 'center'
+          width: '100%',
+          justifyContent: { xs: 'center', md: 'space-between' },
+          px: { xs: 2, md: 4 },
+          gap: { xs: 3, md: 0 },
+          alignItems: 'center'
         }}
       >
         <Typography
@@ -58,7 +61,7 @@ const Footer = () => {
         >
           Copyright, LinkedClaims, 2024
         </Typography>
-        <Link href={'/PrivacyPolicy'} target='_blank'>
+        <Link href={'/privacy'}>
           <Typography
             sx={{
               color: theme.palette.t3LightGray,
