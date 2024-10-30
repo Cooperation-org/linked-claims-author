@@ -81,18 +81,6 @@ const Page = () => {
             Get Started
           </Button>
         </Link>
-        <Link href='/claims'>
-          <Button
-            sx={{
-              fontSize: '1.1rem',
-              color: theme.palette.t3ButtonBlue,
-              mt: 1,
-              textTransform: 'capitalize'
-            }}
-          >
-            View Your Achievements
-          </Button>
-        </Link>
       </Box>
 
       <Box
