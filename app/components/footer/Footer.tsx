@@ -55,7 +55,7 @@ const Footer = () => {
           sx={{
             color: theme.palette.t3LightGray,
             fontFamily: 'Lato',
-            fontSize: '14px',
+            fontSize: '13px',
             fontWeight: 400
           }}
         >
@@ -66,7 +66,7 @@ const Footer = () => {
             sx={{
               color: theme.palette.t3LightGray,
               fontFamily: 'Lato',
-              fontSize: '14px',
+              fontSize: '13px',
               fontWeight: 400,
               textDecoration: 'underline',
               cursor: 'pointer'
