@@ -40,8 +40,8 @@ const PrivacyPolicy = () => {
       </Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
         We do not collect any personal information. Any data or documents created by this
-        application are kept solely in storage under the user's control, such as their own
-        Google Drives.
+        application are kept solely in storage under the user&apos;s control, such as
+        their own Google Drives.
       </Typography>
 
       <Typography sx={{ fontWeight: 600, mt: 2 }}>Additional Information</Typography>
