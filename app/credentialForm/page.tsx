@@ -79,40 +79,6 @@ const FormComponent = () => {
         </Box>
       </Box>
       <DynamicForm onStepChange={handleScrollToTop} />
-      {!isLargeScreen && (
-        <Box
-          sx={{
-            mt: '30px',
-            width: '100%',
-            height: '114px',
-            bgcolor: theme.palette.t3LightBlue,
-            p: '28px 70px 28px 50px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px'
-          }}
-        >
-          <Box>
-            <Image src={fram} alt='fram' />
-          </Box>
-          <Box>
-            <Typography
-              sx={{
-                width: '200px',
-                color: theme.palette.t3BodyText,
-                fontFamily: 'Lato',
-                fontSize: '18px',
-                fontStyle: 'normal',
-                fontWeight: 400,
-                lineHeight: 'normal'
-              }}
-            >
-              Learn how this data is used & protected.
-              <Image style={{ marginLeft: '10px' }} src={vector} alt='logo' />
-            </Typography>
-          </Box>
-        </Box>
-      )}
     </Box>
   )
 }
