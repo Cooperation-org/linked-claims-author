@@ -28,7 +28,7 @@ const Footer = () => {
           mb: 3
         }}
       >
-        <ShieldIcon sx={{ color: theme.palette.t3LightGray, fontSize: 32 }} />{' '}
+        <ShieldIcon />
         <Typography
           sx={{
             color: theme.palette.t3LightGray,
