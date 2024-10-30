@@ -43,6 +43,7 @@ const Page = () => {
             fontWeight: 700,
             lineHeight: '110%',
             textAlign: 'left'
+
           }}
         >
           Capture your life highlights, add proof & unlock new opportunities.{' '}

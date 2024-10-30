@@ -77,11 +77,11 @@ export function Step2({
 
       <Box>
         <FormLabel sx={formLabelStyles} id='duration-label'>
-          Time it took to acquire this skill
+          How did you learn to do the skill
         </FormLabel>
         <TextField
           {...register('credentialDuration')}
-          placeholder='1 Day'
+          placeholder='1 Day” with “I learned these skills through working at a community garden for 2 years, under the head gardener Maria Hernandez'
           variant='outlined'
           sx={TextFieldStyles}
           aria-labelledby='duration-label'
