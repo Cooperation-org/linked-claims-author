@@ -1253,7 +1253,8 @@ export const TwoPhonesDesktopSVG = () => {
       </svg>
     </Box>
   )
-}export const ShieldIcon = () => {
+}
+export const ShieldIcon = () => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <svg
@@ -1391,4 +1392,3 @@ export const Logo = () => {
     </Box>
   )
 }
-
