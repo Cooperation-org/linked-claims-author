@@ -1,7 +1,8 @@
 import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import { Box, Typography } from '@mui/material'
-import { InstagramSVG, TwitterSVG, LinkedinSVG } from '../../Assets/SVGs'
+import { ShieldIcon } from '../../Assets/SVGs'
+import Link from 'next/link'
 
 const Footer = () => {
   const theme = useTheme()
@@ -10,57 +11,70 @@ const Footer = () => {
     <Box
       sx={{
         width: '100%',
-        height: { xs: '129px', md: '295px' },
-        minHeight: { xs: '129px', md: '129px' },
-        bgcolor: theme.palette.t3BodyText,
+        minHeight: '154px',
+        bgcolor: '#252C41',
         display: 'flex',
-        alignItems: 'flex-end',
-        alignContent: 'flex-end'
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        p: 2
       }}
     >
       <Box
         sx={{
-          width: '347px',
-          height: '76px',
           display: 'flex',
-          alignItems: 'flex-end',
-          alignContent: 'flex-end',
-          gap: '19px',
-          flexWrap: 'wrap',
-          ml: { xs: '22px', md: '52px' },
-          mt: { xs: '29px', md: 'auto' },
-          mb: { xs: '24px', md: '24px' }
+          alignItems: 'center',
+          gap: 2,
+          mb: 3
         }}
       >
-        <Box sx={{ display: 'flex', gap: '28px' }}>
+        <ShieldIcon />
+        <Typography
+          sx={{
+            color: theme.palette.t3LightGray,
+            fontFamily: 'Lato',
+            fontSize: '18px',
+            fontWeight: 400,
+            letterSpacing: '-0.15px'
+          }}
+        >
+          100% data privacy - no tracking, you own your data forever.
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: { xs: 'center', md: 'space-between' },
+          px: { xs: 2, md: 4 },
+          gap: { xs: 3, md: 0 },
+          alignItems: 'center'
+        }}
+      >
+        <Typography
+          sx={{
+            color: theme.palette.t3LightGray,
+            fontFamily: 'Lato',
+            fontSize: '13px',
+            fontWeight: 400
+          }}
+        >
+          Copyright, LinkedClaims, 2024
+        </Typography>
+        <Link href={'/privacy'}>
           <Typography
             sx={{
               color: theme.palette.t3LightGray,
               fontFamily: 'Lato',
-              fontSize: '14px',
-              fontStyle: 'normal',
+              fontSize: '13px',
               fontWeight: 400,
-              lineHeight: 'normal',
-              letterSpacing: '-0.14px'
+              textDecoration: 'underline',
+              cursor: 'pointer'
             }}
           >
-            Copyright, LinkedClaims, 2024
+            Data & Privacy Policy
           </Typography>
-          <Typography
-            sx={{
-              color: theme.palette.t3LightGray,
-              fontFamily: 'Lato',
-              fontSize: '14px',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              lineHeight: 'normal',
-              letterSpacing: '-0.14px',
-              textDecorationLine: 'underline'
-            }}
-          >
-            Data <span>&</span> Privacy Policy
-          </Typography>
-        </Box>
+        </Link>
       </Box>
     </Box>
   )
