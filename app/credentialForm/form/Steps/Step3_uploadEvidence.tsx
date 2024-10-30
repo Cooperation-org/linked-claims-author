@@ -157,7 +157,7 @@ export default function FileUploadAndList({
       // Set the remaining files in the portfolio
       const portfolioFiles = files.slice(1).map(file => ({
         name: file.name,
-        url: file.urlgoogle page
+        url: file.url
       }))
       setValue('portfolio', portfolioFiles)
 
