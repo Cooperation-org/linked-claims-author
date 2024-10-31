@@ -93,11 +93,13 @@ export default function FileUploadAndList({
     try {
       if (selectedFiles.length === 0) return
 
+      // Identify files that haven't been uploaded
       const filesToUpload = selectedFiles.filter(
         fileItem => !fileItem.uploaded && fileItem.file && fileItem.name
       )
-      if (filesToUpload.length === 0) return
+      if (filesToUpload.length === 0) return // Exit if no new files
 
+      // Upload each file
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (fileItem, index) => {
           const uploadedFile = await uploadImageToGoogleDrive(
@@ -108,14 +110,17 @@ export default function FileUploadAndList({
             ...fileItem,
             googleId: uploadedFile.id,
             uploaded: true,
-            isFeatured: index === 0
+            isFeatured: index === 0 && !watch('evidenceLink') // First file as featured if no evidence link exists
           }
         })
       )
 
+      // Find the featured and non-featured files among the uploaded files
       const featuredFile = uploadedFiles.find(file => file.isFeatured)
       const nonFeaturedFiles = uploadedFiles.filter(file => !file.isFeatured)
+      console.log('🚀 ~ handleUpload ~ nonFeaturedFiles:', nonFeaturedFiles)
 
+      // Update `evidenceLink` if there is a featured file
       if (featuredFile) {
         setValue(
           'evidenceLink',
@@ -123,15 +128,22 @@ export default function FileUploadAndList({
         )
       }
 
+      // Ensure the existing portfolio is preserved in `portfolio`
       const currentPortfolio = Array.isArray(watch('portfolio')) ? watch('portfolio') : []
+      console.log('🚀 ~ handleUpload ~ currentPortfolio:', currentPortfolio)
+
+      // Append only non-featured uploaded files to `portfolio`
       const newPortfolioEntries = nonFeaturedFiles.map(file => ({
         name: file.name,
         url: `https://drive.google.com/uc?export=view&id=${file.googleId}`,
         googleId: file.googleId
       }))
+      console.log('🚀 ~ newPortfolioEntries ~ newPortfolioEntries:', newPortfolioEntries)
 
+      // Update the form portfolio with current entries plus any new non-featured entries
       setValue('portfolio', [...currentPortfolio, ...newPortfolioEntries])
 
+      // Update selectedFiles to mark these as uploaded and assign Google Drive IDs
       setSelectedFiles(
         selectedFiles.map(file => {
           const uploadedFile = uploadedFiles.find(f => f.name === file.name)
