@@ -41,8 +41,7 @@ export default function RootLayout({
                   flexGrow: 1,
                   mt: { xs: '24px', md: '29px' },
                   minHeight: {
-                    xs: 'calc(100vh - 190px)',
-                    md: 'calc(100vh - 381px)'
+                    calc: 'calc(100vh - 155px)'
                   }
                 }}
               >
