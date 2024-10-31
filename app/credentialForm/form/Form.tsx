@@ -251,7 +251,13 @@ const Form = ({ onStepChange }: any) => {
           activeStep !== 4 &&
           activeStep !== 5 && <NoteText />}
         {/* {activeStep === 7 && <SuccessText />} */}
-        <Box sx={{ width: { xs: '100%', md: '50%' }, minWidth: { md: '400px' } }}>
+        <Box
+          sx={{
+            width: { xs: '100%', md: '50%' },
+            minWidth: { md: '400px' },
+            maxWidth: { md: '720px' }
+          }}
+        >
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 0 && (
               <Slide in={true} direction={direction} timeout={500}>

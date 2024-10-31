@@ -2,7 +2,15 @@
 'use client'
 
 import React from 'react'
-import { Typography, Box, Button, Snackbar } from '@mui/material'
+import {
+  Typography,
+  Box,
+  Button,
+  Snackbar,
+  useMediaQuery,
+  useTheme,
+  Stack
+} from '@mui/material'
 import {
   GlobalSVG,
   HeartSVG,
@@ -41,6 +49,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = React.useState(false)
   const refLink = fileId
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const generateLinkedInUrl = () => {
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
@@ -77,22 +87,36 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     <Box
       sx={{
         display: 'flex',
-        maxWidth: '390px',
+        maxWidth: isMobile ? '100%' : '720px',
         width: '100%',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        mx: 'auto',
-        px: 2
+        mx: 'auto'
       }}
     >
+      {!isMobile && (
+        <Button
+          onClick={() => setActiveStep(0)}
+          sx={{
+            alignSelf: 'flex-start',
+            color: '#003FE0',
+            textTransform: 'none',
+            mb: 2
+          }}
+        >
+          &lt; Back
+        </Button>
+      )}
+
       <Box
         sx={{
           display: 'flex',
           width: '100%',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'flex-start'
+          justifyContent: 'flex-start',
+          maxWidth: '660px'
         }}
       >
         <Box
@@ -100,8 +124,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             aspectRatio: '1',
             objectFit: 'contain',
             objectPosition: 'center',
-            width: '100px',
-            maxWidth: '100%'
+            width: isMobile ? '80px' : '100px',
+            maxWidth: '98%'
           }}
         >
           <GlobalSVG />
@@ -109,12 +133,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         <Typography
           sx={{
             marginTop: '32px',
-            width: '120px',
-            maxWidth: '100%',
             color: '#202E5B',
             textAlign: 'center',
             fontWeight: 700,
-            fontSize: '32px',
+            fontSize: isMobile ? '24px' : '32px',
             fontFamily: 'Lato, sans-serif'
           }}
         >
@@ -162,6 +184,17 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             {formData?.credentialName}
           </Typography>
         </Box>
+
+        <Button
+          onClick={() => handleShareOption('CopyURL')}
+          sx={{
+            ...buttonStyles,
+            mt: '15px'
+          }}
+        >
+          <NewCopy />
+          Copy URL
+        </Button>
       </Box>
 
       <Box
@@ -186,34 +219,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           onClick={() => {
             window.location.href = `/askforrecommendation/${refLink}`
           }}
-          sx={{
-            display: 'flex',
-            width: '100%',
-            flexDirection: 'row',
-            alignItems: 'center',
-            color: '#000',
-            letterSpacing: '0.08px',
-            justifyContent: 'flex-start',
-            padding: '15px',
-            fontWeight: 700,
-            fontSize: '16px',
-            fontFamily: 'Inter, sans-serif',
-            borderRadius: '10px',
-            backgroundColor: '#FFFFFF',
-            border: '3px solid #14B8A6',
-            textTransform: 'none',
-            mt: '10px'
-          }}
+          sx={buttonStyles}
         >
           <HeartSVG />
-          <Typography
-            sx={{
-              flex: 1,
-              color: '#000'
-            }}
-          >
-            Ask for a recommendation
-          </Typography>
+          Ask for a recommendation
         </Button>
       </Box>
 
@@ -223,7 +232,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'flex-start'
+          justifyContent: 'flex-start',
+          gap: '15px'
         }}
       >
         <Typography
@@ -240,118 +250,44 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           Make your skills work for you:
         </Typography>
 
-        <Box sx={{ width: '100%' }}>
-          <Button
-            onClick={() => handleShareOption('LinkedIn')}
-            sx={{
-              display: 'flex',
-              width: '100%',
-              flexDirection: 'row',
-              alignItems: 'center',
-              color: '#000',
-              letterSpacing: '0.08px',
-              justifyContent: 'flex-start',
-              padding: '15px',
-              fontWeight: 700,
-              fontSize: '16px',
-              fontFamily: 'Inter, sans-serif',
-              borderRadius: '10px',
-              backgroundColor: '#FFFFFF',
-              border: '3px solid #14B8A6',
-              textTransform: 'none',
-              mt: '10px'
-            }}
-          >
-            <NewLinkedin />
-            <Typography
-              sx={{
-                flex: 1,
-                color: '#000'
-              }}
-            >
-              Share to LinkedIn
-            </Typography>
-          </Button>
-
-          <Button
-            onClick={() => handleShareOption('Email')}
-            sx={{
-              display: 'flex',
-              width: '100%',
-              flexDirection: 'row',
-              alignItems: 'center',
-              color: '#000',
-              letterSpacing: '0.08px',
-              justifyContent: 'flex-start',
-              padding: '15px',
-              fontWeight: 700,
-              fontSize: '16px',
-              fontFamily: 'Inter, sans-serif',
-              borderRadius: '10px',
-              backgroundColor: '#FFFFFF',
-              border: '3px solid #14B8A6',
-              textTransform: 'none',
-              mt: '10px'
-            }}
-          >
-            <NewEmail />
-            <Typography
-              sx={{
-                flex: 1,
-                color: '#000'
-              }}
-            >
-              Share via Email
-            </Typography>
-          </Button>
-
-          <Button
-            onClick={() => handleShareOption('CopyURL')}
-            sx={{
-              display: 'flex',
-              width: '100%',
-              flexDirection: 'row',
-              alignItems: 'center',
-              color: '#000',
-              letterSpacing: '0.08px',
-              justifyContent: 'flex-start',
-              padding: '15px',
-              fontWeight: 700,
-              fontSize: '16px',
-              fontFamily: 'Inter, sans-serif',
-              borderRadius: '10px',
-              backgroundColor: '#FFFFFF',
-              border: '3px solid #14B8A6',
-              textTransform: 'none',
-              mt: '10px'
-            }}
-          >
-            <NewCopy />
-            <Typography
-              sx={{
-                flex: 1,
-                color: '#000'
-              }}
-            >
-              Copy URL
-            </Typography>
-          </Button>
-        </Box>
+        <Button onClick={() => handleShareOption('LinkedIn')} sx={buttonStyles}>
+          <NewLinkedin />
+          Share to LinkedIn
+        </Button>
+        <Button onClick={() => handleShareOption('Email')} sx={buttonStyles}>
+          <NewEmail />
+          Share via Email
+        </Button>
       </Box>
 
-      <Box
+      <Stack
+        direction={isMobile ? 'column' : 'row'}
+        spacing={isMobile ? 1 : 2}
         sx={{
-          display: 'flex',
           marginTop: '45px',
           width: '100%',
-          flexDirection: 'column',
+          justifyContent: 'center',
           textAlign: 'center',
-          justifyContent: 'flex-start',
           fontWeight: 600,
           fontSize: '16px',
           fontFamily: 'Inter, sans-serif'
         }}
       >
+        <Button
+          variant='outlined'
+          onClick={() => {
+            window.location.href = '/view-my-opencred-skills'
+          }}
+          sx={{
+            ...finalButtonStyles,
+            minWidth: isMobile ? '360px' : '130px',
+            backgroundColor: '#EFF6FF',
+            color: '#003FE0',
+            border: '1px solid #003FE0'
+          }}
+        >
+          View my skills
+        </Button>
         <Button
           onClick={() => {
             setActiveStep(0)
@@ -361,52 +297,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           }}
           variant='contained'
           sx={{
-            alignSelf: 'stretch',
-            borderRadius: '100px',
-            backgroundColor: '#003FE0',
-            minWidth: '240px',
-            minHeight: '40px',
-            width: '100%',
-            gap: '10px',
-            overflow: 'hidden',
-            padding: '10px 20px',
-            textTransform: 'none',
-            color: '#FFFFFF'
+            ...finalButtonStyles,
+            minWidth: isMobile ? '360px' : '220px'
           }}
         >
           Add another skill
         </Button>
-
-        <Button
-          variant='outlined'
-          sx={{
-            display: 'flex',
-            marginTop: '10px',
-            minHeight: '40px',
-            width: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#003FE0',
-            alignSelf: 'stretch',
-            borderRadius: '100px',
-            backgroundColor: '#EFF6FF',
-            minWidth: '240px',
-            gap: '10px',
-            overflow: 'hidden',
-            padding: '10px 20px',
-            border: '1px solid #003FE0',
-            textTransform: 'none',
-            fontWeight: 600,
-            fontSize: '16px',
-            fontFamily: 'Inter, sans-serif'
-          }}
-          onClick={() => {
-            window.location.href = '/view-my-opencred-skills'
-          }}
-        >
-          View my OpenCred skills
-        </Button>
-      </Box>
+      </Stack>
 
       <Snackbar
         open={snackbarOpen}
@@ -416,6 +313,37 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       />
     </Box>
   )
+}
+
+const buttonStyles = {
+  display: 'flex',
+  width: '100%',
+  flexDirection: 'row',
+  alignItems: 'center',
+  color: '#000',
+  letterSpacing: '0.08px',
+  justifyContent: 'flex-start',
+  padding: '15px',
+  gap: '10px',
+  fontWeight: 700,
+  fontSize: '16px',
+  fontFamily: 'Inter, sans-serif',
+  borderRadius: '10px',
+  backgroundColor: '#FFFFFF',
+  border: '3px solid #14B8A6',
+  textTransform: 'none'
+}
+
+const finalButtonStyles = {
+  borderRadius: '100px',
+  minHeight: '40px',
+  width: '100%',
+  gap: '10px',
+  overflow: 'hidden',
+  padding: '10px 20px',
+  textTransform: 'none',
+  color: '#FFFFFF',
+  backgroundColor: '#003FE0'
 }
 
 export default SuccessPage
