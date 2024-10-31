@@ -1,13 +1,18 @@
 'use client'
 import { useTheme } from '@mui/material/styles'
 import React, { useCallback, useRef } from 'react'
-import Image from 'next/image'
-import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
-import fram from '../Assets/Images/Frame 35278.png'
-import vector from '../Assets/Images/Vector 145.png'
-import img3 from '../Assets/Images/Tessa Persona large sceens.png'
-import { SVGLargeScreen } from '../Assets/SVGs'
-import { StepTrackShape } from './form/fromTexts & stepTrack/StepTrackShape'
+// import Image from 'next/image'
+import {
+  Box,
+  // Typography,
+  useMediaQuery,
+  Theme
+} from '@mui/material'
+// import fram from '../Assets/Images/Frame 35278.png'
+// import vector from '../Assets/Images/Vector 145.png'
+// import img3 from '../Assets/Images/Tessa Persona large sceens.png'
+// import { SVGLargeScreen } from '../Assets/SVGs'
+// import { StepTrackShape } from './form/fromTexts & stepTrack/StepTrackShape'
 import dynamic from 'next/dynamic'
 
 const DynamicForm = dynamic(() => import('./form/Form'), {

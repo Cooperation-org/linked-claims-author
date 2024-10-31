@@ -161,16 +161,16 @@ export const SVGCheckMarks = () => {
         <path
           d='M22.5 11.1485V12.0685C22.4988 14.2249 21.8005 16.3231 20.5093 18.0503C19.2182 19.7774 17.4033 21.0409 15.3354 21.6524C13.2674 22.2638 11.0573 22.1904 9.03447 21.4431C7.01168 20.6957 5.28465 19.3146 4.11096 17.5055C2.93727 15.6965 2.37979 13.5565 2.52168 11.4048C2.66356 9.25303 3.49721 7.20479 4.89828 5.56554C6.29935 3.92629 8.19279 2.78385 10.2962 2.30861C12.3996 1.83338 14.6003 2.0508 16.57 2.92847'
           stroke='#14B8A6'
-          stroke-width='2'
-          stroke-linecap='round'
-          stroke-linejoin='round'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
         />
         <path
           d='M22.5 4.06848L12.5 14.0785L9.5 11.0785'
           stroke='#14B8A6'
-          stroke-width='2'
-          stroke-linecap='round'
-          stroke-linejoin='round'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
         />
       </svg>
     </div>
@@ -1029,7 +1029,7 @@ export const NewLinkedin = () => {
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
       >
-        <g clip-path='url(#clip0_6115_6746)'>
+        <g clipPath='url(#clip0_6115_6746)'>
           <path
             d='M0 5.5H3.578V16.5H0V5.5ZM13.324 5.629C13.286 5.617 13.25 5.604 13.21 5.593C13.162 5.58213 13.1136 5.57279 13.065 5.565C12.8537 5.5218 12.6386 5.50003 12.423 5.5C10.337 5.5 9.014 7.017 8.578 7.603V5.5H5V16.5H8.578V10.5C8.578 10.5 11.282 6.734 12.423 9.5V16.5H16V9.077C15.9985 8.28714 15.735 7.52009 15.2507 6.89611C14.7664 6.27212 14.0888 5.82646 13.324 5.629Z'
             fill='#003FE0'
@@ -1453,8 +1453,8 @@ export const Logo = () => {
         xmlns='http://www.w3.org/2000/svg'
       >
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M15.4994 21.9545L14.5061 21.381L13.5134 20.8081L12.5206 21.381L11.5273 21.9545V23.1009V24.2479L12.5206 24.8208L13.5134 25.3943L14.5061 24.8208L15.4994 24.2479V23.1009V21.9545Z'
           fill='#FFCB25'
         />
@@ -1463,20 +1463,20 @@ export const Logo = () => {
           fill='#D1E4FF'
         />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M13.5137 16.8569L14.9498 16.0277L16.3854 15.1985V13.5406V11.8828L13.5137 13.5406V16.8569Z'
           fill='#1456FF'
         />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M13.5143 16.8569V13.5406L10.6426 11.8828V13.5406V15.1985L12.0782 16.0277L13.5143 16.8569Z'
           fill='#1456FF'
         />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M10.6426 11.8827L13.5143 13.5406L16.3861 11.8827L14.9505 11.0535L13.5143 10.2243L12.0782 11.0535L10.6426 11.8827Z'
           fill='#1456FF'
         />
@@ -1485,44 +1485,44 @@ export const Logo = () => {
           fill='#D1E4FF'
         />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M13.5134 6.27311L14.5061 5.70018L15.4994 5.12671V3.9803V2.83335L14.5061 2.26043L13.5134 1.68695L12.5206 2.26043L11.5273 2.83335V3.9803V5.12671L12.5206 5.70018L13.5134 6.27311Z'
           fill='#FFCB25'
         />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M19.8086 7.61378V8.76018V9.90713L20.8013 10.4801L21.7941 11.0535L22.7874 10.4801L23.7801 9.90713V8.76018V7.61378L22.7874 7.0403L21.7941 6.46738L20.8013 7.0403L19.8086 7.61378Z'
           fill='#FFCB25'
         />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M18.5246 11.6363C18.934 11.3998 19.0744 10.8763 18.8379 10.4669C18.6014 10.0575 18.0779 9.91702 17.6685 10.1535C17.2591 10.3901 17.1186 10.9136 17.3551 11.323C17.5916 11.7324 18.1152 11.8723 18.5246 11.6363ZM18.5246 15.4449C18.1152 15.2084 17.5916 15.3488 17.3551 15.7582C17.1186 16.1676 17.2591 16.6912 17.6685 16.9277C18.0779 17.1642 18.6014 17.0237 18.8379 16.6143C19.0744 16.2049 18.934 15.6814 18.5246 15.4449Z'
           fill='#D1E4FF'
         />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M20.8013 16.6012L19.8086 17.1741V18.321V19.4674L20.8013 20.0409L21.7941 20.6138L22.7874 20.0409L23.7801 19.4674V18.321V17.1741L22.7874 16.6012L21.7941 16.0277L20.8013 16.6012Z'
           fill='#FFCB25'
         />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M9.35854 16.9277C9.76794 16.6912 9.90842 16.1676 9.6719 15.7582C9.43537 15.3488 8.91184 15.2084 8.50245 15.4449C8.09306 15.6814 7.95257 16.2049 8.18909 16.6143C8.42562 17.0237 8.94915 17.1642 9.35854 16.9277ZM8.50245 11.6363C8.91184 11.8729 9.43537 11.7324 9.6719 11.323C9.90842 10.9136 9.76794 10.3901 9.35854 10.1535C8.94915 9.91702 8.42562 10.0575 8.18909 10.4669C7.95257 10.8763 8.09306 11.3998 8.50245 11.6363Z'
           fill='#D1E4FF'
         />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M7.21957 9.90713V8.76018V7.61378L6.22683 7.0403L5.23408 6.46738L4.24079 7.0403L3.24805 7.61378V8.76018V9.90713L4.24079 10.4801L5.23408 11.0535L6.22683 10.4801L7.21957 9.90713Z'
           fill='#FFCB25'
         />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M6.22683 16.6012L5.23408 16.0277L4.24079 16.6012L3.24805 17.1741V18.321V19.4674L4.24079 20.0409L5.23408 20.6138L6.22683 20.0409L7.21957 19.4674V18.321V17.1741L6.22683 16.6012Z'
           fill='#FFCB25'
         />
