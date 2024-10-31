@@ -3,7 +3,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { Box, Typography, styled } from '@mui/material'
 import FileListDisplay from '../../../components/FileList'
-import { uploadImageToGoogleDrive } from '@cooperation/vc-storage'
+import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-storage'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
 import { useStepContext } from '../StepContext'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
@@ -21,7 +21,7 @@ interface FileItem {
 interface FileUploadAndListProps {
   setValue: (field: string, value: any, options?: any) => void
   selectedFiles: FileItem[] // Full `FileItem` objects passed from parent
-  setSelectedFiles: (files: FileItem[]) => void // Update function for `selectedFiles`
+  setSelectedFiles: React.Dispatch<React.SetStateAction<FileItem[]>>
   watch: any
 }
 
@@ -83,7 +83,7 @@ export default function FileUploadAndList({
       }
 
       setFiles(prevFiles => [...prevFiles, newFileItem])
-      setSelectedFiles((prevFiles: any) => [...prevFiles, newFileItem]) // Sync to parent
+      setSelectedFiles(prevFiles => [...prevFiles, newFileItem]) // Sync to parent
     }
     reader.readAsDataURL(file)
   }
@@ -100,7 +100,10 @@ export default function FileUploadAndList({
 
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (fileItem, index) => {
-          const uploadedFile = await uploadImageToGoogleDrive(storage, fileItem.file)
+          const uploadedFile = await uploadImageToGoogleDrive(
+            storage as GoogleDriveStorage,
+            fileItem.file
+          )
           return {
             ...fileItem,
             id: uploadedFile.id, // Use actual ID from uploaded file
@@ -149,6 +152,7 @@ export default function FileUploadAndList({
 
   // Set the upload function in the parent context
   useEffect(() => {
+    // @ts-ignore-next-line
     setUploadImageFn(() => handleUpload)
   }, [handleUpload, setUploadImageFn])
 
