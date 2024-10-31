@@ -5,7 +5,7 @@ import { useSession, signIn, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Logo } from '../../Assets/SVGs/index'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+// import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
 const features = [
   { id: 1, name: 'Capture any skill or experience' },
