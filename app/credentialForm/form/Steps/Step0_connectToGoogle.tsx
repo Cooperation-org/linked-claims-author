@@ -1,9 +1,8 @@
 'use client'
 import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import Image from 'next/image'
 import { signIn, useSession } from 'next-auth/react'
-import FolderImg from '../../../Assets/Images/Devfolder.png'
+import { SVGFolder, SVGSinfo } from '../../../Assets/SVGs'
 
 interface Step0Props {
   connectToGoogleDrive: () => void
@@ -55,7 +54,7 @@ export function Step0() {
           justifyContent: 'center'
         }}
       >
-        <Image src={FolderImg} alt='Folder' width={300} height={300} />
+        <SVGFolder />
       </Box>
 
       {/* Main text */}
@@ -75,17 +74,30 @@ export function Step0() {
         sx={{
           mt: 2,
           px: 4,
-          py: 1.5,
+          py: 0.5,
           fontSize: '16px',
           borderRadius: 5,
           textTransform: 'none',
           backgroundColor: '#003FE0'
         }}
       >
-        Connect to Google Drive
+        Connect to Google Drive{' '}
+        <Box sx={{ ml: 2, mt: '2px' }}>
+          <SVGSinfo />
+        </Box>
       </Button>
-
-      {/* Continue without saving link */}
+      <Button
+        variant='text'
+        color='primary'
+        onClick={() => (window.location.hash = '#step1')}
+        sx={{
+          fontSize: '14px',
+          textDecoration: 'underline',
+          textTransform: 'none'
+        }}
+      >
+        Continue without Saving
+      </Button>
     </Box>
   )
 }

@@ -21,9 +21,7 @@ export function Buttons({
   handleBack,
   handleNext,
   handleSign,
-  maxSteps,
   isValid,
-  disabled0,
   handleSaveSession,
   loading
 }: Readonly<ButtonsProps>) {
@@ -34,32 +32,22 @@ export function Buttons({
         height: '40px',
         display: 'flex',
         gap: '15px',
-        justifyContent: activeStep !== 0 ? 'space-between' : 'center'
+        justifyContent: 'center'
       }}
     >
-      {/* {activeStep === 0 && (
-        <Button
-          sx={{
-            ...nextButtonStyle,
-            maxWidth: '355px'
-          }}
-          onClick={handleNext}
-          color='primary'
-          variant='contained'
-          disabled={disabled0}
-        >
-          Next
-        </Button>
-      )} */}
       {activeStep !== 0 && (
-        <>
-          <Button sx={StyledButton} onClick={handleBack} color='secondary'>
-            Back
-          </Button>
-          <Button sx={StyledButton} onClick={handleSaveSession} color='secondary'>
-            Save & Exit
-          </Button>
-        </>
+        <Button
+          sx={{ ...StyledButton, minWidth: '130px' }}
+          onClick={handleSaveSession}
+          color='secondary'
+        >
+          Save & Exit
+        </Button>
+      )}
+      {activeStep === 3 && (
+        <Button sx={StyledButton} onClick={handleNext} color='secondary'>
+          Skip
+        </Button>
       )}
       {activeStep !== 5 && activeStep !== 6 && activeStep !== 0 && (
         <Button

@@ -3,18 +3,16 @@
 
 import React, { useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, Slide } from '@mui/material'
+import { FormControl, Box, Slide, Button } from '@mui/material'
 import { FormData } from './types/Types'
 import { Step0 } from './Steps/Step0_connectToGoogle'
 import { Buttons } from './buttons/Buttons'
-import { Step1 } from './Steps/Step1'
-import { Step2 } from './Steps/Step2'
-import { Step3 } from './Steps/Step3'
-import { Step4 } from './Steps/Step4'
+import { Step1 } from './Steps/Step1_userName'
+import { Step2 } from './Steps/Step2_descreptionFields'
 import Step5 from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
-
-import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
+import { SVGBack } from '../../Assets/SVGs'
+import { createDID, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { useSession, signIn } from 'next-auth/react'
 import { handleSign } from '../../utils/formUtils'
@@ -22,12 +20,6 @@ import { saveSession } from '../../utils/saveSession'
 import SnackMessage from '../../components/SnackMessage'
 import SessionDialog from '../../components/SessionDialog'
 import { useStepContext } from './StepContext'
-import {
-  FormTextSteps,
-  NoteText,
-  SuccessText,
-  textGuid
-} from './fromTexts & stepTrack/FormTextSteps'
 import SuccessPage from './Steps/SuccessPage'
 
 const Form = ({ onStepChange }: any) => {
@@ -37,7 +29,6 @@ const Form = ({ onStepChange }: any) => {
   const [link, setLink] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
-  const [metamaskAdress, setMetamaskAdress] = useState<string>('')
   const [disabled0, setDisabled0] = useState(false)
   const [snackMessage, setSnackMessage] = useState('')
   const [userSessions, setUserSessions] = useState<{}[]>([])
@@ -46,7 +37,6 @@ const Form = ({ onStepChange }: any) => {
   const [image, setImage] = useState('')
 
   const characterLimit = 294
-  const maxSteps = textGuid.length
   const { data: session } = useSession()
   const accessToken = session?.accessToken
 
@@ -210,16 +200,6 @@ const Form = ({ onStepChange }: any) => {
 
   return (
     <>
-      {true ? (
-        <SessionDialog
-          userSessions={userSessions}
-          open={openDialog}
-          onSelect={handleuserSessionselect}
-          onCancel={() => setOpenDialog(false)}
-        />
-      ) : (
-        ''
-      )}
       <form
         style={{
           display: 'flex',
@@ -232,14 +212,16 @@ const Form = ({ onStepChange }: any) => {
         }}
         onSubmit={handleFormSubmit}
       >
-        <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-        {activeStep !== 0 &&
-          activeStep !== 7 &&
-          activeStep !== 6 &&
-          activeStep !== 4 &&
-          activeStep !== 5 && <NoteText />}
-        {activeStep === 7 && <SuccessText />}
         <Box sx={{ width: { xs: '100%', md: '50%' }, minWidth: { md: '400px' } }}>
+          {activeStep >= 2 && activeStep <= 4 && (
+            <Button onClick={handleBack} sx={{ textTransform: 'capitalize' }}>
+              <Box sx={{ mt: 1 }}>
+                <SVGBack />
+              </Box>
+              Back
+            </Button>
+          )}
+
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 0 && (
               <Slide in={true} direction={direction} timeout={500}>
@@ -271,37 +253,12 @@ const Form = ({ onStepChange }: any) => {
                       setValue('credentialDescription', value ?? '')
                     }
                     errors={errors}
+                    control={control}
                   />
                 </Box>
               </Slide>
             )}
             {activeStep === 3 && (
-              <Slide in={true} direction={direction}>
-                <Box>
-                  <Step3
-                    watch={watch}
-                    register={register}
-                    errors={errors}
-                    characterLimit={characterLimit}
-                  />
-                </Box>
-              </Slide>
-            )}
-            {activeStep === 4 && (
-              <Slide in={true} direction={direction}>
-                <Box>
-                  <Step4
-                    register={register}
-                    fields={fields}
-                    append={append}
-                    handleNext={handleNext}
-                    errors={errors}
-                    remove={remove}
-                  />
-                </Box>
-              </Slide>
-            )}
-            {activeStep === 5 && (
               <Slide in={true} direction={direction}>
                 <Box>
                   <Step5
@@ -314,14 +271,14 @@ const Form = ({ onStepChange }: any) => {
                 </Box>
               </Slide>
             )}
-            {activeStep === 6 && (
+            {activeStep === 4 && (
               <Slide in={true} direction={direction}>
                 <Box>
                   <DataComponent formData={watch()} image={image} />
                 </Box>
               </Slide>
             )}
-            {activeStep === 7 && (
+            {activeStep === 5 && (
               <Slide in={true} direction={direction}>
                 <Box>
                   <SuccessPage
@@ -340,10 +297,10 @@ const Form = ({ onStepChange }: any) => {
             )}
           </FormControl>
         </Box>
-        {activeStep !== 7 && (
+        {activeStep !== 5 && (
           <Buttons
             activeStep={activeStep}
-            maxSteps={maxSteps}
+            maxSteps={4}
             handleNext={activeStep === 0 ? costumedHandleNextStep : () => handleNext()}
             handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
             handleBack={costumedHandleBackStep}
