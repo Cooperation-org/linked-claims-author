@@ -284,7 +284,7 @@ export default function FileUploadAndList({
         mt={2}
         sx={{ textAlign: 'center', fontSize: '0.875rem', color: '#666' }}
       >
-        Drag images to reorder. The first image will always be the featured image.
+        The first image will always be the featured image.
       </Typography>
 
       <FileListDisplay
