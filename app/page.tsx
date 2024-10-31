@@ -4,7 +4,6 @@ import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { SVGCheckMarks } from './Assets/SVGs'
 import OverlappingCards from './components/OverLappingCards/OverLappingCards'
-
 import Link from 'next/link'
 
 const features = [
@@ -24,8 +23,7 @@ const Page = () => {
         flexDirection: 'column',
         gap: '30px',
         alignItems: 'center',
-        pt: '54px',
-        paddingBottom: '40px'
+        pt: '60px'
       }}
     >
       {/* Header Component */}
@@ -35,33 +33,108 @@ const Page = () => {
           display: 'flex',
           flexDirection: 'column',
           width: { xs: '92.308vw', md: '712px' },
-          pb: '10px',
-          ml: '10px',
-          mb: '25px'
+          pb: '10px'
         }}
       >
         <Typography
           sx={{
             color: '#000',
             fontFamily: 'Poppins',
-            fontSize: { xs: '24px', md: '50px' },
+            fontSize: 'clamp(24px, 2vw + 1rem, 40px)',
             fontWeight: 700,
             lineHeight: '110%',
             textAlign: 'left',
-            width: { xs: '360px', md: '720px' }
+            minWidth: '320px',
+            maxWidth: '720px'
           }}
         >
           Capture your life
-          <br /> highlights, add proof <br /> & unlock new opportunities.{' '}
+          <br /> highlights, add proof <br /> & unlock new opportunities.
         </Typography>
       </Box>
-
-      {/* OverlappingCards Component */}
-      <OverlappingCards />
-
+      {/* Get Started Button */}
+      <Box
+        sx={{
+          display: { xs: 'none', md: 'flex' },
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          mb: '57px',
+          width: '690px'
+        }}
+      >
+        <Link href='/credentialForm'>
+          <Button
+            sx={{
+              minWidth: { xs: '320px', md: '173px' },
+              width: { xs: '92.308vw', md: '10.01vw' },
+              maxWidth: '360px',
+              height: '52px',
+              fontFamily: 'Lato',
+              fontSize: '16px',
+              fontWeight: 500,
+              lineHeight: '20px',
+              borderRadius: '100px',
+              backgroundColor: theme.palette.t3ButtonBlue,
+              color: 'white',
+              textTransform: 'none',
+              '&:hover': {
+                backgroundColor: theme.palette.t3ButtonBlue
+              }
+            }}
+          >
+            Get Started
+          </Button>
+        </Link>
+      </Box>
       <Box
         sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          gap: '57px',
+          alignItems: { xs: 'center', md: 'flex-start' },
+          justifyContent: 'center',
+          width: '100%'
+        }}
+      >
+        <Box
+          sx={{
+            display: { xs: 'none', md: 'flex' },
+            flexDirection: 'column',
+            mr: '10px',
+            gap: '20px',
+            maxWidth: '320px',
+            mb: { xs: '10px', md: '140px' }
+          }}
+        >
+          {features.map(feature => (
+            <Box
+              key={feature.id}
+              sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}
+            >
+              <SVGCheckMarks />
+              <Typography
+                sx={{
+                  color: theme.palette.t3BodyText,
+                  fontFamily: 'Lato',
+                  fontSize: '18px',
+                  fontWeight: '400',
+                  lineHeight: 'normal'
+                }}
+              >
+                {feature.name}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+
+        {/* OverlappingCards Component */}
+        <OverlappingCards />
+      </Box>
+
+      {/* Get Started Button */}
+      <Box
+        sx={{
+          display: { xs: 'flex', md: 'none' },
           flexDirection: 'column',
           alignItems: 'center',
           mt: '10px'
@@ -70,7 +143,9 @@ const Page = () => {
         <Link href='/credentialForm'>
           <Button
             sx={{
-              width: '360px',
+              minWidth: { xs: '320px', md: '173px' },
+              width: { xs: '92.308vw', md: '10.01vw' },
+              maxWidth: '360px',
               height: '40px',
               fontFamily: 'Lato',
               fontSize: '16px',
@@ -92,11 +167,11 @@ const Page = () => {
 
       <Box
         sx={{
-          display: 'flex',
+          display: { xs: 'flex', md: 'none' },
           flexDirection: 'column',
-          width: { xs: '321px', md: 'auto' },
+          width: { xs: '320px', md: 'auto' },
           justifyContent: 'center',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           gap: '15px',
           mb: '20px'
         }}
@@ -104,12 +179,7 @@ const Page = () => {
         {features.map(feature => (
           <Box
             key={feature.id}
-            sx={{
-              display: 'flex',
-              gap: '15px',
-              width: '100%',
-              maxWidth: '321px'
-            }}
+            sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}
           >
             <SVGCheckMarks />
             <Typography

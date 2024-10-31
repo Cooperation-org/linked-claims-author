@@ -33,7 +33,8 @@ const OverlappingCards = () => {
         position: 'relative',
         padding: '90px',
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        width: '300px'
       }}
     >
       <Box
