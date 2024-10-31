@@ -9,7 +9,7 @@ import Theme from './theme'
 import Head from 'next/head'
 import { StepProvider } from './credentialForm/form/StepContext'
 import { usePathname } from 'next/navigation'
-import background from './Assets/Images/Background.svg'
+import background from './Assets/Images/Background.svg' // Import background image
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -56,7 +56,10 @@ export default function RootLayout({
                           xs: 'rgba(255, 255, 255, 0.8)',
                           md: 'rgba(255, 255, 255, 0.85)'
                         }
-                      : 'transparent'
+                      : {
+                          xs: '#FFFFFF',
+                          md: '#F0F4F8'
+                        }
                 }}
               >
                 {children}

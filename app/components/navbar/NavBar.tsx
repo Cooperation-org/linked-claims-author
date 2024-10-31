@@ -24,7 +24,10 @@ const NavBar = () => {
         alignItems: 'center',
         backgroundColor: 'white',
         justifyContent: 'space-between',
-        mt: { xs: '18px', md: '0px' }
+        mt: { xs: '18px', md: '0px' },
+        boxShadow: {
+          md: '0px 4px 10px rgba(209, 213, 219, 0.5)'
+        }
       }}
     >
       {/* Logo and Name */}
