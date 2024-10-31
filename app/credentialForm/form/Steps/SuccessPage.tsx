@@ -4,38 +4,24 @@
 import React from 'react'
 import {
   Typography,
-  TextField,
-  InputAdornment,
   Box,
   Button,
   Snackbar,
-  CircularProgress
+  useMediaQuery,
+  useTheme,
+  Stack
 } from '@mui/material'
 import {
-  SVGDate,
-  TwitterSVG,
-  InstagramSVG,
-  LinkedinSVG,
-  MailSVG,
-  MessageCircleSVG,
-  CopySVG,
-  ArrowRightSVG
+  GlobalSVG,
+  HeartSVG,
+  BlueBadge,
+  NewCopy,
+  NewLinkedin,
+  NewEmail
 } from '../../../Assets/SVGs'
 
 import { FormData } from '../../../credentialForm/form/types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
-import { useTheme } from '@mui/material/styles'
-import {
-  successPageContainerStyles,
-  successPageShareStyles,
-  successPageIconContainerStyles,
-  successPageHeaderStyles,
-  successPageTitleStyles,
-  successPageInfoStyles,
-  successPageDateStyles,
-  successPageCopyLinkStyles,
-  successPageTextFieldStyles
-} from '../../../components/Styles/appStyles'
 import { useStepContext } from '../StepContext'
 
 interface SuccessPageProps {
@@ -60,13 +46,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   storageOption,
   selectedImage
 }) => {
-  console.log('🚀 ~ formData:', formData)
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = React.useState(false)
-  const theme = useTheme()
   const refLink = fileId
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
-  // Function to generate LinkedIn URL
   const generateLinkedInUrl = () => {
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
     const params = new URLSearchParams({
@@ -82,206 +67,283 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     return `${baseLinkedInUrl}?${params.toString()}`
   }
 
-  const handleShare = (IconComponent: any) => {
+  const handleShareOption = (option: 'LinkedIn' | 'Email' | 'CopyURL') => {
     const credentialLink = `https://opencreds.net/view/${fileId}`
-    if (IconComponent === LinkedinSVG) {
+    if (option === 'LinkedIn') {
       const linkedInUrl = generateLinkedInUrl()
       window.open(linkedInUrl, '_blank', 'noopener noreferrer')
-    } else if (IconComponent === TwitterSVG) {
-      const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-        credentialLink
-      )}&text=Check out my new certification!`
-      window.open(twitterUrl, '_blank', 'noopener noreferrer')
-    } else if (IconComponent === MailSVG) {
+    } else if (option === 'Email') {
       const mailUrl = `mailto:?subject=Check%20out%20my%20new%20certification&body=You%20can%20view%20my%20certification%20here:%20${encodeURIComponent(
         credentialLink
       )}`
       window.location.href = mailUrl
-    } else if (IconComponent === MessageCircleSVG) {
-      const smsUrl = `sms:?&body=Check%20out%20my%20new%20certification:%20${encodeURIComponent(
-        credentialLink
-      )}`
-      window.location.href = smsUrl
-    } else if (IconComponent === InstagramSVG) {
-      const instagramText = `Check out my new certification! ${credentialLink}`
-      copyFormValuesToClipboard(instagramText)
+    } else if (option === 'CopyURL') {
+      copyFormValuesToClipboard(credentialLink)
       setSnackbarOpen(true)
     }
   }
 
   return (
-    <>
-      <Box sx={successPageContainerStyles}>
-        <Box sx={successPageShareStyles}>
-          {[TwitterSVG, LinkedinSVG, InstagramSVG, MailSVG, MessageCircleSVG].map(
-            (IconComponent, index) => (
-              <Button
-                key={index}
-                sx={successPageIconContainerStyles}
-                onClick={() => handleShare(IconComponent)}
-              >
-                <IconComponent />
-              </Button>
-            )
-          )}
-        </Box>
-        <Box sx={{ width: '100%' }}>
-          <Box sx={successPageHeaderStyles}>
-            {formData?.evidenceLink ? (
-              <Box
-                sx={{
-                  borderRadius: '20px 0px 0px 20px',
-                  width: '100px',
-                  height: '100px'
-                }}
-              >
-                <img
-                  style={{
-                    borderRadius: '20px 0px 0px 20px',
-                    width: '100px',
-                    height: '100px'
-                  }}
-                  src={selectedImage}
-                  alt='Certification Evidence'
-                />
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  width: '15px',
-                  height: '100px'
-                }}
-              />
-            )}
-            <Box sx={{ flex: 1 }}>
-              <Typography sx={successPageTitleStyles}>
-                {formData?.credentialName}
-              </Typography>
-              <Box sx={successPageInfoStyles}>
-                <SVGDate />
-                <Typography sx={successPageDateStyles}>
-                  {formData?.credentialDuration}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
+    <Box
+      sx={{
+        display: 'flex',
+        maxWidth: isMobile ? '100%' : '720px',
+        width: '100%',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        mx: 'auto'
+      }}
+    >
+      {!isMobile && (
+        <Button
+          onClick={() => setActiveStep(0)}
+          sx={{
+            alignSelf: 'flex-start',
+            color: '#003FE0',
+            textTransform: 'none',
+            mb: 2
+          }}
+        >
+          &lt; Back
+        </Button>
+      )}
 
-          <Box sx={successPageCopyLinkStyles}>
-            <TextField
-              sx={{
-                ...successPageTextFieldStyles,
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px'
-                }
-              }}
-              value={
-                fileId
-                  ? `https://opencreds.net/view/${fileId}`
-                  : 'Wait as your credentials are being processed...'
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    {!fileId && <CircularProgress size={20} />}
-                  </InputAdornment>
-                ),
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <Box>
-                      <Button
-                        onClick={() =>
-                          copyFormValuesToClipboard(
-                            `https://opencreds.net/view/${fileId}`
-                          )
-                        }
-                        disabled={!fileId}
-                      >
-                        <CopySVG />
-                      </Button>
-                    </Box>
-                  </InputAdornment>
-                ),
-                readOnly: true
-              }}
-            />
-          </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          maxWidth: '660px'
+        }}
+      >
+        <Box
+          sx={{
+            aspectRatio: '1',
+            objectFit: 'contain',
+            objectPosition: 'center',
+            width: isMobile ? '80px' : '100px',
+            maxWidth: '98%'
+          }}
+        >
+          <GlobalSVG />
         </Box>
-        <Box sx={{ position: 'relative', textAlign: 'center' }}>
+        <Typography
+          sx={{
+            marginTop: '32px',
+            color: '#202E5B',
+            textAlign: 'center',
+            fontWeight: 700,
+            fontSize: isMobile ? '24px' : '32px',
+            fontFamily: 'Lato, sans-serif'
+          }}
+        >
+          Success!
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          display: 'flex',
+          marginTop: '32px',
+          width: '100%',
+          flexDirection: 'column',
+          color: '#003FE0',
+          letterSpacing: '0.12px',
+          justifyContent: 'center',
+          padding: '5px',
+          fontWeight: 700,
+          fontSize: '24px',
+          fontFamily: 'Inter, sans-serif'
+        }}
+      >
+        <Box
+          sx={{
+            borderRadius: '10px',
+            backgroundColor: '#FFFFFF',
+            display: 'flex',
+            width: '100%',
+            alignItems: 'center',
+            gap: '20px',
+            justifyContent: 'flex-start',
+            padding: '15px',
+            border: '1px solid #003FE0'
+          }}
+        >
+          <BlueBadge />
           <Typography
             sx={{
-              fontSize: '18px',
-              fontWeight: 500,
-              color: '#003FE0',
-              position: 'relative'
+              flex: 1,
+              fontFamily: 'inherit',
+              margin: 0,
+              color: '#003FE0'
             }}
           >
-            Make your credential stand out <br /> with verified references!
+            {formData?.credentialName}
           </Typography>
-          <Box
-            sx={{
-              position: 'absolute',
-              left: '-40px',
-              bottom: '-55px',
-              width: '50px',
-              height: 'auto'
-            }}
-          >
-            <ArrowRightSVG />
-          </Box>
         </Box>
 
-        <Box
-          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}
+        <Button
+          onClick={() => handleShareOption('CopyURL')}
+          sx={{
+            ...buttonStyles,
+            mt: '15px'
+          }}
         >
-          <Button
-            onClick={() => {
-              window.location.href = `/askforrecommendation/${refLink}`
-            }}
-            variant='contained'
-            sx={{
-              borderRadius: '100px',
-              backgroundColor: '#003FE0',
-              textTransform: 'none',
-              fontFamily: 'Roboto, sans-serif',
-              boxShadow: '0px 0px 2px 2px #F7BC00',
-              width: '250px'
-            }}
-            disabled={!link}
-          >
-            Ask for a Recommendation
-          </Button>
-
-          <Button
-            sx={{
-              color: theme.palette.t3TitleText,
-              textTransform: 'capitalize',
-              fontFamily: 'Roboto',
-              fontSize: '14px',
-              fontWeight: 600,
-              lineHeight: '20px'
-            }}
-            variant='text'
-            onClick={() => {
-              setActiveStep(0)
-              setLink('')
-              setFileId('')
-              reset()
-            }}
-            disabled={false}
-          >
-            Claim Another Skill
-          </Button>
-        </Box>
-
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={() => setSnackbarOpen(false)}
-          message='Text copied to clipboard. Ready to paste in Instagram!'
-        />
+          <NewCopy />
+          Copy URL
+        </Button>
       </Box>
-    </>
+
+      <Box
+        sx={{
+          marginTop: '45px',
+          width: '100%'
+        }}
+      >
+        <Typography
+          sx={{
+            color: '#202E5B',
+            fontWeight: 400,
+            fontSize: '24px',
+            fontFamily: 'Lato, sans-serif',
+            marginBottom: '10px'
+          }}
+        >
+          Strengthen the value of your skill:
+        </Typography>
+
+        <Button
+          onClick={() => {
+            window.location.href = `/askforrecommendation/${refLink}`
+          }}
+          sx={buttonStyles}
+        >
+          <HeartSVG />
+          Ask for a recommendation
+        </Button>
+      </Box>
+
+      <Box
+        sx={{
+          marginTop: '45px',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          gap: '15px'
+        }}
+      >
+        <Typography
+          sx={{
+            width: '100%',
+            color: '#202E5B',
+            padding: '5px 0 5px 5px',
+            fontWeight: 400,
+            fontSize: '24px',
+            fontFamily: 'Lato, sans-serif',
+            marginBottom: '10px'
+          }}
+        >
+          Make your skills work for you:
+        </Typography>
+
+        <Button onClick={() => handleShareOption('LinkedIn')} sx={buttonStyles}>
+          <NewLinkedin />
+          Share to LinkedIn
+        </Button>
+        <Button onClick={() => handleShareOption('Email')} sx={buttonStyles}>
+          <NewEmail />
+          Share via Email
+        </Button>
+      </Box>
+
+      <Stack
+        direction={isMobile ? 'column' : 'row'}
+        spacing={isMobile ? 1 : 2}
+        sx={{
+          marginTop: '45px',
+          width: '100%',
+          justifyContent: 'center',
+          textAlign: 'center',
+          fontWeight: 600,
+          fontSize: '16px',
+          fontFamily: 'Inter, sans-serif'
+        }}
+      >
+        <Button
+          variant='outlined'
+          onClick={() => {
+            window.location.href = '/view-my-opencred-skills'
+          }}
+          sx={{
+            ...finalButtonStyles,
+            minWidth: isMobile ? '360px' : '130px',
+            backgroundColor: '#EFF6FF',
+            color: '#003FE0',
+            border: '1px solid #003FE0'
+          }}
+        >
+          View my skills
+        </Button>
+        <Button
+          onClick={() => {
+            setActiveStep(0)
+            setLink('')
+            setFileId('')
+            reset()
+          }}
+          variant='contained'
+          sx={{
+            ...finalButtonStyles,
+            minWidth: isMobile ? '360px' : '220px'
+          }}
+        >
+          Add another skill
+        </Button>
+      </Stack>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message='Link copied to clipboard!'
+      />
+    </Box>
   )
+}
+
+const buttonStyles = {
+  display: 'flex',
+  width: '100%',
+  flexDirection: 'row',
+  alignItems: 'center',
+  color: '#000',
+  letterSpacing: '0.08px',
+  justifyContent: 'flex-start',
+  padding: '15px',
+  gap: '10px',
+  fontWeight: 700,
+  fontSize: '16px',
+  fontFamily: 'Inter, sans-serif',
+  borderRadius: '10px',
+  backgroundColor: '#FFFFFF',
+  border: '3px solid #14B8A6',
+  textTransform: 'none'
+}
+
+const finalButtonStyles = {
+  borderRadius: '100px',
+  minHeight: '40px',
+  width: '100%',
+  gap: '10px',
+  overflow: 'hidden',
+  padding: '10px 20px',
+  textTransform: 'none',
+  color: '#FFFFFF',
+  backgroundColor: '#003FE0'
 }
 
 export default SuccessPage

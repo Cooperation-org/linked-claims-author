@@ -212,7 +212,13 @@ const Form = ({ onStepChange }: any) => {
         }}
         onSubmit={handleFormSubmit}
       >
-        <Box sx={{ width: { xs: '100%', md: '50%' }, minWidth: { md: '400px' } }}>
+        <Box
+          sx={{
+            width: { xs: '100%', md: '50%' },
+            minWidth: { md: '400px' },
+            maxWidth: { md: '720px' }
+          }}
+        >
           {activeStep >= 2 && activeStep <= 4 && (
             <Button onClick={handleBack} sx={{ textTransform: 'capitalize' }}>
               <Box sx={{ mt: 1 }}>
