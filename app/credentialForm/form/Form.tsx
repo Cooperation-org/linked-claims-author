@@ -25,7 +25,7 @@ import { useStepContext } from './StepContext'
 import {
   FormTextSteps,
   NoteText,
-  // SuccessText,
+  SuccessText,
   textGuid
 } from './fromTexts & stepTrack/FormTextSteps'
 import SuccessPage from './Steps/SuccessPage'
@@ -250,14 +250,8 @@ const Form = ({ onStepChange }: any) => {
           activeStep !== 6 &&
           activeStep !== 4 &&
           activeStep !== 5 && <NoteText />}
-        {/* {activeStep === 7 && <SuccessText />} */}
-        <Box
-          sx={{
-            width: { xs: '100%', md: '50%' },
-            minWidth: { md: '400px' },
-            maxWidth: { md: '720px' }
-          }}
-        >
+        {activeStep === 7 && <SuccessText />}
+        <Box sx={{ width: { xs: '100%', md: '50%' }, minWidth: { md: '400px' } }}>
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 0 && (
               <Slide in={true} direction={direction} timeout={500}>
