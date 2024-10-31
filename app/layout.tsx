@@ -8,6 +8,8 @@ import Footer from './components/footer/Footer'
 import Theme from './theme'
 import Head from 'next/head'
 import { StepProvider } from './credentialForm/form/StepContext'
+import { usePathname } from 'next/navigation'
+import background from './Assets/Images/Background.svg' // Import background image
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,6 +18,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const pathname = usePathname()
+
   return (
     <ThemeProvider theme={Theme}>
       <CssBaseline />
@@ -39,11 +43,23 @@ export default function RootLayout({
                 component='main'
                 sx={{
                   flexGrow: 1,
-                  mt: { xs: '24px', md: '29px' },
-                  minHeight: {
-                    xs: 'calc(100vh - 190px)',
-                    md: 'calc(100vh - 381px)'
-                  }
+                  mt: { xs: '27px', md: '100px' },
+                  minHeight: `calc(100vh - 255px)`,
+                  backgroundImage: pathname === '/' ? `url(${background.src})` : 'none',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundBlendMode: pathname === '/' ? 'overlay' : 'normal',
+                  backgroundColor:
+                    pathname === '/'
+                      ? {
+                          xs: 'rgba(255, 255, 255, 0.8)',
+                          md: 'rgba(255, 255, 255, 0.85)'
+                        }
+                      : {
+                          xs: '#FFFFFF',
+                          md: '#F0F4F8'
+                        }
                 }}
               >
                 {children}

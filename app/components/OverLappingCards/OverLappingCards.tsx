@@ -28,14 +28,46 @@ const Card = ({ text, color, rotation }: any) => (
 
 const OverlappingCards = () => {
   return (
-    <Box sx={{ position: 'relative', padding: '90px', right: '80px' }}>
-      <Box sx={{ position: 'absolute', top: 0, left: 0, zIndex: 3 }}>
+    <Box
+      sx={{
+        position: 'relative',
+        padding: '90px',
+        display: 'flex',
+        justifyContent: 'center',
+        width: '300px'
+      }}
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 3
+        }}
+      >
         <Card text='Barista Training' color='#14B8A6' rotation={-4.8} />
       </Box>
-      <Box sx={{ position: 'absolute', top: 60, left: 0, zIndex: 2 }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 60,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 2
+        }}
+      >
         <Card text='Cashier' color='#FB8C00' rotation={0} />
       </Box>
-      <Box sx={{ position: 'absolute', top: 120, left: 0, zIndex: 1 }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 120,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 1
+        }}
+      >
         <Card text='Team Leader' color='#8E24AA' rotation={4.993} />
       </Box>
     </Box>

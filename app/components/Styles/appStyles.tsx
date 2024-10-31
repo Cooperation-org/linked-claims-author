@@ -8,11 +8,12 @@ export const StyledButton = {
   fontFamily: 'Roboto',
   fontWeight: '600',
   lineHeight: '20px',
-  border: '1px solid  #4E4E4E',
-  color: '#4e4e4e',
+  border: '1px solid  #003FE0',
+  color: '#003FE0',
   '&:hover': {
-    backgroundColor: '003fe0'
-  }
+    backgroundColor: '#eff6ff'
+  },
+  backgroundColor: '#eff6ff'
 }
 
 export const nextButtonStyle = {
