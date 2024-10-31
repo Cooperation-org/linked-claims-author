@@ -9,9 +9,7 @@ interface ButtonsProps {
   handleBack: React.MouseEventHandler<HTMLButtonElement> | undefined
   handleNext: React.MouseEventHandler<HTMLButtonElement> | undefined
   handleSign: React.MouseEventHandler<HTMLButtonElement> | undefined
-  maxSteps: number
   isValid: boolean
-  disabled0: boolean
   handleSaveSession: () => void
   loading: boolean
 }
@@ -21,9 +19,7 @@ export function Buttons({
   handleBack,
   handleNext,
   handleSign,
-  maxSteps,
   isValid,
-  disabled0,
   handleSaveSession,
   loading
 }: Readonly<ButtonsProps>) {

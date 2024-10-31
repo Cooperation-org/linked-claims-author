@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
 import { SVGDate } from '../../../Assets/SVGs'
@@ -25,10 +25,11 @@ const cleanHTML = (htmlContent: string) => {
 
 interface DataPreviewProps {
   formData: FormData
-  image?: string
 }
 
-const DataPreview: React.FC<DataPreviewProps> = ({ formData, image }) => {
+const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
+  const [evidenceLink, setEvidenceLink] = useState<string | null>(null)
+
   console.log(':  formData', formData)
   const theme: Theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
@@ -84,14 +85,14 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, image }) => {
           mb: '10px'
         }}
       >
-        {image ? (
+        {formData.evidenceLink ? (
           <img
             style={{
               borderRadius: '20px',
               width: !isLargeScreen ? '100%' : '179px',
               height: '100%'
             }}
-            src={image}
+            src={evidenceLink ? evidenceLink : formData.evidenceLink}
             alt='Certification Evidence'
           />
         ) : (

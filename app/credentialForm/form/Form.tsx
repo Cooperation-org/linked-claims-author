@@ -31,21 +31,19 @@ import {
 import SuccessPage from './Steps/SuccessPage'
 
 const Form = ({ onStepChange }: any) => {
-  const { activeStep, handleNext, handleBack, setActiveStep, setUploadImageFn, loading } =
-    useStepContext()
+  const { activeStep, handleNext, handleBack, setActiveStep, loading } = useStepContext()
   const [prevStep, setPrevStep] = useState(0)
   const [link, setLink] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
-  const [disabled0, setDisabled0] = useState(false)
   const [snackMessage, setSnackMessage] = useState('')
   const [userSessions, setUserSessions] = useState<{}[]>([])
   const [openDialog, setOpenDialog] = useState(false)
   const [fileId, setFileId] = useState('')
   const [image, setImage] = useState('')
+  const [selectedFiles, setSelectedFiles] = useState<any[]>([])
 
   const characterLimit = 294
-  const maxSteps = textGuid.length
   const { data: session } = useSession()
   const accessToken = session?.accessToken
 
@@ -68,16 +66,11 @@ const Form = ({ onStepChange }: any) => {
       credentialName: '',
       credentialDuration: '',
       credentialDescription: '',
-      portfolio: [{ name: '', url: '' }],
+      portfolio: [],
       evidenceLink: '',
       description: ''
     },
     mode: 'onChange'
-  })
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'portfolio'
   })
 
   useEffect(() => {
@@ -300,7 +293,8 @@ const Form = ({ onStepChange }: any) => {
                   <Step4
                     setValue={setValue}
                     watch={watch}
-                    setUploadImageFn={setUploadImageFn}
+                    selectedFiles={selectedFiles}
+                    setSelectedFiles={setSelectedFiles}
                   />
                 </Box>
               </Slide>
@@ -321,7 +315,7 @@ const Form = ({ onStepChange }: any) => {
             {activeStep === 6 && (
               <Slide in={true} direction={direction}>
                 <Box>
-                  <DataComponent formData={watch()} image={image} />
+                  <DataComponent formData={watch()} />
                 </Box>
               </Slide>
             )}
@@ -347,12 +341,10 @@ const Form = ({ onStepChange }: any) => {
         {activeStep !== 7 && (
           <Buttons
             activeStep={activeStep}
-            maxSteps={maxSteps}
             handleNext={activeStep === 0 ? costumedHandleNextStep : () => handleNext()}
             handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
             handleBack={costumedHandleBackStep}
             isValid={isValid}
-            disabled0={disabled0}
             handleSaveSession={handleSaveSession}
             loading={loading}
           />
