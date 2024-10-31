@@ -12,20 +12,19 @@ import { StepTrackShape } from '../fromTexts & stepTrack/StepTrackShape'
 import TipIcon from '../../../Assets/Images/Light Bulb.png'
 import Image from 'next/image'
 
-// Types for file handling
 export interface FileItem {
   id: string
-  file: File // Preserve the full File object
+  file: File
   name: string
   url: string
   isFeatured: boolean
-  uploaded: boolean // Property to track upload status
-  googleId?: string // Add Google Drive ID
+  uploaded: boolean
+  googleId?: string
 }
 
 interface FileUploadAndListProps {
   setValue: (field: string, value: any, options?: any) => void
-  selectedFiles: FileItem[] // Full `FileItem` objects passed from parent
+  selectedFiles: FileItem[]
   setSelectedFiles: React.Dispatch<React.SetStateAction<FileItem[]>>
   watch: any
 }
@@ -55,10 +54,8 @@ export default function FileUploadAndList({
   const { loading, setUploadImageFn } = useStepContext()
   const { storage } = useGoogleDrive()
 
-  // Initialize files directly from selectedFiles provided by the parent
   const [files, setFiles] = useState<FileItem[]>(selectedFiles)
 
-  // Sync selectedFiles with component's local state files initially to ensure consistency
   useEffect(() => {
     setFiles(selectedFiles)
   }, [])
@@ -83,11 +80,11 @@ export default function FileUploadAndList({
         name: file.name,
         url: e.target?.result as string,
         isFeatured: files.length === 0,
-        uploaded: false // New files start with `uploaded` as false
+        uploaded: false
       }
 
       setFiles(prevFiles => [...prevFiles, newFileItem])
-      setSelectedFiles(prevFiles => [...prevFiles, newFileItem]) // Sync to parent
+      setSelectedFiles(prevFiles => [...prevFiles, newFileItem])
     }
     reader.readAsDataURL(file)
   }
@@ -96,13 +93,11 @@ export default function FileUploadAndList({
     try {
       if (selectedFiles.length === 0) return
 
-      // Filter files that haven't been uploaded
       const filesToUpload = selectedFiles.filter(
         fileItem => !fileItem.uploaded && fileItem.file && fileItem.name
       )
       if (filesToUpload.length === 0) return
 
-      // Upload files
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (fileItem, index) => {
           const uploadedFile = await uploadImageToGoogleDrive(
@@ -111,7 +106,7 @@ export default function FileUploadAndList({
           )
           return {
             ...fileItem,
-            googleId: uploadedFile.id, // Store the Google Drive ID
+            googleId: uploadedFile.id,
             uploaded: true,
             isFeatured: index === 0
           }
@@ -121,7 +116,6 @@ export default function FileUploadAndList({
       const featuredFile = uploadedFiles.find(file => file.isFeatured)
       const nonFeaturedFiles = uploadedFiles.filter(file => !file.isFeatured)
 
-      // Update evidenceLink with featured file URL
       if (featuredFile) {
         setValue(
           'evidenceLink',
@@ -129,17 +123,15 @@ export default function FileUploadAndList({
         )
       }
 
-      // Update portfolio with non-featured files only
       const currentPortfolio = Array.isArray(watch('portfolio')) ? watch('portfolio') : []
       const newPortfolioEntries = nonFeaturedFiles.map(file => ({
         name: file.name,
         url: `https://drive.google.com/uc?export=view&id=${file.googleId}`,
-        googleId: file.googleId // Include Google ID for easier deletion
+        googleId: file.googleId
       }))
 
       setValue('portfolio', [...currentPortfolio, ...newPortfolioEntries])
 
-      // Mark files as uploaded in the parent state
       setSelectedFiles(
         selectedFiles.map(file => {
           const uploadedFile = uploadedFiles.find(f => f.name === file.name)
@@ -153,7 +145,6 @@ export default function FileUploadAndList({
     }
   }, [selectedFiles, setValue, setSelectedFiles, storage, watch])
 
-  // Set the upload function in the parent context
   useEffect(() => {
     // @ts-ignore-next-line
     setUploadImageFn(() => handleUpload)
@@ -164,22 +155,20 @@ export default function FileUploadAndList({
       file.id === id ? { ...file, name: newName } : file
     )
     setFiles(updatedFiles)
-    setSelectedFiles(updatedFiles) // Sync with parent
+    setSelectedFiles(updatedFiles)
   }
 
   const handleDelete = (id: string) => {
     console.log('Deleting file with ID:', id)
     let isFeaturedFileDeleted = false
-    // Update `files` state by removing the deleted file
+
     setFiles(prevFiles => {
       const updatedFiles = prevFiles.filter(
         file => file.googleId !== id && file.id !== id
       )
 
-      // Check if the deleted file was the featured file
       isFeaturedFileDeleted = prevFiles[0]?.googleId === id || prevFiles[0]?.id === id
 
-      // Set the next file as featured if the featured file was deleted
       if (isFeaturedFileDeleted && updatedFiles.length > 0) {
         updatedFiles[0].isFeatured = true
       }
@@ -187,33 +176,28 @@ export default function FileUploadAndList({
       return updatedFiles
     })
 
-    // Sync updated files with `selectedFiles` in the parent
     setSelectedFiles(prevSelectedFiles =>
       prevSelectedFiles.filter(file => file.googleId !== id && file.id !== id)
     )
 
-    // Retrieve current portfolio from form data
     const currentPortfolio = Array.isArray(watch('portfolio')) ? watch('portfolio') : []
 
-    // Update portfolio by filtering out the file matching the deleted Google Drive ID
     let updatedPortfolio = currentPortfolio.filter(
       (file: { googleId: string }) => file.googleId !== id
     )
 
-    // If the featured file was deleted, set the new featured file and update `evidenceLink`
-    const newFeaturedFile = files[1] // Next available file after deletion
+    const newFeaturedFile = files[1]
     if (isFeaturedFileDeleted && newFeaturedFile?.googleId) {
       setValue(
         'evidenceLink',
         `https://drive.google.com/uc?export=view&id=${newFeaturedFile.googleId}`
       )
-      // Ensure the new featured file is not included in the portfolio
+
       updatedPortfolio = updatedPortfolio.filter(
         (file: { googleId: string }) => file.googleId !== newFeaturedFile.googleId
       )
     }
 
-    // Finally, set the portfolio without the new featured file
     setValue('portfolio', updatedPortfolio)
     console.log('Updated portfolio after deletion:', updatedPortfolio)
   }
@@ -300,7 +284,7 @@ export default function FileUploadAndList({
       </Typography>
 
       <FileListDisplay
-        files={files}
+        files={selectedFiles}
         onDelete={handleDelete}
         onNameChange={handleNameChange}
       />

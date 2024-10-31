@@ -3,18 +3,11 @@ import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { signIn, useSession } from 'next-auth/react'
 import { SVGFolder, SVGSinfo } from '../../../Assets/SVGs'
-
-interface Step0Props {
-  connectToGoogleDrive: () => void
-  continueWithoutSaving: () => void
-}
-
 export function Step0() {
   const { data: session } = useSession()
 
   const connectToGoogleDrive = async () => {
     if (session?.accessToken) {
-      // Move directly to the next step by updating the hash
       window.location.hash = '#step1'
       return
     }
