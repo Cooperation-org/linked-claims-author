@@ -7,6 +7,10 @@ import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-st
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
 import { useStepContext } from '../StepContext'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
+import { SVGDescribeBadge, TasksVector } from '../../../Assets/SVGs'
+import { StepTrackShape } from '../fromTexts & stepTrack/StepTrackShape'
+import TipIcon from '../../../Assets/Images/Light Bulb.png'
+import Image from 'next/image'
 
 // Types for file handling
 interface FileItem {
@@ -49,7 +53,6 @@ export default function FileUploadAndList({
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const { loading, setUploadImageFn } = useStepContext()
   const { storage } = useGoogleDrive()
-  const formData = watch()
 
   // Initialize files directly from selectedFiles provided by the parent
   const [files, setFiles] = useState<FileItem[]>(selectedFiles)
@@ -204,12 +207,67 @@ export default function FileUploadAndList({
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}
+    >
+      <TasksVector />
+
+      <Typography
+        sx={{
+          fontFamily: 'Lato',
+          fontSize: '24px',
+          fontWeight: 400,
+          textAlign: 'center',
+          marginBottom: '16px'
+        }}
+      >
+        Do you have any supporting evidence that you’d like to add?
+      </Typography>
+
+      <StepTrackShape />
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '24px',
+          width: '100%',
+          maxWidth: '800px',
+          gap: '1rem',
+          my: 2,
+          backgroundColor: '#D1E4FF',
+          p: '0.6rem 1rem',
+          borderRadius: '1rem'
+        }}
+      >
+        <Image src={TipIcon} alt='Tip Icon' width={100} height={100} />
+        <Typography
+          sx={{
+            fontFamily: 'Lato',
+            fontSize: '16px',
+            fontWeight: 400,
+            color: '#334155'
+          }}
+        >
+          The strength of your credential is significantly enhanced when you provide
+          supporting evidence.
+        </Typography>
+      </Box>
+
       <UploadBox onClick={handleFileUploadClick}>
-        <Typography variant='h6'>
+        <Typography variant='h6' sx={{ textAlign: 'center', fontWeight: 500 }}>
           Drop your files here or <span style={{ color: '#2563EB' }}>browse</span>
         </Typography>
-        <Typography variant='caption' color='textSecondary'>
+        <Typography
+          variant='caption'
+          color='textSecondary'
+          sx={{ textAlign: 'center', fontSize: '0.875rem' }}
+        >
           Max 10 files
         </Typography>
       </UploadBox>
@@ -222,7 +280,10 @@ export default function FileUploadAndList({
         accept='image/*'
       />
 
-      <Typography mt={1}>
+      <Typography
+        mt={2}
+        sx={{ textAlign: 'center', fontSize: '0.875rem', color: '#666' }}
+      >
         Drag images to reorder. The first image will always be the featured image.
       </Typography>
 
@@ -231,6 +292,7 @@ export default function FileUploadAndList({
         onDelete={handleDelete}
         onNameChange={handleNameChange}
       />
+
       <LoadingOverlay text='Uploading files...' open={loading} />
     </Box>
   )

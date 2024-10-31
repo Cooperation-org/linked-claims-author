@@ -7,17 +7,10 @@ import { FormControl, Box, Slide, Button } from '@mui/material'
 import { FormData } from './types/Types'
 import { Step0 } from './Steps/Step0_connectToGoogle'
 import { Buttons } from './buttons/Buttons'
-import { Step1 } from './Steps/Step1_userName'
-import { Step2 } from './Steps/Step2_descreptionFields'
-import { Step1 } from './Steps/Step1'
-import { Step2 } from './Steps/Step2'
-import { Step3 } from './Steps/Step3'
 import Step4 from './Steps/Step3_uploadEvidence'
 import Step5 from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 import { SVGBack } from '../../Assets/SVGs'
-import { createDID, signCred } from '../../utils/signCred'
-
 import { createDID, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { useSession, signIn } from 'next-auth/react'
@@ -28,6 +21,9 @@ import SessionDialog from '../../components/SessionDialog'
 import { useStepContext } from './StepContext'
 import SuccessPage from './Steps/SuccessPage'
 import FileUploadAndList from './Steps/Step3_uploadEvidence'
+import { Step1 } from './Steps/Step1_userName'
+import { Step2 } from './Steps/Step2_descreptionFields'
+import Step3 from '../../recommendations/[id]/RecommandationForm/Steps/Step3'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep, loading } = useStepContext()
@@ -266,58 +262,31 @@ const Form = ({ onStepChange }: any) => {
               </Slide>
             )}
             {activeStep === 3 && (
-              <Slide in={true} direction={direction}>
-                <Box>
-                  <Step3
-                    watch={watch}
-                    register={register}
-                    errors={errors}
-                    characterLimit={characterLimit}
-                  />
-                </Box>
-              </Slide>
+              <Box
+                sx={{
+                  width: '100%',
+                  maxWidth: { md: '720px' },
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <FileUploadAndList
+                  watch={watch}
+                  selectedFiles={selectedFiles}
+                  setSelectedFiles={setSelectedFiles}
+                  setValue={setValue}
+                />
+              </Box>
             )}
             {activeStep === 4 && (
-              <Slide in={true} direction={direction}>
-                <Box>
-                  {/* <Step4
-                    register={register}
-                    fields={fields}
-                    append={append}
-                    handleNext={handleNext}
-                    errors={errors}
-                    remove={remove}
-                  /> */}
-                  <Step4
-                    setValue={setValue}
-                    watch={watch}
-                    selectedFiles={selectedFiles}
-                    setSelectedFiles={setSelectedFiles}
-                  />
-                </Box>
-              </Slide>
-            )}
-            {/* {activeStep === 5 && (
-              <Slide in={true} direction={direction}>
-                <Box>
-                  <Step5
-                    setImage={(selectedImage: string, imageUrl: string) => {
-                      setImage(selectedImage)
-                      setValue('evidenceLink', imageUrl)
-                    }}
-                    setUploadImageFn={setUploadImageFn}
-                  />
-                </Box>
-              </Slide>
-            )} */}
-            {activeStep === 6 && (
               <Slide in={true} direction={direction}>
                 <Box>
                   <DataComponent formData={watch()} />
                 </Box>
               </Slide>
             )}
-            {activeStep === 7 && (
+            {activeStep === 5 && (
               <Slide in={true} direction={direction}>
                 <Box>
                   <SuccessPage
