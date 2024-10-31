@@ -16,8 +16,8 @@ export const textGuid = [
   'Would you like to add an image to your skill?',
   <>
     Well done! <br /> Here’s what you’ve created:
-  </>,
-  'Success!'
+  </>
+  // 'Success!'
 ]
 
 export const note =
