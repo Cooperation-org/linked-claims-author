@@ -250,7 +250,7 @@ const Form = ({ onStepChange }: any) => {
           activeStep !== 6 &&
           activeStep !== 4 &&
           activeStep !== 5 && <NoteText />}
-        {activeStep === 7 && <SuccessText />}
+        {/* {activeStep === 7 && <SuccessText />} */}
         <Box sx={{ width: { xs: '100%', md: '50%' }, minWidth: { md: '400px' } }}>
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 0 && (

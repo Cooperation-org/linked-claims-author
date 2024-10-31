@@ -51,8 +51,8 @@ const FormComponent = () => {
           overflow: 'hidden'
         }}
       >
-        <StepTrackShape />
-        <Box
+        {/* <StepTrackShape /> */}
+        {/* <Box
           sx={{
             position: 'relative',
             width: '100%',
@@ -76,7 +76,7 @@ const FormComponent = () => {
               style={{ width: '100px', height: '100px' }}
             />
           </Box>
-        </Box>
+        </Box> */}
       </Box>
       <DynamicForm onStepChange={handleScrollToTop} />
     </Box>
