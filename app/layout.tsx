@@ -39,9 +39,9 @@ export default function RootLayout({
                 component='main'
                 sx={{
                   flexGrow: 1,
-                  mt: { xs: '24px', md: '29px' },
+                  mt: { xs: '27px', md: '100px' },
                   minHeight: {
-                    calc: 'calc(100vh - 155px)'
+                    calc: 'calc(100vh - 157px)'
                   }
                 }}
               >
