@@ -25,11 +25,10 @@ const cleanHTML = (htmlContent: string) => {
 
 interface DataPreviewProps {
   formData: FormData
+  selectedFiles: any[]
 }
 
-const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
-  const [evidenceLink, setEvidenceLink] = useState<string | null>(null)
-
+const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) => {
   console.log(':  formData', formData)
   const theme: Theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
@@ -92,7 +91,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData }) => {
               width: !isLargeScreen ? '100%' : '179px',
               height: '100%'
             }}
-            src={evidenceLink ? evidenceLink : formData.evidenceLink}
+            src={selectedFiles.filter(f => f.isFeatured)[0]?.url}
             alt='Certification Evidence'
           />
         ) : (

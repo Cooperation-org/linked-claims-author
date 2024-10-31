@@ -13,7 +13,7 @@ import TipIcon from '../../../Assets/Images/Light Bulb.png'
 import Image from 'next/image'
 
 // Types for file handling
-interface FileItem {
+export interface FileItem {
   id: string
   file: File // Preserve the full File object
   name: string

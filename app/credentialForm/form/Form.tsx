@@ -282,7 +282,7 @@ const Form = ({ onStepChange }: any) => {
             {activeStep === 4 && (
               <Slide in={true} direction={direction}>
                 <Box>
-                  <DataComponent formData={watch()} />
+                  <DataComponent formData={watch()} selectedFiles={selectedFiles} />
                 </Box>
               </Slide>
             )}
