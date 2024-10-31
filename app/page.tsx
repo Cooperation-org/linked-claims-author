@@ -4,7 +4,6 @@ import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { SVGCheckMarks } from './Assets/SVGs'
 import OverlappingCards from './components/OverLappingCards/OverLappingCards'
-import background from './Assets/Images/backgound.jpeg'
 
 import Link from 'next/link'
 
@@ -23,21 +22,22 @@ const Page = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '37px',
+        gap: '30px',
         alignItems: 'center',
-        pt: '37px',
-        backgroundImage: `url(${background.src})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        pt: '54px',
+        paddingBottom: '40px'
       }}
     >
       {/* Header Component */}
       <Box
         sx={{
           alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'column',
           width: { xs: '92.308vw', md: '712px' },
-          ml: '10px'
+          pb: '10px',
+          ml: '10px',
+          mb: '25px'
         }}
       >
         <Typography
@@ -51,7 +51,8 @@ const Page = () => {
             width: { xs: '360px', md: '720px' }
           }}
         >
-          Capture your life highlights, add proof & unlock new opportunities.{' '}
+          Capture your life
+          <br /> highlights, add proof <br /> & unlock new opportunities.{' '}
         </Typography>
       </Box>
 
