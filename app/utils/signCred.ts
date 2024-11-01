@@ -8,7 +8,7 @@ interface FormDataI {
   criteriaNarrative: string
   achievementDescription: string
   achievementName: string
-  portfolio: { name: string; url: string }[]
+  portfolio: { googleId?: string; name: string; url: string }[]
   evidenceLink: string
   evidenceDescription: string
   credentialType: string
@@ -21,7 +21,7 @@ interface RecommendationI {
   fullName: string
   howKnow: string
   explainAnswer: string
-  portfolio: { name: string; url: string }[]
+  portfolio: { googleId?: string; name: string; url: string }[]
 }
 
 function getCredentialEngine(accessToken: string): CredentialEngine {
@@ -121,7 +121,7 @@ export const generateCredentialData = (data: FormData): FormDataI => {
     achievementName: data.credentialName || '',
     portfolio:
       data.portfolio && data.portfolio.length > 0
-        ? data.portfolio
+        ? data.portfolio.map(({ googleId, ...rest }) => rest)
         : [{ name: '', url: '' }],
     evidenceLink: data.evidenceLink || '',
     evidenceDescription: data.evidenceDescription || '',

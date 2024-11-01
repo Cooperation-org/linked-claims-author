@@ -42,6 +42,7 @@ export interface Credential {
 interface Portfolio {
   name: string
   url: string
+  googleId?: string
 }
 
 // Interfaces for the form fields
