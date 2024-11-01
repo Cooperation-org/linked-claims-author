@@ -49,10 +49,7 @@ export function Buttons({
       )}
       {activeStep !== 4 && activeStep !== 0 && (
         <Button
-          sx={{
-            ...nextButtonStyle,
-            maxWidth: '355px'
-          }}
+          sx={nextButtonStyle}
           onClick={handleNext}
           color='primary'
           disabled={activeStep !== 0 && activeStep !== 3 && !isValid}

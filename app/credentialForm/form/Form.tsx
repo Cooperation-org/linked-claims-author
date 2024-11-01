@@ -203,7 +203,8 @@ const Form = ({ onStepChange }: any) => {
           justifyItems: 'center',
           padding: ' 1px 20px 20px',
           overflow: 'auto',
-          width: 'fit-content',
+          width: '100%',
+          maxWidth: '720px',
           backgroundColor: '#FFF',
           margin: 'auto'
         }}
@@ -335,5 +336,4 @@ const Form = ({ onStepChange }: any) => {
     </Box>
   )
 }
-
 export default Form
