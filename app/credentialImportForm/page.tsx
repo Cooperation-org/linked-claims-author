@@ -1,8 +1,8 @@
 'use client'
 import React from 'react'
 import { Box, TextField, FormLabel, Typography } from '@mui/material'
+import { useRouter } from 'next/navigation'
 
-// Keep the same styles from your original form
 const formLabelStyles = {
   fontFamily: 'Lato',
   fontSize: '16px',
@@ -26,12 +26,14 @@ const textFieldInputProps = {
 }
 
 export function SimpleCredentialForm() {
+  const router = useRouter()
+  
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const credentialUrl = formData.get('credentialUrl')
-    console.log('Credential URL:', credentialUrl)
-    // Add your handling logic here
+    // Navigate to process page with the URL as a query parameter
+    router.push(`/credentialImportForm/process-credential?url=${encodeURIComponent(credentialUrl as string)}`)
   }
 
   return (
@@ -49,8 +51,8 @@ export function SimpleCredentialForm() {
       </Typography>
       
       <form onSubmit={handleSubmit}>
-        <Box>
-          <FormLabel sx={formLabelStyles} id='credential-url-label'>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <FormLabel sx={{ ...formLabelStyles, mb:2}} id='credential-url-label'>
             Enter your credential URL:
           </FormLabel>
           <TextField
@@ -67,7 +69,6 @@ export function SimpleCredentialForm() {
   )
 }
 
-// To use in your page.tsx:
 const FormComponent = () => {
   return (
     <Box
