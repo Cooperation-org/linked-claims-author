@@ -7,20 +7,11 @@ import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-st
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
 import { useStepContext } from '../StepContext'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
-import { SVGDescribeBadge, TasksVector } from '../../../Assets/SVGs'
+import { TasksVector } from '../../../Assets/SVGs'
 import { StepTrackShape } from '../fromTexts & stepTrack/StepTrackShape'
 import TipIcon from '../../../Assets/Images/Light Bulb.png'
 import Image from 'next/image'
-
-export interface FileItem {
-  id: string
-  file: File
-  name: string
-  url: string
-  isFeatured: boolean
-  uploaded: boolean
-  googleId?: string
-}
+import { FileItem } from '../types/Types'
 
 interface FileUploadAndListProps {
   setValue: (field: string, value: any, options?: any) => void
@@ -28,21 +19,6 @@ interface FileUploadAndListProps {
   setSelectedFiles: React.Dispatch<React.SetStateAction<FileItem[]>>
   watch: any
 }
-
-const UploadBox = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '40px 20px',
-  border: '2px dashed #ccc',
-  borderRadius: '8px',
-  cursor: 'pointer',
-  width: '100%',
-  transition: 'border 0.3s',
-  '&:hover': {
-    borderColor: '#2563EB'
-  }
-})
 
 export default function FileUploadAndList({
   setValue,
@@ -55,6 +31,7 @@ export default function FileUploadAndList({
   const { storage } = useGoogleDrive()
 
   const [files, setFiles] = useState<FileItem[]>(selectedFiles)
+  const latestFileNamesRef = useRef(selectedFiles)
 
   useEffect(() => {
     setFiles(selectedFiles)
@@ -65,62 +42,128 @@ export default function FileUploadAndList({
   }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newFile = event.target.files?.[0]
-    if (newFile) {
-      addFile(newFile)
+    const newFiles = event.target.files
+    if (newFiles) {
+      const filesArray = Array.from(newFiles)
+
+      // Check if any file is already featured
+      const isAnyFileFeatured = files.some(file => file.isFeatured)
+      let hasSetFeatured = isAnyFileFeatured // Track if we've already set a featured file
+
+      filesArray.forEach((file, index) => {
+        const reader = new FileReader()
+        reader.onload = e => {
+          const newFileItem: FileItem = {
+            id: crypto.randomUUID(), // Generate a unique ID
+            file: file,
+            name: file.name,
+            url: e.target?.result as string,
+            isFeatured: !hasSetFeatured && index === 0, // Set the first file in the batch as featured if none are featured
+            uploaded: false,
+            fileExtension: file.name.split('.').pop() || ''
+          }
+
+          // Update the state with the new file, ensuring no duplicates by name
+          setFiles(prevFiles => {
+            const filesWithoutDuplicate = prevFiles.filter(f => f.name !== file.name)
+            return newFileItem.isFeatured
+              ? [newFileItem, ...filesWithoutDuplicate] // Place featured file at the top
+              : [...filesWithoutDuplicate, newFileItem]
+          })
+
+          setSelectedFiles(prevFiles => {
+            const filesWithoutDuplicate = prevFiles.filter(f => f.name !== file.name)
+            return newFileItem.isFeatured
+              ? [newFileItem, ...filesWithoutDuplicate] // Place featured file at the top
+              : [...filesWithoutDuplicate, newFileItem]
+          })
+
+          // Once a file is set as featured, mark `hasSetFeatured` as true to prevent others from being featured
+          if (newFileItem.isFeatured) hasSetFeatured = true
+        }
+        reader.readAsDataURL(file)
+      })
     }
   }
 
   const addFile = (file: File) => {
+    if (files.length >= 10) {
+      alert('You can only upload a maximum of 10 files.')
+      return
+    }
+
     const reader = new FileReader()
     reader.onload = e => {
+      const isFirstFileFeatured = files.every(f => !f.isFeatured) // Only set as featured if no file is currently featured
+
       const newFileItem: FileItem = {
-        id: new Date().getTime().toString(),
+        id: crypto.randomUUID(), // Generate a unique ID
         file: file,
         name: file.name,
         url: e.target?.result as string,
-        isFeatured: files.length === 0,
-        uploaded: false
+        isFeatured: isFirstFileFeatured, // Set as featured only if no file is featured
+        uploaded: false,
+        fileExtension: file.name.split('.').pop() || ''
       }
 
-      setFiles(prevFiles => [...prevFiles, newFileItem])
-      setSelectedFiles(prevFiles => [...prevFiles, newFileItem])
+      setFiles(prevFiles => {
+        const filesWithoutDuplicate = prevFiles.filter(f => f.name !== file.name) // Remove duplicates
+        return newFileItem.isFeatured
+          ? [newFileItem, ...filesWithoutDuplicate] // Place featured item at the top
+          : [...filesWithoutDuplicate, newFileItem]
+      })
+
+      setSelectedFiles(prevFiles => {
+        const filesWithoutDuplicate = prevFiles.filter(f => f.name !== file.name) // Remove duplicates
+        return newFileItem.isFeatured
+          ? [newFileItem, ...filesWithoutDuplicate] // Place featured item at the top
+          : [...filesWithoutDuplicate, newFileItem]
+      })
     }
     reader.readAsDataURL(file)
+  }
+
+  const setAsFeatured = (id: string) => {
+    setFiles(prevFiles => {
+      return prevFiles
+        .map(file => ({ ...file, isFeatured: file.id === id }))
+        .sort((a, b) => (a.isFeatured === b.isFeatured ? 0 : a.isFeatured ? -1 : 1)) // Featured file at the top
+    })
+
+    setSelectedFiles(prevFiles => {
+      return prevFiles
+        .map(file => ({ ...file, isFeatured: file.id === id }))
+        .sort((a, b) => (a.isFeatured === b.isFeatured ? 0 : a.isFeatured ? -1 : 1)) // Featured file at the top
+    })
   }
 
   const handleUpload = useCallback(async () => {
     try {
       if (selectedFiles.length === 0) return
-
-      // Identify files that haven't been uploaded
       const filesToUpload = selectedFiles.filter(
         fileItem => !fileItem.uploaded && fileItem.file && fileItem.name
       )
-      if (filesToUpload.length === 0) return // Exit if no new files
+      if (filesToUpload.length === 0) return
 
-      // Upload each file
+      // Upload files to Google Drive
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (fileItem, index) => {
           const uploadedFile = await uploadImageToGoogleDrive(
             storage as GoogleDriveStorage,
-            fileItem.file
+            { ...fileItem.file, name: fileItem.name + '.' + fileItem.fileExtension }
           )
           return {
             ...fileItem,
             googleId: (uploadedFile as { id: string }).id,
             uploaded: true,
-            isFeatured: index === 0 && !watch('evidenceLink') // First file as featured if no evidence link exists
+            isFeatured: index === 0 && !watch('evidenceLink')
           }
         })
       )
 
-      // Find the featured and non-featured files among the uploaded files
       const featuredFile = uploadedFiles.find(file => file.isFeatured)
       const nonFeaturedFiles = uploadedFiles.filter(file => !file.isFeatured)
-      console.log('🚀 ~ handleUpload ~ nonFeaturedFiles:', nonFeaturedFiles)
 
-      // Update `evidenceLink` if there is a featured file
       if (featuredFile) {
         setValue(
           'evidenceLink',
@@ -128,22 +171,16 @@ export default function FileUploadAndList({
         )
       }
 
-      // Ensure the existing portfolio is preserved in `portfolio`
       const currentPortfolio = Array.isArray(watch('portfolio')) ? watch('portfolio') : []
-      console.log('🚀 ~ handleUpload ~ currentPortfolio:', currentPortfolio)
-
-      // Append only non-featured uploaded files to `portfolio`
       const newPortfolioEntries = nonFeaturedFiles.map(file => ({
         name: file.name,
         url: `https://drive.google.com/uc?export=view&id=${file.googleId}`,
         googleId: file.googleId
       }))
-      console.log('🚀 ~ newPortfolioEntries ~ newPortfolioEntries:', newPortfolioEntries)
 
-      // Update the form portfolio with current entries plus any new non-featured entries
       setValue('portfolio', [...currentPortfolio, ...newPortfolioEntries])
 
-      // Update selectedFiles to mark these as uploaded and assign Google Drive IDs
+      // Update selectedFiles with uploaded googleIds
       setSelectedFiles(
         selectedFiles.map(file => {
           const uploadedFile = uploadedFiles.find(f => f.name === file.name)
@@ -156,7 +193,6 @@ export default function FileUploadAndList({
       console.error('Error uploading files:', error)
     }
   }, [selectedFiles, setValue, setSelectedFiles, storage, watch])
-
   useEffect(() => {
     // @ts-ignore-next-line
     setUploadImageFn(() => handleUpload)
@@ -168,6 +204,7 @@ export default function FileUploadAndList({
     )
     setFiles(updatedFiles)
     setSelectedFiles(updatedFiles)
+    latestFileNamesRef.current = updatedFiles // Sync ref with the latest name change
   }
 
   const handleDelete = (id: string) => {
@@ -178,40 +215,31 @@ export default function FileUploadAndList({
       const updatedFiles = prevFiles.filter(
         file => file.googleId !== id && file.id !== id
       )
-
       isFeaturedFileDeleted = prevFiles[0]?.googleId === id || prevFiles[0]?.id === id
-
       if (isFeaturedFileDeleted && updatedFiles.length > 0) {
         updatedFiles[0].isFeatured = true
       }
-
       return updatedFiles
     })
-
     setSelectedFiles(prevSelectedFiles =>
       prevSelectedFiles.filter(file => file.googleId !== id && file.id !== id)
     )
 
     const currentPortfolio = Array.isArray(watch('portfolio')) ? watch('portfolio') : []
-
     let updatedPortfolio = currentPortfolio.filter(
       (file: { googleId: string }) => file.googleId !== id
     )
-
     const newFeaturedFile = files[1]
     if (isFeaturedFileDeleted && newFeaturedFile?.googleId) {
       setValue(
         'evidenceLink',
         `https://drive.google.com/uc?export=view&id=${newFeaturedFile.googleId}`
       )
-
       updatedPortfolio = updatedPortfolio.filter(
         (file: { googleId: string }) => file.googleId !== newFeaturedFile.googleId
       )
     }
-
     setValue('portfolio', updatedPortfolio)
-    console.log('Updated portfolio after deletion:', updatedPortfolio)
   }
 
   return (
@@ -269,14 +297,8 @@ export default function FileUploadAndList({
 
       <UploadBox onClick={handleFileUploadClick}>
         <Typography variant='h6' sx={{ textAlign: 'center', fontWeight: 500 }}>
-          Drop your files here or <span style={{ color: '#2563EB' }}>browse</span>
-        </Typography>
-        <Typography
-          variant='caption'
-          color='textSecondary'
-          sx={{ textAlign: 'center', fontSize: '0.875rem' }}
-        >
-          Max 10 files
+          Select multiple files up to 10 files <br />
+          <span style={{ color: '#2563EB' }}>browse</span>
         </Typography>
       </UploadBox>
 
@@ -286,6 +308,7 @@ export default function FileUploadAndList({
         onChange={handleFileChange}
         style={{ display: 'none' }}
         accept='image/*'
+        multiple
       />
 
       <Typography
@@ -299,9 +322,25 @@ export default function FileUploadAndList({
         files={selectedFiles}
         onDelete={handleDelete}
         onNameChange={handleNameChange}
+        onSetAsFeatured={setAsFeatured} // Pass function to FileListDisplay
       />
 
       <LoadingOverlay text='Uploading files...' open={loading} />
     </Box>
   )
 }
+
+const UploadBox = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: '40px 20px',
+  border: '2px dashed #ccc',
+  borderRadius: '8px',
+  cursor: 'pointer',
+  width: '100%',
+  transition: 'border 0.3s',
+  '&:hover': {
+    borderColor: '#2563EB'
+  }
+})

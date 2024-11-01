@@ -74,3 +74,14 @@ export interface CredentialDisplayProps {
   credential: Credential
   onCopy: () => void
 }
+
+export interface FileItem {
+  id: string
+  file: File
+  name: string
+  url: string
+  isFeatured: boolean
+  uploaded: boolean
+  fileExtension: string
+  googleId?: string
+}
