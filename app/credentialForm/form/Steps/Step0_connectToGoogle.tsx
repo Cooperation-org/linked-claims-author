@@ -40,7 +40,8 @@ export function Step0() {
         alignItems: 'center',
         justifyContent: 'center',
         gap: 3,
-        textAlign: 'center'
+        textAlign: 'center',
+        mt: 4
       }}
     >
       {/* Google Drive Icon */}

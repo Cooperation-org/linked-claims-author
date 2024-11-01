@@ -33,7 +33,8 @@ export default function RootLayout({
             padding: 0,
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '100vh'
+            minHeight: '100vh',
+            backgroundColor: '#F0F4F8'
           }}
         >
           <Providers>
@@ -43,7 +44,6 @@ export default function RootLayout({
                 component='main'
                 sx={{
                   flexGrow: 1,
-                  mt: { xs: '27px', md: '100px' },
                   minHeight: `calc(100vh - 255px)`,
                   backgroundImage: pathname === '/' ? `url(${background.src})` : 'none',
                   backgroundRepeat: 'no-repeat',

@@ -20,7 +20,7 @@ const NavBar = () => {
         width: '100%',
         height: { xs: '27px', md: '100px' },
         display: 'flex',
-        position: 'fixed',
+        position: 'sticky',
         alignItems: 'center',
         backgroundColor: 'white',
         justifyContent: 'space-between',

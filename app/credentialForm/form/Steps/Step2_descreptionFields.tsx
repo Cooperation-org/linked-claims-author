@@ -6,7 +6,6 @@ import {
   inputPropsStyles,
   TextFieldStyles,
   formLabelStyles,
-  formLabelSpanStyles,
   CustomTextField,
   customTextFieldStyles,
   aiBoxStyles,
@@ -93,9 +92,7 @@ export function Step2({ register, watch, control, errors }: Readonly<Step2Props>
           Time spent acquiring this skill:{' '}
         </FormLabel>
         <TextField
-          {...register('credentialDuration', {
-            required: 'credential Duration is required'
-          })}
+          {...register('credentialDuration')}
           placeholder='I learned these skills through working at a community garden for 2 years, under the head gardener Maria Hernandez'
           variant='outlined'
           sx={TextFieldStyles}
@@ -115,7 +112,7 @@ export function Step2({ register, watch, control, errors }: Readonly<Step2Props>
         </FormLabel>
         <CustomTextField
           {...register('credentialDescription', {
-            required: 'credential Description is required'
+            required: 'Credential Description is required'
           })}
           sx={customTextFieldStyles}
           multiline

@@ -25,12 +25,11 @@ const FormComponent = () => {
       ref={formRef}
       sx={{
         minHeight: {
-          xs: 'calc(100vh - 190px)',
-          md: 'calc(100vh - 381px)'
+          xs: 'calc(100vh - 182px)',
+          md: 'calc(100vh - 255px)'
         },
         display: 'block',
         flexDirection: 'column',
-        justifyContent: 'space-between',
         overflow: 'auto'
       }}
     >
