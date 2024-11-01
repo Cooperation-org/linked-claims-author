@@ -47,13 +47,6 @@ export const CustomTextField = styled(TextField)({
   }
 })
 
-export const boxStyles = {
-  width: '100%',
-  bgcolor: '#FFF',
-  borderRadius: '8px',
-  border: '1px solid #E5E7EB'
-}
-
 export const formLabelStyles = {
   color: 't3BodyText',
   fontFamily: 'Lato',

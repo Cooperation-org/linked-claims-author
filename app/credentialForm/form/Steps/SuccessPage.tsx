@@ -187,6 +187,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
         <Button
           onClick={() => handleShareOption('CopyURL')}
+          disabled={!fileId}
           sx={{
             ...buttonStyles,
             mt: '15px'
@@ -219,6 +220,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           onClick={() => {
             window.location.href = `/askforrecommendation/${refLink}`
           }}
+          disabled={!refLink}
           sx={buttonStyles}
         >
           <HeartSVG />
@@ -250,11 +252,19 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           Make your skills work for you:
         </Typography>
 
-        <Button onClick={() => handleShareOption('LinkedIn')} sx={buttonStyles}>
+        <Button
+          disabled={!fileId}
+          onClick={() => handleShareOption('LinkedIn')}
+          sx={buttonStyles}
+        >
           <NewLinkedin />
           Share to LinkedIn
         </Button>
-        <Button onClick={() => handleShareOption('Email')} sx={buttonStyles}>
+        <Button
+          disabled={!fileId}
+          onClick={() => handleShareOption('Email')}
+          sx={buttonStyles}
+        >
           <NewEmail />
           Share via Email
         </Button>
