@@ -28,7 +28,7 @@ export function Buttons({
   return (
     <Box
       sx={{
-        width: { xs: '100%', md: '35%', lg: '35%' },
+        width: '100%',
         height: '40px',
         display: 'flex',
         gap: '15px',
@@ -49,7 +49,7 @@ export function Buttons({
           Skip
         </Button>
       )}
-      {activeStep !== 5 && activeStep !== 6 && activeStep !== 0 && (
+      {activeStep !== 4 && activeStep !== 0 && (
         <Button
           sx={{
             ...nextButtonStyle,
@@ -63,7 +63,7 @@ export function Buttons({
           Next
         </Button>
       )}
-      {activeStep === 6 && (
+      {activeStep === 4 && (
         <Button sx={nextButtonStyle} onClick={handleSign} color='primary'>
           Finish & Sign
         </Button>

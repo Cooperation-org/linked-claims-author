@@ -199,28 +199,34 @@ const Form = ({ onStepChange }: any) => {
   }
 
   return (
-    <>
+    <Box sx={{ m: { xs: '50px auto', sm: '50px auto', md: '120px auto' } }}>
       <form
         style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '30px',
           alignItems: 'center',
-          marginTop: '30px',
-          padding: '0 15px 30px',
-          overflow: 'auto'
+          justifyItems: 'center',
+          padding: ' 1px 20px 20px',
+          overflow: 'auto',
+          width: 'fit-content',
+          backgroundColor: '#FFF',
+          margin: 'auto'
         }}
         onSubmit={handleFormSubmit}
       >
         <Box
           sx={{
-            width: { xs: '100%', md: '50%' },
+            width: '100%',
             minWidth: { md: '400px' },
             maxWidth: { md: '720px' }
           }}
         >
           {activeStep >= 2 && activeStep <= 4 && (
-            <Button onClick={handleBack} sx={{ textTransform: 'capitalize' }}>
+            <Button
+              onClick={handleBack}
+              sx={{ textTransform: 'capitalize', p: '0', mr: '5px' }}
+            >
               <Box sx={{ mt: 1 }}>
                 <SVGBack />
               </Box>
@@ -329,7 +335,7 @@ const Form = ({ onStepChange }: any) => {
         )}
         {snackMessage ? <SnackMessage message={snackMessage} /> : ''}
       </form>
-    </>
+    </Box>
   )
 }
 

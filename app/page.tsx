@@ -29,11 +29,12 @@ const Page = () => {
       {/* Header Component */}
       <Box
         sx={{
-          alignItems: 'center',
+          alignItems: { xs: 'center', md: 'start' },
           display: 'flex',
           flexDirection: 'column',
           width: { xs: '92.308vw', md: '712px' },
-          pb: '10px'
+          pb: '10px',
+          justifyContent: 'start'
         }}
       >
         <Typography
