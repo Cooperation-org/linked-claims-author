@@ -108,7 +108,7 @@ export default function FileUploadAndList({
           )
           return {
             ...fileItem,
-            googleId: uploadedFile.id,
+            googleId: (uploadedFile as { id: string }).id,
             uploaded: true,
             isFeatured: index === 0 && !watch('evidenceLink') // First file as featured if no evidence link exists
           }

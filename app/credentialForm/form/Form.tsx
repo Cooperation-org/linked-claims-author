@@ -7,8 +7,6 @@ import { FormControl, Box, Slide, Button } from '@mui/material'
 import { FormData } from './types/Types'
 import { Step0 } from './Steps/Step0_connectToGoogle'
 import { Buttons } from './buttons/Buttons'
-import Step4 from './Steps/Step3_uploadEvidence'
-import Step5 from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 import { SVGBack } from '../../Assets/SVGs'
 import { createDID, signCred } from '../../utils/signCred'
@@ -23,7 +21,6 @@ import SuccessPage from './Steps/SuccessPage'
 import FileUploadAndList from './Steps/Step3_uploadEvidence'
 import { Step1 } from './Steps/Step1_userName'
 import { Step2 } from './Steps/Step2_descreptionFields'
-import Step3 from '../../recommendations/[id]/RecommandationForm/Steps/Step3'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep, loading } = useStepContext()
@@ -206,7 +203,8 @@ const Form = ({ onStepChange }: any) => {
           justifyItems: 'center',
           padding: ' 1px 20px 20px',
           overflow: 'auto',
-          width: 'fit-content',
+          width: '100%',
+          maxWidth: '720px',
           backgroundColor: '#FFF',
           margin: 'auto'
         }}
@@ -338,5 +336,4 @@ const Form = ({ onStepChange }: any) => {
     </Box>
   )
 }
-
 export default Form
