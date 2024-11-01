@@ -91,6 +91,7 @@ const signCred = async (
       )
     } else {
       formData = generateCredentialData(data)
+      console.log('🚀 ~ formData:', formData)
       signedVC = await credentialEngine.signVC(formData, 'VC', keyPair, issuerDid)
     }
 

@@ -1,15 +1,15 @@
 'use client'
 
 import React from 'react'
-import { Box, Typography, TextField, Button, styled } from '@mui/material'
+import { Box, Typography, TextField, styled } from '@mui/material'
 import Image from 'next/image'
-import { join } from 'path'
-import { FileItem } from '../credentialForm/form/Steps/Step3_uploadEvidence'
+import { FileItem } from '../credentialForm/form/types/Types'
 
 interface FileListProps {
   files: FileItem[]
   onDelete: (id: string) => void
   onNameChange: (id: string, newName: string) => void
+  onSetAsFeatured: (id: string) => void
 }
 
 const FileListContainer = styled(Box)({
@@ -39,16 +39,42 @@ const FeaturedLabel = styled(Box)(({ theme }) => ({
   borderRadius: '4px',
   fontSize: '12px'
 }))
+
+const SetAsFeaturedLabel = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  bottom: '5px',
+  left: '10px',
+  color: '#fff',
+  padding: '2px 8px',
+  borderRadius: '4px',
+  fontSize: '12px',
+  border: `1px solid ${theme.palette.primary.main}`,
+  cursor: 'pointer',
+  transition: 'background-color 0.3s',
+  backgroundColor: '#77777793',
+  '&:hover': {
+    backgroundColor: theme.palette.primary.main,
+    color: '#fff'
+  }
+}))
+
 export default function FileListDisplay({
   files,
   onDelete,
-  onNameChange
+  onNameChange,
+  onSetAsFeatured
 }: FileListProps) {
   return (
     <FileListContainer>
-      {files.map((file, index) => (
+      {files.map(file => (
         <FileItemBox key={file.googleId || file.id} isFeatured={file.isFeatured}>
-          {file.isFeatured && <FeaturedLabel>Featured</FeaturedLabel>}
+          {file.isFeatured ? (
+            <FeaturedLabel>Featured</FeaturedLabel>
+          ) : (
+            <SetAsFeaturedLabel onClick={() => onSetAsFeatured(file.id)}>
+              Featured
+            </SetAsFeaturedLabel>
+          )}
 
           <Box sx={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
             <Image
@@ -73,10 +99,15 @@ export default function FileListDisplay({
             />
           </Box>
 
-          <Box sx={{ ml: 1 }}>
+          <Box sx={{ marginLeft: 'auto' }}>
             <Typography
-              sx={{ cursor: 'pointer', textAlign: 'end', fontSize: '0.8rem' }}
-              onClick={() => onDelete(file.googleId || file.id)} // Pass googleId if available
+              sx={{
+                cursor: 'pointer',
+                textAlign: 'end',
+                fontSize: '0.8rem',
+                ml: 2
+              }}
+              onClick={() => onDelete(file.googleId || file.id)}
             >
               Delete
             </Typography>
