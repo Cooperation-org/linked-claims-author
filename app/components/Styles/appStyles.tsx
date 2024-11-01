@@ -26,7 +26,8 @@ export const nextButtonStyle = {
   backgroundColor: '#003FE0',
   color: '#FFFFFF',
   flexGrow: 8,
-  fontSize: '14px'
+  fontSize: '14px',
+  width: 'fit-content'
 }
 
 export const CustomTextField = styled(TextField)({
