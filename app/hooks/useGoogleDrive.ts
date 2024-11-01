@@ -40,7 +40,7 @@ const useGoogleDrive = () => {
     async (fileID: string): Promise<ClaimDetail | null> => {
       if (!memoizedStorage) return null
       const file = await memoizedStorage.retrieve(fileID)
-      return file as ClaimDetail
+      return file?.data as ClaimDetail
     },
     [memoizedStorage]
   )
@@ -73,7 +73,7 @@ const useGoogleDrive = () => {
             const ID = extractGoogleDriveId(fileComment.content)
             if (ID) {
               const comment = await memoizedStorage.retrieve(ID)
-              if (comment) comments.push(comment as ClaimDetail)
+              if (comment) comments.push(comment.data as ClaimDetail)
             }
           })
         )

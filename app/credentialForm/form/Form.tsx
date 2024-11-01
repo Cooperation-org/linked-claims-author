@@ -7,8 +7,7 @@ import { FormControl, Box, Slide, Button } from '@mui/material'
 import { FormData } from './types/Types'
 import { Step0 } from './Steps/Step0_connectToGoogle'
 import { Buttons } from './buttons/Buttons'
-import { Step1 } from './Steps/Step1_userName'
-import { Step2 } from './Steps/Step2_descreptionFields'
+import Step4 from './Steps/Step3_uploadEvidence'
 import Step5 from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
 import { SVGBack } from '../../Assets/SVGs'
@@ -21,20 +20,23 @@ import SnackMessage from '../../components/SnackMessage'
 import SessionDialog from '../../components/SessionDialog'
 import { useStepContext } from './StepContext'
 import SuccessPage from './Steps/SuccessPage'
+import FileUploadAndList from './Steps/Step3_uploadEvidence'
+import { Step1 } from './Steps/Step1_userName'
+import { Step2 } from './Steps/Step2_descreptionFields'
+import Step3 from '../../recommendations/[id]/RecommandationForm/Steps/Step3'
 
 const Form = ({ onStepChange }: any) => {
-  const { activeStep, handleNext, handleBack, setActiveStep, setUploadImageFn, loading } =
-    useStepContext()
+  const { activeStep, handleNext, handleBack, setActiveStep, loading } = useStepContext()
   const [prevStep, setPrevStep] = useState(0)
   const [link, setLink] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
-  const [disabled0, setDisabled0] = useState(false)
   const [snackMessage, setSnackMessage] = useState('')
   const [userSessions, setUserSessions] = useState<{}[]>([])
   const [openDialog, setOpenDialog] = useState(false)
   const [fileId, setFileId] = useState('')
   const [image, setImage] = useState('')
+  const [selectedFiles, setSelectedFiles] = useState<any[]>([])
 
   const characterLimit = 294
   const { data: session } = useSession()
@@ -59,16 +61,11 @@ const Form = ({ onStepChange }: any) => {
       credentialName: '',
       credentialDuration: '',
       credentialDescription: '',
-      portfolio: [{ name: '', url: '' }],
+      portfolio: [],
       evidenceLink: '',
       description: ''
     },
     mode: 'onChange'
-  })
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'portfolio'
   })
 
   useEffect(() => {
@@ -271,22 +268,27 @@ const Form = ({ onStepChange }: any) => {
               </Slide>
             )}
             {activeStep === 3 && (
-              <Slide in={true} direction={direction}>
-                <Box>
-                  <Step5
-                    setImage={(selectedImage: string, imageUrl: string) => {
-                      setImage(selectedImage)
-                      setValue('evidenceLink', imageUrl)
-                    }}
-                    setUploadImageFn={setUploadImageFn}
-                  />
-                </Box>
-              </Slide>
+              <Box
+                sx={{
+                  width: '100%',
+                  maxWidth: { md: '720px' },
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <FileUploadAndList
+                  watch={watch}
+                  selectedFiles={selectedFiles}
+                  setSelectedFiles={setSelectedFiles}
+                  setValue={setValue}
+                />
+              </Box>
             )}
             {activeStep === 4 && (
               <Slide in={true} direction={direction}>
                 <Box>
-                  <DataComponent formData={watch()} image={image} />
+                  <DataComponent formData={watch()} selectedFiles={selectedFiles} />
                 </Box>
               </Slide>
             )}
@@ -312,12 +314,10 @@ const Form = ({ onStepChange }: any) => {
         {activeStep !== 5 && (
           <Buttons
             activeStep={activeStep}
-            maxSteps={4}
             handleNext={activeStep === 0 ? costumedHandleNextStep : () => handleNext()}
             handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
             handleBack={costumedHandleBackStep}
             isValid={isValid}
-            disabled0={disabled0}
             handleSaveSession={handleSaveSession}
             loading={loading}
           />

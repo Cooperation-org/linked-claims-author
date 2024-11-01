@@ -29,23 +29,23 @@ const Step5: React.FC<Step5Props> = ({ setImage, setUploadImageFn }) => {
     }
   }, [])
 
-  const uploadImage = useCallback(async () => {
-    if (!selectedFile) return
+  // const uploadImage = useCallback(async () => {
+  //   if (!selectedFile) return
 
-    try {
-      // @ts-ignore
-      const uploadedImage = await uploadImageToGoogleDrive(storage, selectedFile)
-      // @ts-ignore
-      const dynamicUrl = `https://drive.google.com/uc?export=view&id=${uploadedImage.id}`
-      setImage(selectedImage as string, dynamicUrl)
-    } catch (error) {
-      console.error('Error uploading image:', error)
-    }
-  }, [selectedFile, setImage, storage])
-  useEffect(() => {
-    // @ts-ignore-next-line
-    setUploadImageFn(() => uploadImage) // Properly set the uploadImage function
-  }, [uploadImage, setUploadImageFn])
+  //   try {
+  //     // @ts-ignore
+  //     const uploadedImage = await uploadImageToGoogleDrive(storage, selectedFile)
+  //     // @ts-ignore
+  //     const dynamicUrl = `https://drive.google.com/uc?export=view&id=${uploadedImage.id}`
+  //     setImage(selectedImage as string, dynamicUrl)
+  //   } catch (error) {
+  //     console.error('Error uploading image:', error)
+  //   }
+  // }, [selectedFile, setImage, storage])
+  // useEffect(() => {
+  //   // @ts-ignore-next-line
+  //   setUploadImageFn(() => uploadImage) // Properly set the uploadImage function
+  // }, [uploadImage, setUploadImageFn])
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,

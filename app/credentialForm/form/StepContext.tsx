@@ -63,7 +63,7 @@ export const StepProvider = ({ children }: { children: any }) => {
   }, [activeStep])
 
   const handleNext = async () => {
-    if (activeStep === 5 && typeof uploadImageFn === 'function') {
+    if (activeStep === 3 && typeof uploadImageFn === 'function') {
       setLoading(true) // Start loading
       try {
         await uploadImageFn() // Wait for image upload to complete
