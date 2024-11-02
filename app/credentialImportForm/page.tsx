@@ -38,7 +38,7 @@ interface FileResult {
 function StatusMessage({ fileResult }: { fileResult: FileResult | null }) {
   if (!fileResult) return null
 
-  if (!fileResult.success) {
+  if (!fileResult.success || ! fileResult.file) {
     return (
       <Typography 
         sx={{ 
@@ -47,12 +47,10 @@ function StatusMessage({ fileResult }: { fileResult: FileResult | null }) {
           textAlign: 'center'
         }}
       >
-        {fileResult.error}
+        {fileResult.error || "Unknown error"}
       </Typography>
     )
   }
-
-  const driveLink = makeGoogleDriveLink(fileResult)
 
   return (
     <Typography 
@@ -62,7 +60,7 @@ function StatusMessage({ fileResult }: { fileResult: FileResult | null }) {
         textAlign: 'center'
       }}
     >
-      Success! <Link href={`${driveLink}`}>View your credential</Link>
+      Success! <Link href={`/view/${fileResult.file?.id}`}>View your credential</Link>
     </Typography>
   )
 }

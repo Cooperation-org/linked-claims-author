@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Tabs, Tab, Box } from '@mui/material'
 // import { useParams } from 'next/navigation'
-import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../view/[id]/ComprehensiveClaimDetails'
 import Form from '../../recommendations/[id]/RecommandationForm/Form'
 
 function a11yProps(index: number) {

@@ -2,6 +2,12 @@ import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID, signCred } from './signCred'
 
 
+export async function getAllClaims(storage: GoogleDriveStorage): Promise<any> {
+  const claimsData = await storage.getAllFilesByType('VCs');
+  if (!claimsData?.length) return [];
+  return claimsData;
+}
+
 
 export async function saveRaw(accessToken: string | undefined, data: any) {
   if (!accessToken) {
