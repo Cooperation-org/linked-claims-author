@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Box, Typography } from '@mui/material'
+import { useSession, signIn } from 'next-auth/react'
+import { signAndSave } from '../../utils/googleDrive'
 
 export default function ProcessCredential() {
  const searchParams = useSearchParams()
@@ -31,8 +33,10 @@ export default function ProcessCredential() {
          const jsonData = JSON.parse(content)
          // If we get here, it's valid JSON
          setStatus('Processing JSON content...')
-         // Insert your JSON handling function here
-         // await handleJsonContent(jsonData)
+
+
+         const accessToken = session?.accessToken
+         await signAndSave(accessToken, jsonData)
          
        } catch (jsonError) {
          // Not JSON, handle as non-JSON
