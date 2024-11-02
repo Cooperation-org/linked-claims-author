@@ -30,9 +30,9 @@ const textFieldInputProps = {
 
 interface FileResult {
   success: boolean
-  error?: string
-  fileId?: string
-  file?: { id: string }
+  error?: string | undefined
+  fileId?: string | undefined
+  file?: { id: string | undefined }
 }
 
 // Separate status message component for cleaner organization

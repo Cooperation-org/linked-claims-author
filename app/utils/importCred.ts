@@ -1,6 +1,6 @@
 import { signAndSave, saveRaw } from './googleDrive' 
 
-export async function importCredential(url: string, accessToken: string): Promise<ProcessResult> {
+export async function importCredential(url: string, accessToken: string | undefined): Promise<ProcessResult> {
   try {
     const response = await fetch(url)
     if (!response.ok) {
