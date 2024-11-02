@@ -32,16 +32,11 @@ export function Buttons({
       }}
     >
       {activeStep !== 0 && activeStep !== 1 && activeStep !== 6 && handleBack && (
-        <>
-          <Button sx={StyledButton} onClick={handleBack} color='secondary'>
-            Back
-          </Button>
-          <Button sx={StyledButton} type='submit' color='secondary'>
-            Save & Exit
-          </Button>
-        </>
+        <Button sx={StyledButton} type='submit' color='secondary'>
+          Save & Exit
+        </Button>
       )}
-      {activeStep < 4 && (
+      {activeStep < 4 && activeStep !== 1 && (
         <Button
           sx={{
             ...nextButtonStyle,

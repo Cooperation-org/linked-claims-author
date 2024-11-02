@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, Typography } from '@mui/material'
+import { FormControl, Box, Typography, Button } from '@mui/material'
 import { useParams } from 'next/navigation'
 import { FormData } from '../../../credentialForm/form/types/Types'
 import { textGuid, NoteText, SuccessText, StorageText } from './fromTexts/FormTextSteps'
@@ -19,6 +19,8 @@ import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID, signCred } from '../../../utils/signCred'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDetails'
+import { StepTrackShape } from '../../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
+import { SVGBack } from '../../../Assets/SVGs'
 
 interface FormProps {
   fullName: string
@@ -149,22 +151,33 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
           gap: '30px',
           alignItems: 'center',
           marginTop: '5px',
-          padding: '0 0 30px',
-          overflow: 'auto'
+          padding: ' 20px',
+          overflow: 'auto',
+          width: '100%',
+          maxWidth: '720px',
+          backgroundColor: '#FFF',
+          margin: 'auto',
+          marginBottom: '20px'
         }}
         onSubmit={handleFormSubmit}
       >
-        {activeStep === 0 && <ComprehensiveClaimDetails />}
-        {/* Removed FetchedData component since we're passing fullName via props */}
-        {activeStep === 2 && <NoteText />}
-        {activeStep === 1 && (
-          <Typography sx={{ fontWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>
-            {StorageText}
-          </Typography>
+        {activeStep >= 2 && activeStep <= 4 && (
+          <Button
+            onClick={handleBack}
+            sx={{ textTransform: 'capitalize', p: '0', mr: '100%', ml: '50px' }}
+          >
+            <Box sx={{ mt: 1 }}>
+              <SVGBack />
+            </Box>
+            Back
+          </Button>
         )}
+        <StepTrackShape />
+        {activeStep === 0 && <ComprehensiveClaimDetails />}
+
         {activeStep === 7 && <SuccessText />}
 
-        <Box sx={{ width: { xs: '100%', md: '50%' } }}>
+        <Box sx={{ width: '100%' }}>
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 1 && (
               <Step1 watch={watch} setValue={setValue} handleNext={handleNext} />

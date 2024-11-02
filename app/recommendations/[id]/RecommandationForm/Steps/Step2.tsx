@@ -31,7 +31,7 @@ const Step2: React.FC<Step2Props> = ({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-      <Box>
+      <Box sx={{ width: '100%' }}>
         <FormLabel sx={formLabelStyles} id='full-name-label'>
           Full Name <span style={formLabelSpanStyles}> *</span>
         </FormLabel>

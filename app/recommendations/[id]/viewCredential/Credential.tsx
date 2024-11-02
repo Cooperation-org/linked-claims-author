@@ -63,7 +63,8 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
         flexDirection: 'column',
         gap: '30px',
         padding: '0 15px 30px',
-        mt: '30px'
+        mt: '30px',
+        alignItems: 'center'
       }}
     >
       <Typography
@@ -83,27 +84,36 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
       >
         Hi, I’m Tessa! I’ll help you with <br /> {fullName}’s recommendation.
       </Typography>
-      <Button onClick={handleClick} sx={{ ...nextButtonStyle, width: '100%' }}>
-        Get Started
-      </Button>
-      <Button
-        onClick={handleDeclineRequest}
+      <Box
         sx={{
-          padding: '10px 24px',
-          borderRadius: '100px',
-          textTransform: 'capitalize',
-          fontFamily: 'Roboto',
-          textDecoration: 'underline',
-          fontWeight: '600',
-          lineHeight: '16px',
-          flexGrow: 8,
-          fontSize: '16px',
-          width: '100%'
+          m: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column'
         }}
-        variant='text'
       >
-        Decline Recommendation Request
-      </Button>
+        <Button onClick={handleClick} sx={{ ...nextButtonStyle, width: '100%', mb: 1 }}>
+          Get Started
+        </Button>
+        <Button
+          onClick={handleDeclineRequest}
+          sx={{
+            padding: '10px 24px',
+            borderRadius: '100px',
+            textTransform: 'capitalize',
+            fontFamily: 'Roboto',
+            textDecoration: 'underline',
+            fontWeight: '600',
+            lineHeight: '16px',
+            flexGrow: 8,
+            fontSize: '16px'
+          }}
+          variant='text'
+        >
+          Decline Recommendation Request
+        </Button>
+      </Box>
       <Typography
         sx={{
           flexShrink: 1,

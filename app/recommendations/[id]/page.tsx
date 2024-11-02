@@ -2,19 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import { Typography, Box, useMediaQuery, Theme, CircularProgress } from '@mui/material'
-import Image from 'next/image'
 import { useTheme } from '@mui/material/styles'
-import { SVGLargeScreen } from '../../Assets/SVGs'
-// @ts-ignore
-import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
-// @ts-ignore
-import fram from '../../Assets/Images/Frame 35278.png'
-// @ts-ignore
-import vector from '../../Assets/Images/Vector 145.png'
 import { FormTextSteps, textGuid } from './RecommandationForm/fromTexts/FormTextSteps'
 import Credential from './viewCredential/Credential'
 import TabsComponent from '../../components/Tabs/Tabs'
-import { StepTrackShape } from '../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
 import { useStepContext } from '../../credentialForm/form/StepContext'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import { useParams } from 'next/navigation'
@@ -106,45 +97,10 @@ const CredentialData = () => {
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        overflow: 'auto'
+        overflow: 'auto',
+        alignItems: 'center'
       }}
     >
-      <Box
-        sx={{
-          position: 'relative',
-          textAlign: 'center',
-          width: '100%',
-          overflow: 'hidden',
-          mb: '20px'
-        }}
-      >
-        <StepTrackShape />
-        <Box
-          sx={{
-            position: 'relative',
-            width: '100%',
-            height: '100px',
-            mt: '30px'
-          }}
-        >
-          <SVGLargeScreen />
-          <Box
-            sx={{
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)'
-            }}
-          >
-            <Image
-              src={img3}
-              priority
-              alt='logo'
-              style={{ width: '100px', height: '100px' }}
-            />
-          </Box>
-        </Box>
-      </Box>
       <Box sx={{ height: '100%' }}>
         {activeStep === 0 && (
           <Credential setactivStep={setActiveStep} fullName={fullName} email={email} />
