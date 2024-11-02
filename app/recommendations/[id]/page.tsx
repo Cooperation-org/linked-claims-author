@@ -2,19 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import { Typography, Box, useMediaQuery, Theme, CircularProgress } from '@mui/material'
-import Image from 'next/image'
 import { useTheme } from '@mui/material/styles'
-import { SVGLargeScreen } from '../../Assets/SVGs'
-// @ts-ignore
-import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
-// @ts-ignore
-import fram from '../../Assets/Images/Frame 35278.png'
-// @ts-ignore
-import vector from '../../Assets/Images/Vector 145.png'
 import { FormTextSteps, textGuid } from './RecommandationForm/fromTexts/FormTextSteps'
 import Credential from './viewCredential/Credential'
 import TabsComponent from '../../components/Tabs/Tabs'
-import { StepTrackShape } from '../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
 import { useStepContext } from '../../credentialForm/form/StepContext'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import { useParams } from 'next/navigation'
