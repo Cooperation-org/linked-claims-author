@@ -32,13 +32,14 @@ interface FileResult {
   success: boolean
   error?: string
   fileId?: string
+  file?: { id: string }
 }
 
 // Separate status message component for cleaner organization
 function StatusMessage({ fileResult }: { fileResult: FileResult | null }) {
   if (!fileResult) return null
 
-  if (!fileResult.success || ! fileResult.file) {
+  if (!fileResult.success || !fileResult.file) {
     return (
       <Typography 
         sx={{ 
@@ -65,7 +66,7 @@ function StatusMessage({ fileResult }: { fileResult: FileResult | null }) {
   )
 }
 
-export function SimpleCredentialForm() {
+function SimpleCredentialForm() {
   const [fileResult, setFileResult] = useState<FileResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   
@@ -138,7 +139,7 @@ export function SimpleCredentialForm() {
   )
 }
 
-const FormComponent = () => {
+export default function Page() {
   return (
     <Box
       sx={{
@@ -156,4 +157,3 @@ const FormComponent = () => {
   )
 }
 
-export default FormComponent
