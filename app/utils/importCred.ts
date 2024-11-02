@@ -1,4 +1,4 @@
-import { signAndSave, saveRaw } from './googleDrive' 
+import { saveRaw } from './googleDrive' 
 
 export async function importCredential(url: string, accessToken: string | undefined): Promise<ProcessResult> {
   try {
