@@ -1,5 +1,13 @@
 import { saveRaw } from './googleDrive' 
 
+interface ProcessResult {
+  success: boolean;
+  error?: string;
+  file?: {
+    id: string;
+  };
+}
+
 export async function importCredential(url: string, accessToken: string | undefined): Promise<ProcessResult> {
   try {
     const response = await fetch(url)
@@ -21,7 +29,7 @@ export async function importCredential(url: string, accessToken: string | undefi
   } catch (e) {
     return {
       success: false,
-      error: `${e.message}`
+      error: `${e}`
     }
   }
 }
