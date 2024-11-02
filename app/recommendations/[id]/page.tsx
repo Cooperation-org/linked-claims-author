@@ -106,45 +106,10 @@ const CredentialData = () => {
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        overflow: 'auto'
+        overflow: 'auto',
+        alignItems: 'center'
       }}
     >
-      <Box
-        sx={{
-          position: 'relative',
-          textAlign: 'center',
-          width: '100%',
-          overflow: 'hidden',
-          mb: '20px'
-        }}
-      >
-        <StepTrackShape />
-        <Box
-          sx={{
-            position: 'relative',
-            width: '100%',
-            height: '100px',
-            mt: '30px'
-          }}
-        >
-          <SVGLargeScreen />
-          <Box
-            sx={{
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)'
-            }}
-          >
-            <Image
-              src={img3}
-              priority
-              alt='logo'
-              style={{ width: '100px', height: '100px' }}
-            />
-          </Box>
-        </Box>
-      </Box>
       <Box sx={{ height: '100%' }}>
         {activeStep === 0 && (
           <Credential setactivStep={setActiveStep} fullName={fullName} email={email} />
