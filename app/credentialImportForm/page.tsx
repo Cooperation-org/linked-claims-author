@@ -1,7 +1,10 @@
 'use client'
-import React from 'react'
-import { Box, TextField, FormLabel, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Link, TextField, FormLabel, Typography, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/navigation'
+import { useSession, signIn } from 'next-auth/react'
+import { importCredential } from '../utils/importCred'
+import { makeGoogleDriveLink } from '../utils/googleDrive'
 
 const formLabelStyles = {
   fontFamily: 'Lato',
@@ -25,15 +28,76 @@ const textFieldInputProps = {
   }
 }
 
+interface FileResult {
+  success: boolean
+  error?: string
+  fileId?: string
+}
+
+// Separate status message component for cleaner organization
+function StatusMessage({ fileResult }: { fileResult: FileResult | null }) {
+  if (!fileResult) return null
+
+  if (!fileResult.success) {
+    return (
+      <Typography 
+        sx={{ 
+          color: 'error.main',
+          mt: 2,
+          textAlign: 'center'
+        }}
+      >
+        {fileResult.error}
+      </Typography>
+    )
+  }
+
+  const driveLink = makeGoogleDriveLink(fileResult)
+
+  return (
+    <Typography 
+      sx={{ 
+        color: 'success.main',
+        mt: 2,
+        textAlign: 'center'
+      }}
+    >
+      Success! <Link href={`${driveLink}`}>View your credential</Link>
+    </Typography>
+  )
+}
+
 export function SimpleCredentialForm() {
-  const router = useRouter()
+  const [fileResult, setFileResult] = useState<FileResult | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setIsLoading(true)
+
     const formData = new FormData(event.currentTarget)
-    const credentialUrl = formData.get('credentialUrl')
-    // Navigate to process page with the URL as a query parameter
-    router.push(`/credentialImportForm/process-credential?url=${encodeURIComponent(credentialUrl as string)}`)
+    const credentialUrl = formData.get('credentialUrl') as string
+
+    if (! accessToken) {
+      setFileResult({ success: false, error: 'Please login first before attempting to import credential' })
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const result = await importCredential(credentialUrl, session.accessToken)
+      setFileResult(result)
+      setIsLoading(false)
+    } catch (error) {
+      setFileResult({ 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error occurred' 
+      })
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -62,7 +126,14 @@ export function SimpleCredentialForm() {
             sx={TextFieldStyles}
             aria-labelledby='credential-url-label'
             inputProps={textFieldInputProps}
+            disabled={isLoading}
           />
+          {isLoading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <CircularProgress size={24} />
+            </Box>
+          )}
+          {!isLoading && <StatusMessage fileResult={fileResult} /> }
         </Box>
       </form>
     </Box>
