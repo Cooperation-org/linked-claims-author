@@ -311,7 +311,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         <Button
           variant='outlined'
           onClick={() => {
-            window.location.href = '/view-my-opencred-skills'
+            window.location.href = '/claims'
           }}
           sx={{
             ...finalButtonStyles,
