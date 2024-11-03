@@ -43,11 +43,11 @@ interface CredentialSubject {
   achievement: Achievement[]
   duration: string
   portfolio: Portfolio[]
-  howKnow: string
-  recommendationText: string
-  qualifications: string
-  createdTime: string
-  evidenceLink: string
+  howKnow?: string
+  recommendationText?: string
+  qualifications?: string
+  createdTime?: string
+  evidenceLink?: string
 }
 
 interface ClaimDetail {
@@ -97,24 +97,32 @@ const ComprehensiveClaimDetails = () => {
 
   useEffect(() => {
     const fetchDriveData = async () => {
-      if (!accessToken || !fileID) return
-
+      if (!accessToken || !fileID) {
+        console.warn('Access token or fileID is missing.')
+        return
+      }
       try {
         const content = await getContent(fileID)
 
         if (content) {
-          setClaimDetail(content as any)
+          setClaimDetail(content)
+          console.log('Set claim detail:', content)
+        } else {
+          console.warn('No content found for the given file ID.')
         }
 
         await fetchFileMetadata(fileID, '')
 
         const commentsData = await getComments(fileID)
         console.log(':  fetchDriveData  commentsData', commentsData)
-        if (commentsData) {
-          setComments(commentsData as any)
+        if (commentsData && commentsData.length > 0) {
+          setComments(commentsData)
+          console.log('Set comments:', commentsData)
+        } else {
+          console.warn('No comments found for the given file ID.')
         }
       } catch (error) {
-        console.error('Error fetching claim details:', error)
+        console.error('Error fetching drive data:', error)
         setErrorMessage('Failed to fetch claim details.')
       } finally {
         setLoading(false)
@@ -131,7 +139,8 @@ const ComprehensiveClaimDetails = () => {
     }))
   }
 
-  if (loading || !claimDetail) {
+  if (loading) {
+    console.log('Loading state is true.')
     return (
       <Box
         sx={{
@@ -147,9 +156,18 @@ const ComprehensiveClaimDetails = () => {
   }
 
   if (errorMessage) {
+    console.error('Error Message:', errorMessage)
     return (
       <Typography variant='h6' color='error' align='center' sx={{ mt: 4 }}>
         {errorMessage}
+      </Typography>
+    )
+  }
+
+  if (!claimDetail) {
+    return (
+      <Typography variant='h6' color='error' align='center' sx={{ mt: 4 }}>
+        No claim details found.
       </Typography>
     )
   }
@@ -416,7 +434,7 @@ const ComprehensiveClaimDetails = () => {
           ) : comments && comments.length > 0 ? (
             <List sx={{ p: 0, m: 0 }}>
               {comments.map((comment: ClaimDetail, index: number) => (
-                <React.Fragment key={index}>
+                <React.Fragment key={comment.id || index}>
                   <Box
                     sx={{
                       display: 'flex',
