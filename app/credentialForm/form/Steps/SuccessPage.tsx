@@ -32,7 +32,7 @@ interface SuccessPageProps {
   reset: () => void
   link: string
   setLink: (link: string) => void
-  setFileId: (link: string) => void
+  setFileId: (fileId: string) => void
   storageOption: string
   fileId: string
   selectedImage: string
@@ -49,21 +49,28 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   selectedImage
 }) => {
   const { setActiveStep } = useStepContext()
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false)
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [tooltipMessage, setTooltipMessage] = useState('Signing your skill...')
-  const refLink = fileId
+  // refLink commented out. To use link and fileId Directly: Ensures the component uses the latest values from props.
+  // const refLink = fileId
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   useEffect(() => {
-    const timer1 = setTimeout(() => setTooltipMessage('Saving your skill...'), 3000)
+    if (!fileId) {
+      setTooltipMessage('Signing your skill...')
+    }
+  }, [fileId])
+
+  useEffect(() => {
+    const timer1 = setTimeout(() => setTooltipMessage('Saving your skill...'), 2000)
     const timer2 = setTimeout(() => setTooltipMessage('Fetching link...'), 6000)
 
     return () => {
       clearTimeout(timer1)
       clearTimeout(timer2)
     }
-  }, [])
+  }, [link])
 
   const generateLinkedInUrl = () => {
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
@@ -236,9 +243,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
         <Button
           onClick={() => {
-            window.location.href = `/askforrecommendation/${refLink}`
+            window.location.href = `/askforrecommendation/${fileId}`
           }}
-          disabled={!refLink}
+          disabled={!fileId}
           sx={buttonStyles}
         >
           <HeartSVG />
