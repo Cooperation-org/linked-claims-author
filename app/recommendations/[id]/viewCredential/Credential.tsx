@@ -67,23 +67,7 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
         alignItems: 'center'
       }}
     >
-      <Typography
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: theme.palette.t3BodyText,
-          fontFamily: 'Lato',
-          fontSize: '24px',
-          fontWeight: '600',
-          lineHeight: '28.8px',
-          textAlign: 'center',
-          m: '0',
-          width: '100%'
-        }}
-      >
-        Hi, I’m Tessa! I’ll help you with <br /> {fullName}’s recommendation.
-      </Typography>
+      <ComprehensiveClaimDetails />
       <Box
         sx={{
           m: '0 auto',
@@ -129,35 +113,46 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
       <Box
         sx={{ display: 'flex', flexDirection: 'column', minWidth: '210px', gap: '15px' }}
       >
-        {featuresRecommentations(fullName).map((feature: { id: any; name: any }) => (
-          <Box
-            key={feature.id}
-            sx={{
-              display: 'flex',
-              lineHeight: 'normal',
-              alignItems: 'center',
-              width: '100%'
-            }}
-          >
-            <SVGCheckMarks />
-            <Typography
+        {featuresRecommentations(fullName).map(
+          (feature: { id: any; name: any; description: any }) => (
+            <Box
+              key={feature.id}
               sx={{
-                color: theme.palette.t3BodyText,
-                flexShrink: 1,
-                fontFamily: 'Lato',
-                fontSize: '18px',
-                fontWeight: '600',
-                lineHeight: '21.6px',
-                m: '0 5px 0 15px'
+                display: 'flex',
+                lineHeight: 'normal',
+                alignItems: 'center',
+                width: '100%'
               }}
             >
-              {feature.name}
-            </Typography>
-            <InfoOutlinedIcon sx={{ width: '15px', height: '15px', mt: '3px ' }} />
-          </Box>
-        ))}
+              <SVGCheckMarks />
+              <Typography
+                sx={{
+                  color: theme.palette.t3BodyText,
+                  flexShrink: 1,
+                  fontFamily: 'Lato',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  lineHeight: '21.6px',
+                  m: '0 5px 0 15px'
+                }}
+              >
+                {feature.name}
+              </Typography>
+              <InfoOutlinedIcon
+                sx={{
+                  width: '15px',
+                  height: '15px',
+                  mt: '3px',
+                  cursor: 'pointer',
+                  color: theme.palette.primary.main
+                }}
+                aria-label={`More information about ${feature.name}`}
+                titleAccess={`More information about ${feature.name}`}
+              />
+            </Box>
+          )
+        )}
       </Box>
-      <ComprehensiveClaimDetails />
     </Box>
   )
 }

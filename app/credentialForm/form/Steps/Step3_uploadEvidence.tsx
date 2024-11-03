@@ -35,7 +35,7 @@ export default function FileUploadAndList({
 
   useEffect(() => {
     setFiles(selectedFiles)
-  }, [])
+  }, [selectedFiles])
 
   const handleFileUploadClick = () => {
     if (fileInputRef.current) fileInputRef.current.click()
