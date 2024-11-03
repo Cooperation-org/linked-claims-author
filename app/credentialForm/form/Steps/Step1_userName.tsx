@@ -7,7 +7,12 @@ import {
   TextFieldStyles,
   textFieldInputProps
 } from '../../../components/Styles/appStyles'
-import { UseFormRegister, FieldErrors } from 'react-hook-form'
+import {
+  UseFormRegister,
+  FieldErrors,
+  UseFormWatch,
+  UseFormSetValue
+} from 'react-hook-form'
 import { FormData } from '../types/Types'
 import { useSession } from 'next-auth/react'
 import { SVGSProfileName } from '../../../Assets/SVGs'
@@ -15,13 +20,25 @@ import { StepTrackShape } from '../fromTexts & stepTrack/StepTrackShape'
 
 interface Step1Props {
   register: UseFormRegister<FormData>
-  watch: (field: string) => any
-  setValue: (field: string, value: any) => void
   errors: FieldErrors<FormData>
+  watch: UseFormWatch<FormData>
+  setValue: UseFormSetValue<FormData>
+  handleNext: () => void
 }
 
-export function Step1({ register, errors }: Readonly<Step1Props>) {
+export function Step1({ register, errors, handleNext }: Readonly<Step1Props>) {
   const { data: session } = useSession()
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      const isValid = !errors.fullName && register('fullName').name
+
+      if (isValid) {
+        handleNext()
+      }
+    }
+  }
 
   return (
     <Box
@@ -55,6 +72,7 @@ export function Step1({ register, errors }: Readonly<Step1Props>) {
           inputProps={textFieldInputProps}
           error={!!errors.fullName}
           helperText={errors.fullName?.message}
+          onKeyDown={handleKeyDown}
         />
       </Box>
     </Box>

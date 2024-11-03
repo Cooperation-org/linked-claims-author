@@ -90,14 +90,15 @@ const CredentialData = () => {
   return (
     <Box
       sx={{
-        minHeight: {
-          xs: 'calc(100vh - 190px)',
-          md: 'calc(100vh - 381px)'
-        },
+        // minHeight: {
+        //   xs: 'calc(100vh - 190px)',
+        //   md: 'calc(100vh - 381px)'
+        // },
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',
         overflow: 'auto',
+        mt: '20px',
         alignItems: 'center'
       }}
     >

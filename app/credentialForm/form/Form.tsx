@@ -245,6 +245,7 @@ const Form = ({ onStepChange }: any) => {
                     setValue={setValue}
                     register={register}
                     errors={errors}
+                    handleNext={handleNext}
                   />
                 </Box>
               </Slide>

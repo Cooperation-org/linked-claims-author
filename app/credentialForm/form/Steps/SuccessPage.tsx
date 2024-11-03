@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Typography,
   Box,
@@ -9,7 +9,9 @@ import {
   Snackbar,
   useMediaQuery,
   useTheme,
-  Stack
+  Stack,
+  CircularProgress,
+  Tooltip
 } from '@mui/material'
 import {
   GlobalSVG,
@@ -30,7 +32,7 @@ interface SuccessPageProps {
   reset: () => void
   link: string
   setLink: (link: string) => void
-  setFileId: (link: string) => void
+  setFileId: (fileId: string) => void
   storageOption: string
   fileId: string
   selectedImage: string
@@ -47,10 +49,28 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   selectedImage
 }) => {
   const { setActiveStep } = useStepContext()
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false)
-  const refLink = fileId
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [tooltipMessage, setTooltipMessage] = useState('Signing your skill...')
+  // refLink commented out. To use link and fileId Directly: Ensures the component uses the latest values from props.
+  // const refLink = fileId
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
+  useEffect(() => {
+    if (!fileId) {
+      setTooltipMessage('Signing your skill...')
+    }
+  }, [fileId])
+
+  useEffect(() => {
+    const timer1 = setTimeout(() => setTooltipMessage('Saving your skill...'), 2000)
+    const timer2 = setTimeout(() => setTooltipMessage('Fetching link...'), 6000)
+
+    return () => {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+    }
+  }, [link])
 
   const generateLinkedInUrl = () => {
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
@@ -67,7 +87,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     return `${baseLinkedInUrl}?${params.toString()}`
   }
 
-  const handleShareOption = (option: 'LinkedIn' | 'Email' | 'CopyURL') => {
+  const handleShareOption = (option: 'LinkedIn' | 'Email' | 'CopyURL' | 'View') => {
     const credentialLink = `https://opencreds.net/view/${fileId}`
     if (option === 'LinkedIn') {
       const linkedInUrl = generateLinkedInUrl()
@@ -77,6 +97,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         credentialLink
       )}`
       window.location.href = mailUrl
+    } else if (option === 'CopyURL') {
+    } else if (option === 'View') {
+      window.location.href = `https://opencreds.net/view/${fileId}`
     } else if (option === 'CopyURL') {
       copyFormValuesToClipboard(credentialLink)
       setSnackbarOpen(true)
@@ -159,31 +182,23 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           fontFamily: 'Inter, sans-serif'
         }}
       >
-        <Box
+        <Button
+          onClick={() => handleShareOption('View')}
+          disabled={!fileId}
           sx={{
-            borderRadius: '10px',
-            backgroundColor: '#FFFFFF',
-            display: 'flex',
-            width: '100%',
-            alignItems: 'center',
-            gap: '20px',
-            justifyContent: 'flex-start',
-            padding: '15px',
-            border: '1px solid #003FE0'
+            ...buttonStyles,
+            mt: '15px',
+            border: '3px solid #003FE0'
           }}
         >
           <BlueBadge />
-          <Typography
-            sx={{
-              flex: 1,
-              fontFamily: 'inherit',
-              margin: 0,
-              color: '#003FE0'
-            }}
-          >
-            {formData?.credentialName}
-          </Typography>
-        </Box>
+          {formData?.credentialName}{' '}
+          {!link && (
+            <Tooltip title={tooltipMessage}>
+              <CircularProgress size={24} />
+            </Tooltip>
+          )}
+        </Button>
 
         <Button
           onClick={() => handleShareOption('CopyURL')}
@@ -218,9 +233,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
         <Button
           onClick={() => {
-            window.location.href = `/askforrecommendation/${refLink}`
+            window.location.href = `/askforrecommendation/${fileId}`
           }}
-          disabled={!refLink}
+          disabled={!fileId}
           sx={buttonStyles}
         >
           <HeartSVG />
@@ -286,7 +301,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         <Button
           variant='outlined'
           onClick={() => {
-            window.location.href = '/view-my-opencred-skills'
+            window.location.href = '/claims'
           }}
           sx={{
             ...finalButtonStyles,

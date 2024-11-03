@@ -1,13 +1,16 @@
-'use client'
-import React from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Button, Typography, Tooltip } from '@mui/material'
 import { signIn, useSession } from 'next-auth/react'
 import { SVGFolder, SVGSinfo } from '../../../Assets/SVGs'
+import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
+
 export function Step0() {
   const { data: session } = useSession()
+  const [loading, setLoading] = useState(false)
 
   const connectToGoogleDrive = async () => {
     if (session?.accessToken) {
+      setLoading(true)
       window.location.hash = '#step1'
       return
     }
@@ -19,7 +22,11 @@ export function Step0() {
       })
 
       // After successful sign-in, update the hash to step1
-      window.location.hash = '#step1'
+
+      setLoading(true)
+      setTimeout(() => {
+        window.location.hash = '#step1'
+      }, 500)
     } catch (error) {
       console.error('Error connecting to Google Drive:', error)
     }
@@ -43,7 +50,6 @@ export function Step0() {
         sx={{
           width: 100,
           height: 100,
-          backgroundColor: '#e0e0e0',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
@@ -77,9 +83,11 @@ export function Step0() {
         }}
       >
         Connect to Google Drive{' '}
-        <Box sx={{ ml: 2, mt: '2px' }}>
-          <SVGSinfo />
-        </Box>
+        <Tooltip title='You must have a Google Drive account and be able to login. This is where your credentials will be saved.'>
+          <Box sx={{ ml: 2, mt: '2px' }}>
+            <SVGSinfo />
+          </Box>
+        </Tooltip>
       </Button>
       <Button
         variant='text'
@@ -87,12 +95,14 @@ export function Step0() {
         onClick={() => (window.location.hash = '#step1')}
         sx={{
           fontSize: '14px',
+          fontWeight: 600,
           textDecoration: 'underline',
           textTransform: 'none'
         }}
       >
         Continue without Saving
       </Button>
+      <LoadingOverlay text='Connecting...' open={loading} />
     </Box>
   )
 }

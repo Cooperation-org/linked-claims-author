@@ -33,8 +33,8 @@ export default function RootLayout({
             padding: 0,
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '100vh',
-            backgroundColor: '#F0F4F8'
+            minHeight: '100vh'
+            // backgroundColor: '#F0F4F8'
           }}
         >
           <Providers>

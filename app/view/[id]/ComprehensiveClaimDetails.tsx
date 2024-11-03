@@ -522,21 +522,21 @@ const ComprehensiveClaimDetails = () => {
               ))}
             </List>
           ) : (
-           <Box>
-            <Typography variant='body2'>No recommendations available.</Typography>
-            <Link href={`/askforrecommendation/${fileID}`}>
-                            <Button
-                              variant='contained'
-                              sx={{
-                                backgroundColor: '#003FE0',
-                                textTransform: 'none',
-                                borderRadius: '100px',
-                                width: { xs: '100px', sm: '300px', md: '300px' }
-                              }}
-                            >
-                              Ask for Recommendation
-                            </Button>
-                          </Link>
+            <Box>
+              <Typography variant='body2'>No recommendations available.</Typography>
+              <Link href={`/askforrecommendation/${fileID}`}>
+                <Button
+                  variant='contained'
+                  sx={{
+                    backgroundColor: '#003FE0',
+                    textTransform: 'none',
+                    borderRadius: '100px',
+                    width: { xs: '100px', sm: '300px', md: '300px' }
+                  }}
+                >
+                  Ask for Recommendation
+                </Button>
+              </Link>
             </Box>
           )}
         </Box>

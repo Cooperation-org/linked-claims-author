@@ -1,12 +1,12 @@
 'use client'
 
 import React from 'react'
-import { Box, Typography, Button } from '@mui/material'
+import { Box, Typography, Button, Tooltip } from '@mui/material'
 import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { FormData } from '../../../../credentialForm/form/types/Types'
 import { SVGFolder, SVGSinfo } from '../../../../Assets/SVGs'
-
 import { signIn, useSession } from 'next-auth/react'
+import { useStepContext } from '../../../../credentialForm/form/StepContext'
 
 interface Step1Props {
   watch: UseFormWatch<FormData>
@@ -14,32 +14,34 @@ interface Step1Props {
   handleNext: () => void
 }
 
-const Step1: React.FC<Step1Props> = () => {
+const Step1: React.FC<Step1Props> = ({ handleNext }) => {
   const { data: session } = useSession()
-
-  if (session?.accessToken) {
-    window.location.hash = '#step1'
-    return
-  }
+  const { setUploadImageFn } = useStepContext()
 
   const connectToGoogleDrive = async () => {
     if (session?.accessToken) {
-      window.location.hash = '#step1'
+      handleNext()
       return
     }
 
     try {
-      // Initiate Google sign-in
       await signIn('google', {
         callbackUrl: `${window.location.origin}/credentialForm#step1`
       })
-
-      // After successful sign-in, update the hash to step1
-      window.location.hash = '#step1'
     } catch (error) {
       console.error('Error connecting to Google Drive:', error)
     }
   }
+
+  // Determine tooltip text based on authentication status
+  const tooltipTitle = session?.accessToken
+    ? 'You are connected to Google Drive. This is where your recommendation will be saved.'
+    : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
+
+  // Determine main text based on authentication status
+  const mainText = session?.accessToken
+    ? ''
+    : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
 
   return (
     <Box
@@ -67,16 +69,14 @@ const Step1: React.FC<Step1Props> = () => {
         <SVGFolder />
       </Box>
 
-      {/* Main text */}
       <Typography
         sx={{
           fontSize: 24
         }}
       >
-        First, connect to Google Drive so you can save your data.
+        {mainText}
       </Typography>
 
-      {/* Connect to Google Drive Button */}
       <Button
         variant='contained'
         color='primary'
@@ -88,18 +88,23 @@ const Step1: React.FC<Step1Props> = () => {
           fontSize: '16px',
           borderRadius: 5,
           textTransform: 'none',
-          backgroundColor: '#003FE0'
+          backgroundColor: '#003FE0',
+          display: 'flex',
+          alignItems: 'center'
         }}
       >
-        Connect to Google Drive{' '}
-        <Box sx={{ ml: 2, mt: '2px' }}>
-          <SVGSinfo />
-        </Box>
+        Connect to Google Drive
+        <Tooltip title={tooltipTitle}>
+          <Box sx={{ ml: 2, mt: '2px' }}>
+            <SVGSinfo />
+          </Box>
+        </Tooltip>
       </Button>
+
       <Button
         variant='text'
         color='primary'
-        onClick={() => (window.location.hash = '#step2')}
+        onClick={() => handleNext()}
         sx={{
           fontSize: '14px',
           textDecoration: 'underline',
