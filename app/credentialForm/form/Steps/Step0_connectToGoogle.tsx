@@ -1,8 +1,8 @@
-'use client'
 import React from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Typography, Tooltip } from '@mui/material'
 import { signIn, useSession } from 'next-auth/react'
 import { SVGFolder, SVGSinfo } from '../../../Assets/SVGs'
+
 export function Step0() {
   const { data: session } = useSession()
 
@@ -43,7 +43,6 @@ export function Step0() {
         sx={{
           width: 100,
           height: 100,
-          backgroundColor: '#e0e0e0',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
@@ -77,9 +76,11 @@ export function Step0() {
         }}
       >
         Connect to Google Drive{' '}
-        <Box sx={{ ml: 2, mt: '2px' }}>
-          <SVGSinfo />
-        </Box>
+        <Tooltip title='You must have a Google Drive account and be able to login. This is where your credentials will be saved.'>
+          <Box sx={{ ml: 2, mt: '2px' }}>
+            <SVGSinfo />
+          </Box>
+        </Tooltip>
       </Button>
       <Button
         variant='text'
@@ -87,6 +88,7 @@ export function Step0() {
         onClick={() => (window.location.hash = '#step1')}
         sx={{
           fontSize: '14px',
+          fontWeight: 600,
           textDecoration: 'underline',
           textTransform: 'none'
         }}
