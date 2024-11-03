@@ -32,7 +32,7 @@ import {
 import { useStepContext } from '../../credentialForm/form/StepContext'
 import { NewEmail2 } from '../../Assets/SVGs'
 
-const steps = ['Message', 'Invite', '']
+const steps = ['Message', 'Invite']
 
 // Custom Step styling
 const CustomStep = styled(Step)(({ theme, completed, active }) => ({
@@ -222,7 +222,10 @@ this is the link https://opencreds.net/recommendations/${params.id}`
       >
         Let’s get some recommendations for you from people you know.
       </Typography>
-      <Stepper activeStep={activeStep} sx={{ width: '100%', maxWidth: '800px' }}>
+      <Stepper
+        activeStep={activeStep}
+        sx={{ width: '98%', maxWidth: '800px', mx: '20px' }}
+      >
         {steps.map((label, index) => (
           <CustomStep key={index} completed={index < activeStep}>
             <StepLabel
