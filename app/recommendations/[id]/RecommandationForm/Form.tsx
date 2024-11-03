@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, Typography, Button } from '@mui/material'
+import { FormControl, Box, Button } from '@mui/material'
 import { useParams } from 'next/navigation'
 import { FormData } from '../../../credentialForm/form/types/Types'
-import { textGuid, NoteText, SuccessText, StorageText } from './fromTexts/FormTextSteps'
+import { textGuid, SuccessText } from './fromTexts/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
 import Step3 from './Steps/Step3'

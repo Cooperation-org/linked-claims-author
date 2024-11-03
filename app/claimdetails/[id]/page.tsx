@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { useParams } from 'next/navigation'
 import ComprehensiveClaimDetails from './ComprehensiveClaimDetails'
 const ClaimPage = () => {

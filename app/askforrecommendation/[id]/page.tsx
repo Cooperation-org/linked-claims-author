@@ -224,7 +224,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
       </Typography>
       <Stepper
         activeStep={activeStep}
-        sx={{ width: '98%', maxWidth: '800px', mx: '20px' }}
+        sx={{ width: '85%', maxWidth: '800px', mx: '20px' }}
       >
         {steps.map((label, index) => (
           <CustomStep key={index} completed={index < activeStep}>
