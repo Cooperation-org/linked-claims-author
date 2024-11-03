@@ -41,6 +41,8 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
     explainAnswer: ''
   })
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [tooltipText, setTooltipText] = useState('saving your recommendation')
 
   const defaultValues: FormData = storedValue
 
@@ -124,6 +126,12 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
+      setIsLoading(true)
+      setTooltipText('saving your recommendation')
+      setTimeout(() => {
+        setTooltipText('wait while we link your recommendation to the claim')
+      }, 2000)
+
       setSubmittedFullName(data.fullName)
       await saveAndAddComment()
       clearValue()
@@ -139,6 +147,8 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
       setActiveStep(6)
     } catch (error) {
       console.error('Error during form submission:', error)
+    } finally {
+      setIsLoading(false)
     }
   })
 
@@ -151,8 +161,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
           gap: '30px',
           alignItems: 'center',
           marginTop: '5px',
-          padding: ' 20px',
-          // overflow: 'auto',
+          padding: '20px',
           width: '100%',
           maxWidth: '720px',
           backgroundColor: '#FFF',
@@ -244,6 +253,8 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
           handleSign={handleFormSubmit}
           handleBack={handleBack}
           isValid={isValid}
+          isLoading={isLoading}
+          tooltipText={tooltipText}
         />
       </form>
     </FormProvider>
