@@ -12,7 +12,7 @@ import {
 import { SVGBadge, CopySVG } from '../../../../Assets/SVGs'
 import { copyFormValuesToClipboard } from '../../../../utils/formUtils'
 import { FormData } from '../../../../credentialForm/form/types/Types'
-import ComprehensiveClaimDetails from '../../../../test/[id]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../../../view/[id]/ComprehensiveClaimDetails'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 

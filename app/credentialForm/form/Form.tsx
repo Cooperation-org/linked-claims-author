@@ -3,18 +3,13 @@
 
 import React, { useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, Slide } from '@mui/material'
+import { FormControl, Box, Slide, Button } from '@mui/material'
 import { FormData } from './types/Types'
-import { options, Step0 } from './Steps/Step0'
+import { Step0 } from './Steps/Step0_connectToGoogle'
 import { Buttons } from './buttons/Buttons'
-import { Step1 } from './Steps/Step1'
-import { Step2 } from './Steps/Step2'
-import { Step3 } from './Steps/Step3'
-import { Step4 } from './Steps/Step4'
-import Step5 from './Steps/Step5'
 import DataComponent from './Steps/dataPreview'
-
-import { createDID, createDIDWithMetaMask, signCred } from '../../utils/signCred'
+import { SVGBack } from '../../Assets/SVGs'
+import { createDID, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { useSession, signIn } from 'next-auth/react'
 import { handleSign } from '../../utils/formUtils'
@@ -22,31 +17,25 @@ import { saveSession } from '../../utils/saveSession'
 import SnackMessage from '../../components/SnackMessage'
 import SessionDialog from '../../components/SessionDialog'
 import { useStepContext } from './StepContext'
-import {
-  FormTextSteps,
-  NoteText,
-  SuccessText,
-  textGuid
-} from './fromTexts & stepTrack/FormTextSteps'
 import SuccessPage from './Steps/SuccessPage'
+import FileUploadAndList from './Steps/Step3_uploadEvidence'
+import { Step1 } from './Steps/Step1_userName'
+import { Step2 } from './Steps/Step2_descreptionFields'
 
 const Form = ({ onStepChange }: any) => {
-  const { activeStep, handleNext, handleBack, setActiveStep, setUploadImageFn, loading } =
-    useStepContext()
+  const { activeStep, handleNext, handleBack, setActiveStep, loading } = useStepContext()
   const [prevStep, setPrevStep] = useState(0)
   const [link, setLink] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
-  const [metamaskAdress, setMetamaskAdress] = useState<string>('')
-  const [disabled0, setDisabled0] = useState(false)
   const [snackMessage, setSnackMessage] = useState('')
   const [userSessions, setUserSessions] = useState<{}[]>([])
   const [openDialog, setOpenDialog] = useState(false)
   const [fileId, setFileId] = useState('')
   const [image, setImage] = useState('')
+  const [selectedFiles, setSelectedFiles] = useState<any[]>([])
 
   const characterLimit = 294
-  const maxSteps = textGuid.length
   const { data: session } = useSession()
   const accessToken = session?.accessToken
 
@@ -69,16 +58,11 @@ const Form = ({ onStepChange }: any) => {
       credentialName: '',
       credentialDuration: '',
       credentialDescription: '',
-      portfolio: [{ name: '', url: '' }],
+      portfolio: [],
       evidenceLink: '',
       description: ''
     },
     mode: 'onChange'
-  })
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'portfolio'
   })
 
   useEffect(() => {
@@ -89,8 +73,7 @@ const Form = ({ onStepChange }: any) => {
 
   const handleFetchinguserSessions = async () => {
     try {
-      const storageOption = watch('storageOption')
-      if (!storageOption || !accessToken) return
+      if (!accessToken) return
       const sessionFiles = await storage.getAllFilesByType('SESSIONs')
       if (!sessionFiles || sessionFiles.length === 0) return
       console.log('userSessions', sessionFiles)
@@ -106,7 +89,6 @@ const Form = ({ onStepChange }: any) => {
 
   const handleuserSessionselect = (session: any) => {
     // Set the selected session values into the form
-    setValue('storageOption', session.storageOption)
     setValue('fullName', session.fullName)
     setValue('persons', session.persons)
     setValue('credentialName', session.credentialName)
@@ -152,11 +134,7 @@ const Form = ({ onStepChange }: any) => {
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
-      if (
-        data.storageOption === options.GoogleDrive ||
-        data.storageOption === options.DigitalWallet
-      )
-        await sign(data)
+      await sign(data)
     } catch (error: any) {
       if (error.message === 'MetaMask address could not be retrieved') {
         setErrorMessage('Please make sure you have MetaMask installed and connected.')
@@ -175,13 +153,7 @@ const Form = ({ onStepChange }: any) => {
         return
       }
 
-      let newDid
-      if (data.storageOption === options.DigitalWallet) {
-        newDid = await createDIDWithMetaMask(metamaskAdress, accessToken)
-      } else {
-        newDid = await createDID(accessToken)
-      }
-      const { didDocument, keyPair, issuerId } = newDid
+      const { didDocument, keyPair, issuerId } = await createDID(accessToken)
 
       const saveResponse = await saveToGoogleDrive(
         storage,
@@ -221,47 +193,47 @@ const Form = ({ onStepChange }: any) => {
   }
 
   return (
-    <>
-      {true ? (
-        <SessionDialog
-          userSessions={userSessions}
-          open={openDialog}
-          onSelect={handleuserSessionselect}
-          onCancel={() => setOpenDialog(false)}
-        />
-      ) : (
-        ''
-      )}
+    <Box sx={{ m: { xs: '50px auto', sm: '50px auto', md: '120px auto' } }}>
       <form
         style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '30px',
           alignItems: 'center',
-          marginTop: '30px',
-          padding: '0 15px 30px',
-          overflow: 'auto'
+          justifyItems: 'center',
+          padding: ' 1px 20px 20px',
+          overflow: 'auto',
+          width: '100%',
+          maxWidth: '720px',
+          backgroundColor: '#FFF',
+          margin: 'auto'
         }}
         onSubmit={handleFormSubmit}
       >
-        <FormTextSteps activeStep={activeStep} activeText={textGuid[activeStep]} />
-        {activeStep !== 0 && activeStep !== 7 && activeStep !== 6 && activeStep !== 4 && (
-          <NoteText />
-        )}
-        {activeStep === 7 && <SuccessText />}
-        <Box sx={{ width: { xs: '100%', md: '50%' }, minWidth: { md: '400px' } }}>
+        <Box
+          sx={{
+            width: '100%',
+            minWidth: { md: '400px' },
+            maxWidth: { md: '720px' }
+          }}
+        >
+          {activeStep >= 2 && activeStep <= 4 && (
+            <Button
+              onClick={handleBack}
+              sx={{ textTransform: 'capitalize', p: '0', mr: '5px' }}
+            >
+              <Box sx={{ mt: 1 }}>
+                <SVGBack />
+              </Box>
+              Back
+            </Button>
+          )}
+
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 0 && (
               <Slide in={true} direction={direction} timeout={500}>
                 <Box>
-                  <Step0
-                    activeStep={activeStep}
-                    watch={watch}
-                    setValue={setValue}
-                    setMetaMaskAddres={setMetamaskAdress}
-                    setErrorMessage={setErrorMessage}
-                    setDisabled0={setDisabled0}
-                  />
+                  <Step0 />
                 </Box>
               </Slide>
             )}
@@ -273,6 +245,7 @@ const Form = ({ onStepChange }: any) => {
                     setValue={setValue}
                     register={register}
                     errors={errors}
+                    handleNext={handleNext}
                   />
                 </Box>
               </Slide>
@@ -288,57 +261,37 @@ const Form = ({ onStepChange }: any) => {
                       setValue('credentialDescription', value ?? '')
                     }
                     errors={errors}
+                    control={control}
                   />
                 </Box>
               </Slide>
             )}
             {activeStep === 3 && (
-              <Slide in={true} direction={direction}>
-                <Box>
-                  <Step3
-                    watch={watch}
-                    register={register}
-                    errors={errors}
-                    characterLimit={characterLimit}
-                  />
-                </Box>
-              </Slide>
+              <Box
+                sx={{
+                  width: '100%',
+                  maxWidth: { md: '720px' },
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <FileUploadAndList
+                  watch={watch}
+                  selectedFiles={selectedFiles}
+                  setSelectedFiles={setSelectedFiles}
+                  setValue={setValue}
+                />
+              </Box>
             )}
             {activeStep === 4 && (
               <Slide in={true} direction={direction}>
                 <Box>
-                  <Step4
-                    register={register}
-                    fields={fields}
-                    append={append}
-                    handleNext={handleNext}
-                    errors={errors}
-                    remove={remove}
-                  />
+                  <DataComponent formData={watch()} selectedFiles={selectedFiles} />
                 </Box>
               </Slide>
             )}
             {activeStep === 5 && (
-              <Slide in={true} direction={direction}>
-                <Box>
-                  <Step5
-                    setImage={(selectedImage: string, imageUrl: string) => {
-                      setImage(selectedImage)
-                      setValue('evidenceLink', imageUrl)
-                    }}
-                    setUploadImageFn={setUploadImageFn}
-                  />
-                </Box>
-              </Slide>
-            )}
-            {activeStep === 6 && (
-              <Slide in={true} direction={direction}>
-                <Box>
-                  <DataComponent formData={watch()} image={image} />
-                </Box>
-              </Slide>
-            )}
-            {activeStep === 7 && (
               <Slide in={true} direction={direction}>
                 <Box>
                   <SuccessPage
@@ -357,15 +310,13 @@ const Form = ({ onStepChange }: any) => {
             )}
           </FormControl>
         </Box>
-        {activeStep !== 7 && (
+        {activeStep !== 5 && (
           <Buttons
             activeStep={activeStep}
-            maxSteps={maxSteps}
             handleNext={activeStep === 0 ? costumedHandleNextStep : () => handleNext()}
             handleSign={() => handleSign(activeStep, setActiveStep, handleFormSubmit)}
             handleBack={costumedHandleBackStep}
             isValid={isValid}
-            disabled0={disabled0}
             handleSaveSession={handleSaveSession}
             loading={loading}
           />
@@ -383,8 +334,7 @@ const Form = ({ onStepChange }: any) => {
         )}
         {snackMessage ? <SnackMessage message={snackMessage} /> : ''}
       </form>
-    </>
+    </Box>
   )
 }
-
 export default Form

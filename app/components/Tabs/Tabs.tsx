@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Tabs, Tab, Box } from '@mui/material'
 // import { useParams } from 'next/navigation'
-import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../view/[id]/ComprehensiveClaimDetails'
 import Form from '../../recommendations/[id]/RecommandationForm/Form'
 
 function a11yProps(index: number) {
@@ -45,9 +45,9 @@ const TabsComponent: React.FC<TabsComponentProps> = ({
   }
 
   return (
-    <Box sx={{ minHeight: '100%', mt: '10px' }}>
+    <Box sx={{ minHeight: '100%', mt: '10px', width: '100%' }}>
       <Tabs
-        sx={{ width: '100%', pl: '20px' }}
+        sx={{ width: '100%', pl: '20px', maxWidth: '720px' }}
         value={value}
         onChange={handleChange}
         aria-label='simple tabs example'

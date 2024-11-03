@@ -226,7 +226,7 @@ const ClaimsPage: React.FC = () => {
                         {detailedClaim?.credentialSubject?.achievement[0]?.criteria
                           ?.narrative && (
                           <Box>
-                            <Typography>Earning criteria:</Typography>
+                            <Typography>What does that entail?:</Typography>
                             <ul style={{ marginLeft: '25px' }}>
                               <li>
                                 <span
@@ -270,7 +270,8 @@ const ClaimsPage: React.FC = () => {
                               sx={{
                                 backgroundColor: '#003FE0',
                                 textTransform: 'none',
-                                borderRadius: '100px'
+                                borderRadius: '100px',
+                                width: { xs: '100px', md: '300px' }
                               }}
                             >
                               View Credential
@@ -282,7 +283,8 @@ const ClaimsPage: React.FC = () => {
                               sx={{
                                 backgroundColor: '#003FE0',
                                 textTransform: 'none',
-                                borderRadius: '100px'
+                                borderRadius: '100px',
+                                width: { xs: '100px', sm: '300px', md: '300px' }
                               }}
                             >
                               Ask for Recommendation

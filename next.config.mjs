@@ -1,12 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**'
-      },
-    ]
+    domains: ['drive.google.com', 'res.cloudinary.com']
   }
 }
 

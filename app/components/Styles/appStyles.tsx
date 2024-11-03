@@ -8,11 +8,12 @@ export const StyledButton = {
   fontFamily: 'Roboto',
   fontWeight: '600',
   lineHeight: '20px',
-  border: '1px solid  #4E4E4E',
-  color: '#4e4e4e',
+  border: '1px solid  #003FE0',
+  color: '#003FE0',
   '&:hover': {
-    backgroundColor: '003fe0'
-  }
+    backgroundColor: '#eff6ff'
+  },
+  backgroundColor: '#eff6ff'
 }
 
 export const nextButtonStyle = {
@@ -25,7 +26,9 @@ export const nextButtonStyle = {
   backgroundColor: '#003FE0',
   color: '#FFFFFF',
   flexGrow: 8,
-  fontSize: '14px'
+  fontSize: '14px',
+  width: 'fit-content',
+  maxWidth: '230px'
 }
 
 export const CustomTextField = styled(TextField)({
@@ -44,13 +47,6 @@ export const CustomTextField = styled(TextField)({
     borderRadius: '28px'
   }
 })
-
-export const boxStyles = {
-  width: '100%',
-  bgcolor: '#FFF',
-  borderRadius: '8px',
-  border: '1px solid #E5E7EB'
-}
 
 export const formLabelStyles = {
   color: 't3BodyText',

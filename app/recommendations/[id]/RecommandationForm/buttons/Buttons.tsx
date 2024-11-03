@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Box, Button } from '@mui/material'
+import { Box, Button, Tooltip, CircularProgress } from '@mui/material'
 import { StyledButton, nextButtonStyle } from '../../../../components/Styles/appStyles'
 
 interface ButtonsProps {
@@ -11,6 +11,8 @@ interface ButtonsProps {
   handleSign: React.MouseEventHandler<HTMLButtonElement> | undefined
   maxSteps: number
   isValid: boolean
+  isLoading?: boolean
+  tooltipText?: string
 }
 
 export function Buttons({
@@ -19,7 +21,9 @@ export function Buttons({
   handleNext,
   handleSign,
   maxSteps,
-  isValid
+  isValid,
+  isLoading = false,
+  tooltipText = ''
 }: Readonly<ButtonsProps>) {
   return (
     <Box
@@ -32,16 +36,11 @@ export function Buttons({
       }}
     >
       {activeStep !== 0 && activeStep !== 1 && activeStep !== 6 && handleBack && (
-        <>
-          <Button sx={StyledButton} onClick={handleBack} color='secondary'>
-            Back
-          </Button>
-          <Button sx={StyledButton} type='submit' color='secondary'>
-            Save & Exit
-          </Button>
-        </>
+        <Button sx={StyledButton} type='submit' color='secondary'>
+          Save & Exit
+        </Button>
       )}
-      {activeStep < 4 && (
+      {activeStep < 4 && activeStep !== 1 && (
         <Button
           sx={{
             ...nextButtonStyle,
@@ -49,22 +48,36 @@ export function Buttons({
           }}
           onClick={handleNext}
           color='primary'
-          disabled={!isValid}
+          disabled={!isValid || isLoading}
           variant='contained'
         >
           Next
         </Button>
       )}
       {activeStep === 5 && handleSign && (
-        <Button sx={nextButtonStyle} onClick={handleSign} color='primary'>
-          Finish & Sign
-        </Button>
+        <Tooltip title={tooltipText} arrow>
+          <span>
+            <Button
+              sx={nextButtonStyle}
+              onClick={handleSign}
+              color='primary'
+              disabled={!isValid || isLoading}
+              variant='contained'
+            >
+              {isLoading ? (
+                <CircularProgress size={24} color='inherit' />
+              ) : (
+                'Finish & Sign'
+              )}
+            </Button>
+          </span>
+        </Tooltip>
       )}
       {activeStep === 4 && (
         <Button
           sx={nextButtonStyle}
           onClick={handleNext}
-          disabled={activeStep === maxSteps - 1}
+          disabled={activeStep === maxSteps - 1 || isLoading}
           color='primary'
         >
           Preview
@@ -73,3 +86,4 @@ export function Buttons({
     </Box>
   )
 }
+export default Buttons

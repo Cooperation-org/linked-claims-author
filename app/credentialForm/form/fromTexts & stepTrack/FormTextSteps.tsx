@@ -12,7 +12,7 @@ export const textGuid = [
     Thanks, Alice! <br /> Now let’s learn more about the skills you have.
   </>,
   'Now describe what you can demonstrate using this skill.',
-  'Do you have any portfolio pieces you want to add?',
+  'Do you have any supporting evidence that you’d like to add?',
   'Would you like to add an image to your skill?',
   <>
     Well done! <br /> Here’s what you’ve created:

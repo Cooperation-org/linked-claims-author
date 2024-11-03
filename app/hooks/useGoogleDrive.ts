@@ -13,6 +13,7 @@ interface ClaimDetail {
   issuanceDate: string
   expirationDate: string
   credentialSubject: {
+    [x: string]: any
     type: string[]
     name: string
     achievement: any
@@ -30,17 +31,32 @@ const useGoogleDrive = () => {
 
   useEffect(() => {
     if (accessToken) {
-      const storageInstance = new GoogleDriveStorage(accessToken)
-      setStorage(storageInstance)
+      try {
+        const storageInstance = new GoogleDriveStorage(accessToken)
+        setStorage(storageInstance)
+      } catch (error) {
+        console.error('Error initializing GoogleDriveStorage:', error)
+      }
+    } else {
+      console.warn('No access token available.')
     }
   }, [accessToken])
+
   const memoizedStorage = storage
 
   const getContent = useCallback(
     async (fileID: string): Promise<ClaimDetail | null> => {
-      if (!memoizedStorage) return null
-      const file = await memoizedStorage.retrieve(fileID)
-      return file as ClaimDetail
+      if (!memoizedStorage) {
+        console.warn('Storage instance is not available.')
+        return null
+      }
+      try {
+        const file = await memoizedStorage.retrieve(fileID)
+        return file?.data as ClaimDetail
+      } catch (error) {
+        console.error('Error retrieving file:', error)
+        return null
+      }
     },
     [memoizedStorage]
   )
@@ -63,22 +79,34 @@ const useGoogleDrive = () => {
   }
   const getComments = useCallback(
     async (fileID: string): Promise<ClaimDetail[]> => {
-      if (!memoizedStorage) return []
-      const fileComments = await memoizedStorage.getFileComments(fileID)
-      const comments: ClaimDetail[] = []
-
-      if (fileComments) {
-        await Promise.all(
-          fileComments.map(async (fileComment: any) => {
-            const ID = extractGoogleDriveId(fileComment.content)
-            if (ID) {
-              const comment = await memoizedStorage.retrieve(ID)
-              if (comment) comments.push(comment as ClaimDetail)
-            }
-          })
-        )
+      if (!memoizedStorage) {
+        console.warn('Storage instance is not available for fetching comments.')
+        return []
       }
-      return comments
+      try {
+        const fileComments = await memoizedStorage.getFileComments(fileID)
+
+        const comments: ClaimDetail[] = []
+
+        if (fileComments) {
+          await Promise.all(
+            fileComments.map(async (fileComment: any) => {
+              const ID = extractGoogleDriveId(fileComment.content)
+
+              if (ID) {
+                const comment = await memoizedStorage.retrieve(ID)
+
+                if (comment) comments.push(comment?.data as ClaimDetail)
+              }
+            })
+          )
+        }
+
+        return comments
+      } catch (error) {
+        console.error('Error fetching comments:', error)
+        return []
+      }
     },
     [memoizedStorage]
   )

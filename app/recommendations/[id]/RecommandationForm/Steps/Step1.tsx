@@ -1,23 +1,12 @@
 'use client'
 
 import React from 'react'
-import {
-  Box,
-  Typography,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Card,
-  CardContent
-} from '@mui/material'
+import { Box, Typography, Button, Tooltip } from '@mui/material'
 import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { FormData } from '../../../../credentialForm/form/types/Types'
-import { GoogleDrive, DigitalWallet } from '../../../../Assets/SVGs'
-import {
-  radioCheckedStyles,
-  radioGroupStyles
-} from '../../../../components/Styles/appStyles'
-import { signIn } from 'next-auth/react'
+import { SVGFolder, SVGSinfo } from '../../../../Assets/SVGs'
+import { signIn, useSession } from 'next-auth/react'
+import { useStepContext } from '../../../../credentialForm/form/StepContext'
 
 interface Step1Props {
   watch: UseFormWatch<FormData>
@@ -25,86 +14,105 @@ interface Step1Props {
   handleNext: () => void
 }
 
-const Step1: React.FC<Step1Props> = ({ watch, setValue, handleNext }) => {
-  const storageOption = watch('storageOption')
+const Step1: React.FC<Step1Props> = ({ handleNext }) => {
+  const { data: session } = useSession()
+  const { setUploadImageFn } = useStepContext()
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedValue = e.target.value
-    setValue('storageOption', selectedValue)
-    if (selectedValue === 'Google Drive') {
-      signIn()
+  const connectToGoogleDrive = async () => {
+    if (session?.accessToken) {
+      handleNext()
+      return
     }
-    setValue('storageOption', e.target.value)
+
+    try {
+      await signIn('google', {
+        callbackUrl: `${window.location.origin}/credentialForm#step1`
+      })
+    } catch (error) {
+      console.error('Error connecting to Google Drive:', error)
+    }
   }
 
+  // Determine tooltip text based on authentication status
+  const tooltipTitle = session?.accessToken
+    ? 'You are connected to Google Drive. This is where your recommendation will be saved.'
+    : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
+
+  // Determine main text based on authentication status
+  const mainText = session?.accessToken
+    ? ''
+    : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
+
   return (
-    <Box sx={{ maxWidth: '100%', margin: '0 auto', textAlign: 'center' }}>
-      <RadioGroup
-        sx={{ ...radioGroupStyles, pl: '0' }}
-        aria-labelledby='form-type-label'
-        name='controlled-radio-buttons-group'
-        value={storageOption}
-        onChange={handleChange}
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 3,
+        textAlign: 'center',
+        mt: 4
+      }}
+    >
+      {/* Google Drive Icon */}
+      <Box
+        sx={{
+          width: 100,
+          height: 100,
+          backgroundColor: '#e0e0e0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
       >
-        <Card variant='outlined' sx={{ width: '100%' }}>
-          <CardContent>
-            <FormControlLabel
-              value='Google Drive'
-              sx={{ width: '100%', bgcolor: '#FFF' }}
-              control={<Radio sx={radioCheckedStyles} />}
-              label={
-                <Box sx={{ display: 'flex', alignItems: 'center', pb: '5px' }}>
-                  <GoogleDrive />
-                  <Typography variant='body1' sx={{ marginLeft: 1 }}>
-                    Google Drive
-                  </Typography>
-                </Box>
-              }
-            />
-            <Typography
-              variant='body2'
-              sx={{ marginLeft: 4, textAlign: 'justify', overflow: 'auto' }}
-            >
-              You must have a Google account and be able to login to use this option. This
-              is where your credentials will be stored once you select Sign and Save.
-            </Typography>
-          </CardContent>
-        </Card>
-        <Card variant='outlined'>
-          <CardContent>
-            <FormControlLabel
-              value='Digital Wallet'
-              sx={{ width: '100%', bgcolor: '#FFF' }}
-              control={<Radio sx={radioCheckedStyles} />}
-              label={
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <DigitalWallet />
-                  <Typography variant='body1' sx={{ marginLeft: 1 }}>
-                    Digital Wallet
-                  </Typography>
-                </Box>
-              }
-            />
-            <Typography variant='body2' sx={{ marginLeft: 4, textAlign: 'justify' }}>
-              You must have a digital wallet account and be able to login to the wallet
-              application to use this option. This is where your{' '}
-              <a
-                style={{ color: '#0052CC', textDecoration: 'underline' }}
-                href='#wallet-options'
-              >
-                credentials
-              </a>{' '}
-              will be stored once you select Sign and Save.{' '}
-              <a
-                style={{ color: '#0052CC', textDecoration: 'underline' }}
-                href='#wallet-options'
-              >
-                See wallet options.
-              </a>
-            </Typography>
-          </CardContent>
-        </Card>
-      </RadioGroup>
+        <SVGFolder />
+      </Box>
+
+      <Typography
+        sx={{
+          fontSize: 24
+        }}
+      >
+        {mainText}
+      </Typography>
+
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={connectToGoogleDrive}
+        sx={{
+          mt: 2,
+          px: 4,
+          py: 0.5,
+          fontSize: '16px',
+          borderRadius: 5,
+          textTransform: 'none',
+          backgroundColor: '#003FE0',
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        Connect to Google Drive
+        <Tooltip title={tooltipTitle}>
+          <Box sx={{ ml: 2, mt: '2px' }}>
+            <SVGSinfo />
+          </Box>
+        </Tooltip>
+      </Button>
+
+      <Button
+        variant='text'
+        color='primary'
+        onClick={() => handleNext()}
+        sx={{
+          fontSize: '14px',
+          textDecoration: 'underline',
+          textTransform: 'none'
+        }}
+      >
+        Continue without Saving
+      </Button>
     </Box>
   )
 }

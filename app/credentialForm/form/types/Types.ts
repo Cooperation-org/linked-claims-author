@@ -42,6 +42,7 @@ export interface Credential {
 interface Portfolio {
   name: string
   url: string
+  googleId?: string
 }
 
 // Interfaces for the form fields
@@ -72,4 +73,15 @@ export interface FormProps {
 export interface CredentialDisplayProps {
   credential: Credential
   onCopy: () => void
+}
+
+export interface FileItem {
+  id: string
+  file: File
+  name: string
+  url: string
+  isFeatured: boolean
+  uploaded: boolean
+  fileExtension: string
+  googleId?: string
 }

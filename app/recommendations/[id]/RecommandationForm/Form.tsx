@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react'
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, Typography } from '@mui/material'
+import { FormControl, Box, Button } from '@mui/material'
 import { useParams } from 'next/navigation'
 import { FormData } from '../../../credentialForm/form/types/Types'
-import { textGuid, NoteText, SuccessText, StorageText } from './fromTexts/FormTextSteps'
+import { textGuid, SuccessText } from './fromTexts/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
 import Step3 from './Steps/Step3'
@@ -18,7 +18,9 @@ import { useStepContext } from '../../../credentialForm/form/StepContext'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID, signCred } from '../../../utils/signCred'
 import { useSession } from 'next-auth/react'
-import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
+import { StepTrackShape } from '../../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
+import { SVGBack } from '../../../Assets/SVGs'
 
 interface FormProps {
   fullName: string
@@ -39,6 +41,8 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
     explainAnswer: ''
   })
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [tooltipText, setTooltipText] = useState('saving your recommendation')
 
   const defaultValues: FormData = storedValue
 
@@ -122,6 +126,12 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
+      setIsLoading(true)
+      setTooltipText('saving your recommendation')
+      setTimeout(() => {
+        setTooltipText('wait while we link your recommendation to the claim')
+      }, 2000)
+
       setSubmittedFullName(data.fullName)
       await saveAndAddComment()
       clearValue()
@@ -137,6 +147,8 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
       setActiveStep(6)
     } catch (error) {
       console.error('Error during form submission:', error)
+    } finally {
+      setIsLoading(false)
     }
   })
 
@@ -149,22 +161,32 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
           gap: '30px',
           alignItems: 'center',
           marginTop: '5px',
-          padding: '0 0 30px',
-          overflow: 'auto'
+          padding: '20px',
+          width: '100%',
+          maxWidth: '720px',
+          backgroundColor: '#FFF',
+          margin: 'auto',
+          marginBottom: '20px'
         }}
         onSubmit={handleFormSubmit}
       >
-        {activeStep === 0 && <ComprehensiveClaimDetails />}
-        {/* Removed FetchedData component since we're passing fullName via props */}
-        {activeStep === 2 && <NoteText />}
-        {activeStep === 1 && (
-          <Typography sx={{ fontWeight: '400', fontSize: '16px', fontFamily: 'Lato' }}>
-            {StorageText}
-          </Typography>
+        {activeStep >= 2 && activeStep <= 4 && (
+          <Button
+            onClick={handleBack}
+            sx={{ textTransform: 'capitalize', p: '0', mr: '100%', ml: '50px' }}
+          >
+            <Box sx={{ mt: 1 }}>
+              <SVGBack />
+            </Box>
+            Back
+          </Button>
         )}
+        <StepTrackShape />
+        {activeStep === 0 && <ComprehensiveClaimDetails />}
+
         {activeStep === 7 && <SuccessText />}
 
-        <Box sx={{ width: { xs: '100%', md: '50%' } }}>
+        <Box sx={{ width: '100%' }}>
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 1 && (
               <Step1 watch={watch} setValue={setValue} handleNext={handleNext} />
@@ -231,6 +253,8 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
           handleSign={handleFormSubmit}
           handleBack={handleBack}
           isValid={isValid}
+          isLoading={isLoading}
+          tooltipText={tooltipText}
         />
       </form>
     </FormProvider>

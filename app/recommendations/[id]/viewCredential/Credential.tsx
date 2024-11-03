@@ -7,7 +7,7 @@ import { nextButtonStyle } from '../../../components/Styles/appStyles'
 import { SVGCheckMarks } from '../../../Assets/SVGs'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { featuresRecommentations } from '../RecommandationForm/fromTexts/FormTextSteps'
-import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import DeclineRequest from '../DeclineRequest/DeclineRequest'
 import { useParams } from 'next/navigation'
 
@@ -63,47 +63,41 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
         flexDirection: 'column',
         gap: '30px',
         padding: '0 15px 30px',
-        mt: '30px'
+        mt: '30px',
+        alignItems: 'center'
       }}
     >
-      <Typography
+      <ComprehensiveClaimDetails />
+      <Box
         sx={{
+          m: '0 auto',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: theme.palette.t3BodyText,
-          fontFamily: 'Lato',
-          fontSize: '24px',
-          fontWeight: '600',
-          lineHeight: '28.8px',
-          textAlign: 'center',
-          m: '0',
-          width: '100%'
+          flexDirection: 'column'
         }}
       >
-        Hi, I’m Tessa! I’ll help you with <br /> {fullName}’s recommendation.
-      </Typography>
-      <Button onClick={handleClick} sx={{ ...nextButtonStyle, width: '100%' }}>
-        Get Started
-      </Button>
-      <Button
-        onClick={handleDeclineRequest}
-        sx={{
-          padding: '10px 24px',
-          borderRadius: '100px',
-          textTransform: 'capitalize',
-          fontFamily: 'Roboto',
-          textDecoration: 'underline',
-          fontWeight: '600',
-          lineHeight: '16px',
-          flexGrow: 8,
-          fontSize: '16px',
-          width: '100%'
-        }}
-        variant='text'
-      >
-        Decline Recommendation Request
-      </Button>
+        <Button onClick={handleClick} sx={{ ...nextButtonStyle, width: '100%', mb: 1 }}>
+          Get Started
+        </Button>
+        <Button
+          onClick={handleDeclineRequest}
+          sx={{
+            padding: '10px 24px',
+            borderRadius: '100px',
+            textTransform: 'capitalize',
+            fontFamily: 'Roboto',
+            textDecoration: 'underline',
+            fontWeight: '600',
+            lineHeight: '16px',
+            flexGrow: 8,
+            fontSize: '16px'
+          }}
+          variant='text'
+        >
+          Decline Recommendation Request
+        </Button>
+      </Box>
       <Typography
         sx={{
           flexShrink: 1,
@@ -119,35 +113,46 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
       <Box
         sx={{ display: 'flex', flexDirection: 'column', minWidth: '210px', gap: '15px' }}
       >
-        {featuresRecommentations(fullName).map((feature: { id: any; name: any }) => (
-          <Box
-            key={feature.id}
-            sx={{
-              display: 'flex',
-              lineHeight: 'normal',
-              alignItems: 'center',
-              width: '100%'
-            }}
-          >
-            <SVGCheckMarks />
-            <Typography
+        {featuresRecommentations(fullName).map(
+          (feature: { id: any; name: any; description: any }) => (
+            <Box
+              key={feature.id}
               sx={{
-                color: theme.palette.t3BodyText,
-                flexShrink: 1,
-                fontFamily: 'Lato',
-                fontSize: '18px',
-                fontWeight: '600',
-                lineHeight: '21.6px',
-                m: '0 5px 0 15px'
+                display: 'flex',
+                lineHeight: 'normal',
+                alignItems: 'center',
+                width: '100%'
               }}
             >
-              {feature.name}
-            </Typography>
-            <InfoOutlinedIcon sx={{ width: '15px', height: '15px', mt: '3px ' }} />
-          </Box>
-        ))}
+              <SVGCheckMarks />
+              <Typography
+                sx={{
+                  color: theme.palette.t3BodyText,
+                  flexShrink: 1,
+                  fontFamily: 'Lato',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  lineHeight: '21.6px',
+                  m: '0 5px 0 15px'
+                }}
+              >
+                {feature.name}
+              </Typography>
+              <InfoOutlinedIcon
+                sx={{
+                  width: '15px',
+                  height: '15px',
+                  mt: '3px',
+                  cursor: 'pointer',
+                  color: theme.palette.primary.main
+                }}
+                aria-label={`More information about ${feature.name}`}
+                titleAccess={`More information about ${feature.name}`}
+              />
+            </Box>
+          )
+        )}
       </Box>
-      <ComprehensiveClaimDetails />
     </Box>
   )
 }

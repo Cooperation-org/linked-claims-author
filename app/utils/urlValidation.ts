@@ -66,9 +66,8 @@ export const handleUrlValidation = async (
         updatedErrors[index] = 'The URL points to an unsupported content type.'
       }
     } catch (error: any) {
-      updatedErrors[
-        index
-      ] = `Failed to fetch the URL or URL is not valid: ${error.message}`
+      updatedErrors[index] =
+        `Failed to fetch the URL or URL is not valid: ${error.message}`
     }
   } else {
     updatedErrors[index] = 'URL cannot be empty.'

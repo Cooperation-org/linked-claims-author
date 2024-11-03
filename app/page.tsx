@@ -1,267 +1,121 @@
 'use client'
 import { useTheme } from '@mui/material/styles'
 import React from 'react'
-import { Box, Typography, useMediaQuery, Avatar, Button } from '@mui/material'
-import ProfileImageWithLabels from './credentialForm/ProfileImageWithLabels'
-import SVGDesign, {
-  SVGCheckMarks,
-  TwoPhonesMobileSVG,
-  TwoPhonesTabletSVG
-} from './Assets/SVGs'
-import Image from 'next/image'
-import AddIcon from './Assets/Images/Add_icon.png'
-
-import {
-  testimonials,
-  featuresSmallScreen,
-  featuresLargeScreen
-} from './credentialForm/landingPageVariables'
+import { Box, Button, Typography } from '@mui/material'
+import { SVGCheckMarks } from './Assets/SVGs'
+import OverlappingCards from './components/OverLappingCards/OverLappingCards'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
+
+const features = [
+  { id: 1, name: 'Capture any skill or experience' },
+  { id: 2, name: 'Add portfolio pieces and evidence' },
+  { id: 3, name: 'Request references from others' },
+  { id: 4, name: 'Share with employers & on LinkedIn' }
+]
 
 const Page = () => {
-  const { data: session } = useSession()
   const theme = useTheme()
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-
-  const features = isSmallScreen ? featuresSmallScreen : featuresLargeScreen
-
-  const SelectedImage = isSmallScreen ? TwoPhonesMobileSVG : TwoPhonesTabletSVG
 
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '37px',
-        alignItems: 'center'
+        gap: '30px',
+        alignItems: 'center',
+        pt: '60px'
       }}
     >
       {/* Header Component */}
       <Box
         sx={{
+          alignItems: { xs: 'center', md: 'start' },
           display: 'flex',
-          height: { xs: '360px', md: '441px' },
           flexDirection: 'column',
-          gap: '37px',
-          alignItems: 'center',
-          textAlign: 'center',
-          mt: { xs: '37px', md: '148px' },
-          position: 'relative'
+          width: { xs: '92.308vw', md: '712px' },
+          pb: '10px',
+          justifyContent: 'start'
         }}
       >
-        <Box
+        <Typography
           sx={{
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: { xs: '37px', md: '30px' },
-            position: 'relative'
+            color: '#000',
+            fontFamily: 'Poppins',
+            fontSize: 'clamp(24px, 2vw + 1rem, 40px)',
+            fontWeight: 700,
+            lineHeight: '110%',
+            textAlign: 'left',
+            minWidth: '320px',
+            maxWidth: '720px'
           }}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              width: { xs: '92.308vw', md: '712px' },
-              maxWidth: { xs: '360px', md: '712px' },
-              height: { xs: '60px', md: '154px' }
-            }}
-          >
-            <Typography
-              sx={{
-                color: theme.palette.t3DarkSlateBlue,
-                fontFamily: 'Poppins',
-                fontSize: { xs: '30px', md: '60px' },
-                fontWeight: 600,
-                lineHeight: '110%',
-                textAlign: 'center',
-                mb: { xs: '15px', md: '30px' }
-              }}
-            >
-              Claim your life skills & unlock opportunities
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              width: '325px',
-              height: '44px'
-            }}
-          >
-            <Typography
-              sx={{
-                color: theme.palette.t3DarkSlateBlue,
-                fontFamily: 'Lato',
-                fontSize: { xs: '16px', md: '18px' },
-                fontWeight: 400,
-                lineHeight: 'normal',
-                textAlign: 'center'
-              }}
-            >
-              Sign up in seconds. Let your true skills shine. Stand out from the crowd.
-            </Typography>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            marginTop: { xs: '37px', md: '45px' }
-          }}
-        >
-          <ProfileImageWithLabels />
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            mt: { xs: '37px', md: '36px' }
-          }}
-        >
-          <Link href='/credentialForm'>
-            <Button
-              sx={{
-                width: '200px',
-                height: '40px',
-                fontFamily: 'Lato',
-                fontSize: '16px',
-                fontWeight: 600,
-                lineHeight: '20px',
-                borderRadius: '100px',
-                backgroundColor: theme.palette.t3ButtonBlue,
-                color: 'white',
-                textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: theme.palette.t3ButtonBlue
-                }
-              }}
-            >
-              Create a Credential
-            </Button>
-          </Link>
-          {session && (
-            <Link href='/claims'>
-              <Button
-                sx={{
-                  fontSize: '1.1rem',
-                  color: theme.palette.t3ButtonBlue,
-                  mt: 1,
-                  textTransform: 'capitalize'
-                }}
-              >
-                View Your Achievements
-              </Button>
-            </Link>
-          )}
-        </Box>
+          Capture your life
+          <br /> highlights, add proof <br /> & unlock new opportunities.
+        </Typography>
       </Box>
-
-      {/*Building Section Component */}
+      {/* Get Started Button */}
       <Box
         sx={{
-          display: 'inline-flex',
-          height: 'auto',
+          display: { xs: 'none', md: 'flex' },
           flexDirection: 'column',
-          alignItems: 'center',
-          gap: '15px',
-          flexShrink: 0,
-          textAlign: 'center',
-          position: 'relative',
-          width: { xs: '360px', md: '437px' },
-          marginTop: { xs: '90px', md: '160px' }
+          alignItems: 'flex-start',
+          mb: '57px',
+          width: '690px'
         }}
       >
-        <Box
-          sx={{
-            position: 'absolute',
-            zIndex: 3,
-            left: { xs: 'calc(50% - 189px)', md: 'calc(50% - 193px)' },
-            top: { xs: 'calc(50% - 98px)', md: 'calc(50% - 108px)' }
-          }}
-        >
-          <SVGDesign />
-        </Box>
-        <Typography
-          sx={{
-            color: theme.palette.t3DarkSlateBlue,
-            fontFamily: 'Poppins',
-            fontWeight: 600,
-            lineHeight: '125%',
-            fontSize: { xs: '20px', md: '24px' },
-            padding: { xs: '0 20px', md: '0 50px' }
-          }}
-        >
-          Building your story in the age of AI.
-        </Typography>
-        <Typography
-          sx={{
-            color: theme.palette.t3BodyText,
-            fontFamily: 'Lato',
-            fontWeight: 400,
-            lineHeight: 'normal',
-            fontSize: { xs: '16px', md: '18px' },
-            padding: { xs: '0 10px', md: '0 30px' }
-          }}
-        >
-          No more cut and paste. No more re-doing your resume. Add your skills once, then
-          mix and match them for each job.
-        </Typography>
+        <Link href='/credentialForm'>
+          <Button
+            sx={{
+              minWidth: { xs: '320px', md: '173px' },
+              width: { xs: '92.308vw', md: '10.01vw' },
+              maxWidth: '360px',
+              height: '52px',
+              fontFamily: 'Lato',
+              fontSize: '16px',
+              fontWeight: 500,
+              lineHeight: '20px',
+              borderRadius: '100px',
+              backgroundColor: theme.palette.t3ButtonBlue,
+              color: 'white',
+              textTransform: 'none',
+              '&:hover': {
+                backgroundColor: theme.palette.t3ButtonBlue
+              }
+            }}
+          >
+            Get Started
+          </Button>
+        </Link>
       </Box>
-
-      {/* Two Phones Section Component */}
       <Box
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
-          width: { xs: '321px', md: 'auto' },
-          // maxWidth: '898.22px',
+          gap: '57px',
+          alignItems: { xs: 'center', md: 'flex-start' },
           justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: { xs: '20px', md: '40px' },
-          gap: { xs: '33px', md: '60px' }
+          width: '100%'
         }}
       >
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '2px',
-            maxWidth: { xs: '318px', md: '515px' }
-          }}
-        >
-          <SelectedImage />
-        </Box>
-        <Box
-          sx={{
-            display: 'inline-flex',
+            display: { xs: 'none', md: 'flex' },
             flexDirection: 'column',
-            justifyContent: 'center',
-            gap: '15px',
-            alignItems: 'center',
-            width: '321px',
-            textAlign: 'start'
+            mr: '10px',
+            gap: '20px',
+            maxWidth: '320px',
+            mb: { xs: '10px', md: '140px' }
           }}
         >
           {features.map(feature => (
             <Box
               key={feature.id}
-              sx={{
-                display: 'flex',
-                gap: '15px',
-                width: '100%',
-                maxWidth: '321px'
-              }}
+              sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}
             >
               <SVGCheckMarks />
               <Typography
                 sx={{
                   color: theme.palette.t3BodyText,
-                  flexShrink: 0,
                   fontFamily: 'Lato',
                   fontSize: '18px',
                   fontWeight: '400',
@@ -273,140 +127,76 @@ const Page = () => {
             </Box>
           ))}
         </Box>
+
+        {/* OverlappingCards Component */}
+        <OverlappingCards />
       </Box>
 
-      {/* Testimonial Component */}
+      {/* Get Started Button */}
       <Box
         sx={{
-          position: 'relative',
-          width: '100%',
-          backgroundColor: theme.palette.t3Whitesmoke,
-          textAlign: 'left'
+          display: { xs: 'flex', md: 'none' },
+          flexDirection: 'column',
+          alignItems: 'center',
+          mt: '10px'
         }}
       >
-        <Box
-          sx={{
-            width: '100%',
-            backgroundColor: theme.palette.t3Whitesmoke,
-            textAlign: 'center',
-            mb: { xs: '0px', md: '55px' }
-          }}
-        >
-          <Typography
+        <Link href='/credentialForm'>
+          <Button
             sx={{
-              lineHeight: '125%',
-              fontWeight: 600,
-              mt: { xs: '53px', md: '40px' },
-              display: 'flex',
-              flexDirection: 'column',
-              flexShrink: 0,
-              textAlign: 'center',
-              mx: 'auto',
-              fontSize: { xs: '24px', md: '36px' }
+              minWidth: { xs: '320px', md: '173px' },
+              width: { xs: '92.308vw', md: '10.01vw' },
+              maxWidth: '360px',
+              height: '40px',
+              fontFamily: 'Lato',
+              fontSize: '16px',
+              fontWeight: 500,
+              lineHeight: '20px',
+              borderRadius: '100px',
+              backgroundColor: theme.palette.t3ButtonBlue,
+              color: 'white',
+              textTransform: 'none',
+              '&:hover': {
+                backgroundColor: theme.palette.t3ButtonBlue
+              }
             }}
           >
-            Your data. Your stories.
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'flex-end',
-            justifyContent: 'flex-start',
-            gap: '30px',
-            overflowX: 'auto',
-            paddingLeft: '40px',
-            paddingTop: { xs: '33px', md: '44px' },
-            paddingBottom: { xs: '38px', md: '44px' },
-            '&::-webkit-scrollbar': {
-              height: '8px'
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: theme.palette.t3YellowAccent,
-              borderRadius: '10px'
-            }
-          }}
-        >
-          {testimonials.map(testimonial => (
-            <Box
-              key={testimonial.id}
+            Get Started
+          </Button>
+        </Link>
+      </Box>
+
+      <Box
+        sx={{
+          display: { xs: 'flex', md: 'none' },
+          flexDirection: 'column',
+          width: { xs: '320px', md: 'auto' },
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          gap: '15px',
+          mb: '20px'
+        }}
+      >
+        {features.map(feature => (
+          <Box
+            key={feature.id}
+            sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}
+          >
+            <SVGCheckMarks />
+            <Typography
               sx={{
-                flex: '0 0 auto',
-                width: '328px',
-                height: '192px',
-                backgroundColor: theme.palette.t3YellowAccent,
-                borderRadius: '10px',
-                opacity: 0.9,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                padding: '25px 17px',
-                gap: '16px',
-                position: 'relative',
-                mb: { xs: '0px', md: '54px' }
+                color: theme.palette.t3BodyText,
+                flexShrink: 0,
+                fontFamily: 'Lato',
+                fontSize: '18px',
+                fontWeight: '400',
+                lineHeight: 'normal'
               }}
             >
-              {testimonial.id === 1 && (
-                <Image
-                  priority
-                  src={AddIcon.src}
-                  width={40}
-                  height={40}
-                  alt='Add Icon'
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    display: 'block',
-                    position: 'absolute',
-                    top: '-30px',
-                    left: 'calc(50% - 194px)'
-                  }}
-                />
-              )}
-              <Avatar
-                alt={testimonial.name}
-                src={testimonial.image.src}
-                sx={{ width: 57, height: 57, mb: '100px' }}
-              />
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  gap: '9px'
-                }}
-              >
-                <Typography
-                  sx={{
-                    width: '212px',
-                    color: theme.palette.t3BodyText,
-                    fontFamily: 'Lato',
-                    fontSize: '13px',
-                    fontWeight: '700',
-                    lineHeight: 'normal',
-                    mb: '15px'
-                  }}
-                >
-                  {testimonial.name}
-                </Typography>
-                <Typography
-                  sx={{
-                    width: '212px',
-                    color: theme.palette.t3BodyText,
-                    fontFamily: 'Lato',
-                    fontSize: '16px',
-                    fontWeight: '400',
-                    lineHeight: 'normal'
-                  }}
-                >
-                  {testimonial.text}
-                </Typography>
-              </Box>
-            </Box>
-          ))}
-        </Box>
+              {feature.name}
+            </Typography>
+          </Box>
+        ))}
       </Box>
     </Box>
   )

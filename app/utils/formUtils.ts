@@ -3,34 +3,6 @@
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
 // import { signIn } from 'next-auth/react'  // will use later
 
-export const createFolderAndUploadFile = async (
-  data: any,
-  accessToken: string,
-  setLink: (link: string) => void
-) => {
-  try {
-    const storage = new GoogleDriveStorage(accessToken)
-    const folderName = 'USER_UNIQUE_KEY'
-    const folderId = await storage.createFolder(folderName)
-
-    const fileData = {
-      fileName: 'test.json',
-      mimeType: 'application/json',
-      body: new Blob([JSON.stringify(data)], {
-        type: 'application/json'
-      })
-    }
-    const fileID = await storage.save(fileData, folderId)
-    console.log('File uploaded successfully with ID:', fileID)
-
-    const fileLink = `https://drive.google.com/file/d/${fileID}/view?usp=sharing`
-    setLink(fileLink)
-    console.log('File uploaded successfully with link:', fileLink)
-  } catch (error) {
-    console.error('Error:', error)
-  }
-}
-
 export const copyFormValuesToClipboard = (codeToCopy: string) => {
   navigator.clipboard
     .writeText(codeToCopy)
