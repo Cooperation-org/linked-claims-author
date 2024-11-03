@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useParams } from 'next/navigation'
-import ComprehensiveClaimDetails from './ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../view/[id]/ComprehensiveClaimDetails'
 const ClaimPage = () => {
   const params = useParams()
   const id =

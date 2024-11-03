@@ -20,7 +20,7 @@ import { useForm } from 'react-hook-form'
 import { useParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
-import ComprehensiveClaimDetails from '../../claimdetails/[id]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../view/[id]/ComprehensiveClaimDetails'
 import {
   StyledButton,
   formLabelStyles,

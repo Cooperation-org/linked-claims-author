@@ -18,7 +18,7 @@ import { useStepContext } from '../../../credentialForm/form/StepContext'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID, signCred } from '../../../utils/signCred'
 import { useSession } from 'next-auth/react'
-import ComprehensiveClaimDetails from '../../../claimdetails/[id]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import { StepTrackShape } from '../../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
 import { SVGBack } from '../../../Assets/SVGs'
 

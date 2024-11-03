@@ -4,7 +4,7 @@ import React from 'react'
 import { Box, Card, Container, Link, Typography } from '@mui/material'
 import { SVGBadge, QuoteSVG } from '../../../../Assets/SVGs'
 import { FormData } from '../../../../credentialForm/form/types/Types'
-import ComprehensiveClaimDetails from '../../../../claimdetails/[id]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../../../view/[id]/ComprehensiveClaimDetails'
 
 interface DataPreviewProps {
   formData: FormData
