@@ -87,7 +87,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     return `${baseLinkedInUrl}?${params.toString()}`
   }
 
-  const handleShareOption = (option: 'LinkedIn' | 'Email' | 'CopyURL') => {
+  const handleShareOption = (option: 'LinkedIn' | 'Email' | 'CopyURL' | 'View') => {
     const credentialLink = `https://opencreds.net/view/${fileId}`
     if (option === 'LinkedIn') {
       const linkedInUrl = generateLinkedInUrl()
@@ -97,6 +97,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         credentialLink
       )}`
       window.location.href = mailUrl
+    } else if (option === 'CopyURL') {
+    } else if (option === 'View') {
+      window.location.href = `https://opencreds.net/view/${fileId}`
     } else if (option === 'CopyURL') {
       copyFormValuesToClipboard(credentialLink)
       setSnackbarOpen(true)
@@ -179,36 +182,23 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           fontFamily: 'Inter, sans-serif'
         }}
       >
-        <Box
+        <Button
+          onClick={() => handleShareOption('View')}
+          disabled={!fileId}
           sx={{
-            borderRadius: '10px',
-            backgroundColor: '#FFFFFF',
-            display: 'flex',
-            width: '100%',
-            alignItems: 'center',
-            gap: '20px',
-            justifyContent: 'flex-start',
-            padding: '15px',
-            border: '1px solid #003FE0'
+            ...buttonStyles,
+            mt: '15px',
+            border: '3px solid #003FE0'
           }}
         >
           <BlueBadge />
-          <Typography
-            sx={{
-              flex: 1,
-              fontFamily: 'inherit',
-              margin: 0,
-              color: '#003FE0'
-            }}
-          >
-            {formData?.credentialName}
-          </Typography>
+          {formData?.credentialName}{' '}
           {!link && (
             <Tooltip title={tooltipMessage}>
               <CircularProgress size={24} />
             </Tooltip>
           )}
-        </Box>
+        </Button>
 
         <Button
           onClick={() => handleShareOption('CopyURL')}

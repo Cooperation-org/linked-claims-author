@@ -13,6 +13,7 @@ interface ClaimDetail {
   issuanceDate: string
   expirationDate: string
   credentialSubject: {
+    [x: string]: any
     type: string[]
     name: string
     achievement: any

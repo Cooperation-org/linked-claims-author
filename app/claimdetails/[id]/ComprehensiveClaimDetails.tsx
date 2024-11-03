@@ -107,7 +107,6 @@ const ComprehensiveClaimDetails = () => {
 
         if (content) {
           setClaimDetail(content)
-          console.log('Set claim detail:', content)
         } else {
           console.warn('No content found for the given file ID.')
         }
@@ -140,7 +139,7 @@ const ComprehensiveClaimDetails = () => {
     }))
   }
 
-  if (loading) {
+  if (loading || !claimDetail) {
     console.log('Loading state is true.')
     return (
       <Box
@@ -165,19 +164,7 @@ const ComprehensiveClaimDetails = () => {
     )
   }
 
-  if (!claimDetail) {
-    return (
-      <Typography variant='h6' color='error' align='center' sx={{ mt: 4 }}>
-        No claim details found.
-      </Typography>
-    )
-  }
-
-  const credentialSubject = claimDetail.credentialSubject
-  console.log(
-    '🚀 ~ ComprehensiveClaimDetails ~ credentialSubject:',
-    credentialSubject.evidenceLink
-  )
+  const credentialSubject = claimDetail?.credentialSubject
   const achievement = credentialSubject?.achievement[0]
 
   const hasValidEvidence =
@@ -201,17 +188,17 @@ const ComprehensiveClaimDetails = () => {
         {isAskForRecommendation && (
           <Box
             sx={{
-              width: credentialSubject.evidenceLink ? '30%' : '0',
-              marginRight: credentialSubject.evidenceLink ? '20px' : '15px',
+              width: credentialSubject?.evidenceLink ? '30%' : '0',
+              marginRight: credentialSubject?.evidenceLink ? '20px' : '15px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               overflow: 'hidden'
             }}
           >
-            {credentialSubject.evidenceLink ? (
-              <Image
-                src={credentialSubject.evidenceLink}
+            {claimDetail?.credentialSubject?.evidenceLink ? (
+              <img
+                src={claimDetail?.credentialSubject?.evidenceLink}
                 alt='Achievement Evidence'
                 width={500}
                 height={300}
@@ -276,7 +263,7 @@ const ComprehensiveClaimDetails = () => {
 
           {!isAskForRecommendation && (
             <>
-              {credentialSubject.evidenceLink && (
+              {claimDetail?.credentialSubject?.evidenceLink && (
                 <Box
                   sx={{
                     display: 'flex',
@@ -286,8 +273,8 @@ const ComprehensiveClaimDetails = () => {
                     justifyContent: 'center'
                   }}
                 >
-                  <Image
-                    src={credentialSubject.evidenceLink}
+                  <img
+                    src={claimDetail?.credentialSubject?.evidenceLink}
                     alt='Achievement Evidence'
                     width={180}
                     height={150}
