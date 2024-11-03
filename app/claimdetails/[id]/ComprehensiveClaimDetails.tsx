@@ -99,6 +99,7 @@ const ComprehensiveClaimDetails = () => {
     const fetchDriveData = async () => {
       if (!accessToken || !fileID) {
         console.warn('Access token or fileID is missing.')
+        setLoading(false)
         return
       }
       try {
