@@ -7,7 +7,7 @@ import { nextButtonStyle } from '../../../components/Styles/appStyles'
 import { SVGCheckMarks } from '../../../Assets/SVGs'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { featuresRecommentations } from '../RecommandationForm/fromTexts/FormTextSteps'
-import ComprehensiveClaimDetails from '../../../test/[id]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../../claimdetails/[id]/ComprehensiveClaimDetails'
 import DeclineRequest from '../DeclineRequest/DeclineRequest'
 import { useParams } from 'next/navigation'
 

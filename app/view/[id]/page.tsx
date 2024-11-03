@@ -4,7 +4,7 @@ import React from 'react'
 import { Box, Typography, useMediaQuery } from '@mui/material'
 import Image from 'next/image'
 import theme from '../../theme'
-import ComprehensiveClaimDetails from '../../test/[id]/ComprehensiveClaimDetails'
+import ComprehensiveClaimDetails from '../../claimdetails/[id]/ComprehensiveClaimDetails'
 
 const Page: React.FC = () => {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
