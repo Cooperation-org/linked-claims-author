@@ -148,9 +148,13 @@ export default function FileUploadAndList({
       // Upload files to Google Drive
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (fileItem, index) => {
+          const newFile = new File([fileItem.file], fileItem.name, {
+            type: fileItem.file.type
+          })
+
           const uploadedFile = await uploadImageToGoogleDrive(
             storage as GoogleDriveStorage,
-            { ...fileItem.file, name: fileItem.name + '.' + fileItem.fileExtension }
+            newFile
           )
           return {
             ...fileItem,
