@@ -12,9 +12,10 @@ import {
   Checkbox,
   TextField,
   FormLabel,
-  styled
+  styled,
+  Snackbar,
+  Alert
 } from '@mui/material'
-import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import { useParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
@@ -29,8 +30,7 @@ import {
   CustomTextField
 } from '../../components/Styles/appStyles'
 import { useStepContext } from '../../credentialForm/form/StepContext'
-import img3 from '../../Assets/Images/Tessa Persona large sceens.png'
-import { SVGLargeScreen } from '../../Assets/SVGs'
+import { NewEmail2 } from '../../Assets/SVGs'
 
 const steps = ['Message', 'Invite', '']
 
@@ -48,6 +48,8 @@ export default function AskForRecommendation() {
   const [isLoading, setIsLoading] = useState(true)
   const [driveData, setDriveData] = useState<any>(null)
   const params = useParams()
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
 
   const id = useMemo(
     () => (Array.isArray(params?.id) ? params.id[0] : params?.id || ''),
@@ -116,7 +118,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
     } finally {
       setIsLoading(false)
     }
-  }, [id, getContent, reset])
+  }, [id, getContent, reset, params.id])
 
   useEffect(() => {
     if (!id) {
@@ -147,6 +149,41 @@ this is the link https://opencreds.net/recommendations/${params.id}`
     driveData?.credentialSubject?.achievement[0]?.name || ''
   }&body=${encodeURIComponent(watch('reference'))}`
 
+  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnackbarOpen(false)
+  }
+
+  const handleOpenMail = () => {
+    window.location.href = mailToLink
+
+    const timeout = setTimeout(() => {
+      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+        watch('email')
+      )}${sendCopyToSelf && session?.user?.email ? `,${encodeURIComponent(session.user.email)}` : ''}&su=${encodeURIComponent(
+        `Support Request: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
+      )}&body=${encodeURIComponent(watch('reference'))}`
+
+      window.open(gmailLink, '_blank')
+
+      navigator.clipboard
+        .writeText(watch('reference'))
+        .then(() => {
+          setSnackbarMessage('Text Copied Successfully')
+          setSnackbarOpen(true)
+        })
+        .catch(err => {
+          console.error('Failed to copy text: ', err)
+          setSnackbarMessage('Failed to copy text')
+          setSnackbarOpen(true)
+        })
+    }, 2000)
+
+    window.addEventListener('blur', () => clearTimeout(timeout), { once: true })
+  }
+
   if (isLoading) {
     return (
       <Box
@@ -165,213 +202,205 @@ this is the link https://opencreds.net/recommendations/${params.id}`
   return (
     <Box
       sx={{
-        minHeight: {
-          xs: 'calc(100vh - 190px)',
-          md: 'calc(100vh - 381px)'
-        },
         overflow: 'auto',
-        mb: '30px'
+        my: '30px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '30px'
       }}
     >
-      <Box
+      <NewEmail2 />
+      <Typography
         sx={{
-          position: 'relative',
-          textAlign: 'center',
-          width: '100%',
-          overflow: 'hidden',
-          mb: '20px'
+          fontFamily: 'Lato',
+          fontSize: '24px',
+          fontWeight: 400,
+          color: '#202E5B',
+          textAlign: 'center'
         }}
       >
-        <Box sx={{ position: 'relative', width: '100%', height: '100px', mt: '30px' }}>
-          <SVGLargeScreen />
-          <Box
-            sx={{
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)'
-            }}
-          >
-            <Image
-              src={img3}
-              priority
-              alt='logo'
-              style={{ width: '100px', height: '100px' }}
-            />
-          </Box>
-        </Box>
-      </Box>
+        Let’s get some recommendations for you from people you know.
+      </Typography>
+      <Stepper activeStep={activeStep} sx={{ width: '100%', maxWidth: '800px' }}>
+        {steps.map((label, index) => (
+          <CustomStep key={index} completed={index < activeStep}>
+            <StepLabel
+              icon={
+                index < 2 ? (
+                  `${index + 1}`
+                ) : (
+                  <span style={{ visibility: 'hidden' }}>3</span>
+                )
+              }
+            >
+              {index < 2 ? label : ''}
+            </StepLabel>
+          </CustomStep>
+        ))}
+      </Stepper>
 
-      <Box
-        sx={{
+      <form
+        style={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          alignItems: 'center',
           gap: '30px',
-          height: '100%'
+          alignItems: 'center',
+          marginTop: '30px',
+          padding: '0 15px 30px',
+          overflow: 'auto',
+          width: '100%',
+          maxWidth: '800px'
         }}
       >
-        <Typography
-          sx={{
-            color: '#202E5B',
-            textAlign: 'center',
-            fontFamily: 'Lato',
-            fontSize: '24px',
-            fontWeight: 400
-          }}
-        >
-          Let’s get some recommendations for you from people you know.
-        </Typography>
+        {activeStep === 0 && (
+          <>
+            <Box position='relative' width='100%'>
+              <FormLabel sx={formLabelStyles} id='description-label'>
+                Write a message asking for a reference:{' '}
+                <span style={{ color: 'red' }}>*</span>
+              </FormLabel>
+              <CustomTextField
+                {...register('reference')}
+                sx={customTextFieldStyles}
+                multiline
+                rows={11}
+                variant='outlined'
+                aria-labelledby='description-label'
+                error={!!errors.reference}
+                helperText={errors.reference?.message}
+              />
+            </Box>
+            <ComprehensiveClaimDetails />
+          </>
+        )}
 
-        <Box sx={{ width: { xs: '100%', md: '50%' }, flex: 1, height: '100%' }}>
-          <Stepper activeStep={activeStep}>
-            {steps.map((label, index) => (
-              <CustomStep key={index} completed={index < activeStep}>
-                <StepLabel
-                  icon={
-                    index < 2 ? (
-                      `${index + 1}`
-                    ) : (
-                      <span style={{ visibility: 'hidden' }}>3</span>
-                    )
-                  }
-                >
-                  {index < 2 ? label : ''}
-                </StepLabel>
-              </CustomStep>
-            ))}
-          </Stepper>
-
-          <form
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '30px',
-              alignItems: 'center',
-              marginTop: '30px',
-              padding: '0 15px 30px',
-              overflow: 'auto'
-            }}
-          >
-            {activeStep === 0 && (
-              <>
-                <Box position='relative' width='100%'>
-                  <FormLabel sx={formLabelStyles} id='description-label'>
-                    Write a message asking for a reference:{' '}
-                    <span style={{ color: 'red' }}>*</span>
-                  </FormLabel>
-                  <CustomTextField
-                    {...register('reference')}
-                    sx={customTextFieldStyles}
-                    multiline
-                    rows={11}
-                    variant='outlined'
-                    error={!!errors.reference}
-                  />
-                </Box>
-                <ComprehensiveClaimDetails />
-              </>
-            )}
-
-            {activeStep === 1 && (
-              <Box
-                sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
-                width='100%'
-              >
-                <FormLabel sx={{ color: 'black', fontSize: '16px', fontWeight: 'bold' }}>
-                  Who would you like to send this to?{' '}
-                  <span style={{ color: 'red' }}>*</span>
-                </FormLabel>
-                <TextField
-                  {...register('firstName')}
-                  sx={TextFieldStyles}
-                  id='outlined-basic'
-                  label='First Name'
-                  variant='outlined'
-                />
-                <TextField
-                  {...register('lastName')}
-                  sx={TextFieldStyles}
-                  id='outlined-basic'
-                  label='Last Name'
-                  variant='outlined'
-                />
-                <TextField
-                  {...register('email')}
-                  sx={TextFieldStyles}
-                  id='outlined-basic'
-                  label='Email address'
-                  variant='outlined'
-                />
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Checkbox checked={sendCopyToSelf} onChange={handleCheckboxChange} />
-                  <Typography
-                    sx={{
-                      color: '#000',
-                      textAlign: 'center',
-                      fontFamily: 'Arial',
-                      fontSize: '14px',
-                      fontWeight: 400
-                    }}
-                  >
-                    Send a copy to myself
-                  </Typography>
-                </Box>
-              </Box>
-            )}
-          </form>
-
+        {activeStep === 1 && (
           <Box
             sx={{
-              width: '100%',
-              height: '40px',
               display: 'flex',
-              gap: '15px',
-              justifyContent: 'space-between',
-              p: '0 10px'
+              flexDirection: 'column',
+              gap: '20px',
+              width: '100%',
+              maxWidth: '800px'
             }}
           >
-            <Button
-              sx={StyledButton}
-              onClick={handleBack}
-              disabled={activeStep === 0}
-              color='secondary'
-            >
-              Back
-            </Button>
-
-            {activeStep === 0 && (
-              <Button
+            <FormLabel sx={formLabelStyles} id='invite-label'>
+              Who would you like to send this to? <span style={{ color: 'red' }}>*</span>
+            </FormLabel>
+            <TextField
+              {...register('firstName', {
+                required: 'First name is required'
+              })}
+              sx={TextFieldStyles}
+              id='firstName'
+              label='First Name'
+              variant='outlined'
+              error={!!errors.firstName}
+              helperText={errors.firstName?.message}
+            />
+            <TextField
+              {...register('lastName', {
+                required: 'Last name is required'
+              })}
+              sx={TextFieldStyles}
+              id='lastName'
+              label='Last Name'
+              variant='outlined'
+              error={!!errors.lastName}
+              helperText={errors.lastName?.message}
+            />
+            <TextField
+              {...register('email', {
+                required: 'Email address is required',
+                pattern: {
+                  value:
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()[\]\\.,;:\s@"]+\.)+[^<>()[\]\\.,;:\s@"]{2,})$/i,
+                  message: 'Invalid email address'
+                }
+              })}
+              sx={TextFieldStyles}
+              id='email'
+              label='Email Address'
+              variant='outlined'
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Checkbox checked={sendCopyToSelf} onChange={handleCheckboxChange} />
+              <Typography
                 sx={{
-                  ...nextButtonStyle,
-                  maxWidth: '355px'
+                  color: '#000',
+                  textAlign: 'center',
+                  fontFamily: 'Lato',
+                  fontSize: '14px',
+                  fontWeight: 400
                 }}
-                onClick={handleNext}
-                color='primary'
-                disabled={activeStep !== 0}
-                variant='contained'
               >
-                Next
-              </Button>
-            )}
-
-            {activeStep === 1 && (
-              <Button
-                sx={{
-                  ...nextButtonStyle,
-                  maxWidth: '355px'
-                }}
-                color='primary'
-                variant='contained'
-                onClick={() => (window.location.href = mailToLink)}
-              >
-                Open Mail
-              </Button>
-            )}
+                Send a copy to myself
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        )}
+      </form>
+
+      <Box
+        sx={{
+          width: '100%',
+          height: '40px',
+          display: 'flex',
+          gap: '15px',
+          justifyContent: 'center',
+          p: '0 10px',
+          maxWidth: '800px'
+        }}
+      >
+        {activeStep > 0 && (
+          <Button sx={StyledButton} onClick={handleBack} color='secondary'>
+            Back
+          </Button>
+        )}
+
+        {activeStep === 0 && (
+          <Button
+            sx={{
+              ...nextButtonStyle,
+              maxWidth: '355px'
+            }}
+            onClick={handleNext}
+            color='primary'
+            disabled={activeStep !== 0}
+            variant='contained'
+          >
+            Next
+          </Button>
+        )}
+
+        {activeStep === 1 && (
+          <Button
+            sx={{
+              ...nextButtonStyle,
+              maxWidth: '355px'
+            }}
+            color='primary'
+            variant='contained'
+            onClick={handleOpenMail}
+          >
+            Open Mail
+          </Button>
+        )}
       </Box>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity='success' sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

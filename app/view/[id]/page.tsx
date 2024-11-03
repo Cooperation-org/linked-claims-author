@@ -1,15 +1,12 @@
 'use client'
 
 import React from 'react'
-import { Box, Typography, useMediaQuery } from '@mui/material'
-import Image from 'next/image'
+import { Box, useMediaQuery } from '@mui/material'
 import theme from '../../theme'
 import ComprehensiveClaimDetails from '../../claimdetails/[id]/ComprehensiveClaimDetails'
 
 const Page: React.FC = () => {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  const fram = require('../../Assets/Images/Frame 35278.png')
-  const vector = require('../../Assets/Images/Vector 145.png')
 
   return (
     <Box
