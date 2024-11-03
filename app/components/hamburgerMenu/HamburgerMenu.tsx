@@ -88,21 +88,25 @@ const HamburgerMenu = () => {
                         fontSize: '16px',
                         fontWeight: isActive('/claims') ? '600' : '400',
                         color: isActive('/claims') ? '#003FE0' : 'inherit',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        display: 'inline-block',
+                        position: 'relative'
                       }}
                     >
                       My Skills
+                      {isActive('/claims') && (
+                        <Box
+                          sx={{
+                            height: '2px',
+                            width: '100%',
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            backgroundColor: '#003FE0'
+                          }}
+                        />
+                      )}
                     </Typography>
-                    {isActive('/claims') && (
-                      <Box
-                        sx={{
-                          height: '2px',
-                          width: '100%',
-                          mt: '5px',
-                          backgroundColor: '#003FE0'
-                        }}
-                      />
-                    )}
                   </Box>
                 </Link>
                 <Link href='/credentialForm' passHref>
@@ -119,21 +123,25 @@ const HamburgerMenu = () => {
                         fontSize: '16px',
                         fontWeight: isActive('/credentialForm') ? '600' : '400',
                         color: isActive('/credentialForm') ? '#003FE0' : 'inherit',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        display: 'inline-block',
+                        position: 'relative'
                       }}
                     >
                       Add a Skill
+                      {isActive('/credentialForm') && (
+                        <Box
+                          sx={{
+                            height: '2px',
+                            width: '100%',
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            backgroundColor: '#003FE0'
+                          }}
+                        />
+                      )}
                     </Typography>
-                    {isActive('/credentialForm') && (
-                      <Box
-                        sx={{
-                          height: '2px',
-                          width: '100%',
-                          mt: '5px',
-                          backgroundColor: '#003FE0'
-                        }}
-                      />
-                    )}
                   </Box>
                 </Link>
               </>
