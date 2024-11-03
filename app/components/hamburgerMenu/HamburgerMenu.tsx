@@ -136,6 +136,37 @@ const HamburgerMenu = () => {
                     )}
                   </Box>
                 </Link>
+                <Link href='/credentialImportForm' passHref>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      mb: 2
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: '16px',
+                        fontWeight: isActive('/credentialImportForm') ? '600' : '400',
+                        color: isActive('/credentialImportForm') ? '#003FE0' : 'inherit',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Import a Skill Credential
+                    </Typography>
+                    {isActive('/credentialImportForm') && (
+                      <Box
+                        sx={{
+                          height: '2px',
+                          width: '100%',
+                          mt: '5px',
+                          backgroundColor: '#003FE0'
+                        }}
+                      />
+                    )}
+                  </Box>
+                </Link>
               </>
             ) : (
               <>

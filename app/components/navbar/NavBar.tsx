@@ -96,6 +96,34 @@ const NavBar = () => {
                 )}
               </Box>
             </Link>
+            <Link href='/credentialImportForm' passHref>
+              <Box
+                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: '16px',
+                    fontWeight: isActive('/credentialImportForm') ? '600' : '400',
+                    color: isActive('/credentialImportForm')
+                      ? '#003FE0'
+                      : theme.palette.t3DarkSlateBlue,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Import Skill Credential
+                </Typography>
+                {isActive('/credentialImportForm') && (
+                  <Box
+                    sx={{
+                      height: '2px',
+                      width: '100%',
+                      mt: '5px',
+                      backgroundColor: '#003FE0'
+                    }}
+                  />
+                )}
+              </Box>
+            </Link>
             <Link href='/claims' passHref>
               <Box
                 sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
