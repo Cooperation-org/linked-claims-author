@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Box, Typography, Button } from '@mui/material'
+import { Box, Typography, Button, Tooltip } from '@mui/material'
 import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { FormData } from '../../../../credentialForm/form/types/Types'
 import { SVGFolder, SVGSinfo } from '../../../../Assets/SVGs'
@@ -33,6 +33,16 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
     }
   }
 
+  // Determine tooltip text based on authentication status
+  const tooltipTitle = session?.accessToken
+    ? 'You are connected to Google Drive. This is where your recommendation will be saved.'
+    : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
+
+  // Determine main text based on authentication status
+  const mainText = session?.accessToken
+    ? ''
+    : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
+
   return (
     <Box
       sx={{
@@ -59,47 +69,38 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
         <SVGFolder />
       </Box>
 
-      {/* Main text */}
-      {session?.accessToken ? (
-        <Typography
-          sx={{
-            fontSize: 24
-          }}
-        >
-          You are connected to Google Drive.
-        </Typography>
-      ) : (
-        <Typography
-          sx={{
-            fontSize: 24
-          }}
-        >
-          First, connect to Google Drive so you can save your data.
-        </Typography>
-      )}
+      <Typography
+        sx={{
+          fontSize: 24
+        }}
+      >
+        {mainText}
+      </Typography>
 
-      {/* Connect to Google Drive Button */}
-      {!session?.accessToken && (
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={connectToGoogleDrive}
-          sx={{
-            mt: 2,
-            px: 4,
-            py: 0.5,
-            fontSize: '16px',
-            borderRadius: 5,
-            textTransform: 'none',
-            backgroundColor: '#003FE0'
-          }}
-        >
-          Connect to Google Drive{' '}
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={connectToGoogleDrive}
+        sx={{
+          mt: 2,
+          px: 4,
+          py: 0.5,
+          fontSize: '16px',
+          borderRadius: 5,
+          textTransform: 'none',
+          backgroundColor: '#003FE0',
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        Connect to Google Drive
+        <Tooltip title={tooltipTitle}>
           <Box sx={{ ml: 2, mt: '2px' }}>
             <SVGSinfo />
           </Box>
-        </Button>
-      )}
+        </Tooltip>
+      </Button>
+
       <Button
         variant='text'
         color='primary'

@@ -13,11 +13,11 @@ export const textGuid = (fullName: string) => [
   </>,
   <>Now tell us more about you and how you know {fullName}. </>,
   <>
-    Thanks, Carol! <br /> Now share your recommendation and how you know {fullName}.
+    Thanks! <br /> Now share your recommendation and how you know {fullName}.
   </>,
   <>
-    Thanks, Carol! <br /> Now share your recommendation and how you know {fullName}.{' '}
-    <br /> Do you have evidence to share?
+    Thanks! <br /> Now share your recommendation and how you know {fullName}. <br /> Do
+    you have evidence to share?
   </>,
   <>
     Well done! <br /> Here’s what you’ve created:

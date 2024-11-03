@@ -152,7 +152,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
           alignItems: 'center',
           marginTop: '5px',
           padding: ' 20px',
-          overflow: 'auto',
+          // overflow: 'auto',
           width: '100%',
           maxWidth: '720px',
           backgroundColor: '#FFF',
