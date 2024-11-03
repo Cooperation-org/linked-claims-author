@@ -45,9 +45,9 @@ const TabsComponent: React.FC<TabsComponentProps> = ({
   }
 
   return (
-    <Box sx={{ minHeight: '100%', mt: '10px' }}>
+    <Box sx={{ minHeight: '100%', mt: '10px', width: '100%' }}>
       <Tabs
-        sx={{ width: '100%', pl: '20px' }}
+        sx={{ width: '100%', pl: '20px', maxWidth: '720px' }}
         value={value}
         onChange={handleChange}
         aria-label='simple tabs example'
