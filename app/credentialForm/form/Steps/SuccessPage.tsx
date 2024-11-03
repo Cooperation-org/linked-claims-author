@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Typography,
   Box,
@@ -9,7 +9,9 @@ import {
   Snackbar,
   useMediaQuery,
   useTheme,
-  Stack
+  Stack,
+  CircularProgress,
+  Tooltip
 } from '@mui/material'
 import {
   GlobalSVG,
@@ -48,9 +50,20 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 }) => {
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = React.useState(false)
+  const [tooltipMessage, setTooltipMessage] = useState('Signing your skill...')
   const refLink = fileId
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
+  useEffect(() => {
+    const timer1 = setTimeout(() => setTooltipMessage('Saving your skill...'), 3000)
+    const timer2 = setTimeout(() => setTooltipMessage('Fetching link...'), 6000)
+
+    return () => {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+    }
+  }, [])
 
   const generateLinkedInUrl = () => {
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
@@ -183,6 +196,11 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           >
             {formData?.credentialName}
           </Typography>
+          {!link && (
+            <Tooltip title={tooltipMessage}>
+              <CircularProgress size={24} />
+            </Tooltip>
+          )}
         </Box>
 
         <Button
