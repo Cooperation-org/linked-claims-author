@@ -99,6 +99,6 @@ const TextEditor = forwardRef(
   }
 )
 
-TextEditor.displayName = 'TextEditor';
+TextEditor.displayName = 'TextEditor'
 
 export default TextEditor
