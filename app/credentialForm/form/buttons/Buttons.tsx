@@ -47,7 +47,7 @@ export function Buttons({
           Skip
         </Button>
       )}
-      {activeStep !== 4 && activeStep !== 0 && activeStep !== 1 && (
+      {(activeStep === 1 || (activeStep !== 4 && activeStep !== 0)) && (
         <Button
           sx={nextButtonStyle}
           onClick={handleNext}
