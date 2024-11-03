@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Typography, Tooltip } from '@mui/material'
 import { signIn, useSession } from 'next-auth/react'
 import { SVGFolder, SVGSinfo } from '../../../Assets/SVGs'
+import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
 
 export function Step0() {
   const { data: session } = useSession()
+  const [loading, setLoading] = useState(false)
 
   const connectToGoogleDrive = async () => {
     if (session?.accessToken) {
+      setLoading(true)
       window.location.hash = '#step1'
       return
     }
@@ -19,7 +22,11 @@ export function Step0() {
       })
 
       // After successful sign-in, update the hash to step1
-      window.location.hash = '#step1'
+
+      setLoading(true)
+      setTimeout(() => {
+        window.location.hash = '#step1'
+      }, 500)
     } catch (error) {
       console.error('Error connecting to Google Drive:', error)
     }
@@ -95,6 +102,7 @@ export function Step0() {
       >
         Continue without Saving
       </Button>
+      <LoadingOverlay text='Connecting...' open={loading} />
     </Box>
   )
 }
