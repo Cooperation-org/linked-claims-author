@@ -124,7 +124,7 @@ export const generateCredentialData = (data: FormData): FormDataI => {
       data.portfolio && data.portfolio.length > 0
         ? data.portfolio.map(({ googleId, ...rest }) => rest)
         : [{ name: '', url: '' }],
-    evidenceLink: data.evidenceLink || '',
+    evidenceLink: data?.evidenceLink || '',
     evidenceDescription: data.evidenceDescription || '',
     credentialType: data.persons || ''
   }
