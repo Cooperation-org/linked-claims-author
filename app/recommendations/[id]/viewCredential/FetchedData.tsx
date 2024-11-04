@@ -45,7 +45,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
           const data = await getContent(fileID)
           console.log('Fetched data from Google Drive:', data)
           setDriveData(data)
-          setFullName(data?.credentialSubject?.name ?? 'User')
+          setFullName(data?.data.credentialSubject?.name ?? 'User')
 
           // Fetch metadata
           await fetchFileMetadata(fileID, '')

@@ -106,7 +106,7 @@ const ComprehensiveClaimDetails = () => {
         const content = await getContent(fileID)
 
         if (content) {
-          setClaimDetail(content)
+          setClaimDetail(content as any)
         } else {
           console.warn('No content found for the given file ID.')
         }
@@ -116,7 +116,7 @@ const ComprehensiveClaimDetails = () => {
         const commentsData = await getComments(fileID)
         console.log(':  fetchDriveData  commentsData', commentsData)
         if (commentsData && commentsData.length > 0) {
-          setComments(commentsData)
+          setComments(commentsData as any)
           console.log('Set comments:', commentsData)
         } else {
           console.warn('No comments found for the given file ID.')
