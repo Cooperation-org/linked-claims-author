@@ -95,7 +95,7 @@ const Form = ({ onStepChange }: any) => {
     setValue('credentialDuration', session.credentialDuration)
     setValue('credentialDescription', session.credentialDescription)
     setValue('portfolio', session.portfolio)
-    setValue('evidenceLink', session.evidenceLink)
+    setValue('evidenceLink', session?.evidenceLink)
     setValue('description', session.description)
 
     // Close the dialog

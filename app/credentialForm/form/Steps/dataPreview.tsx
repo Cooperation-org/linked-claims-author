@@ -90,7 +90,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) =>
             mb: '10px'
           }}
         >
-          {formData.evidenceLink ? (
+          {formData?.evidenceLink ? (
             <img
               style={{
                 borderRadius: '20px',

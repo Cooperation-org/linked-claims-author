@@ -182,17 +182,17 @@ const ComprehensiveClaimDetails = () => {
         {isAskForRecommendation && (
           <Box
             sx={{
-              width: credentialSubject.evidenceLink ? '30%' : '0',
-              marginRight: credentialSubject.evidenceLink ? '20px' : '15px',
+              width: credentialSubject?.evidenceLink ? '30%' : '0',
+              marginRight: credentialSubject?.evidenceLink ? '20px' : '15px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               overflow: 'hidden'
             }}
           >
-            {credentialSubject.evidenceLink ? (
+            {credentialSubject?.evidenceLink ? (
               <Image
-                src={credentialSubject.evidenceLink}
+                src={credentialSubject?.evidenceLink}
                 alt='Achievement Evidence'
                 width={500}
                 height={300}
@@ -268,7 +268,7 @@ const ComprehensiveClaimDetails = () => {
                   }}
                 >
                   <Image
-                    src={credentialSubject.evidenceLink}
+                    src={credentialSubject?.evidenceLink}
                     alt='Achievement Evidence'
                     width={180}
                     height={150}
