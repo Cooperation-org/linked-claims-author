@@ -38,7 +38,7 @@ const CredentialData = () => {
       try {
         const content = await getContent(id)
         // console.log('Fetched Content:', content)
-        const credentialSubject = content?.credentialSubject
+        const credentialSubject = content?.data?.credentialSubject
         if (credentialSubject?.name) {
           setFullName(credentialSubject.name)
         } else {
