@@ -137,8 +137,7 @@ const ComprehensiveClaimDetails = () => {
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh'
+          alignItems: 'center'
         }}
       >
         <CircularProgress />
@@ -414,7 +413,7 @@ const ComprehensiveClaimDetails = () => {
               <CircularProgress size={24} />
             </Box>
           ) : comments && comments.length > 0 ? (
-            <List sx={{ p: 0, m: 0 }}>
+            <List sx={{ p: 0, mb: 2 }}>
               {comments.map((comment: ClaimDetail, index: number) => (
                 <React.Fragment key={index}>
                   <Box
@@ -522,7 +521,15 @@ const ComprehensiveClaimDetails = () => {
               ))}
             </List>
           ) : (
-            <Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '10px',
+                mb: '20px'
+              }}
+            >
               <Typography variant='body2'>No recommendations available.</Typography>
               <Link href={`/askforrecommendation/${fileID}`}>
                 <Button
