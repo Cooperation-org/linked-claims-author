@@ -107,7 +107,7 @@ const ComprehensiveClaimDetails = () => {
         console.log('🚀 ~ fetchDriveData ~ content:', content)
 
         if (content) {
-          setClaimDetail(content as any)
+          setClaimDetail(content as unknown as ClaimDetail)
         }
 
         await fetchFileMetadata(fileID, '')
