@@ -51,12 +51,14 @@ interface CredentialSubject {
 }
 
 interface ClaimDetail {
-  '@context': string[]
-  id: string
-  type: string[]
-  issuanceDate: string
-  expirationDate: string
-  credentialSubject: CredentialSubject
+  data: {
+    '@context': string[]
+    id: string
+    type: string[]
+    issuanceDate: string
+    expirationDate: string
+    credentialSubject: CredentialSubject
+  }
 }
 
 const cleanHTML = (htmlContent: string) => {
@@ -71,6 +73,7 @@ const cleanHTML = (htmlContent: string) => {
 const ComprehensiveClaimDetails = () => {
   const params = useParams()
   const fileID = params?.id as string
+  console.log('🚀 ~ ComprehensiveClaimDetails ~ fileID:', fileID)
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [comments, setComments] = useState<ClaimDetail[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -101,6 +104,7 @@ const ComprehensiveClaimDetails = () => {
 
       try {
         const content = await getContent(fileID)
+        console.log('🚀 ~ fetchDriveData ~ content:', content)
 
         if (content) {
           setClaimDetail(content as any)
@@ -153,11 +157,8 @@ const ComprehensiveClaimDetails = () => {
     )
   }
 
-  const credentialSubject = claimDetail.credentialSubject
-  console.log(
-    '🚀 ~ ComprehensiveClaimDetails ~ credentialSubject:',
-    credentialSubject.evidenceLink
-  )
+  const credentialSubject = claimDetail.data.credentialSubject
+  console.log('🚀 ~ ComprehensiveClaimDetails ~ credentialSubject:', credentialSubject)
   const achievement = credentialSubject?.achievement[0]
 
   const hasValidEvidence =
@@ -256,7 +257,7 @@ const ComprehensiveClaimDetails = () => {
 
           {!isAskForRecommendation && (
             <>
-              {credentialSubject.evidenceLink && (
+              {credentialSubject?.evidenceLink && (
                 <Box
                   sx={{
                     display: 'flex',
@@ -433,11 +434,11 @@ const ComprehensiveClaimDetails = () => {
                       <IconButton
                         edge='end'
                         onClick={() =>
-                          handleToggleComment(comment.id || index.toString())
+                          handleToggleComment(comment.data.id || index.toString())
                         }
                         aria-label='expand'
                       >
-                        {expandedComments[comment.id || index.toString()] ? (
+                        {expandedComments[comment.data.id || index.toString()] ? (
                           <ExpandLess />
                         ) : (
                           <ExpandMore />
@@ -451,7 +452,7 @@ const ComprehensiveClaimDetails = () => {
                           <SVGBadge />
                           <Box>
                             <Typography variant='h6' component='div'>
-                              {comment.credentialSubject?.name}
+                              {comment.data.credentialSubject?.name}
                             </Typography>
                             <Typography variant='body2' color='text.secondary'>
                               Vouched for {credentialSubject?.name}
@@ -462,12 +463,12 @@ const ComprehensiveClaimDetails = () => {
                     />
                   </ListItem>
                   <Collapse
-                    in={expandedComments[comment.id || index.toString()]}
+                    in={expandedComments[comment.data.id || index.toString()]}
                     timeout='auto'
                     unmountOnExit
                   >
                     <Box sx={{ pl: 7, pr: 2, pb: 2 }}>
-                      {comment.credentialSubject?.howKnow && (
+                      {comment.data.credentialSubject?.howKnow && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             How Known:
@@ -475,13 +476,13 @@ const ComprehensiveClaimDetails = () => {
                           <Typography variant='body2'>
                             <span
                               dangerouslySetInnerHTML={{
-                                __html: cleanHTML(comment.credentialSubject.howKnow)
+                                __html: cleanHTML(comment.data.credentialSubject.howKnow)
                               }}
                             />
                           </Typography>
                         </Box>
                       )}
-                      {comment.credentialSubject?.recommendationText && (
+                      {comment.data.credentialSubject?.recommendationText && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Recommendation:
@@ -490,14 +491,14 @@ const ComprehensiveClaimDetails = () => {
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: cleanHTML(
-                                  comment.credentialSubject.recommendationText
+                                  comment.data.credentialSubject.recommendationText
                                 )
                               }}
                             />
                           </Typography>
                         </Box>
                       )}
-                      {comment.credentialSubject?.qualifications && (
+                      {comment.data.credentialSubject?.qualifications && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Qualifications:
@@ -506,7 +507,7 @@ const ComprehensiveClaimDetails = () => {
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: cleanHTML(
-                                  comment.credentialSubject.qualifications
+                                  comment.data.credentialSubject.qualifications
                                 )
                               }}
                             />
