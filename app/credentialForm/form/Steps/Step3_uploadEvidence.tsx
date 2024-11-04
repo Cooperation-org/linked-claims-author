@@ -311,7 +311,7 @@ export default function FileUploadAndList({
         ref={fileInputRef}
         onChange={handleFileChange}
         style={{ display: 'none' }}
-        accept='image/*'
+        accept='*'
         multiple
       />
 
@@ -326,7 +326,7 @@ export default function FileUploadAndList({
         files={selectedFiles}
         onDelete={handleDelete}
         onNameChange={handleNameChange}
-        onSetAsFeatured={setAsFeatured} // Pass function to FileListDisplay
+        onSetAsFeatured={setAsFeatured}
       />
 
       <LoadingOverlay text='Uploading files...' open={loading} />

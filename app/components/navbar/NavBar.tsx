@@ -60,9 +60,10 @@ const NavBar = () => {
       {/* Navigation Links and Sign Button */}
       <Box
         sx={{
+          width: '55%',
           display: { xs: 'none', md: 'flex' },
           alignItems: 'center',
-          gap: '75px',
+          justifyContent: 'space-between',
           mr: { xs: '15px', md: '10.938vw' }
         }}
       >

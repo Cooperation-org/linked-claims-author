@@ -52,7 +52,7 @@ const useGoogleDrive = () => {
       }
       try {
         const file = await memoizedStorage.retrieve(fileID)
-        return file?.data as ClaimDetail
+        return file as unknown as ClaimDetail
       } catch (error) {
         console.error('Error retrieving file:', error)
         return null
@@ -96,7 +96,7 @@ const useGoogleDrive = () => {
               if (ID) {
                 const comment = await memoizedStorage.retrieve(ID)
 
-                if (comment) comments.push(comment?.data as ClaimDetail)
+                if (comment) comments.push(comment as unknown as ClaimDetail)
               }
             })
           )

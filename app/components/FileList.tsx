@@ -58,6 +58,11 @@ const SetAsFeaturedLabel = styled(Box)(({ theme }) => ({
   }
 }))
 
+// Helper function to check if a file is an image
+const isImage = (fileName: string) => {
+  return /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName)
+}
+
 export default function FileListDisplay({
   files,
   onDelete,
@@ -77,13 +82,64 @@ export default function FileListDisplay({
           )}
 
           <Box sx={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-            <Image
-              src={file.url}
-              alt={file.name.split('.')[0]}
-              width={80}
-              height={80}
-              style={{ borderRadius: '8px' }}
-            />
+            {isImage(file.name) ? (
+              <Image
+                src={file.url}
+                alt={file.name.split('.')[0]}
+                width={80}
+                height={80}
+                style={{ borderRadius: '8px' }}
+              />
+            ) : file.name.toLowerCase().endsWith('.pdf') ? (
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#f3f3f3',
+                  borderRadius: '8px',
+                  fontSize: '0.9rem',
+                  color: '#666'
+                }}
+              >
+                PDF
+              </Box>
+            ) : file.name.toLowerCase().endsWith('.doc') ||
+              file.name.toLowerCase().endsWith('.docx') ? (
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#f3f3f3',
+                  borderRadius: '8px',
+                  fontSize: '0.9rem',
+                  color: '#666'
+                }}
+              >
+                DOC
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#f3f3f3',
+                  borderRadius: '8px',
+                  fontSize: '0.9rem',
+                  color: '#666'
+                }}
+              >
+                FILE
+              </Box>
+            )}
           </Box>
 
           <Box sx={{ flex: 1 }}>
