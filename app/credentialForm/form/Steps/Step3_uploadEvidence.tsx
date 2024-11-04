@@ -148,19 +148,15 @@ export default function FileUploadAndList({
       // Upload files to Google Drive
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (fileItem, index) => {
-          const newFile = new File([fileItem.file], fileItem.name, {
-            type: fileItem.file.type
-          })
-
           const uploadedFile = await uploadImageToGoogleDrive(
             storage as GoogleDriveStorage,
-            newFile
+            fileItem.file
           )
           return {
             ...fileItem,
             googleId: (uploadedFile as { id: string }).id,
             uploaded: true,
-            isFeatured: index === 0 && !watch('evidenceLink')
+            isFeatured: fileItem.isFeatured
           }
         })
       )
@@ -185,9 +181,9 @@ export default function FileUploadAndList({
       setValue('portfolio', [...currentPortfolio, ...newPortfolioEntries])
 
       // Update selectedFiles with uploaded googleIds
-      setSelectedFiles(
-        selectedFiles.map(file => {
-          const uploadedFile = uploadedFiles.find(f => f.name === file.name)
+      setSelectedFiles(prevSelectedFiles =>
+        prevSelectedFiles.map(file => {
+          const uploadedFile = uploadedFiles.find(f => f.id === file.id)
           return uploadedFile
             ? { ...file, googleId: uploadedFile.googleId, uploaded: true }
             : file
@@ -196,7 +192,7 @@ export default function FileUploadAndList({
     } catch (error) {
       console.error('Error uploading files:', error)
     }
-  }, [selectedFiles, setValue, setSelectedFiles, storage, watch])
+  }, [selectedFiles, storage, watch, setValue, setSelectedFiles])
   useEffect(() => {
     // @ts-ignore-next-line
     setUploadImageFn(() => handleUpload)
