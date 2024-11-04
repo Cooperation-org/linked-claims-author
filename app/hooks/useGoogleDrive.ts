@@ -3,22 +3,24 @@ import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
 
 interface ClaimDetail {
-  '@context': string[]
-  id: string
-  type: string[]
-  issuer: {
+  data: {
+    '@context': string[]
     id: string
     type: string[]
-  }
-  issuanceDate: string
-  expirationDate: string
-  credentialSubject: {
-    [x: string]: any
-    type: string[]
-    name: string
-    achievement: any
-    duration: string
-    portfolio: any
+    issuer: {
+      id: string
+      type: string[]
+    }
+    issuanceDate: string
+    expirationDate: string
+    credentialSubject: {
+      [x: string]: any
+      type: string[]
+      name: string
+      achievement: any
+      duration: string
+      portfolio: any
+    }
   }
 }
 
