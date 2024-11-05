@@ -627,7 +627,7 @@ const ComprehensiveClaimDetails = () => {
                     backgroundColor: '#003FE0',
                     textTransform: 'none',
                     borderRadius: '100px',
-                    width: { xs: '100px', sm: '300px', md: '300px' }
+                    width: { xs: 'fit-content', sm: '300px', md: '300px' }
                   }}
                 >
                   Ask for Recommendation
