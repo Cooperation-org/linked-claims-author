@@ -1,7 +1,14 @@
 'use client'
 
 import React from 'react'
-import { FormLabel, Autocomplete, TextField, Box, Typography } from '@mui/material'
+import {
+  FormLabel,
+  Autocomplete,
+  TextField,
+  Box,
+  Typography,
+  Tooltip
+} from '@mui/material'
 import {
   inputPropsStyles,
   TextFieldStyles,
@@ -69,7 +76,7 @@ export function Step2({ register, watch, control, errors }: Readonly<Step2Props>
               renderInput={params => (
                 <TextField
                   {...params}
-                  placeholder='e.g., Community Gardening Coordinator'
+                  placeholder='Example: Caring for (cultivating) healthy plants'
                   variant='outlined'
                   sx={TextFieldStyles}
                   aria-labelledby='name-label'
@@ -93,7 +100,7 @@ export function Step2({ register, watch, control, errors }: Readonly<Step2Props>
         </FormLabel>
         <TextField
           {...register('credentialDuration')}
-          placeholder='I learned these skills through working at a community garden for 2 years, under the head gardener Maria Hernandez'
+          placeholder='Example: 3 years'
           variant='outlined'
           sx={TextFieldStyles}
           aria-labelledby='duration-label'
@@ -134,9 +141,11 @@ export function Step2({ register, watch, control, errors }: Readonly<Step2Props>
         />
         <Box sx={aiBoxStyles}>
           <SVGSparkles />
-          <FormLabel sx={UseAIStyles} id='ai-description-label'>
-            Use AI to generate a description.
-          </FormLabel>
+          <Tooltip title='Under development' arrow>
+            <FormLabel sx={UseAIStyles} id='ai-description-label'>
+              Use AI to generate a description.
+            </FormLabel>
+          </Tooltip>
         </Box>
       </Box>
       <Box position='relative' width='100%'>

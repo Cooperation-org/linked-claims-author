@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo, useState, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Stepper,
@@ -19,7 +19,6 @@ import {
 import { useForm } from 'react-hook-form'
 import { useParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import useGoogleDrive from '../../hooks/useGoogleDrive'
 import ComprehensiveClaimDetails from '../../view/[id]/ComprehensiveClaimDetails'
 import {
   StyledButton,
@@ -31,6 +30,15 @@ import {
 } from '../../components/Styles/appStyles'
 import { useStepContext } from '../../credentialForm/form/StepContext'
 import { NewEmail2 } from '../../Assets/SVGs'
+import { copyFormValuesToClipboard } from '../../utils/formUtils'
+
+interface DriveData {
+  data: {
+    credentialSubject: {
+      achievement: { name: string }[]
+    }
+  }
+}
 
 const steps = ['Message', 'Invite']
 
@@ -46,24 +54,11 @@ export default function AskForRecommendation() {
   const { data: session } = useSession()
   const [sendCopyToSelf, setSendCopyToSelf] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [driveData, setDriveData] = useState<any>(null)
+  const [driveData, setDriveData] = useState<DriveData | null>(null)
   const params = useParams()
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
-
-  const id = useMemo(
-    () => (Array.isArray(params?.id) ? params.id[0] : params?.id || ''),
-    [params]
-  )
-
-  const memoizedParams = useMemo(
-    () => ({
-      claimId: `https://drive.google.com/file/d/${id}/view`
-    }),
-    [id]
-  )
-
-  const { getContent } = useGoogleDrive()
+  const [messageToCopy, setMessageToCopy] = useState<string>('')
 
   const {
     register,
@@ -80,64 +75,45 @@ export default function AskForRecommendation() {
     mode: 'onChange'
   })
 
-  // Function to get data from local storage or fetch from Google Drive
-  const fetchOrRetrieveData = useCallback(async () => {
-    try {
-      const cachedData = localStorage.getItem(`driveData_${id}`)
+  const fileID = params?.id
 
-      if (cachedData) {
-        const parsedData = JSON.parse(cachedData)
-        setDriveData(parsedData)
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true)
+      try {
+        const cachedData = localStorage.getItem(`driveData_${fileID}`)
+        let content
 
-        const achievementName = parsedData?.credentialSubject?.achievement[0]?.name || ''
+        if (cachedData) {
+          content = JSON.parse(cachedData)
+        } else {
+          content = await fetch(`/api/claim-detail/${fileID}`).then(res => res.json())
+          localStorage.setItem(`driveData_${fileID}`, JSON.stringify(content))
+        }
 
+        setDriveData(content)
+        const achievementName =
+          content?.data?.credentialSubject?.achievement[0]?.name || 'your skill'
+        const messageToCopy = `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!
+          
+          
+this is the link https://opencreds.net/recommendations/${params?.id}`
+        setMessageToCopy(messageToCopy)
         reset({
           reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!
           
-this is the link https://opencreds.net/recommendations/${params.id}`
+this is the link https://opencreds.net/recommendations/${fileID}`
         })
-      } else {
-        const data = await getContent(id)
-
-        if (data) {
-          setDriveData(data)
-          localStorage.setItem(`driveData_${id}`, JSON.stringify(data))
-
-          const achievementName = data.data?.credentialSubject?.achievement[0]?.name || ''
-
-          reset({
-            reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!
-            this is the link https://opencreds.net/recommendations/${params.id}`
-          })
-        }
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setIsLoading(false)
       }
-    } catch (error) {
-      console.error('Error fetching drive data:', error)
-      setIsLoading(false)
-      alert('Error fetching data. Please try again later.')
-    } finally {
-      setIsLoading(false)
     }
-  }, [id, getContent, reset, params.id])
-
-  useEffect(() => {
-    if (!id) {
-      setIsLoading(false)
-      return
+    if (fileID) {
+      fetchData()
     }
-
-    fetchOrRetrieveData()
-  }, [id, fetchOrRetrieveData])
-
-  // Only fetch data when component mounts
-  useEffect(() => {
-    if (!id) {
-      setIsLoading(false)
-      return
-    }
-
-    fetchOrRetrieveData()
-  }, [id, getContent, reset, setDriveData, fetchOrRetrieveData])
+  }, [fileID, reset])
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSendCopyToSelf(event.target.checked)
@@ -145,14 +121,12 @@ this is the link https://opencreds.net/recommendations/${params.id}`
 
   const mailToLink = `mailto:${watch('email')}${
     sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
-  }?subject=Support Request: ${
-    driveData?.credentialSubject?.achievement[0]?.name || ''
+  }?subject=Request for an endorsement for my self-claimed skill: ${
+    driveData?.data?.credentialSubject?.achievement[0]?.name ?? ''
   }&body=${encodeURIComponent(watch('reference'))}`
 
   const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
-    }
+    if (reason === 'clickaway') return
     setSnackbarOpen(false)
   }
 
@@ -163,7 +137,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
       const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
         watch('email')
       )}${sendCopyToSelf && session?.user?.email ? `,${encodeURIComponent(session.user.email)}` : ''}&su=${encodeURIComponent(
-        `Support Request: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
+        `Request for an endorsement for my self-claimed skill: ${driveData?.data?.credentialSubject?.achievement[0]?.name ?? ''}`
       )}&body=${encodeURIComponent(watch('reference'))}`
 
       window.open(gmailLink, '_blank')
@@ -274,6 +248,25 @@ this is the link https://opencreds.net/recommendations/${params.id}`
                 helperText={errors.reference?.message}
               />
             </Box>
+            <Button
+              onClick={() => copyFormValuesToClipboard(messageToCopy)}
+              variant='outlined'
+              color='primary'
+              sx={{
+                borderRadius: '100px',
+                textTransform: 'lowercase',
+                fontFamily: 'Roboto',
+                color: '#FFFFFF',
+                fontSize: '14px',
+                width: 'fit-content',
+                backgroundColor: '#003FE0',
+                '&:hover': {
+                  backgroundColor: '#003FE0'
+                }
+              }}
+            >
+              copy this text and paste in your mail to share
+            </Button>
             <ComprehensiveClaimDetails />
           </>
         )}
@@ -292,9 +285,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
               Who would you like to send this to? <span style={{ color: 'red' }}>*</span>
             </FormLabel>
             <TextField
-              {...register('firstName', {
-                required: 'First name is required'
-              })}
+              {...register('firstName', { required: 'First name is required' })}
               sx={TextFieldStyles}
               id='firstName'
               label='First Name'
@@ -303,9 +294,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
               helperText={errors.firstName?.message}
             />
             <TextField
-              {...register('lastName', {
-                required: 'Last name is required'
-              })}
+              {...register('lastName', { required: 'Last name is required' })}
               sx={TextFieldStyles}
               id='lastName'
               label='Last Name'
@@ -366,10 +355,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
 
         {activeStep === 0 && (
           <Button
-            sx={{
-              ...nextButtonStyle,
-              maxWidth: '355px'
-            }}
+            sx={{ ...nextButtonStyle, maxWidth: '355px' }}
             onClick={handleNext}
             color='primary'
             disabled={activeStep !== 0}
@@ -381,10 +367,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
 
         {activeStep === 1 && (
           <Button
-            sx={{
-              ...nextButtonStyle,
-              maxWidth: '355px'
-            }}
+            sx={{ ...nextButtonStyle, maxWidth: '355px' }}
             color='primary'
             variant='contained'
             onClick={handleOpenMail}

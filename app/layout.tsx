@@ -25,6 +25,7 @@ export default function RootLayout({
       <CssBaseline />
       <html lang='en'>
         <Head>
+          <title>OpenCreds</title>
           <script src='https://accounts.google.com/gsi/client' async defer></script>
         </Head>
         <body
