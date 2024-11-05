@@ -21,7 +21,7 @@ import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
 import { SVGDate, SVGBadge, CheckMarkSVG, LineSVG } from '../../Assets/SVGs'
-import { useSession } from 'next-auth/react'
+import { useSession, signIn } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
@@ -85,7 +85,7 @@ const ComprehensiveClaimDetails = () => {
   const theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const pathname = usePathname()
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const accessToken = session?.accessToken
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
   const isView = pathname?.includes('/view')
@@ -99,13 +99,25 @@ const ComprehensiveClaimDetails = () => {
     if (!fileID) {
       setErrorMessage('Invalid claim ID.')
       setLoading(false)
+      return
     }
-  }, [fileID])
 
-  useEffect(() => {
+    if (status === 'loading') {
+      return
+    }
+
+    if (status === 'unauthenticated') {
+      setLoading(false)
+      return
+    }
+
+    if (!accessToken) {
+      setErrorMessage('You need to log in to view this content.')
+      setLoading(false)
+      return
+    }
+
     const fetchDriveData = async () => {
-      if (!accessToken || !fileID) return
-
       try {
         const content = await getContent(fileID)
 
@@ -128,7 +140,7 @@ const ComprehensiveClaimDetails = () => {
     }
 
     fetchDriveData()
-  }, [accessToken, fileID, getContent, fetchFileMetadata, getComments])
+  }, [accessToken, fileID, getContent, fetchFileMetadata, getComments, status])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -137,7 +149,7 @@ const ComprehensiveClaimDetails = () => {
     }))
   }
 
-  if (loading || !claimDetail) {
+  if (status === 'loading' || loading) {
     return (
       <Box
         sx={{
@@ -151,10 +163,29 @@ const ComprehensiveClaimDetails = () => {
     )
   }
 
+  if (status === 'unauthenticated') {
+    return (
+      <Container sx={{ maxWidth: '800px' }}>
+        <Typography variant='h6' align='center'>
+          Please sign in to view this claim.
+        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}></Box>
+      </Container>
+    )
+  }
+
   if (errorMessage) {
     return (
       <Typography variant='h6' color='error' align='center' sx={{ mt: 4 }}>
         {errorMessage}
+      </Typography>
+    )
+  }
+
+  if (!claimDetail) {
+    return (
+      <Typography variant='h6' align='center' sx={{ mt: 4 }}>
+        No claim details available.
       </Typography>
     )
   }
