@@ -63,7 +63,7 @@ const NavBar = () => {
           width: '55%',
           display: { xs: 'none', md: 'flex' },
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: session ? 'space-between' : 'space-between',
           mr: { xs: '15px', md: '10.938vw' }
         }}
       >
