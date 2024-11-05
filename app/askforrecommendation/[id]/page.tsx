@@ -145,7 +145,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
 
   const mailToLink = `mailto:${watch('email')}${
     sendCopyToSelf && session?.user?.email ? `,${session.user.email}` : ''
-  }?subject=Support Request: ${
+  }?subject=Request for an endorsement for my self-claimed skill: ${
     driveData?.credentialSubject?.achievement[0]?.name || ''
   }&body=${encodeURIComponent(watch('reference'))}`
 
@@ -163,7 +163,7 @@ this is the link https://opencreds.net/recommendations/${params.id}`
       const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
         watch('email')
       )}${sendCopyToSelf && session?.user?.email ? `,${encodeURIComponent(session.user.email)}` : ''}&su=${encodeURIComponent(
-        `Support Request: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
+        `Request for an endorsement for my self-claimed skill: ${driveData?.credentialSubject?.achievement[0]?.name || ''}`
       )}&body=${encodeURIComponent(watch('reference'))}`
 
       window.open(gmailLink, '_blank')
