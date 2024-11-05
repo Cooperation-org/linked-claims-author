@@ -97,7 +97,7 @@ export default function AskForRecommendation() {
         const messageToCopy = `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!
           
           
-this is the link https://opencreds.net/recommendations/${params?.id}`
+this is the link https://opencreds.net/recommendations/${fileID}`
         setMessageToCopy(messageToCopy)
         reset({
           reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!
