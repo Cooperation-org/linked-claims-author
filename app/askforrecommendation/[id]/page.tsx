@@ -30,6 +30,7 @@ import {
 } from '../../components/Styles/appStyles'
 import { useStepContext } from '../../credentialForm/form/StepContext'
 import { NewEmail2 } from '../../Assets/SVGs'
+import { copyFormValuesToClipboard } from '../../utils/formUtils'
 
 interface DriveData {
   data: {
@@ -57,6 +58,7 @@ export default function AskForRecommendation() {
   const params = useParams()
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [messageToCopy, setMessageToCopy] = useState<string>('')
 
   const {
     register,
@@ -92,6 +94,11 @@ export default function AskForRecommendation() {
         setDriveData(content)
         const achievementName =
           content?.data?.credentialSubject?.achievement[0]?.name || 'your skill'
+        const messageToCopy = `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!
+          
+          
+this is the link https://opencreds.net/recommendations/${params?.id}`
+        setMessageToCopy(messageToCopy)
         reset({
           reference: `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${achievementName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!
           
@@ -103,7 +110,6 @@ this is the link https://opencreds.net/recommendations/${fileID}`
         setIsLoading(false)
       }
     }
-
     if (fileID) {
       fetchData()
     }
@@ -242,6 +248,25 @@ this is the link https://opencreds.net/recommendations/${fileID}`
                 helperText={errors.reference?.message}
               />
             </Box>
+            <Button
+              onClick={() => copyFormValuesToClipboard(messageToCopy)}
+              variant='outlined'
+              color='primary'
+              sx={{
+                borderRadius: '100px',
+                textTransform: 'lowercase',
+                fontFamily: 'Roboto',
+                color: '#FFFFFF',
+                fontSize: '14px',
+                width: 'fit-content',
+                backgroundColor: '#003FE0',
+                '&:hover': {
+                  backgroundColor: '#003FE0'
+                }
+              }}
+            >
+              copy this text and paste in your mail to share
+            </Button>
             <ComprehensiveClaimDetails />
           </>
         )}

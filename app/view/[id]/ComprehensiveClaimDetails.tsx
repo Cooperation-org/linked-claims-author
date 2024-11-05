@@ -182,15 +182,17 @@ const ComprehensiveClaimDetails = () => {
     )
   }
 
-  if (!claimDetail) {
-    return (
-      <Typography variant='h6' align='center' sx={{ mt: 4 }}>
-        No claim details available.
-      </Typography>
-    )
-  }
+  setTimeout(() => {
+    if (!claimDetail) {
+      return (
+        <Typography variant='h6' align='center' sx={{ mt: 4 }}>
+          No claim details available.
+        </Typography>
+      )
+    }
+  }, 2000)
 
-  const credentialSubject = claimDetail.data.credentialSubject
+  const credentialSubject = claimDetail?.data?.credentialSubject
   const achievement = credentialSubject?.achievement && credentialSubject.achievement[0]
 
   const hasValidEvidence =
@@ -198,248 +200,254 @@ const ComprehensiveClaimDetails = () => {
 
   return (
     <Container sx={{ maxWidth: '800px' }}>
-      <Box
-        sx={{
-          p: isAskForRecommendation ? '5px' : '20px',
-          gap: '20px',
-          margin: '20px auto 0',
-          border: '1px solid #003FE0',
-          borderRadius: '10px',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'flex-start',
-          justifyContent: isAskForRecommendation ? 'center' : 'flex-start'
-        }}
-      >
-        {isAskForRecommendation && (
-          <Box
-            sx={{
-              width: credentialSubject?.evidenceLink ? '30%' : '0',
-              marginRight: credentialSubject?.evidenceLink ? '20px' : '15px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              overflow: 'hidden'
-            }}
-          >
-            {credentialSubject?.evidenceLink ? (
-              <Image
-                src={credentialSubject?.evidenceLink}
-                alt='Achievement Evidence'
-                width={500}
-                height={300}
-                style={{ borderRadius: '10px', objectFit: 'cover' }}
-              />
-            ) : (
-              <Box
-                sx={{
-                  width: '15px',
-                  height: '100px',
-                  backgroundColor: 'transparent'
-                }}
-              />
-            )}
-          </Box>
-        )}
-
-        <Box sx={{ flex: 1 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              justifyContent: 'center'
-            }}
-          >
-            <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-              <SVGBadge />
-              <Typography sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700 }}>
-                {credentialSubject?.name} has claimed:
-              </Typography>
-            </Box>
-            <Typography
-              sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700, mt: 2 }}
+      {claimDetail && (
+        <Box
+          sx={{
+            p: isAskForRecommendation ? '5px' : '20px',
+            gap: '20px',
+            margin: '20px auto 0',
+            border: '1px solid #003FE0',
+            borderRadius: '10px',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: isAskForRecommendation ? 'center' : 'flex-start'
+          }}
+        >
+          {isAskForRecommendation && (
+            <Box
+              sx={{
+                width: credentialSubject?.evidenceLink ? '30%' : '0',
+                marginRight: credentialSubject?.evidenceLink ? '20px' : '15px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                overflow: 'hidden'
+              }}
             >
-              {achievement?.name || 'Unnamed Achievement'}
-            </Typography>
-          </Box>
+              {credentialSubject?.evidenceLink ? (
+                <Image
+                  src={credentialSubject?.evidenceLink}
+                  alt='Achievement Evidence'
+                  width={500}
+                  height={300}
+                  style={{ borderRadius: '10px', objectFit: 'cover' }}
+                />
+              ) : (
+                <Box
+                  sx={{
+                    width: '15px',
+                    height: '100px',
+                    backgroundColor: 'transparent'
+                  }}
+                />
+              )}
+            </Box>
+          )}
 
-          {credentialSubject?.duration && (
+          <Box sx={{ flex: 1 }}>
             <Box
               sx={{
                 display: 'flex',
-                alignItems: 'center',
-                gap: '2px',
-                padding: '2px 5px',
-                borderRadius: '5px',
-                width: 'fit-content',
-                mb: '10px',
-                bgcolor: '#d5e1fb',
-                mt: 2
+                flexDirection: 'column',
+                gap: '10px',
+                justifyContent: 'center'
               }}
             >
-              <Box sx={{ mt: '2px' }}>
-                <SVGDate />
+              <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                <SVGBadge />
+                <Typography
+                  sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700 }}
+                >
+                  {credentialSubject?.name} has claimed:
+                </Typography>
               </Box>
-              <Typography sx={{ color: 't3BodyText', fontSize: '13px' }}>
-                {credentialSubject?.duration}
+              <Typography
+                sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700, mt: 2 }}
+              >
+                {achievement?.name || 'Unnamed Achievement'}
               </Typography>
             </Box>
-          )}
 
-          {!isAskForRecommendation && (
-            <>
-              {credentialSubject?.evidenceLink && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: isLargeScreen ? 'row' : 'column',
-                    gap: '20px',
-                    my: '10px',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <Image
-                    src={credentialSubject?.evidenceLink}
-                    alt='Achievement Evidence'
-                    width={180}
-                    height={150}
-                    style={{ borderRadius: '10px', objectFit: 'cover' }}
-                  />
+            {credentialSubject?.duration && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2px',
+                  padding: '2px 5px',
+                  borderRadius: '5px',
+                  width: 'fit-content',
+                  mb: '10px',
+                  bgcolor: '#d5e1fb',
+                  mt: 2
+                }}
+              >
+                <Box sx={{ mt: '2px' }}>
+                  <SVGDate />
                 </Box>
-              )}
-
-              {achievement?.description && (
-                <Typography
-                  sx={{
-                    fontFamily: 'Lato',
-                    fontSize: '17px',
-                    letterSpacing: '0.075px',
-                    lineHeight: '24px',
-                    mt: 2
-                  }}
-                >
-                  <span
-                    dangerouslySetInnerHTML={{
-                      __html: cleanHTML(achievement.description)
-                    }}
-                  />
+                <Typography sx={{ color: 't3BodyText', fontSize: '13px' }}>
+                  {credentialSubject?.duration}
                 </Typography>
-              )}
+              </Box>
+            )}
 
-              {achievement?.criteria?.narrative && (
-                <Box sx={{ mt: 2 }}>
-                  <Typography>What does that entail?:</Typography>
-                  <ul style={{ marginLeft: '25px' }}>
-                    <li>
-                      <span
-                        dangerouslySetInnerHTML={{
-                          __html: cleanHTML(achievement?.criteria?.narrative)
-                        }}
-                      />
-                    </li>
-                  </ul>
-                </Box>
-              )}
-
-              {hasValidEvidence && (
-                <Box sx={{ mt: 3 }}>
-                  <Typography sx={{ fontWeight: 600 }}>
-                    Supporting Evidence / Portfolio:
-                  </Typography>
-                  <ul
-                    style={{
-                      marginLeft: '25px',
-                      textDecorationLine: 'underline',
-                      color: 'blue'
+            {!isAskForRecommendation && (
+              <>
+                {credentialSubject?.evidenceLink && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: isLargeScreen ? 'row' : 'column',
+                      gap: '20px',
+                      my: '10px',
+                      justifyContent: 'center'
                     }}
                   >
-                    {credentialSubject?.portfolio?.map((portfolioItem, idx) => (
-                      <li
-                        key={`main-portfolio-${idx}`}
-                        style={{
-                          cursor: 'pointer',
-                          width: 'fit-content',
-                          marginBottom: '10px'
-                        }}
-                      >
-                        <Link
-                          href={portfolioItem.url}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                        >
-                          {portfolioItem.name}
-                        </Link>
+                    <Image
+                      src={credentialSubject?.evidenceLink}
+                      alt='Achievement Evidence'
+                      width={180}
+                      height={150}
+                      style={{ borderRadius: '10px', objectFit: 'cover' }}
+                    />
+                  </Box>
+                )}
+
+                {achievement?.description && (
+                  <Typography
+                    sx={{
+                      fontFamily: 'Lato',
+                      fontSize: '17px',
+                      letterSpacing: '0.075px',
+                      lineHeight: '24px',
+                      mt: 2
+                    }}
+                  >
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: cleanHTML(achievement.description)
+                      }}
+                    />
+                  </Typography>
+                )}
+
+                {achievement?.criteria?.narrative && (
+                  <Box sx={{ mt: 2 }}>
+                    <Typography>What does that entail?:</Typography>
+                    <ul style={{ marginLeft: '25px' }}>
+                      <li>
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: cleanHTML(achievement?.criteria?.narrative)
+                          }}
+                        />
                       </li>
-                    ))}
-                  </ul>
-                </Box>
-              )}
-            </>
-          )}
+                    </ul>
+                  </Box>
+                )}
 
-          {pathname?.includes('/claims') && (
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-              <Link href={`/view/${fileID}`}>
-                <Button
-                  variant='contained'
-                  sx={{
-                    backgroundColor: '#003FE0',
-                    textTransform: 'none',
-                    borderRadius: '100px'
-                  }}
-                >
-                  View Credential
-                </Button>
-              </Link>
-              <Link href={`/askforrecommendation/${fileID}`}>
-                <Button
-                  variant='contained'
-                  sx={{
-                    backgroundColor: '#003FE0',
-                    textTransform: 'none',
-                    borderRadius: '100px'
-                  }}
-                >
-                  Ask for Recommendation
-                </Button>
-              </Link>
-            </Box>
-          )}
+                {hasValidEvidence && (
+                  <Box sx={{ mt: 3 }}>
+                    <Typography sx={{ fontWeight: 600 }}>
+                      Supporting Evidence / Portfolio:
+                    </Typography>
+                    <ul
+                      style={{
+                        marginLeft: '25px',
+                        textDecorationLine: 'underline',
+                        color: 'blue'
+                      }}
+                    >
+                      {credentialSubject?.portfolio?.map((portfolioItem, idx) => (
+                        <li
+                          key={`main-portfolio-${idx}`}
+                          style={{
+                            cursor: 'pointer',
+                            width: 'fit-content',
+                            marginBottom: '10px'
+                          }}
+                        >
+                          <Link
+                            href={portfolioItem.url}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                          >
+                            {portfolioItem.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </Box>
+                )}
+              </>
+            )}
 
-          {pathname?.includes('/view') && claimDetail && (
-            <Box
-              sx={{ display: 'flex', flexDirection: 'column', gap: '4px', mt: '20px' }}
-            >
-              <Typography sx={{ fontSize: '13px', fontWeight: 700, color: '#000E40' }}>
-                Credential Details
-              </Typography>
-              <Box sx={{ display: 'flex', gap: '5px', mt: '10px', alignItems: 'center' }}>
-                <Box sx={{ borderRadius: '4px', bgcolor: '#C2F1BE', p: '4px' }}>
-                  <CheckMarkSVG />
-                </Box>
-                <Typography>Has a valid digital signature</Typography>
+            {pathname?.includes('/claims') && (
+              <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+                <Link href={`/view/${fileID}`}>
+                  <Button
+                    variant='contained'
+                    sx={{
+                      backgroundColor: '#003FE0',
+                      textTransform: 'none',
+                      borderRadius: '100px'
+                    }}
+                  >
+                    View Credential
+                  </Button>
+                </Link>
+                <Link href={`/askforrecommendation/${fileID}`}>
+                  <Button
+                    variant='contained'
+                    sx={{
+                      backgroundColor: '#003FE0',
+                      textTransform: 'none',
+                      borderRadius: '100px'
+                    }}
+                  >
+                    Ask for Recommendation
+                  </Button>
+                </Link>
               </Box>
-              <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                <Box sx={{ borderRadius: '4px', bgcolor: '#C2F1BE', p: '4px' }}>
-                  <CheckMarkSVG />
+            )}
+
+            {pathname?.includes('/view') && claimDetail && (
+              <Box
+                sx={{ display: 'flex', flexDirection: 'column', gap: '4px', mt: '20px' }}
+              >
+                <Typography sx={{ fontSize: '13px', fontWeight: 700, color: '#000E40' }}>
+                  Credential Details
+                </Typography>
+                <Box
+                  sx={{ display: 'flex', gap: '5px', mt: '10px', alignItems: 'center' }}
+                >
+                  <Box sx={{ borderRadius: '4px', bgcolor: '#C2F1BE', p: '4px' }}>
+                    <CheckMarkSVG />
+                  </Box>
+                  <Typography>Has a valid digital signature</Typography>
                 </Box>
-                <Typography>Has not expired</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                <Box sx={{ borderRadius: '4px', bgcolor: '#C2F1BE', p: '4px' }}>
-                  <CheckMarkSVG />
+                <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                  <Box sx={{ borderRadius: '4px', bgcolor: '#C2F1BE', p: '4px' }}>
+                    <CheckMarkSVG />
+                  </Box>
+                  <Typography>Has not expired</Typography>
                 </Box>
-                <Typography>Has not been revoked by issuer</Typography>
+                <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                  <Box sx={{ borderRadius: '4px', bgcolor: '#C2F1BE', p: '4px' }}>
+                    <CheckMarkSVG />
+                  </Box>
+                  <Typography>Has not been revoked by issuer</Typography>
+                </Box>
               </Box>
-            </Box>
-          )}
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
 
       {/* Comments Section */}
 
-      {isView && (
+      {isView && claimDetail && (
         <Box>
           {loading ? (
             <Box display='flex' justifyContent='center' my={2}>
