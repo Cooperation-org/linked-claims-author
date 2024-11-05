@@ -14,7 +14,8 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  IconButton
+  IconButton,
+  Link as MuiLink
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
@@ -40,14 +41,15 @@ interface Achievement {
 
 interface CredentialSubject {
   name: string
-  achievement: Achievement[]
-  duration: string
-  portfolio: Portfolio[]
-  howKnow: string
-  recommendationText: string
-  qualifications: string
-  createdTime: string
-  evidenceLink: string
+  achievement?: Achievement[]
+  duration?: string
+  portfolio?: Portfolio[]
+  createdTime?: string
+  evidenceLink?: string
+  howKnow?: string
+  recommendationText?: string
+  qualifications?: string
+  explainAnswer?: string
 }
 
 interface ClaimDetail {
@@ -61,7 +63,10 @@ interface ClaimDetail {
   }
 }
 
-const cleanHTML = (htmlContent: string) => {
+const cleanHTML = (htmlContent: any): string => {
+  if (typeof htmlContent !== 'string') {
+    return ''
+  }
   return htmlContent
     .replace(/<p><br><\/p>/g, '')
     .replace(/<p><\/p>/g, '')
@@ -73,7 +78,6 @@ const cleanHTML = (htmlContent: string) => {
 const ComprehensiveClaimDetails = () => {
   const params = useParams()
   const fileID = params?.id as string
-  console.log('🚀 ~ ComprehensiveClaimDetails ~ fileID:', fileID)
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [comments, setComments] = useState<ClaimDetail[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -104,7 +108,6 @@ const ComprehensiveClaimDetails = () => {
 
       try {
         const content = await getContent(fileID)
-        console.log('🚀 ~ fetchDriveData ~ content:', content)
 
         if (content) {
           setClaimDetail(content as any)
@@ -113,7 +116,6 @@ const ComprehensiveClaimDetails = () => {
         await fetchFileMetadata(fileID, '')
 
         const commentsData = await getComments(fileID)
-        console.log(':  fetchDriveData  commentsData', commentsData)
         if (commentsData) {
           setComments(commentsData as any)
         }
@@ -158,8 +160,7 @@ const ComprehensiveClaimDetails = () => {
   }
 
   const credentialSubject = claimDetail.data.credentialSubject
-  console.log('🚀 ~ ComprehensiveClaimDetails ~ credentialSubject:', credentialSubject)
-  const achievement = credentialSubject?.achievement[0]
+  const achievement = credentialSubject?.achievement && credentialSubject.achievement[0]
 
   const hasValidEvidence =
     credentialSubject?.portfolio && credentialSubject?.portfolio.length > 0
@@ -322,9 +323,9 @@ const ComprehensiveClaimDetails = () => {
                       color: 'blue'
                     }}
                   >
-                    {credentialSubject?.portfolio.map(portfolioItem => (
+                    {credentialSubject?.portfolio?.map((portfolioItem, idx) => (
                       <li
-                        key={portfolioItem.url}
+                        key={`main-portfolio-${idx}`}
                         style={{
                           cursor: 'pointer',
                           width: 'fit-content',
@@ -468,10 +469,11 @@ const ComprehensiveClaimDetails = () => {
                     unmountOnExit
                   >
                     <Box sx={{ pl: 7, pr: 2, pb: 2 }}>
+                      {/* How They Know Each Other */}
                       {comment.data.credentialSubject?.howKnow && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
-                            How Known:
+                            How They Know Each Other:
                           </Typography>
                           <Typography variant='body2'>
                             <span
@@ -482,6 +484,7 @@ const ComprehensiveClaimDetails = () => {
                           </Typography>
                         </Box>
                       )}
+                      {/* Recommendation Text */}
                       {comment.data.credentialSubject?.recommendationText && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
@@ -498,10 +501,11 @@ const ComprehensiveClaimDetails = () => {
                           </Typography>
                         </Box>
                       )}
+                      {/* Your Qualifications */}
                       {comment.data.credentialSubject?.qualifications && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
-                            Qualifications:
+                            Your Qualifications:
                           </Typography>
                           <Typography variant='body2'>
                             <span
@@ -514,6 +518,51 @@ const ComprehensiveClaimDetails = () => {
                           </Typography>
                         </Box>
                       )}
+                      {/* Explain Your Answer */}
+                      {comment.data.credentialSubject?.explainAnswer && (
+                        <Box sx={{ mt: 1 }}>
+                          <Typography variant='subtitle2' color='text.secondary'>
+                            Explain Your Answer:
+                          </Typography>
+                          <Typography variant='body2'>
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: cleanHTML(
+                                  comment.data.credentialSubject.explainAnswer
+                                )
+                              }}
+                            />
+                          </Typography>
+                        </Box>
+                      )}
+                      {/* Supporting Evidence */}
+                      {Array.isArray(comment.data.credentialSubject?.portfolio) &&
+                        comment.data.credentialSubject.portfolio.length > 0 && (
+                          <Box sx={{ mt: 1 }}>
+                            <Typography variant='subtitle2' color='text.secondary'>
+                              Supporting Evidence:
+                            </Typography>
+                            {comment.data.credentialSubject.portfolio.map((item, idx) => (
+                              <Box key={`comment-portfolio-${idx}`} sx={{ mt: 1 }}>
+                                {item.name && item.url ? (
+                                  <MuiLink
+                                    href={item.url}
+                                    underline='hover'
+                                    color='primary'
+                                    sx={{
+                                      fontSize: '15px',
+                                      textDecoration: 'underline',
+                                      color: '#003fe0'
+                                    }}
+                                    target='_blank'
+                                  >
+                                    {item.name}
+                                  </MuiLink>
+                                ) : null}
+                              </Box>
+                            ))}
+                          </Box>
+                        )}
                     </Box>
                   </Collapse>
                   {/* Add Divider between comments */}

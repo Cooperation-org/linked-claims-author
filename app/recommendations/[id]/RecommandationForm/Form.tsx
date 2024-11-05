@@ -126,6 +126,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
+      console.log('Form Data:', data)
       setIsLoading(true)
       setTooltipText('saving your recommendation')
       setTimeout(() => {
@@ -196,7 +197,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 register={register}
                 watch={watch}
                 errors={errors}
-                handleTextEditorChange={value => setValue('howKnow', value ?? '')}
+                setValue={setValue}
                 fullName={fullName}
               />
             )}
@@ -209,9 +210,6 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 fields={fields}
                 append={append}
                 remove={remove}
-                handleTextEditorChange={(field: string, value: any) =>
-                  setValue(field, value)
-                }
                 handleNext={handleNext}
                 handleBack={handleBack}
                 fullName={fullName}
