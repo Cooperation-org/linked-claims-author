@@ -31,6 +31,7 @@ import {
 import { useStepContext } from '../../credentialForm/form/StepContext'
 import { NewEmail2 } from '../../Assets/SVGs'
 import { copyFormValuesToClipboard } from '../../utils/formUtils'
+import useGoogleDrive from '../../hooks/useGoogleDrive'
 
 interface DriveData {
   data: {
@@ -59,6 +60,7 @@ export default function AskForRecommendation() {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [messageToCopy, setMessageToCopy] = useState<string>('')
+  const { getContent } = useGoogleDrive()
 
   const {
     register,
@@ -81,15 +83,7 @@ export default function AskForRecommendation() {
     async function fetchData() {
       setIsLoading(true)
       try {
-        const cachedData = localStorage.getItem(`driveData_${fileID}`)
-        let content
-
-        if (cachedData) {
-          content = JSON.parse(cachedData)
-        } else {
-          content = await fetch(`/api/claim-detail/${fileID}`).then(res => res.json())
-          localStorage.setItem(`driveData_${fileID}`, JSON.stringify(content))
-        }
+        const content = await getContent(fileID as any)
 
         setDriveData(content)
         const achievementName =
