@@ -138,7 +138,7 @@ export const generateCredentialData = (data: FormData): FormDataI => {
 const generateRecommendationData = (data: any): RecommendationI => {
   return {
     recommendationText: data.recommendationText,
-    qualifications: data.howKnow,
+    qualifications: data.qualifications,
     expirationDate: new Date(
       new Date().setFullYear(new Date().getFullYear() + 1)
     ).toISOString(),

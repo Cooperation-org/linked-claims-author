@@ -37,7 +37,6 @@ interface Step3Props {
   remove: (index: number) => void
   watch: UseFormWatch<FormData>
   setValue: UseFormSetValue<FormData>
-  handleTextEditorChange: (field: string, value: any) => void
   handleNext: () => void
   handleBack: () => void
   fullName: string
@@ -51,7 +50,6 @@ const Step3: React.FC<Step3Props> = ({
   remove,
   watch,
   setValue,
-  handleTextEditorChange,
   handleNext,
   handleBack,
   fullName
@@ -69,7 +67,6 @@ const Step3: React.FC<Step3Props> = ({
 
   const handleEditorChange = (field: string) => (value: string) => {
     setValue(field, value)
-    handleTextEditorChange(field, value)
   }
 
   return (
@@ -98,7 +95,7 @@ const Step3: React.FC<Step3Props> = ({
         <TextEditor
           value={watch('qualifications') || ''}
           onChange={handleEditorChange('qualifications')}
-          placeholder={`e.g., I managed ${displayName} at a local garden for 2 years where ${displayName} coordinated weekly gardening workshops and led a community clean-up initiative.`}
+          placeholder={`e.g., I have over 10 years of experience in the field and have worked closely with ${displayName}.`}
         />
         {errors.qualifications && (
           <Typography color='error'>{errors.qualifications.message}</Typography>
@@ -162,7 +159,7 @@ const Step3: React.FC<Step3Props> = ({
           <Box sx={addAnotherBoxStyles}>
             <Button
               type='button'
-              onClick={() => append({ name: '', url: '' })} //
+              onClick={() => append({ name: '', url: '' })}
               sx={addAnotherButtonStyles(theme)}
               endIcon={
                 <Box sx={addAnotherIconStyles}>
