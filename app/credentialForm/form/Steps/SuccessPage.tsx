@@ -59,18 +59,16 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   useEffect(() => {
     if (!fileId) {
       setTooltipMessage('Signing your skill...')
+      const timer1 = setTimeout(() => setTooltipMessage('Saving your skill...'), 3000)
+      const timer2 = setTimeout(() => setTooltipMessage('Fetching link...'), 6000)
+      return () => {
+        clearTimeout(timer1)
+        clearTimeout(timer2)
+      }
+    } else {
+      setTooltipMessage('Click to view')
     }
   }, [fileId])
-
-  useEffect(() => {
-    const timer1 = setTimeout(() => setTooltipMessage('Saving your skill...'), 2000)
-    const timer2 = setTimeout(() => setTooltipMessage('Fetching link...'), 6000)
-
-    return () => {
-      clearTimeout(timer1)
-      clearTimeout(timer2)
-    }
-  }, [link])
 
   const generateLinkedInUrl = () => {
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
@@ -98,11 +96,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       )}`
       window.location.href = mailUrl
     } else if (option === 'CopyURL') {
-    } else if (option === 'View') {
-      window.location.href = `https://opencreds.net/view/${fileId}`
-    } else if (option === 'CopyURL') {
       copyFormValuesToClipboard(credentialLink)
       setSnackbarOpen(true)
+    } else if (option === 'View') {
+      window.location.href = credentialLink
     }
   }
 
@@ -182,23 +179,40 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           fontFamily: 'Inter, sans-serif'
         }}
       >
-        <Button
-          onClick={() => handleShareOption('View')}
-          disabled={!fileId}
-          sx={{
-            ...buttonStyles,
-            mt: '15px',
-            border: '3px solid #003FE0'
-          }}
-        >
-          <BlueBadge />
-          {formData?.credentialName}{' '}
-          {!link && (
-            <Tooltip title={tooltipMessage}>
-              <CircularProgress size={24} />
-            </Tooltip>
-          )}
-        </Button>
+        <Tooltip placement='top' title={tooltipMessage}>
+          <span style={{ width: '100%' }}>
+            <Button
+              onClick={() => handleShareOption('View')}
+              disabled={!fileId}
+              sx={{
+                borderRadius: '10px',
+                backgroundColor: '#FFFFFF',
+                display: 'flex',
+                width: '100%',
+                alignItems: 'center',
+                gap: '20px',
+                justifyContent: 'space-between',
+                padding: '15px',
+                border: '3px solid #003FE0'
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <BlueBadge />
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontFamily: 'inherit',
+                    margin: 0,
+                    color: '#003FE0'
+                  }}
+                >
+                  {formData?.credentialName}
+                </Typography>
+              </Box>
+              {!fileId && <CircularProgress size={24} />}
+            </Button>
+          </span>
+        </Tooltip>
 
         <Button
           onClick={() => handleShareOption('CopyURL')}
