@@ -65,6 +65,7 @@ const PrivacyPolicy = () => {
           T3 Innovation Network
         </Link>{' '}
         | <Link href='/accessibility'>Accessibility</Link> |{' '}
+        <Link href='/terms'>Terms of Service</Link> |{' '}
         <Link
           href='https://github.com/Cooperation-org'
           target='_blank'
