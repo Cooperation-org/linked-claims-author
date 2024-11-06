@@ -15,7 +15,12 @@ import {
   ListItemText,
   Divider,
   IconButton,
-  Link as MuiLink
+  Link as MuiLink,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
@@ -79,6 +84,7 @@ const ComprehensiveClaimDetails = () => {
   const params = useParams()
   const fileID = params?.id as string
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
+  const [showScopePrompt, setShowScopePrompt] = useState(false)
   const [comments, setComments] = useState<ClaimDetail[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -142,6 +148,13 @@ const ComprehensiveClaimDetails = () => {
     fetchDriveData()
   }, [accessToken, fileID, getContent, fetchFileMetadata, getComments, status])
 
+  const handleRequestAccess = () => {
+    signIn('google', {
+      scope: 'https://www.googleapis.com/auth/drive',
+      prompt: 'consent'
+    })
+    setShowScopePrompt(false)
+  }
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
       ...prevState,
@@ -200,6 +213,26 @@ const ComprehensiveClaimDetails = () => {
 
   return (
     <Container sx={{ maxWidth: '800px' }}>
+      <Dialog
+        open={showScopePrompt}
+        onClose={() => setShowScopePrompt(false)}
+        aria-labelledby='scope-dialog-title'
+      >
+        <DialogTitle id='scope-dialog-title'>Access Google Drive</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To view certain content, please grant permission to access Google Drive.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowScopePrompt(false)} color='secondary'>
+            Cancel
+          </Button>
+          <Button onClick={handleRequestAccess} color='primary'>
+            Grant Access
+          </Button>
+        </DialogActions>
+      </Dialog>
       {claimDetail && (
         <Box
           sx={{
