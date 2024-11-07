@@ -9,7 +9,7 @@ import Theme from './theme'
 import Head from 'next/head'
 import { StepProvider } from './credentialForm/form/StepContext'
 import { usePathname } from 'next/navigation'
-import background from './Assets/Images/Background.svg' // Import background image
+import background from './Assets/Images/Background.svg'
 
 const inter = Inter({ subsets: ['latin'] })
 
