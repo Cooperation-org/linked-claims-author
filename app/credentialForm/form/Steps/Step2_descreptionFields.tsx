@@ -33,14 +33,6 @@ interface Step2Props {
 
 // Example list of skills for auto-search
 const skillsList = [
-  'Software Developer',
-  'Project Manager',
-  'Data Analyst',
-  'Marketing Coordinator',
-  'Community Gardening Coordinator',
-  'UX/UI Designer',
-  'Product Manager',
-  'Financial Analyst'
 ]
 
 export function Step2({ register, watch, control, errors }: Readonly<Step2Props>) {
@@ -65,7 +57,6 @@ export function Step2({ register, watch, control, errors }: Readonly<Step2Props>
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <Autocomplete
               freeSolo
-              options={skillsList}
               value={value || ''}
               onChange={(event, newValue) => {
                 onChange(newValue)
