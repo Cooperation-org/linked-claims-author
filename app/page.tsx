@@ -128,7 +128,8 @@ const Page = () => {
                   severity="info" 
                   sx={{ 
                     mt: 1,
-                    ml: 4,
+                    width: '90%',
+                    ml: 0,
                     backgroundColor: 'transparent',
                     border: 'none',
                     '& .MuiAlert-icon': {
@@ -138,6 +139,7 @@ const Page = () => {
                       color: theme.palette.t3BodyText,
                       fontFamily: 'Lato',
                       fontSize: '14px',
+                      width: '90%',
                     },
                   }}
                 >
