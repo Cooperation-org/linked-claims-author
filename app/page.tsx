@@ -1,7 +1,7 @@
 'use client'
 import { useTheme } from '@mui/material/styles'
 import React from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Typography, Alert } from '@mui/material'
 import { SVGCheckMarks } from './Assets/SVGs'
 import OverlappingCards from './components/OverLappingCards/OverLappingCards'
 import Link from 'next/link'
@@ -108,22 +108,42 @@ const Page = () => {
           }}
         >
           {features.map(feature => (
-            <Box
-              key={feature.id}
-              sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}
-            >
-              <SVGCheckMarks />
-              <Typography
-                sx={{
-                  color: theme.palette.t3BodyText,
-                  fontFamily: 'Lato',
-                  fontSize: '18px',
-                  fontWeight: '400',
-                  lineHeight: 'normal'
-                }}
-              >
-                {feature.name}
-              </Typography>
+            <Box key={feature.id}>
+              <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                <SVGCheckMarks />
+                <Typography
+                  sx={{
+                    color: theme.palette.t3BodyText,
+                    fontFamily: 'Lato',
+                    fontSize: '18px',
+                    fontWeight: '400',
+                    lineHeight: 'normal'
+                  }}
+                >
+                  {feature.name}
+                </Typography>
+              </Box>
+              {feature.id === 4 && (
+                <Alert 
+                  severity="info" 
+                  sx={{ 
+                    mt: 1,
+                    ml: 4,
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    '& .MuiAlert-icon': {
+                      color: theme.palette.t3BodyText,
+                    },
+                    '& .MuiAlert-message': {
+                      color: theme.palette.t3BodyText,
+                      fontFamily: 'Lato',
+                      fontSize: '14px',
+                    },
+                  }}
+                >
+                  Share your credentials directly on your profile or export them to enhance your LinkedIn presence
+                </Alert>
+              )}
             </Box>
           ))}
         </Box>
@@ -178,23 +198,43 @@ const Page = () => {
         }}
       >
         {features.map(feature => (
-          <Box
-            key={feature.id}
-            sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}
-          >
-            <SVGCheckMarks />
-            <Typography
-              sx={{
-                color: theme.palette.t3BodyText,
-                flexShrink: 0,
-                fontFamily: 'Lato',
-                fontSize: '18px',
-                fontWeight: '400',
-                lineHeight: 'normal'
-              }}
-            >
-              {feature.name}
-            </Typography>
+          <Box key={feature.id}>
+            <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+              <SVGCheckMarks />
+              <Typography
+                sx={{
+                  color: theme.palette.t3BodyText,
+                  flexShrink: 0,
+                  fontFamily: 'Lato',
+                  fontSize: '18px',
+                  fontWeight: '400',
+                  lineHeight: 'normal'
+                }}
+              >
+                {feature.name}
+              </Typography>
+            </Box>
+            {feature.id === 4 && (
+              <Alert 
+                severity="info" 
+                sx={{ 
+                  mt: 1,
+                  ml: 4,
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  '& .MuiAlert-icon': {
+                    color: theme.palette.t3BodyText,
+                  },
+                  '& .MuiAlert-message': {
+                    color: theme.palette.t3BodyText,
+                    fontFamily: 'Lato',
+                    fontSize: '14px',
+                  },
+                }}
+              >
+              During testing when you connect to Google Drive to establish the storage location for your credentials, you will get a warning message from Google, "Google hasn't verified this app".  Just look down and to the left and you'll see Advanced in smaller type.  Click that and at the bottom the text that appears is "Go to <u>opencreds.net</u> (unsafe)".  Click the link and proceed.  We are awaiting final Google Review of the code which we expect soon.
+              </Alert>
+            )}
           </Box>
         ))}
       </Box>
