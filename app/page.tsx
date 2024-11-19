@@ -232,7 +232,7 @@ const Page = () => {
                   },
                 }}
               >
-              During testing when you connect to Google Drive to establish the storage location for your credentials, you will get a warning message from Google, "Google hasn't verified this app".  Just look down and to the left and you'll see Advanced in smaller type.  Click that and at the bottom the text that appears is "Go to <u>opencreds.net</u> (unsafe)".  Click the link and proceed.  We are awaiting final Google Review of the code which we expect soon.
+              During testing when you connect to Google Drive to establish the storage location for your credentials, you will get a warning message from Google, &quot;Google hasn't verified this app&quot;.  Just look down and to the left and you'll see Advanced in smaller type.  Click that and at the bottom the text that appears is &quot;Go to <u>opencreds.net</u> (unsafe)&quot;.  Click the link and proceed.  We are awaiting final Google Review of the code which we expect soon.
               </Alert>
             )}
           </Box>
