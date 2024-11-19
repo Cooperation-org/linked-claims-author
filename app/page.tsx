@@ -141,7 +141,7 @@ const Page = () => {
                     },
                   }}
                 >
-                  Share your credentials directly on your profile or export them to enhance your LinkedIn presence
+During testing when you connect to Google Drive to establish the storage location for your credentials, you will get a warning message from Google, &quot;Google hasn&#39;t verified this app&quot;. Just look down and to the left and you&#39;ll see Advanced in smaller type. Click that and at the bottom the text that appears is &quot;Go to opencreds.net (unsafe)&quot; Click the link and proceed.  We are awaiting final Google Review of the code which we expect soon.
                 </Alert>
               )}
             </Box>

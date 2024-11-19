@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from 'react'
 import {
+  Alert,
   Box,
   CircularProgress,
   Typography,
@@ -163,16 +164,36 @@ const ComprehensiveClaimDetails = () => {
     )
   }
 
-  if (status === 'unauthenticated') {
-    return (
-      <Container sx={{ maxWidth: '800px' }}>
-        <Typography variant='h6' align='center'>
-          Please sign in to view this claim.
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}></Box>
-      </Container>
-    )
-  }
+if (status === 'unauthenticated') {
+  return (
+    <Container sx={{ maxWidth: '800px' }}>
+      <Typography variant='h6' align='center'>
+        Please sign in to view this claim.
+      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}></Box>
+      <Alert 
+        severity="info" 
+        sx={{ 
+          mt: 2,
+          backgroundColor: 'transparent',
+          border: 'none',
+          '& .MuiAlert-icon': {
+            color: (theme) => theme.palette.t3BodyText,
+          },
+          '& .MuiAlert-message': {
+            color: (theme) => theme.palette.t3BodyText,
+            fontFamily: 'Lato',
+            fontSize: '14px',
+            textAlign: 'center',
+          },
+          width: '100%',
+        }}
+      >
+        Our app is currently in development mode with Google. You may see a warning that the app is not verified - this is normal during our development phase. While we work on getting verified, you can safely proceed by clicking &quot;Continue&quot; on the warning screen, then &quot;Continue&quot; again on the &quot;Google hasn&#39;t verified this app&quot; screen. Your data remains secure and protected by Google&#39;s security measures.
+      </Alert>
+    </Container>
+  )
+}
 
   if (errorMessage) {
     return (
