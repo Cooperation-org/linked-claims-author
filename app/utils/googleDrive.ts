@@ -1,8 +1,6 @@
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID, signCred } from './signCred'
 
-
-
 export async function saveRaw(accessToken: string | undefined, data: any) {
   if (!accessToken) {
     throw new Error('No access token available')
@@ -10,7 +8,7 @@ export async function saveRaw(accessToken: string | undefined, data: any) {
 
   const storage = new GoogleDriveStorage(accessToken)
   try {
-    const file = (await saveToGoogleDrive(storage, data, 'VC')) as any
+    const file = (await saveToGoogleDrive({ storage, data, type: 'VC' })) as any
 
     console.log('saved to google drive:', file)
     return file
@@ -28,16 +26,16 @@ export async function signAndSave(accessToken: string | undefined, data: any) {
   const storage = new GoogleDriveStorage(accessToken)
   try {
     const { didDocument, keyPair, issuerId } = await createDID(accessToken)
-    const saveResponse = await saveToGoogleDrive(
+    const saveResponse = await saveToGoogleDrive({
       storage,
-      {
+      data: {
         didDocument,
         keyPair
       },
-      'DID'
-    )
+      type: 'DID'
+    })
     const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
-    const file = (await saveToGoogleDrive(storage, res, 'VC')) as any
+    const file = (await saveToGoogleDrive({ storage, data: res, type: 'VC' })) as any
 
     console.log('saved to google drive:', res)
     return file
@@ -47,11 +45,6 @@ export async function signAndSave(accessToken: string | undefined, data: any) {
   }
 }
 
-
-
-
-
-
 export function makeGoogleDriveLink(file: any) {
-   return `https://drive.google.com/file/d/${file.id}/view`
+  return `https://drive.google.com/file/d/${file.id}/view`
 }
