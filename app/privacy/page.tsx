@@ -1,189 +1,162 @@
 'use client'
-import { Box, Typography, Link } from '@mui/material'
+import { Box, Typography, Link, Container, Paper } from '@mui/material'
 import React from 'react'
 import { Logo } from '../Assets/SVGs'
 import { useTheme } from '@mui/material/styles'
 
 const PrivacyPolicy = () => {
   const theme = useTheme()
+  
+  const sectionStyle = {
+    backgroundColor: 'white',
+    padding: { xs: '20px', md: '30px' },
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    margin: '10px 0',
+    width: '100%'
+  }
+
+  const headingStyle = {
+    color: theme.palette.t3DarkSlateBlue,
+    borderBottom: `2px solid ${theme.palette.t3DarkSlateBlue}`,
+    paddingBottom: '8px',
+    marginBottom: '16px'
+  }
+
+  const listItemStyle = {
+    marginBottom: '8px',
+    paddingLeft: '20px',
+    position: 'relative',
+    '&::before': {
+      content: '"•"',
+      position: 'absolute',
+      left: 0,
+      color: theme.palette.t3DarkSlateBlue
+    }
+  }
+
   return (
-    <Box
-      sx={{
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
+      <Box sx={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '20px',
-        gap: '20px',
-        textAlign: 'left',
+        gap: '24px',
         maxWidth: '800px',
-        margin: 'auto'
-      }}
-    >
-      <Box
-        sx={{
+        margin: 'auto',
+        backgroundColor: '#f5f5f7',
+        padding: { xs: '20px', md: '40px' },
+        borderRadius: '12px'
+      }}>
+        <Box sx={{
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
-          ml: { xs: '15px', md: '12.5vw' }
-        }}
-      >
-        <Link href='/' aria-label='OpenCreds Home'>
-          <Box sx={{ display: 'flex', alignItems: 'center', marginRight: 1 }}>
+          mb: 4
+        }}>
+          <Link href='/' aria-label='OpenCreds Home' sx={{ display: 'flex', alignItems: 'center' }}>
             <Logo />
-          </Box>
-        </Link>
-        <Link href='/' aria-label='OpenCreds Home'>
-          <Typography
-            sx={{
-              fontWeight: '700',
-              fontSize: { xs: '18px', md: '24px' },
+            <Typography variant="h5" sx={{
+              fontWeight: 700,
+              ml: 1,
               color: theme.palette.t3DarkSlateBlue
-            }}
-          >
-            OpenCreds
+            }}>
+              OpenCreds
+            </Typography>
+          </Link>
+        </Box>
+
+        <Paper elevation={0} sx={sectionStyle}>
+          <Typography variant='h4' sx={{ ...headingStyle, textAlign: 'center' }}>
+            Privacy Policy
           </Typography>
-        </Link>
+
+          <Typography sx={{ fontSize: '16px', lineHeight: '1.8', mb: 4 }}>
+            OpenCreds is an open-source web application developed by the
+            <Link href='https://www.t3networkhub.org/' target='_blank' rel='noopener noreferrer'> T3 Innovation Network</Link>
+            , a network of leading organizations committed to open infrastructure for Learning and Employment Records compliant with W3C Verifiable Credential standard.
+          </Typography>
+
+          {['Google User Data Collection and Usage', 'Data Storage and Processing', 'Data Sharing and Transfer', 'Data Protection Mechanisms'].map((section, index) => (
+            <Box key={index} sx={{ mb: 4 }}>
+              <Typography variant='h6' sx={headingStyle}>
+                {section}
+              </Typography>
+              <Box component="ul" sx={{ 
+                listStyle: 'none', 
+                padding: 0,
+                margin: 0 
+              }}>
+                {section === 'Google User Data Collection and Usage' && (
+                  <>
+                    <Box component="li" sx={listItemStyle}>
+                      Email Address: Your primary Google Account email is collected solely for user identification and authentication. This data is not stored beyond your current session.
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      Profile Information: We access basic profile data (display name, profile picture, user ID) for identity verification purposes only.
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      Drive Access: We use Google Drive for saving user-authored credentials and enabling peer recommendations.
+                    </Box>
+                  </>
+                )}
+                {section === 'Data Storage and Processing' && (
+                  <>
+                    <Box component="li" sx={listItemStyle}>
+                      All user data remains under your control in your Google Drive
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      No personal data is stored on our servers
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      Data interactions occur directly between your browser and Google's services
+                    </Box>
+                  </>
+                )}
+                {section === 'Data Sharing and Transfer' && (
+                  <>
+                    <Box component="li" sx={listItemStyle}>
+                      We never share your Google Drive data with third parties
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      Your data is not sold or monetized
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      No user data is retained after session completion
+                    </Box>
+                  </>
+                )}
+                {section === 'Data Protection Mechanisms' && (
+                  <>
+                    <Box component="li" sx={listItemStyle}>
+                      Encrypted HTTPS data transmission
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      OAuth 2.0 authentication protocols
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      Regular security audits and monitoring
+                    </Box>
+                  </>
+                )}
+              </Box>
+            </Box>
+          ))}
+
+          <Box sx={{ mt: 4, borderTop: '1px solid #eee', pt: 4 }}>
+            <Typography variant='body2' sx={{ color: 'text.secondary', textAlign: 'center' }}>
+              &copy; 2024, US Chamber of Commerce Foundation
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 1 }}>
+                <Link href='https://t3networkhub.org' target='_blank' rel='noopener noreferrer'>T3 Network</Link>
+                <Link href='/accessibility'>Accessibility</Link>
+                <Link href='/terms'>Terms</Link>
+                <Link href='https://github.com/Cooperation-org' target='_blank' rel='noopener noreferrer'>Github</Link>
+              </Box>
+            </Typography>
+          </Box>
+        </Paper>
       </Box>
-
-      <Typography variant='h4' sx={{ fontWeight: 700, mb: 2 }}>
-        OpenCreds Privacy Policy
-      </Typography>
-
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        OpenCreds is an open-source web application developed by the
-        <Link
-          href='https://www.t3networkhub.org/'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          {' '}
-          T3 Innovation Network
-        </Link>
-        , a network of leading organizations and companies committed to an open
-        infrastructure for Learning and Employment Records compliant with the W3C
-        Verifiable Credential standard.
-      </Typography>
-
-      <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Personal Information We Collect
-      </Typography>
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        To provide and improve our services, OpenCreds requests access to certain Google user data:
-        <br />
-        <br />
-        <strong>1. Email Address (<Link href='https://www.googleapis.com/auth/userinfo.email' target='_blank' rel='noopener noreferrer'>.../auth/userinfo.email</Link>):</strong>
-        <br />
-        - <strong>Purpose:</strong> To identify and authenticate you within the application.
-        <br />
-        - <strong>Usage:</strong> Accesses your primary Google Account email address for login and session management.
-        <br />
-        - <strong>Storage:</strong> Your email address is used temporarily during your session and is not stored after you log out.
-        <br />
-        <br />
-        <strong>2. Basic Profile Information (<Link href='https://www.googleapis.com/auth/userinfo.profile' target='_blank' rel='noopener noreferrer'>.../auth/userinfo.profile</Link>):</strong>
-        <br />
-        - <strong>Purpose:</strong> To verify your identity and personalize your experience.
-        <br />
-        - <strong>Usage:</strong> Accesses basic profile details such as your name and profile picture.
-        <br />
-        - <strong>Storage:</strong> This information is not stored beyond your current session.
-        <br />
-        <br />
-        <strong>3. Google Drive Files (<Link href='https://www.googleapis.com/auth/drive.file' target='_blank' rel='noopener noreferrer'>.../auth/drive.file</Link> and <Link href='https://www.googleapis.com/auth/drive.readonly' target='_blank' rel='noopener noreferrer'>.../auth/drive.readonly</Link>):</strong>
-        <br />
-        - <strong>Purpose:</strong>
-        <br />
-        &nbsp;&nbsp;&nbsp;&nbsp;- <Link href='https://www.googleapis.com/auth/drive.file' target='_blank' rel='noopener noreferrer'>.../auth/drive.file</Link>: To create and manage credentials you author within the app.
-        <br />
-        &nbsp;&nbsp;&nbsp;&nbsp;- <Link href='https://www.googleapis.com/auth/drive.readonly' target='_blank' rel='noopener noreferrer'>.../auth/drive.readonly</Link>: To enable features like peer recommendations and credential sharing.
-        <br />
-        - <strong>Usage:</strong>
-        <br />
-        &nbsp;&nbsp;&nbsp;&nbsp;- Saves credentials as JSON-LD documents to your Google Drive.
-        <br />
-        &nbsp;&nbsp;&nbsp;&nbsp;- Reads existing credentials for peer review and collaboration.
-        <br />
-        &nbsp;&nbsp;&nbsp;&nbsp;- Does not modify any files not created by OpenCreds.
-        <br />
-        - <strong>Storage:</strong> All files are stored on your Google Drive under your control.
-      </Typography>
-
-      <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Data Sharing and Disclosure
-      </Typography>
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        - <strong>No Third-Party Sharing:</strong> We do not share, sell, or disclose your personal information or Google user data to any third parties.
-        <br />
-        - <strong>User-Controlled Data:</strong> All data remains under your control on your Google Drive. Any sharing of credentials is initiated and managed by you.
-      </Typography>
-
-      <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Data Protection Measures
-      </Typography>
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        - <strong>Secure Connections:</strong> All data transmissions use encrypted HTTPS protocols.
-        <br />
-        - <strong>OAuth 2.0 Authentication:</strong> Securely handles Google authentication without accessing your password.
-        <br />
-        - <strong>Access Token Security:</strong> Tokens are securely stored during your session and expire after logout.
-        <br />
-        - <strong>Strict Access Controls:</strong> We implement industry-standard security practices to prevent unauthorized access.
-        <br />
-        - <strong>Regular Security Updates:</strong> Our security measures are regularly reviewed and updated to protect against new threats.
-      </Typography>
-
-      <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Features Involving Peer Recommendations and Commenting
-      </Typography>
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        - <strong>Purpose:</strong> To enhance collaboration by allowing users to recommend and comment on credentials.
-        <br />
-        - <strong>Data Usage:</strong> Accesses credentials you choose to share for the purpose of displaying recommendations and comments.
-        <br />
-        - <strong>User Control:</strong> You have full control over which credentials are shared and with whom.
-      </Typography>
-
-      <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Your Choices
-      </Typography>
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        - <strong>Revoking Access:</strong> You can revoke OpenCreds&apos; access to your Google data at any time via your Google Account settings.
-        <br />
-        - <strong>Data Management:</strong> You can manage or delete the credentials stored on your Google Drive at any time.
-      </Typography>
-
-      <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Changes to This Privacy Policy
-      </Typography>
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        We may update this Privacy Policy periodically. Significant changes will be communicated to you and will be posted here with an updated effective date.
-      </Typography>
-
-      <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Contact Us
-      </Typography>
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        If you have any questions or concerns about this Privacy Policy, please contact us at <Link href='mailto:contact@opencreds.org'>contact@opencreds.org</Link>.
-      </Typography>
-
-      <Typography
-        sx={{ fontSize: '14px', lineHeight: '1.6', mt: 4, color: 'text.secondary' }}
-      >
-        &copy; 2024, US Chamber of Commerce Foundation <br />
-        <Link href='https://t3networkhub.org' target='_blank' rel='noopener noreferrer'>
-          T3 Innovation Network
-        </Link>{' '}
-        | <Link href='/accessibility'>Accessibility</Link> |{' '}
-        <Link href='/terms'>Terms of Service</Link> |{' '}
-        <Link
-          href='https://github.com/Cooperation-org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          View on Github
-        </Link>
-      </Typography>
-    </Box>
+    </Container>
   )
 }
 
