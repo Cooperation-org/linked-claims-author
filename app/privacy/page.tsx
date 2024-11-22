@@ -65,60 +65,105 @@ const PrivacyPolicy = () => {
       </Typography>
 
       <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        What Personal Information We Collect
+        Personal Information We Collect
       </Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        No personal information is collected.
-        Any data or documents created by this application are kept solely in storage
-        under the user&apos;s control, on their own Google Drives.
+        To provide and improve our services, OpenCreds requests access to certain Google user data:
+        <br />
+        <br />
+        <strong>1. Email Address (<Link href='https://www.googleapis.com/auth/userinfo.email' target='_blank' rel='noopener noreferrer'>.../auth/userinfo.email</Link>):</strong>
+        <br />
+        - <strong>Purpose:</strong> To identify and authenticate you within the application.
+        <br />
+        - <strong>Usage:</strong> Accesses your primary Google Account email address for login and session management.
+        <br />
+        - <strong>Storage:</strong> Your email address is used temporarily during your session and is not stored after you log out.
+        <br />
+        <br />
+        <strong>2. Basic Profile Information (<Link href='https://www.googleapis.com/auth/userinfo.profile' target='_blank' rel='noopener noreferrer'>.../auth/userinfo.profile</Link>):</strong>
+        <br />
+        - <strong>Purpose:</strong> To verify your identity and personalize your experience.
+        <br />
+        - <strong>Usage:</strong> Accesses basic profile details such as your name and profile picture.
+        <br />
+        - <strong>Storage:</strong> This information is not stored beyond your current session.
+        <br />
+        <br />
+        <strong>3. Google Drive Files (<Link href='https://www.googleapis.com/auth/drive.file' target='_blank' rel='noopener noreferrer'>.../auth/drive.file</Link> and <Link href='https://www.googleapis.com/auth/drive.readonly' target='_blank' rel='noopener noreferrer'>.../auth/drive.readonly</Link>):</strong>
+        <br />
+        - <strong>Purpose:</strong>
+        <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;- <Link href='https://www.googleapis.com/auth/drive.file' target='_blank' rel='noopener noreferrer'>.../auth/drive.file</Link>: To create and manage credentials you author within the app.
+        <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;- <Link href='https://www.googleapis.com/auth/drive.readonly' target='_blank' rel='noopener noreferrer'>.../auth/drive.readonly</Link>: To enable features like peer recommendations and credential sharing.
+        <br />
+        - <strong>Usage:</strong>
+        <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;- Saves credentials as JSON-LD documents to your Google Drive.
+        <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;- Reads existing credentials for peer review and collaboration.
+        <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;- Does not modify any files not created by OpenCreds.
+        <br />
+        - <strong>Storage:</strong> All files are stored on your Google Drive under your control.
       </Typography>
 
       <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Google User Data Usage and Protection
-      </Typography>
-      <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Data Usage
+        Data Sharing and Disclosure
       </Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        - Google Drive storage is accessed only to save user authored credentials as JSON-LD documents. No user data is stored, processed, or retained by the application.
+        - <strong>No Third-Party Sharing:</strong> We do not share, sell, or disclose your personal information or Google user data to any third parties.
         <br />
-        - All data interactions occur directly between the user&apos browser and Google&apos;s services.
-        <br />
-        - The application cannot access the user&apos;s Google data without explicit user authorization.
+        - <strong>User-Controlled Data:</strong> All data remains under your control on your Google Drive. Any sharing of credentials is initiated and managed by you.
       </Typography>
 
       <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Data Sharing and Transfer
+        Data Protection Measures
       </Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        - User data is never shared to any third party from Google Drive or the app itself.
+        - <strong>Secure Connections:</strong> All data transmissions use encrypted HTTPS protocols.
         <br />
-        - No user data stored on Google Drive is sold or otherwise monetized.
+        - <strong>OAuth 2.0 Authentication:</strong> Securely handles Google authentication without accessing your password.
         <br />
-        - The application does not retain any user data at the conclusion of the session.
+        - <strong>Access Token Security:</strong> Tokens are securely stored during your session and expire after logout.
+        <br />
+        - <strong>Strict Access Controls:</strong> We implement industry-standard security practices to prevent unauthorized access.
+        <br />
+        - <strong>Regular Security Updates:</strong> Our security measures are regularly reviewed and updated to protect against new threats.
       </Typography>
 
       <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Data Protection
+        Features Involving Peer Recommendations and Commenting
       </Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        - All data transmissions use encrypted HTTPS, secure socket layer connections.
+        - <strong>Purpose:</strong> To enhance collaboration by allowing users to recommend and comment on credentials.
         <br />
-        - OAuth 2.0 security protocols are used for Google authentication.
+        - <strong>Data Usage:</strong> Accesses credentials you choose to share for the purpose of displaying recommendations and comments.
         <br />
-        - Access tokens are stored securely in the browser session.
-        <br />
-        - Strict access controls and security monitoring are followed.
-        <br />
-        - Security measures are regularly monitored and updated to protect against vulnerabilities.
+        - <strong>User Control:</strong> You have full control over which credentials are shared and with whom.
       </Typography>
 
       <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        Additional Information
+        Your Choices
       </Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        This Privacy Policy may change from time to time. Any significant changes in the way
-        personal information is handled will be clearly described in the Privacy Policy.
+        - <strong>Revoking Access:</strong> You can revoke OpenCreds&apos; access to your Google data at any time via your Google Account settings.
+        <br />
+        - <strong>Data Management:</strong> You can manage or delete the credentials stored on your Google Drive at any time.
+      </Typography>
+
+      <Typography sx={{ fontWeight: 600, mt: 2 }}>
+        Changes to This Privacy Policy
+      </Typography>
+      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
+        We may update this Privacy Policy periodically. Significant changes will be communicated to you and will be posted here with an updated effective date.
+      </Typography>
+
+      <Typography sx={{ fontWeight: 600, mt: 2 }}>
+        Contact Us
+      </Typography>
+      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
+        If you have any questions or concerns about this Privacy Policy, please contact us at <Link href='mailto:contact@opencreds.org'>contact@opencreds.org</Link>.
       </Typography>
 
       <Typography
