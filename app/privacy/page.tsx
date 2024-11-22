@@ -77,7 +77,7 @@ const PrivacyPolicy = () => {
             , a network of leading organizations committed to open infrastructure for Learning and Employment Records compliant with W3C Verifiable Credential standard.
           </Typography>
 
-          {['Google User Data Collection and Usage', 'Data Storage and Processing', 'Data Sharing and Transfer', 'Data Protection Mechanisms'].map((section, index) => (
+          {['Google API Access & Permissions', 'Data Collection & Usage', 'Data Storage & Processing', 'Data Sharing & Protection'].map((section, index) => (
             <Box key={index} sx={{ mb: 4 }}>
               <Typography variant='h6' sx={headingStyle}>
                 {section}
@@ -87,61 +87,79 @@ const PrivacyPolicy = () => {
                 padding: 0,
                 margin: 0 
               }}>
-                {section === 'Google User Data Collection and Usage' && (
+                {section === 'Google API Access & Permissions' && (
                   <>
                     <Box component="li" sx={listItemStyle}>
-                      Email Address: Your primary Google Account email is collected solely for user identification and authentication. This data is not stored beyond your current session.
+                      Email Access (userinfo.email): Used solely for user identification and authentication
                     </Box>
                     <Box component="li" sx={listItemStyle}>
-                      Profile Information: We access basic profile data (display name, profile picture, user ID) for identity verification purposes only.
+                      Profile Access (userinfo.profile): Required for basic profile verification and user authentication
                     </Box>
                     <Box component="li" sx={listItemStyle}>
-                      Drive Access: We use Google Drive for saving user-authored credentials and enabling peer recommendations.
+                      Drive File Access (drive.file): Used to save and manage user-authored credentials
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      Read-only Drive Access (drive.readonly): Enables peer recommendations and credential sharing
                     </Box>
                   </>
                 )}
-                {section === 'Data Storage and Processing' && (
+                {section === 'Data Collection & Usage' && (
                   <>
                     <Box component="li" sx={listItemStyle}>
-                      All user data remains under your control in your Google Drive
+                      We collect your Google Account email and basic profile information for authentication purposes only
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      Profile data accessed includes: display name, profile picture, and user ID
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      All authentication data is temporary and not stored beyond your current session
+                    </Box>
+                  </>
+                )}
+                {section === 'Data Storage & Processing' && (
+                  <>
+                    <Box component="li" sx={listItemStyle}>
+                      User-created credentials are stored exclusively in your Google Drive
                     </Box>
                     <Box component="li" sx={listItemStyle}>
                       No personal data is stored on our servers
                     </Box>
                     <Box component="li" sx={listItemStyle}>
-                      Data interactions occur directly between your browser and Google's services
+                      Data interactions occur directly between your browser and Google&apos;s services
+                    </Box>
+                    <Box component="li" sx={listItemStyle}>
+                      Read-only access is used solely for peer review and recommendations
                     </Box>
                   </>
                 )}
-                {section === 'Data Sharing and Transfer' && (
+                {section === 'Data Sharing & Protection' && (
                   <>
                     <Box component="li" sx={listItemStyle}>
-                      We never share your Google Drive data with third parties
+                      Your data is never shared with third parties
                     </Box>
                     <Box component="li" sx={listItemStyle}>
-                      Your data is not sold or monetized
+                      All data transmissions use encrypted HTTPS connections
                     </Box>
                     <Box component="li" sx={listItemStyle}>
-                      No user data is retained after session completion
-                    </Box>
-                  </>
-                )}
-                {section === 'Data Protection Mechanisms' && (
-                  <>
-                    <Box component="li" sx={listItemStyle}>
-                      Encrypted HTTPS data transmission
+                      We implement OAuth 2.0 security protocols for authentication
                     </Box>
                     <Box component="li" sx={listItemStyle}>
-                      OAuth 2.0 authentication protocols
+                      Regular security audits and monitoring are conducted
                     </Box>
                     <Box component="li" sx={listItemStyle}>
-                      Regular security audits and monitoring
+                      Access tokens are securely stored in browser session only
                     </Box>
                   </>
                 )}
               </Box>
             </Box>
           ))}
+
+          <Box sx={{ mt: 4 }}>
+            <Typography variant='body2' sx={{ color: 'text.secondary', mb: 2 }}>
+              This Privacy Policy may change from time to time. Any significant changes in data handling will be clearly communicated through policy updates.
+            </Typography>
+          </Box>
 
           <Box sx={{ mt: 4, borderTop: '1px solid #eee', pt: 4 }}>
             <Typography variant='body2' sx={{ color: 'text.secondary', textAlign: 'center' }}>
