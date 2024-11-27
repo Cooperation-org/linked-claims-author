@@ -43,6 +43,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [tooltipText, setTooltipText] = useState('saving your recommendation')
+  const [recId, setRecId] = useState<string | null>(null)
 
   const defaultValues: FormData = storedValue
 
@@ -113,14 +114,9 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
       const savedRecommendation = await saveToGoogleDrive({
         storage,
         data: signedCred,
-        type: 'SESSION'
+        type: 'RECOMMENDATION'
       })
-      const commentFileID = (savedRecommendation as { id: string }).id
-      console.log('🚀 ~ savedRecommendation:', savedRecommendation)
-
-      // Step 5: Add a comment to a specific file in Google Drive
-      // const rec = await storage.addCommentToFile(VSFileId, commentFileID)
-      // console.log(rec)
+      setRecId(savedRecommendation.id)
       return signedCred // Return the signed credential as a result
     } catch (error: any) {
       console.error('Error during signing process:', error.message)
@@ -243,6 +239,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 fullName={fullName}
                 email={email}
                 handleBack={handleBack}
+                recId={recId}
               />
             )}
           </FormControl>

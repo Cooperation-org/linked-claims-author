@@ -170,6 +170,11 @@ const Form = ({ onStepChange }: any) => {
         data: res,
         type: 'VC'
       })) as any
+      const folderIds = await storage?.getFileParents(file.id)
+      const relationFile = await storage?.createRelationsFile({
+        vcFolderId: folderIds[0]
+      })
+      console.log('🚀 ~ sign ~ relationFile:', relationFile)
       setLink(`https://drive.google.com/file/d/${file.id}/view`)
       setFileId(`${file.id}`)
 

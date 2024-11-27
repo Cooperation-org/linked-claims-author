@@ -22,20 +22,23 @@ interface SuccessPageProps {
   fullName: string
   email: string
   handleBack: () => void
+  recId: string | null
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
   submittedFullName,
   fullName,
   email,
-  handleBack
+  handleBack,
+  recId
 }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const params = useParams()
   const id = params.id
 
   // Construct the link to the credential
-  const link = `https://opencreds.net/view/${id}`
+  const homUrl = window.location.origin
+  const link = `${homUrl}/rec?vcId=${id}&recId=${recId}`
 
   const message = submittedFullName
     ? `Hi ${fullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
