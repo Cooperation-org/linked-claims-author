@@ -153,7 +153,7 @@ const ComprehensiveClaimDetails = () => {
     }
 
     fetchDriveData()
-  }, [accessToken, fileID, getContent, fetchFileMetadata, status])
+  }, [accessToken, fileID, getContent, fetchFileMetadata, status, storage])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
