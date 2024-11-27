@@ -4,6 +4,7 @@ import React from 'react'
 import { Box, Card, Container, Link, Typography } from '@mui/material'
 import { SVGBadge, QuoteSVG } from '../../../../Assets/SVGs'
 import ComprehensiveClaimDetails from '../../../../view/[id]/ComprehensiveClaimDetails'
+import LoadingOverlay from '../../../../components/Loading/LoadingOverlay'
 
 interface Portfolio {
   name: string
@@ -25,6 +26,7 @@ interface DataPreviewProps {
   handleNext: () => void
   handleBack: () => void
   handleSign: () => void
+  isLoading: boolean
 }
 
 const cleanHTML = (htmlContent: any): string => {
@@ -39,7 +41,7 @@ const cleanHTML = (htmlContent: any): string => {
     .replace(/style="[^"]*"/g, '')
 }
 
-const DataPreview: React.FC<DataPreviewProps> = ({ formData, fullName }) => {
+const DataPreview: React.FC<DataPreviewProps> = ({ formData, fullName, isLoading }) => {
   return (
     <Container maxWidth='sm' sx={{ mt: 4, mb: 4 }}>
       <Typography
@@ -279,6 +281,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, fullName }) => {
               ))}
           </Card>
         )}
+      <LoadingOverlay text='Saving your recommendation...' open={isLoading} />
     </Container>
   )
 }
