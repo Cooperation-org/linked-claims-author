@@ -35,6 +35,45 @@ const PrivacyPolicy = () => {
     }
   }
 
+  const sections = [
+    {
+      title: 'Google API Access & Permissions',
+      items: [
+        'Email Access (userinfo.email): Used solely for user identification and authentication',
+        'Profile Access (userinfo.profile): Used to prefill user data in the app',
+        'Drive File Access (drive.file): Used to save and manage user-authored credentials',
+        'Read-only Drive Access (drive.readonly): Enables viewing and recommendations for documents created by the user'
+      ]
+    },
+    {
+      title: 'Data Collection & Usage',
+      items: [
+        'We collect your Google Account email and basic profile information for authentication and pre-filling purposes only',
+        'No personal data is stored on our servers',
+        'All authentication data is temporary and not stored beyond your current session'
+      ]
+    },
+    {
+      title: 'Data Storage & Processing',
+      items: [
+        'User-created credentials are stored exclusively in your Google Drive',
+        'No personal data is stored on our servers',
+        'Data interactions occur directly between your browser and Google\'s services',
+        'Read-only access is used solely for peer review and recommendations'
+      ]
+    },
+    {
+      title: 'Data Sharing & Protection',
+      items: [
+        'Your data is never shared with third parties',
+        'All data transmissions use encrypted HTTPS connections',
+        'We implement OAuth 2.0 security protocols for authentication',
+        'Regular security audits and monitoring are conducted',
+        'Access tokens are securely stored in browser session only'
+      ]
+    }
+  ]
+
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
       <Box sx={{
@@ -77,80 +116,21 @@ const PrivacyPolicy = () => {
             , a network of leading organizations committed to open infrastructure for Learning and Employment Records compliant with W3C Verifiable Credential standard.
           </Typography>
 
-          {['Google API Access & Permissions', 'Data Collection & Usage', 'Data Storage & Processing', 'Data Sharing & Protection'].map((section, index) => (
-            <Box key={index} sx={{ mb: 4 }}>
+          {sections.map(({ title, items }) => (
+            <Box key={title} sx={{ mb: 4 }}>
               <Typography variant='h6' sx={headingStyle}>
-                {section}
+                {title}
               </Typography>
               <Box component="ul" sx={{ 
                 listStyle: 'none', 
                 padding: 0,
                 margin: 0 
               }}>
-                {section === 'Google API Access & Permissions' && (
-                  <>
-                    <Box component="li" sx={listItemStyle}>
-                      Email Access (userinfo.email): Used solely for user identification and authentication
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      Profile Access (userinfo.profile): Required for basic profile verification and user authentication
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      Drive File Access (drive.file): Used to save and manage user-authored credentials
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      Read-only Drive Access (drive.readonly): Enables peer recommendations and credential sharing
-                    </Box>
-                  </>
-                )}
-                {section === 'Data Collection & Usage' && (
-                  <>
-                    <Box component="li" sx={listItemStyle}>
-                      We collect your Google Account email and basic profile information for authentication purposes only
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      Profile data accessed includes: display name, profile picture, and user ID
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      All authentication data is temporary and not stored beyond your current session
-                    </Box>
-                  </>
-                )}
-                {section === 'Data Storage & Processing' && (
-                  <>
-                    <Box component="li" sx={listItemStyle}>
-                      User-created credentials are stored exclusively in your Google Drive
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      No personal data is stored on our servers
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      Data interactions occur directly between your browser and Google&apos;s services
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      Read-only access is used solely for peer review and recommendations
-                    </Box>
-                  </>
-                )}
-                {section === 'Data Sharing & Protection' && (
-                  <>
-                    <Box component="li" sx={listItemStyle}>
-                      Your data is never shared with third parties
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      All data transmissions use encrypted HTTPS connections
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      We implement OAuth 2.0 security protocols for authentication
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      Regular security audits and monitoring are conducted
-                    </Box>
-                    <Box component="li" sx={listItemStyle}>
-                      Access tokens are securely stored in browser session only
-                    </Box>
-                  </>
-                )}
+                {items.map((item, index) => (
+                  <Box component="li" key={`${title}-${index}`} sx={listItemStyle}>
+                    {item}
+                  </Box>
+                ))}
               </Box>
             </Box>
           ))}
