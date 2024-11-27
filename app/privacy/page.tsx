@@ -39,10 +39,10 @@ const PrivacyPolicy = () => {
     {
       title: 'Google API Access & Permissions',
       items: [
-        'Email Access (userinfo.email): Used solely for user identification and authentication',
+        'Email Access (userinfo.email): Used to allow the user to send a copy to themselves',
         'Profile Access (userinfo.profile): Used to prefill user data in the app',
         'Drive File Access (drive.file): Used to save and manage user-authored credentials',
-        'Read-only Drive Access (drive.readonly): Enables viewing and recommendations for documents created by the user'
+        'Read-only Drive Access (drive.readonly): Enables viewing and providing recommendations for documents created by users'
       ]
     },
     {
