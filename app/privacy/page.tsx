@@ -42,15 +42,15 @@ const PrivacyPolicy = () => {
         'Email Access (userinfo.email): Used to allow the user to send a copy to themselves',
         'Profile Access (userinfo.profile): Used to prefill user data in the app',
         'Drive File Access (drive.file): Used to save and manage user-authored credentials',
-        'Read-only Drive Access (drive.readonly): Enables viewing and providing recommendations for documents created by users'
+        'Read-only Drive Access (drive.readonly): Enables viewing and recommendations for documents created by the user'
       ]
     },
     {
       title: 'Data Collection & Usage',
       items: [
-        'We collect your Google Account email and basic profile information for authentication and pre-filling purposes only',
+        'We temporarily access your Google Account email and basic profile information strictly for authentication and pre-filling purposes',
         'No personal data is stored on our servers',
-        'All authentication data is temporary and not stored beyond your current session'
+        'All authentication data is temporary and is not retained beyond your current session'
       ]
     },
     {
