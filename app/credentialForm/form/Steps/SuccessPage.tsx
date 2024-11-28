@@ -28,7 +28,7 @@ import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useStepContext } from '../StepContext'
 
 interface SuccessPageProps {
-  // setActiveStep: (step: number) => void
+  setActiveStep: (step: number) => void //NOSONAR
   formData: FormData | null
   reset: () => void
   link: string
