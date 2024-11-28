@@ -7,7 +7,8 @@ import {
   Button,
   TextField,
   Snackbar,
-  InputAdornment
+  InputAdornment,
+  CircularProgress
 } from '@mui/material'
 import { SVGBadge, CopySVG } from '../../../../Assets/SVGs'
 import { copyFormValuesToClipboard } from '../../../../utils/formUtils'
@@ -33,6 +34,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   recId
 }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('Text copied to clipboard.')
+  const [isProcessing, setIsProcessing] = useState(false)
   const params = useParams()
   const id = params.id
 
@@ -41,19 +44,73 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const link = `${homUrl}/rec?vcId=${id}&recId=${recId}`
 
   const message = submittedFullName
-    ? `Hi ${fullName},\n\nI’ve completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
+    ? `Hi ${fullName},\n\nI've completed the recommendation you requested. You can view it by opening this URL:\n\n${link}\n\n- ${submittedFullName}`
     : 'Loading...'
 
   const handleCopy = () => {
     copyFormValuesToClipboard(message)
+    setSnackbarMessage('Text copied to clipboard.')
     setSnackbarOpen(true)
   }
 
-  const mailtoLink = email
-    ? `mailto:${email}?subject=Recommendation Complete&body=${encodeURIComponent(
-        message
-      )}`
-    : '#'
+  const handleOpenMail = async () => {
+    if (!email) return
+
+    setIsProcessing(true)
+    const subject = 'Recommendation Complete'
+
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`
+    const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`
+
+    try {
+      window.location.href = mailtoLink
+      const fallbackTimeout = setTimeout(() => {
+        try {
+          window.open(gmailLink, '_blank')
+          navigator.clipboard
+            .writeText(message)
+            .then(() => {
+              setSnackbarMessage('Message copied to clipboard for Gmail')
+              setSnackbarOpen(true)
+            })
+            .catch(err => {
+              console.error('Clipboard error:', err)
+              setSnackbarMessage('Failed to copy message to clipboard')
+              setSnackbarOpen(true)
+            })
+        } catch (error) {
+          console.error('Gmail fallback error:', error)
+          setSnackbarMessage('Failed to open email client')
+          setSnackbarOpen(true)
+        }
+      }, 2000)
+      window.addEventListener(
+        'blur',
+        () => {
+          clearTimeout(fallbackTimeout)
+          setIsProcessing(false)
+          setSnackbarMessage('Email client opened successfully')
+          setSnackbarOpen(true)
+        },
+        { once: true }
+      )
+      setTimeout(() => {
+        clearTimeout(fallbackTimeout)
+        setIsProcessing(false)
+        if (!document.hidden) {
+          setSnackbarMessage(
+            'Please try using the Gmail option or copy the message manually'
+          )
+          setSnackbarOpen(true)
+        }
+      }, 3000)
+    } catch (error) {
+      console.error('Email handling error:', error)
+      setIsProcessing(false)
+      setSnackbarMessage('Failed to open email client')
+      setSnackbarOpen(true)
+    }
+  }
 
   return (
     <>
@@ -74,7 +131,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         </Box>
 
         <Typography sx={{ fontSize: '16px', letterSpacing: '0.01em', textAlign: 'left' }}>
-          Now let {fullName} know that you’ve completed the recommendation.
+          Now let {fullName} know that you&apos;ve completed the recommendation.
         </Typography>
 
         <Box
@@ -139,8 +196,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         </Box>
 
         <Button
-          href={mailtoLink}
-          target='_blank'
+          onClick={handleOpenMail}
           variant='contained'
           sx={{
             width: '100%',
@@ -151,9 +207,9 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             boxShadow: '0px 0px 2px 2px #F7BC00',
             marginTop: '15px'
           }}
-          disabled={!email}
+          disabled={!email || isProcessing}
         >
-          Open email
+          {isProcessing ? <CircularProgress size={24} color='inherit' /> : 'Open email'}
         </Button>
 
         <Button
@@ -177,7 +233,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={() => setSnackbarOpen(false)}
-        message='Text copied to clipboard.'
+        message={snackbarMessage}
       />
     </>
   )

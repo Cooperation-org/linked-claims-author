@@ -1,7 +1,7 @@
 'use client'
 
-import React from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Button, Typography, Snackbar, Alert } from '@mui/material'
 
 interface DeclineRequestProps {
   fullName: string
@@ -14,14 +14,74 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({
   email,
   handleBack
 }) => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
+  const [isProcessing, setIsProcessing] = useState(false)
+
   const handleSendEmail = () => {
     const subject = `Unable to Provide Recommendation at this Time for ${fullName}`
     const body = `Hi ${fullName},\n\nI'm currently unable to provide a recommendation. I apologize for the inconvenience.\n\nBest regards.`
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`
 
-    window.location.href = mailtoLink
+    const showNotification = (message: string, severity: 'success' | 'error') => {
+      setSnackbarMessage(message)
+      setSnackbarSeverity(severity)
+      setSnackbarOpen(true)
+    }
+
+    setIsProcessing(true)
+
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+
+    try {
+      window.location.href = mailtoLink
+      const fallbackTimeout = setTimeout(() => {
+        try {
+          window.open(gmailLink, '_blank')
+          navigator.clipboard
+            .writeText(`${subject}\n\n${body}`)
+            .then(() => {
+              showNotification('Message copied to clipboard for Gmail', 'success')
+            })
+            .catch(err => {
+              console.error('Clipboard error:', err)
+              showNotification('Failed to copy message to clipboard', 'error')
+            })
+        } catch (error) {
+          console.error('Gmail fallback error:', error)
+          showNotification('Failed to open email client', 'error')
+        }
+      }, 2000)
+      window.addEventListener(
+        'blur',
+        () => {
+          clearTimeout(fallbackTimeout)
+          setIsProcessing(false)
+          showNotification('Email client opened successfully', 'success')
+        },
+        { once: true }
+      )
+      setTimeout(() => {
+        clearTimeout(fallbackTimeout)
+        setIsProcessing(false)
+        if (!document.hidden) {
+          showNotification(
+            'Please try using the Gmail option or copy the message manually',
+            'error'
+          )
+        }
+      }, 3000)
+    } catch (error) {
+      console.error('Email handling error:', error)
+      setIsProcessing(false)
+      showNotification('Failed to open email client', 'error')
+    }
+  }
+
+  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') return
+    setSnackbarOpen(false)
   }
 
   return (
@@ -66,6 +126,7 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({
       </Typography>
       <Button
         onClick={handleSendEmail}
+        disabled={isProcessing}
         sx={{
           padding: '10px 24px',
           borderRadius: '100px',
@@ -112,6 +173,20 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({
       >
         Back
       </Button>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

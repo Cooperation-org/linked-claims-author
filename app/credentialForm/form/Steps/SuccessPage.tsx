@@ -91,10 +91,43 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       const linkedInUrl = generateLinkedInUrl()
       window.open(linkedInUrl, '_blank', 'noopener noreferrer')
     } else if (option === 'Email') {
-      const mailUrl = `mailto:?subject=Check%20out%20my%20new%20certification&body=You%20can%20view%20my%20certification%20here:%20${encodeURIComponent(
-        credentialLink
-      )}`
-      window.location.href = mailUrl
+      const subject = 'Check out my new certification'
+      const body = `You can view my certification here: ${credentialLink}`
+
+      const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+      window.location.href = mailtoLink
+      const fallbackTimeout = setTimeout(() => {
+        try {
+          window.open(gmailLink, '_blank')
+          navigator.clipboard
+            .writeText(`${subject}\n\n${body}`)
+            .then(() => {
+              setSnackbarOpen(true)
+            })
+            .catch(err => {
+              console.error('Clipboard error:', err)
+            })
+        } catch (error) {
+          console.error('Gmail fallback error:', error)
+        }
+      }, 2000)
+
+      window.addEventListener(
+        'blur',
+        () => {
+          clearTimeout(fallbackTimeout)
+        },
+        { once: true }
+      )
+
+      setTimeout(() => {
+        clearTimeout(fallbackTimeout)
+        if (!document.hidden) {
+          copyFormValuesToClipboard(credentialLink)
+          setSnackbarOpen(true)
+        }
+      }, 3000)
     } else if (option === 'CopyURL') {
       copyFormValuesToClipboard(credentialLink)
       setSnackbarOpen(true)
