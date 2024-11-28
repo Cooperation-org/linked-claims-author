@@ -25,6 +25,7 @@ import { useSession, signIn } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
+import { getVCWithRecommendations } from '@cooperation/vc-storage'
 
 // Define types
 interface Portfolio {
@@ -90,7 +91,7 @@ const ComprehensiveClaimDetails = () => {
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
   const isView = pathname?.includes('/view')
 
-  const { getContent, fetchFileMetadata, getComments } = useGoogleDrive()
+  const { getContent, fetchFileMetadata, storage } = useGoogleDrive()
 
   // State to manage expanded comments
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
@@ -127,9 +128,21 @@ const ComprehensiveClaimDetails = () => {
 
         await fetchFileMetadata(fileID, '')
 
-        const commentsData = await getComments(fileID)
-        if (commentsData) {
-          setComments(commentsData as any)
+        //todo get recommendations from RELATIONS file recommendation array
+        if (!storage || !fileID) {
+          console.warn('Storage instance is not available.')
+          return
+        }
+        const type = window.location.pathname.includes('view')
+        if (type) {
+          const { recommendations } = await getVCWithRecommendations({
+            vcId: fileID,
+            storage
+          })
+          console.log('🚀 ~ fetchDriveData ~ recommendations:', recommendations)
+          if (recommendations) {
+            setComments(recommendations as any)
+          }
         }
       } catch (error) {
         console.error('Error fetching claim details:', error)
@@ -140,7 +153,7 @@ const ComprehensiveClaimDetails = () => {
     }
 
     fetchDriveData()
-  }, [accessToken, fileID, getContent, fetchFileMetadata, getComments, status])
+  }, [accessToken, fileID, getContent, fetchFileMetadata, status, storage])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({

@@ -43,6 +43,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [tooltipText, setTooltipText] = useState('saving your recommendation')
+  const [recId, setRecId] = useState<string | null>(null)
 
   const defaultValues: FormData = storedValue
 
@@ -91,14 +92,14 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
       const { didDocument, keyPair, issuerId } = newDid
 
       // Save the DID document and keyPair to Google Drive
-      await saveToGoogleDrive(
+      await saveToGoogleDrive({
         storage,
-        {
+        data: {
           didDocument,
           keyPair
         },
-        'DID'
-      )
+        type: 'DID'
+      })
 
       // Step 3: Sign the credential (recommendation)
       const signedCred = await signCred(
@@ -110,13 +111,12 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
       )
 
       // Step 4: Save the signed recommendation to Google Drive
-      const savedRecommendation = await saveToGoogleDrive(storage, signedCred, 'SESSION')
-      const commentFileID = (savedRecommendation as { id: string }).id
-      console.log('🚀 ~ savedRecommendation:', savedRecommendation)
-
-      // Step 5: Add a comment to a specific file in Google Drive
-      const rec = await storage.addCommentToFile(VSFileId, commentFileID)
-      console.log(rec)
+      const savedRecommendation = await saveToGoogleDrive({
+        storage,
+        data: signedCred,
+        type: 'RECOMMENDATION'
+      })
+      setRecId(savedRecommendation.id)
       return signedCred // Return the signed credential as a result
     } catch (error: any) {
       console.error('Error during signing process:', error.message)
@@ -239,6 +239,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 fullName={fullName}
                 email={email}
                 handleBack={handleBack}
+                recId={recId}
               />
             )}
           </FormControl>
