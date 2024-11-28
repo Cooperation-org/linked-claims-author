@@ -1,16 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { Box, Typography, useMediaQuery, Theme } from '@mui/material'
 import { FormData } from '../types/Types'
+import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
 import {
   commonTypographyStyles,
   commonBoxStyles,
   evidenceListStyles
 } from '../../../components/Styles/appStyles'
 import { StepTrackShape } from '../fromTexts & stepTrack/StepTrackShape'
+
+GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
 const cleanHTML = (htmlContent: string) => {
   return htmlContent
@@ -26,10 +29,41 @@ interface DataPreviewProps {
   selectedFiles: any[]
 }
 
+const isPDF = (fileName: string) => fileName.toLowerCase().endsWith('.pdf')
+const renderPDFThumbnail = async (fileUrl: string) => {
+  try {
+    const loadingTask = getDocument(fileUrl)
+    const pdf = await loadingTask.promise
+    const page = await pdf.getPage(1)
+    const viewport = page.getViewport({ scale: 0.1 })
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    if (context) {
+      canvas.height = viewport.height
+      canvas.width = viewport.width
+      await page.render({ canvasContext: context, viewport }).promise
+      return canvas.toDataURL()
+    }
+  } catch (error) {
+    console.error('Error rendering PDF thumbnail:', error)
+  }
+  return '/fallback-pdf-thumbnail.png' // fallback image
+}
+
 const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) => {
   console.log(':  formData', formData)
   const theme: Theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
+
+  const [pdfThumbnails, setPdfThumbnails] = useState<Record<string, string>>({})
+  useEffect(() => {
+    selectedFiles.forEach(async file => {
+      if (isPDF(file.name) && !pdfThumbnails[file.id]) {
+        const thumbnail = await renderPDFThumbnail(file.url)
+        setPdfThumbnails(prev => ({ ...prev, [file.id]: thumbnail }))
+      }
+    })
+  }, [selectedFiles, pdfThumbnails])
 
   const handleNavigate = (url: string, target: string = '_self') => {
     window.open(url, target)
@@ -91,15 +125,39 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) =>
           }}
         >
           {formData?.evidenceLink ? (
-            <img
-              style={{
-                borderRadius: '20px',
-                width: !isLargeScreen ? '100%' : '179px',
-                height: '100%'
-              }}
-              src={selectedFiles.filter(f => f.isFeatured)[0]?.url}
-              alt='Certification Evidence'
-            />
+            selectedFiles.filter(f => f.isFeatured).length > 0 ? (
+              selectedFiles
+                .filter(f => f.isFeatured)
+                .map(file => (
+                  <Box key={file.id} sx={{ width: isLargeScreen ? '179px' : '100%' }}>
+                    {isPDF(file.name) ? (
+                      <img
+                        style={{
+                          borderRadius: '20px',
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                        src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
+                        alt='PDF Preview'
+                      />
+                    ) : (
+                      <img
+                        style={{
+                          borderRadius: '20px',
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                        src={file.url}
+                        alt='Certification Evidence'
+                      />
+                    )}
+                  </Box>
+                ))
+            ) : (
+              <Box sx={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }} />
+            )
           ) : (
             <Box sx={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }} />
           )}
@@ -129,20 +187,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) =>
               <Typography sx={{ display: 'block' }}>Evidence:</Typography>
               <ul style={evidenceListStyles}>
                 {formData.portfolio.map(
-                  (porto: {
-                    name:
-                      | string
-                      | number
-                      | bigint
-                      | boolean
-                      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-                      | Iterable<React.ReactNode>
-                      | React.ReactPortal
-                      | Promise<React.AwaitedReactNode>
-                      | null
-                      | undefined
-                    url: React.Key | null | undefined
-                  }) =>
+                  (porto: { name: any; url: React.Key | null | undefined }) =>
                     porto.name &&
                     porto.url && (
                       <li
