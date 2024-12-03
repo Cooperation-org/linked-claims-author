@@ -19,8 +19,8 @@ import {
   HeartSVG,
   BlueBadge,
   NewCopy,
-  NewLinkedin,
-  NewEmail
+  NewLinkedin
+  // NewEmail
 } from '../../../Assets/SVGs'
 
 import { FormData } from '../../../credentialForm/form/types/Types'
@@ -356,14 +356,14 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           <NewLinkedin />
           Share to LinkedIn
         </Button>
-        <Button
+        {/* <Button
           disabled={!fileId}
           onClick={() => handleShareOption('Email')}
           sx={buttonStyles}
         >
           <NewEmail />
           Share via Email
-        </Button>
+        </Button> */}
       </Box>
 
       <Stack

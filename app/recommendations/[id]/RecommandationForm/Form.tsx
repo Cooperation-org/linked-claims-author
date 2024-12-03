@@ -163,8 +163,9 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
           alignItems: 'center',
           marginTop: '5px',
           padding: '20px',
-          width: '100%',
+          width: '99vw',
           maxWidth: '720px',
+          minWidth: '320px',
           backgroundColor: '#FFF',
           margin: 'auto',
           marginBottom: '20px'
