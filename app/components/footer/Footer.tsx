@@ -85,6 +85,20 @@ const Footer = () => {
               Data & Privacy Policy
             </Typography>
           </Link>
+          <Link href={'mailto:support@opencreds.net'}>
+            <Typography
+              sx={{
+                color: theme.palette.t3LightGray,
+                fontFamily: 'Lato',
+                fontSize: '13px',
+                fontWeight: 400,
+                textDecoration: 'underline',
+                cursor: 'pointer'
+              }}
+            >
+              support@opencreds.net
+            </Typography>
+          </Link>
         </Box>
       </Box>
     </Box>

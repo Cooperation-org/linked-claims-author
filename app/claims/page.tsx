@@ -84,14 +84,25 @@ const ClaimsPage: React.FC = () => {
 
   useEffect(() => {
     const fetchClaims = async () => {
-      setLoading(true)
-      const claimsData = await getAllClaims()
-      const vcs = claimsData.filter((file: { name: string }) => {
-        return file.name != 'RELATIONS'
-      })
-      console.log('🚀 ~ vcs ~ vcs:', vcs)
-      setClaims(vcs)
-      setLoading(false)
+      try {
+        setLoading(true)
+
+        const claimsData = await getAllClaims()
+        console.log('🚀 ~ fetchClaims ~ claimsData:', claimsData)
+
+        // Assuming claimsData is an array of objects or arrays, process the data
+        const vcs = claimsData.map((file: { name: string }[]) =>
+          file.filter((f: { name: string }) => f.name !== 'RELATIONS')
+        )
+
+        console.log('🚀 ~ vcs ~ vcs:', vcs)
+
+        setClaims(vcs)
+      } catch (error) {
+        console.error('Error fetching claims:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchClaims()
@@ -135,19 +146,19 @@ const ClaimsPage: React.FC = () => {
           </Box>
         ) : (
           claims.map(claim => (
-            <div key={claim.data.id}>
+            <div key={claim[0].data.id}>
               <ListItem
                 button
-                onClick={() => handleClaimClick(claim.data.id, claim.data)}
+                onClick={() => handleClaimClick(claim[0].data.id, claim[0].data)}
               >
                 <ListItemText
-                  primary={claim.data?.credentialSubject.achievement[0]?.name}
+                  primary={claim[0].data?.credentialSubject.achievement[0]?.name}
                 />
-                {openClaim === claim.data.id ? <ExpandLess /> : <ExpandMore />}
+                {openClaim === claim[0].data.id ? <ExpandLess /> : <ExpandMore />}
               </ListItem>
-              <Collapse in={openClaim === claim.data.id} timeout='auto' unmountOnExit>
+              <Collapse in={openClaim === claim[0].data.id} timeout='auto' unmountOnExit>
                 <Container>
-                  {loadingClaims[claim.data.id] ? (
+                  {loadingClaims[claim[0].data.id] ? (
                     <CircularProgress />
                   ) : (
                     <Box>

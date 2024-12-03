@@ -6,7 +6,6 @@ import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { FormData } from '../../../../credentialForm/form/types/Types'
 import { SVGFolder, SVGSinfo } from '../../../../Assets/SVGs'
 import { signIn, useSession } from 'next-auth/react'
-import { useStepContext } from '../../../../credentialForm/form/StepContext'
 
 interface Step1Props {
   watch: UseFormWatch<FormData>
@@ -16,7 +15,6 @@ interface Step1Props {
 
 const Step1: React.FC<Step1Props> = ({ handleNext }) => {
   const { data: session } = useSession()
-  const { setUploadImageFn } = useStepContext()
 
   const connectToGoogleDrive = async () => {
     if (session?.accessToken) {
