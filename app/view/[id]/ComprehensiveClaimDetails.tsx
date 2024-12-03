@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from 'react'
 import {
+  Alert,
   Box,
   CircularProgress,
   Typography,
@@ -26,6 +27,7 @@ import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { getVCWithRecommendations } from '@cooperation/vc-storage'
+import EvidencePreview from './EvidencePreview'
 
 // Define types
 interface Portfolio {
@@ -189,16 +191,36 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     )
   }
 
-  if (status === 'unauthenticated') {
-    return (
-      <Container sx={{ maxWidth: '800px' }}>
-        <Typography variant='h6' align='center'>
-          Please sign in to view this claim.
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}></Box>
-      </Container>
-    )
-  }
+if (status === 'unauthenticated') {
+  return (
+    <Container sx={{ maxWidth: '800px' }}>
+      <Typography variant='h6' align='center'>
+        Please sign in to view this claim.
+      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}></Box>
+      <Alert 
+        severity="info" 
+        sx={{ 
+          mt: 2,
+          backgroundColor: 'transparent',
+          border: 'none',
+          '& .MuiAlert-icon': {
+            color: (theme) => theme.palette.t3BodyText,
+          },
+          '& .MuiAlert-message': {
+            color: (theme) => theme.palette.t3BodyText,
+            fontFamily: 'Lato',
+            fontSize: '14px',
+            textAlign: 'center',
+          },
+          width: '100%',
+        }}
+      >
+        Our app is currently in development mode with Google. You may see a warning that the app is not verified - this is normal during our development phase. While we work on getting verified, you can safely proceed by clicking &quot;Continue&quot; on the warning screen, then &quot;Continue&quot; again on the &quot;Google hasn&#39;t verified this app&quot; screen. Your data remains secure and protected by Google&#39;s security measures.
+      </Alert>
+    </Container>
+  )
+}
 
   if (errorMessage) {
     return (
@@ -251,12 +273,10 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
               }}
             >
               {credentialSubject?.evidenceLink ? (
-                <Image
-                  src={credentialSubject?.evidenceLink}
-                  alt='Achievement Evidence'
-                  width={500}
-                  height={300}
-                  style={{ borderRadius: '10px', objectFit: 'cover' }}
+                <EvidencePreview
+                  url={credentialSubject.evidenceLink}
+                  width={180}
+                  height={150}
                 />
               ) : (
                 <Box
@@ -325,32 +345,33 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                       justifyContent: 'center'
                     }}
                   >
-                    <Image
-                      src={credentialSubject?.evidenceLink}
-                      alt='Achievement Evidence'
+                    <EvidencePreview
+                      url={credentialSubject.evidenceLink}
                       width={180}
                       height={150}
-                      style={{ borderRadius: '10px', objectFit: 'cover' }}
                     />
                   </Box>
                 )}
 
                 {achievement?.description && (
-                  <Typography
-                    sx={{
-                      fontFamily: 'Lato',
-                      fontSize: '17px',
-                      letterSpacing: '0.075px',
-                      lineHeight: '24px',
-                      mt: 2
-                    }}
-                  >
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: cleanHTML(achievement.description)
+                  <Link href={credentialSubject?.evidenceLink ?? ''} target='_blank'>
+                    <Typography
+                      sx={{
+                        cursor: 'pointer',
+                        fontFamily: 'Lato',
+                        fontSize: '17px',
+                        letterSpacing: '0.075px',
+                        lineHeight: '24px',
+                        mt: 2
                       }}
-                    />
-                  </Typography>
+                    >
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: cleanHTML(achievement.description)
+                        }}
+                      />
+                    </Typography>
+                  </Link>
                 )}
 
                 {achievement?.criteria?.narrative && (
@@ -648,7 +669,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                     backgroundColor: '#003FE0',
                     textTransform: 'none',
                     borderRadius: '100px',
-                    width: { xs: '100px', sm: '300px', md: '300px' }
+                    width: { xs: 'fit-content', sm: '300px', md: '300px' }
                   }}
                 >
                   Ask for Recommendation

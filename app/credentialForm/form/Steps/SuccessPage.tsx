@@ -22,7 +22,7 @@ import {
   NewLinkedin
   // NewEmail
 } from '../../../Assets/SVGs'
-
+import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
 import { FormData } from '../../../credentialForm/form/types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useStepContext } from '../StepContext'
@@ -48,12 +48,9 @@ interface SnackbarState {
 const SuccessPage: React.FC<SuccessPageProps> = ({
   formData,
   reset,
-  link,
   setLink,
   setFileId,
-  fileId,
-  storageOption,
-  selectedImage
+  fileId
 }) => {
   const { setActiveStep } = useStepContext()
   const [snackbar, setSnackbar] = useState<SnackbarState>({
@@ -421,6 +418,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           {snackbar.message}
         </Alert>
       </Snackbar>
+      <LoadingOverlay
+        text='Saving credential. Patience is a virtue...'
+        open={fileId ? false : true}
+      />
     </Box>
   )
 }
