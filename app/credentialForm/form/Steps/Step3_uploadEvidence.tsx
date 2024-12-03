@@ -294,42 +294,46 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
         </Tabs>
       </Box>
 
-      <TabPanel value={tabValue} index={0}>
-        <FileUploader
-          onFilesSelected={handleFilesSelected}
-          maxFiles={10}
-          currentFiles={files}
-        />
+      <Box sx={{ width: '100%' }}>
+        <TabPanel value={tabValue} index={0}>
+          <FileUploader
+            onFilesSelected={handleFilesSelected}
+            maxFiles={10}
+            currentFiles={files}
+          />
 
-        <Typography
-          mt={2}
-          sx={{ textAlign: 'center', fontSize: '0.875rem', color: '#666' }}
-        >
-          The first image will always be the featured image.
-        </Typography>
+          <Typography
+            mt={2}
+            sx={{ textAlign: 'center', fontSize: '0.875rem', color: '#666' }}
+          >
+            The first image will always be the featured image.
+          </Typography>
 
-        <FileListDisplay
-          files={[...selectedFiles]}
-          onDelete={handleDelete}
-          onNameChange={handleNameChange}
-          onSetAsFeatured={setAsFeatured}
-        />
-      </TabPanel>
+          <FileListDisplay
+            files={[...selectedFiles]}
+            onDelete={handleDelete}
+            onNameChange={handleNameChange}
+            onSetAsFeatured={setAsFeatured}
+          />
+        </TabPanel>
+      </Box>
 
-      <TabPanel value={tabValue} index={1}>
-        <LinkAdder
-          fields={links}
-          onAdd={handleAddLink}
-          onRemove={handleRemoveLink}
-          onNameChange={(index, value) => handleLinkChange(index, 'name', value)}
-          onUrlChange={(index, value) => handleLinkChange(index, 'url', value)}
-          maxLinks={5}
-          nameLabel='Name'
-          urlLabel='URL'
-          namePlaceholder='(e.g., LinkedIn profile, github repo, etc.)'
-          urlPlaceholder='https://'
-        />
-      </TabPanel>
+      <Box sx={{ width: '100%' }}>
+        <TabPanel value={tabValue} index={1}>
+          <LinkAdder
+            fields={links}
+            onAdd={handleAddLink}
+            onRemove={handleRemoveLink}
+            onNameChange={(index, value) => handleLinkChange(index, 'name', value)}
+            onUrlChange={(index, value) => handleLinkChange(index, 'url', value)}
+            maxLinks={5}
+            nameLabel='Name'
+            urlLabel='URL'
+            namePlaceholder='(e.g., LinkedIn profile, github repo, etc.)'
+            urlPlaceholder='https://'
+          />
+        </TabPanel>
+      </Box>
 
       <LoadingOverlay text='Uploading files...' open={loading} />
     </Box>

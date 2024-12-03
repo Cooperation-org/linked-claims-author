@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { Box, Typography, FormLabel, Button, Tabs, Tab, styled } from '@mui/material'
 import {
@@ -19,7 +19,16 @@ import { FormData, FileItem } from '../../../../credentialForm/form/types/Types'
 import LinkAdder from '../../../../components/LinkAdder'
 import FileUploader from '../../../../components/FileUploader'
 import FileListDisplay from '../../../../components/FileList'
+import { uploadImageToGoogleDrive, GoogleDriveStorage } from '@cooperation/vc-storage'
+import useGoogleDrive from '../../../../hooks/useGoogleDrive'
+import { useStepContext } from '../../../../credentialForm/form/StepContext'
+import LoadingOverlay from '../../../../components/Loading/LoadingOverlay'
 
+interface PortfolioItem {
+  name: string
+  url: string
+  googleId?: string
+}
 interface Portfolio {
   name: string
   url: string
@@ -57,6 +66,7 @@ interface Step3Props {
   readonly handleNext: () => void
   readonly handleBack: () => void
   readonly fullName: string
+  readonly fields: any
 }
 
 const StyledFormLabel = styled(FormLabel)({
@@ -78,14 +88,12 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other })
 )
 
 const Step3: React.FC<Step3Props> = ({
-  register,
   append,
   errors,
   remove,
   watch,
   setValue,
   handleNext,
-  handleBack,
   fullName
 }) => {
   const theme = useTheme()
@@ -95,6 +103,8 @@ const Step3: React.FC<Step3Props> = ({
   const [files, setFiles] = useState<FileItem[]>([])
   const portfolioFromForm = watch('portfolio') as Portfolio[] | undefined
   const portfolioWatch = useMemo(() => portfolioFromForm || [], [portfolioFromForm])
+  const { storage } = useGoogleDrive()
+  const { loading, setUploadImageFn } = useStepContext()
 
   const [localPortfolio, setLocalPortfolio] = useState<LocalPortfolioItem[]>([
     { id: crypto.randomUUID(), name: '', url: '', googleId: undefined }
@@ -270,6 +280,73 @@ const Step3: React.FC<Step3Props> = ({
     )
   }, [errors.portfolio])
 
+  const handleUpload = useCallback(async () => {
+    try {
+      if (selectedFiles.length === 0) return
+
+      const filesToUpload = selectedFiles.filter(
+        fileItem => !fileItem.uploaded && fileItem.file && fileItem.name
+      )
+      if (filesToUpload.length === 0) return
+
+      const uploadedFiles = await Promise.all(
+        filesToUpload.map(async (fileItem, index) => {
+          const newFile = new File([fileItem.file], fileItem.name, {
+            type: fileItem.file.type
+          })
+
+          const uploadedFile = await uploadImageToGoogleDrive(
+            storage as GoogleDriveStorage,
+            newFile
+          )
+          const fileId = (uploadedFile as { id: string }).id
+
+          return {
+            ...fileItem,
+            googleId: fileId,
+            uploaded: true,
+            isFeatured: index === 0 && !watch('evidenceLink')
+          }
+        })
+      )
+
+      const featuredFile = uploadedFiles.find(file => file.isFeatured)
+      const nonFeaturedFiles = uploadedFiles.filter(file => !file.isFeatured)
+
+      if (featuredFile?.googleId) {
+        setValue(
+          'evidenceLink',
+          `https://drive.google.com/uc?export=view&id=${featuredFile.googleId}`
+        )
+      }
+
+      const currentPortfolio = watch('portfolio') || []
+      const newPortfolioEntries: PortfolioItem[] = nonFeaturedFiles.map(file => ({
+        name: file.name,
+        url: `https://drive.google.com/uc?export=view&id=${file.googleId}`,
+        googleId: file.googleId
+      }))
+
+      setValue('portfolio', [...currentPortfolio, ...newPortfolioEntries])
+
+      setSelectedFiles(prevFiles =>
+        prevFiles.map(file => {
+          const uploadedFile = uploadedFiles.find(f => f.name === file.name)
+          return uploadedFile
+            ? { ...file, googleId: uploadedFile.googleId, uploaded: true }
+            : file
+        })
+      )
+    } catch (error) {
+      console.error('Error uploading files:', error)
+    }
+  }, [selectedFiles, setValue, setSelectedFiles, storage, watch])
+
+  useEffect(() => {
+    // @ts-ignore-next-line
+    setUploadImageFn(() => handleUpload)
+  }, [handleUpload, setUploadImageFn])
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       {/* Recommendation Text */}
@@ -366,6 +443,7 @@ const Step3: React.FC<Step3Props> = ({
           Skip
         </Button>
       </Box>
+      <LoadingOverlay text='Uploading files...' open={loading} />
     </Box>
   )
 }
