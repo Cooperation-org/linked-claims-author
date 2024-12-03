@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import {
   Box,
   Typography,
@@ -8,8 +8,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-    Tabs,
-    Tab
+  Tabs,
+  Tab
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
@@ -76,7 +76,6 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other })
     {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
   </div>
 )
-
 const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
   setValue,
   selectedFiles,
@@ -90,132 +89,36 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
   const [links, setLinks] = useState<LinkItem[]>([
     { id: crypto.randomUUID(), name: '', url: '' }
   ])
-
   useEffect(() => {
     setFiles([...selectedFiles])
   }, [selectedFiles])
-
-  const handleFileUploadClick = () => {
-    if (fileInputRef.current) fileInputRef.current.click()
-  }
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = event.target.files
-    if (newFiles) {
-      const filesArray = Array.from(newFiles)
-
-      // Check if any file is already featured
-      const isAnyFileFeatured = files.some(file => file.isFeatured)
-      let hasSetFeatured = isAnyFileFeatured // Track if we've already set a featured file
-
-      filesArray.forEach((file, index) => {
-        const reader = new FileReader()
-        reader.onload = e => {
-          const newFileItem: FileItem = {
-            id: crypto.randomUUID(), // Generate a unique ID
-            file: file,
-            name: file.name,
-            url: e.target?.result as string,
-            isFeatured: !hasSetFeatured && index === 0, // Set the first file in the batch as featured if none are featured
-            uploaded: false,
-            fileExtension: file.name.split('.').pop() ?? ''
-          }
-
-          // Update the state with the new file, ensuring no duplicates by name
-          setFiles(prevFiles => {
-            const filesWithoutDuplicate = prevFiles.filter(f => f.name !== file.name)
-            return newFileItem.isFeatured
-              ? [newFileItem, ...filesWithoutDuplicate] // Place featured file at the top
-              : [...filesWithoutDuplicate, newFileItem]
-          })
-
-          setSelectedFiles(prevFiles => {
-            const filesWithoutDuplicate = prevFiles.filter(f => f.name !== file.name)
-            return newFileItem.isFeatured
-              ? [newFileItem, ...filesWithoutDuplicate] // Place featured file at the top
-              : [...filesWithoutDuplicate, newFileItem]
-          })
-
-          // Once a file is set as featured, mark `hasSetFeatured` as true to prevent others from being featured
-          if (newFileItem.isFeatured) hasSetFeatured = true
-        }
-        reader.readAsDataURL(file)
-      })
-    }
-  }
-
-  const addFile = (file: File) => {
-    if (files.length >= 10) {
-      alert('You can only upload a maximum of 10 files.')
-      return
-    }
-
-    const reader = new FileReader()
-    reader.onload = e => {
-      const isFirstFileFeatured = files.every(f => !f.isFeatured) // Only set as featured if no file is currently featured
-
-      const newFileItem: FileItem = {
-        id: crypto.randomUUID(), // Generate a unique ID
-        file: file,
-        name: file.name,
-        url: e.target?.result as string,
-        isFeatured: isFirstFileFeatured, // Set as featured only if no file is featured
-        uploaded: false,
-        fileExtension: file.name.split('.').pop() ?? ''
-      }
-
-      setFiles(prevFiles => {
-        const filesWithoutDuplicate = prevFiles.filter(f => f.name !== file.name) // Remove duplicates
-        return newFileItem.isFeatured
-          ? [newFileItem, ...filesWithoutDuplicate] // Place featured item at the top
-          : [...filesWithoutDuplicate, newFileItem]
-      })
-
-      setSelectedFiles(prevFiles => {
-        const filesWithoutDuplicate = prevFiles.filter(f => f.name !== file.name) // Remove duplicates
-        return newFileItem.isFeatured
-          ? [newFileItem, ...filesWithoutDuplicate] // Place featured item at the top
-          : [...filesWithoutDuplicate, newFileItem]
-      })
-    }
-    reader.readAsDataURL(file)
-  }
-
-  const setAsFeatured = (id: string) => {
-    setFiles(prevFiles => {
-      return prevFiles
-        .map(file => ({ ...file, isFeatured: file.id === id }))
-        .sort((a, b) => (a.isFeatured === b.isFeatured ? 0 : a.isFeatured ? -1 : 1)) // Featured file at the top
-    })
-
-    setSelectedFiles(prevFiles => {
-      return prevFiles
-        .map(file => ({ ...file, isFeatured: file.id === id }))
-        .sort((a, b) => (a.isFeatured === b.isFeatured ? 0 : a.isFeatured ? -1 : 1)) // Featured file at the top
-    })
-  }
-
+  const handleTabChange = useCallback((_: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue)
+  }, [])
+  const handleFilesSelected = useCallback(
+    (newFiles: FileItem[]) => {
+      setFiles(newFiles)
+      setSelectedFiles(newFiles)
+    },
+    [setSelectedFiles]
+  )
   const handleUpload = useCallback(async () => {
     try {
       if (selectedFiles.length === 0) return
-
       const filesToUpload = selectedFiles.filter(
         fileItem => !fileItem.uploaded && fileItem.file && fileItem.name
       )
       if (filesToUpload.length === 0) return
-
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (fileItem, index) => {
           const newFile = new File([fileItem.file], fileItem.name, {
             type: fileItem.file.type
           })
-
           const uploadedFile = await uploadImageToGoogleDrive(
             storage as GoogleDriveStorage,
             newFile
           )
           const fileId = (uploadedFile as { id: string }).id
-
           return {
             ...fileItem,
             googleId: fileId,
@@ -224,26 +127,21 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
           }
         })
       )
-
       const featuredFile = uploadedFiles.find(file => file.isFeatured)
       const nonFeaturedFiles = uploadedFiles.filter(file => !file.isFeatured)
-
       if (featuredFile?.googleId) {
         setValue(
           'evidenceLink',
           `https://drive.google.com/uc?export=view&id=${featuredFile.googleId}`
         )
       }
-
       const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
       const newPortfolioEntries: PortfolioItem[] = nonFeaturedFiles.map(file => ({
         name: file.name,
         url: `https://drive.google.com/uc?export=view&id=${file.googleId}`,
         googleId: file.googleId
       }))
-
       setValue('portfolio', [...currentPortfolio, ...newPortfolioEntries])
-
       setSelectedFiles(prevFiles =>
         prevFiles.map(file => {
           const uploadedFile = uploadedFiles.find(f => f.name === file.name)
@@ -256,11 +154,9 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
       console.error('Error uploading files:', error)
     }
   }, [selectedFiles, setValue, setSelectedFiles, storage, watch])
-
   const handleAddLink = useCallback(() => {
     setLinks(prev => [...prev, { id: crypto.randomUUID(), name: '', url: '' }])
   }, [])
-
   const handleRemoveLink = useCallback(
     (index: number) => {
       setLinks(prev => prev.filter((_, i) => i !== index))
@@ -272,13 +168,11 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
     },
     [setValue, watch]
   )
-
   const handleLinkChange = useCallback(
     (index: number, field: 'name' | 'url', value: string) => {
       setLinks(prev =>
         prev.map((link, i) => (i === index ? { ...link, [field]: value } : link))
       )
-
       const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
       const updatedPortfolio = [...currentPortfolio]
       updatedPortfolio[index] = { ...updatedPortfolio[index], [field]: value }
@@ -286,35 +180,29 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
     },
     [setValue, watch]
   )
-
   const handleNameChange = useCallback(
     (id: string, newName: string) => {
       const updateFiles = (prevFiles: FileItem[]) =>
         prevFiles.map(file => (file.id === id ? { ...file, name: newName } : file))
-
       setFiles(updateFiles)
       setSelectedFiles(updateFiles)
     },
     [setSelectedFiles]
   )
-
   const setAsFeatured = useCallback(
     (id: string) => {
       const updateFiles = (prevFiles: FileItem[]) =>
         prevFiles
           .map(file => ({ ...file, isFeatured: file.id === id }))
           .sort((a, b) => (a.isFeatured === b.isFeatured ? 0 : a.isFeatured ? -1 : 1))
-
       setFiles(updateFiles)
       setSelectedFiles(updateFiles)
     },
     [setSelectedFiles]
   )
-
   const handleDelete = useCallback(
     (id: string) => {
       let isFeaturedFileDeleted = false
-
       setFiles(prevFiles => {
         const updatedFiles = prevFiles.filter(
           file => file.googleId !== id && file.id !== id
@@ -325,14 +213,11 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
         }
         return updatedFiles
       })
-
       setSelectedFiles(prevFiles =>
         prevFiles.filter(file => file.googleId !== id && file.id !== id)
       )
-
       const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
       let updatedPortfolio = currentPortfolio.filter(file => file.googleId !== id)
-
       const newFeaturedFile = files[1]
       if (isFeaturedFileDeleted && newFeaturedFile?.googleId) {
         setValue(
@@ -347,12 +232,10 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
     },
     [setValue, watch, files, setSelectedFiles]
   )
-
   useEffect(() => {
     // @ts-ignore-next-line
     setUploadImageFn(() => handleUpload)
   }, [handleUpload, setUploadImageFn])
-
   return (
     <Box
       sx={{
@@ -476,8 +359,7 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
           The strength of your credential is significantly enhanced when you provide
           supporting evidence. Your featured evidence will be prominently displayed.
         </Typography>
-      </StyledTipBox>
-
+      </Box>
       <Box sx={{ width: '100%', borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={tabValue}
