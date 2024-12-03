@@ -186,6 +186,15 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) =>
             <Box sx={commonTypographyStyles}>
               <Typography sx={{ display: 'block' }}>Evidence:</Typography>
               <ul style={evidenceListStyles}>
+                <li
+                  style={{ cursor: 'pointer', width: 'fit-content' }}
+                  key={formData.evidenceLink}
+                  onClick={() =>
+                    handleNavigate(formData.evidenceLink as string, '_blank')
+                  }
+                >
+                  {formData.evidenceLink}
+                </li>
                 {formData.portfolio.map(
                   (porto: { name: any; url: React.Key | null | undefined }) =>
                     porto.name &&
