@@ -1,7 +1,15 @@
 'use client'
 
 import React, { useState, useRef, useCallback, useEffect } from 'react'
-import { Box, Typography, styled } from '@mui/material'
+import {
+  Box,
+  Typography,
+  styled,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
+} from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import FileListDisplay from '../../../components/FileList'
 import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-storage'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
@@ -60,7 +68,7 @@ export default function FileUploadAndList({
             url: e.target?.result as string,
             isFeatured: !hasSetFeatured && index === 0, // Set the first file in the batch as featured if none are featured
             uploaded: false,
-            fileExtension: file.name.split('.').pop() || ''
+            fileExtension: file.name.split('.').pop() ?? ''
           }
 
           // Update the state with the new file, ensuring no duplicates by name
@@ -103,7 +111,7 @@ export default function FileUploadAndList({
         url: e.target?.result as string,
         isFeatured: isFirstFileFeatured, // Set as featured only if no file is featured
         uploaded: false,
-        fileExtension: file.name.split('.').pop() || ''
+        fileExtension: file.name.split('.').pop() ?? ''
       }
 
       setFiles(prevFiles => {
@@ -251,7 +259,11 @@ export default function FileUploadAndList({
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '100%',
+        maxWidth: '800px',
+        margin: '0 auto',
+        gap: '24px'
       }}
     >
       <TasksVector />
@@ -265,24 +277,93 @@ export default function FileUploadAndList({
           marginBottom: '16px'
         }}
       >
-        Do you have any supporting evidence that you’d like to add?
+        Do you have any supporting evidence that you&apos;d like to add?
       </Typography>
 
       <StepTrackShape />
+      <Box
+        sx={{
+          width: '100%',
+          backgroundColor: '#F8FAFC',
+          borderRadius: '12px',
+          p: 3,
+          border: '1px solid #E2E8F0'
+        }}
+      >
+        <Typography
+          sx={{
+            fontFamily: 'Lato',
+            fontSize: '18px',
+            fontWeight: 600,
+            color: '#334155',
+            mb: 2
+          }}
+        >
+          How to Add Your Evidence
+        </Typography>
+
+        <Accordion
+          defaultExpanded
+          sx={{
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            '&:before': { display: 'none' }
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ padding: 0 }}>
+            <Typography sx={{ color: '#2563EB', fontWeight: 500 }}>
+              View detailed instructions
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Box
+              component='ol'
+              sx={{
+                ml: 2,
+                '& li': {
+                  mb: 1.5,
+                  color: '#334155',
+                  fontSize: '14px',
+                  lineHeight: 1.5
+                }
+              }}
+            >
+              <li>
+                <strong>Select Your Files:</strong> Click the upload area below to choose
+                up to 10 files that demonstrate your skill or achievement.
+              </li>
+              <li>
+                <strong>Featured Evidence:</strong> The first file you upload will
+                automatically become your featured evidence. This will be the primary
+                image displayed on your credential.
+              </li>
+              <li>
+                <strong>Manage Featured Evidence:</strong> You can change your featured
+                evidence at any time by clicking the star icon next to any file in your
+                list.
+              </li>
+              <li>
+                <strong>Supported Files:</strong> You can upload images, documents, or
+                other files that showcase your work and achievements.
+              </li>
+              <li>
+                <strong>File Names:</strong> You can edit file names after upload to
+                better describe your evidence.
+              </li>
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+      </Box>
 
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'center',
           alignItems: 'center',
-          marginBottom: '24px',
           width: '100%',
-          maxWidth: '800px',
-          gap: '1rem',
-          my: 2,
           backgroundColor: '#D1E4FF',
-          p: '0.6rem 1rem',
-          borderRadius: '1rem'
+          p: '1rem',
+          borderRadius: '12px',
+          gap: '1rem'
         }}
       >
         <Image src={TipIcon} alt='Tip Icon' width={100} height={100} />
@@ -290,19 +371,40 @@ export default function FileUploadAndList({
           sx={{
             fontFamily: 'Lato',
             fontSize: '16px',
-            fontWeight: 400,
             color: '#334155'
           }}
         >
           The strength of your credential is significantly enhanced when you provide
-          supporting evidence.
+          supporting evidence. Your featured evidence will be prominently displayed.
         </Typography>
       </Box>
 
-      <UploadBox onClick={handleFileUploadClick}>
-        <Typography variant='h6' sx={{ textAlign: 'center', fontWeight: 500 }}>
-          Select multiple files up to 10 files <br />
-          <span style={{ color: '#2563EB' }}>browse</span>
+      <UploadBox
+        onClick={handleFileUploadClick}
+        sx={{
+          position: 'relative',
+          '&::after': {
+            content:
+              '"Featured evidence will be automatically selected from your first upload"',
+            position: 'absolute',
+            bottom: '-28px',
+            fontSize: '14px',
+            color: '#666',
+            width: '100%',
+            textAlign: 'center'
+          }
+        }}
+      >
+        <Typography
+          variant='h6'
+          sx={{
+            textAlign: 'center',
+            fontWeight: 500,
+            color: '#334155'
+          }}
+        >
+          Select multiple files (up to 10) <br />
+          <span style={{ color: '#2563EB', textDecoration: 'underline' }}>browse</span>
         </Typography>
       </UploadBox>
 
@@ -314,13 +416,6 @@ export default function FileUploadAndList({
         accept='*'
         multiple
       />
-
-      <Typography
-        mt={2}
-        sx={{ textAlign: 'center', fontSize: '0.875rem', color: '#666' }}
-      >
-        The first image will always be the featured image.
-      </Typography>
 
       <FileListDisplay
         files={selectedFiles}
@@ -340,11 +435,13 @@ const UploadBox = styled(Box)({
   alignItems: 'center',
   padding: '40px 20px',
   border: '2px dashed #ccc',
-  borderRadius: '8px',
+  borderRadius: '12px',
   cursor: 'pointer',
   width: '100%',
-  transition: 'border 0.3s',
+  backgroundColor: '#F8FAFC',
+  transition: 'all 0.3s ease',
   '&:hover': {
-    borderColor: '#2563EB'
+    borderColor: '#2563EB',
+    backgroundColor: '#F1F5F9'
   }
 })
