@@ -11,15 +11,16 @@ import {
   useTheme,
   Stack,
   CircularProgress,
-  Tooltip
+  Tooltip,
+  Alert
 } from '@mui/material'
 import {
   GlobalSVG,
   HeartSVG,
   BlueBadge,
   NewCopy,
-  NewLinkedin,
-  NewEmail
+  NewLinkedin
+  // NewEmail
 } from '../../../Assets/SVGs'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
 import { FormData } from '../../../credentialForm/form/types/Types'
@@ -27,7 +28,7 @@ import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useStepContext } from '../StepContext'
 
 interface SuccessPageProps {
-  setActiveStep: (step: number) => void
+  setActiveStep: (step: number) => void //NOSONAR
   formData: FormData | null
   reset: () => void
   link: string
@@ -38,6 +39,12 @@ interface SuccessPageProps {
   selectedImage: string
 }
 
+interface SnackbarState {
+  open: boolean
+  message: string
+  severity: 'success' | 'error'
+}
+
 const SuccessPage: React.FC<SuccessPageProps> = ({
   formData,
   reset,
@@ -46,7 +53,11 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   fileId
 }) => {
   const { setActiveStep } = useStepContext()
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: false,
+    message: '',
+    severity: 'success'
+  })
   const [tooltipMessage, setTooltipMessage] = useState('Signing your skill...')
   // refLink commented out. To use link and fileId Directly: Ensures the component uses the latest values from props.
   // const refLink = fileId
@@ -66,6 +77,18 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       setTooltipMessage('Click to view')
     }
   }, [fileId])
+
+  const showNotification = (message: string, severity: 'success' | 'error') => {
+    setSnackbar({
+      open: true,
+      message,
+      severity
+    })
+  }
+
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, open: false }))
+  }
 
   const generateLinkedInUrl = () => {
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
@@ -87,16 +110,60 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     if (option === 'LinkedIn') {
       const linkedInUrl = generateLinkedInUrl()
       window.open(linkedInUrl, '_blank', 'noopener noreferrer')
-    } else if (option === 'Email') {
-      const mailUrl = `mailto:?subject=Check%20out%20my%20new%20certification&body=You%20can%20view%20my%20certification%20here:%20${encodeURIComponent(
-        credentialLink
-      )}`
-      window.location.href = mailUrl
-    } else if (option === 'CopyURL') {
+      return
+    }
+
+    if (option === 'CopyURL') {
       copyFormValuesToClipboard(credentialLink)
-      setSnackbarOpen(true)
-    } else if (option === 'View') {
+      showNotification('Link copied to clipboard!', 'success')
+      return
+    }
+
+    if (option === 'View') {
       window.location.href = credentialLink
+      return
+    }
+
+    if (option === 'Email') {
+      const subject = 'Check out my new certification'
+      const body = `You can view my certification here: ${credentialLink}`
+      let emailClientOpened = false
+
+      const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+      window.location.href = mailtoLink
+      const handleEmailClientOpened = () => {
+        emailClientOpened = true
+        clearTimeout(fallbackTimer)
+        showNotification('Email client opened successfully', 'success')
+        window.removeEventListener('blur', handleEmailClientOpened)
+      }
+
+      window.addEventListener('blur', handleEmailClientOpened)
+      const fallbackTimer = setTimeout(() => {
+        if (!emailClientOpened && !document.hidden) {
+          try {
+            const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(
+              subject
+            )}&body=${encodeURIComponent(body)}`
+            window.open(gmailLink, '_blank')
+            navigator.clipboard
+              .writeText(`${subject}\n\n${body}`)
+              .then(() => {
+                showNotification('Message copied to clipboard for Gmail', 'success')
+                window.removeEventListener('blur', handleEmailClientOpened)
+              })
+              .catch(err => {
+                console.error('Clipboard error:', err)
+                copyFormValuesToClipboard(credentialLink)
+                showNotification('Link copied to clipboard as fallback', 'success')
+              })
+          } catch (error) {
+            console.error('Gmail fallback error:', error)
+            copyFormValuesToClipboard(credentialLink)
+            showNotification('Link copied to clipboard as fallback', 'success')
+          }
+        }
+      }, 2000)
     }
   }
 
@@ -286,14 +353,14 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           <NewLinkedin />
           Share to LinkedIn
         </Button>
-        <Button
+        {/* <Button
           disabled={!fileId}
           onClick={() => handleShareOption('Email')}
           sx={buttonStyles}
         >
           <NewEmail />
           Share via Email
-        </Button>
+        </Button> */}
       </Box>
 
       <Stack
@@ -342,11 +409,15 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       </Stack>
 
       <Snackbar
-        open={snackbarOpen}
+        open={snackbar.open}
         autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        message='Link copied to clipboard!'
-      />
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       <LoadingOverlay
         text='Saving credential. Patience is a virtue...'
         open={fileId ? false : true}

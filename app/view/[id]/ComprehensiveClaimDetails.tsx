@@ -22,7 +22,7 @@ import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
 import { SVGDate, SVGBadge, CheckMarkSVG, LineSVG } from '../../Assets/SVGs'
-import { useSession, signIn } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
@@ -66,6 +66,10 @@ interface ClaimDetail {
   }
 }
 
+interface ComprehensiveClaimDetailsProps {
+  onAchievementLoad?: (achievementName: string) => void
+}
+
 const cleanHTML = (htmlContent: any): string => {
   if (typeof htmlContent !== 'string') {
     return ''
@@ -78,7 +82,9 @@ const cleanHTML = (htmlContent: any): string => {
     .replace(/style="[^"]*"/g, '')
 }
 
-const ComprehensiveClaimDetails = () => {
+const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
+  onAchievementLoad
+}) => {
   const params = useParams()
   const fileID = params?.id as string
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
@@ -125,7 +131,11 @@ const ComprehensiveClaimDetails = () => {
         const content = await getContent(fileID)
 
         if (content) {
-          setClaimDetail(content as unknown as any)
+          setClaimDetail(content as unknown as ClaimDetail)
+          const achievementName = content?.data?.credentialSubject?.achievement?.[0]?.name
+          if (achievementName && onAchievementLoad) {
+            onAchievementLoad(achievementName)
+          }
         }
 
         await fetchFileMetadata(fileID, '')
@@ -155,7 +165,16 @@ const ComprehensiveClaimDetails = () => {
     }
 
     fetchDriveData()
-  }, [accessToken, fileID, getContent, fetchFileMetadata, status, storage])
+  }, [
+    accessToken,
+    fileID,
+    getContent,
+    fetchFileMetadata,
+    status,
+    storage,
+    isView,
+    onAchievementLoad
+  ])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -166,13 +185,7 @@ const ComprehensiveClaimDetails = () => {
 
   if (status === 'loading' || loading) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <CircularProgress />
       </Box>
     )
@@ -229,7 +242,6 @@ if (status === 'unauthenticated') {
 
   const credentialSubject = claimDetail?.data?.credentialSubject
   const achievement = credentialSubject?.achievement && credentialSubject.achievement[0]
-
   const hasValidEvidence =
     credentialSubject?.portfolio && credentialSubject?.portfolio.length > 0
 
@@ -268,11 +280,7 @@ if (status === 'unauthenticated') {
                 />
               ) : (
                 <Box
-                  sx={{
-                    width: '15px',
-                    height: '100px',
-                    backgroundColor: 'transparent'
-                  }}
+                  sx={{ width: '15px', height: '100px', backgroundColor: 'transparent' }}
                 />
               )}
             </Box>
@@ -298,7 +306,7 @@ if (status === 'unauthenticated') {
               <Typography
                 sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700, mt: 2 }}
               >
-                {achievement?.name || 'Unnamed Achievement'}
+                {achievement?.name ?? 'Unnamed Achievement'}
               </Typography>
             </Box>
 
