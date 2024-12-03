@@ -27,6 +27,7 @@ import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { getVCWithRecommendations } from '@cooperation/vc-storage'
+import EvidencePreview from './EvidencePreview'
 
 // Define types
 interface Portfolio {
@@ -260,12 +261,10 @@ if (status === 'unauthenticated') {
               }}
             >
               {credentialSubject?.evidenceLink ? (
-                <Image
-                  src={credentialSubject?.evidenceLink}
-                  alt='Achievement Evidence'
-                  width={500}
-                  height={300}
-                  style={{ borderRadius: '10px', objectFit: 'cover' }}
+                <EvidencePreview
+                  url={credentialSubject.evidenceLink}
+                  width={180}
+                  height={150}
                 />
               ) : (
                 <Box
@@ -338,32 +337,33 @@ if (status === 'unauthenticated') {
                       justifyContent: 'center'
                     }}
                   >
-                    <Image
-                      src={credentialSubject?.evidenceLink}
-                      alt='Achievement Evidence'
+                    <EvidencePreview
+                      url={credentialSubject.evidenceLink}
                       width={180}
                       height={150}
-                      style={{ borderRadius: '10px', objectFit: 'cover' }}
                     />
                   </Box>
                 )}
 
                 {achievement?.description && (
-                  <Typography
-                    sx={{
-                      fontFamily: 'Lato',
-                      fontSize: '17px',
-                      letterSpacing: '0.075px',
-                      lineHeight: '24px',
-                      mt: 2
-                    }}
-                  >
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: cleanHTML(achievement.description)
+                  <Link href={credentialSubject?.evidenceLink ?? ''} target='_blank'>
+                    <Typography
+                      sx={{
+                        cursor: 'pointer',
+                        fontFamily: 'Lato',
+                        fontSize: '17px',
+                        letterSpacing: '0.075px',
+                        lineHeight: '24px',
+                        mt: 2
                       }}
-                    />
-                  </Typography>
+                    >
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: cleanHTML(achievement.description)
+                        }}
+                      />
+                    </Typography>
+                  </Link>
                 )}
 
                 {achievement?.criteria?.narrative && (
