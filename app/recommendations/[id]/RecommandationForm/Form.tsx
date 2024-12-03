@@ -207,7 +207,6 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 watch={watch}
                 setValue={setValue}
                 errors={errors}
-                fields={fields}
                 append={append}
                 remove={remove}
                 handleNext={handleNext}
@@ -230,6 +229,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 handleNext={handleNext}
                 handleBack={handleBack}
                 handleSign={handleFormSubmit}
+                isLoading={isLoading}
               />
             )}
             {activeStep === 6 && (

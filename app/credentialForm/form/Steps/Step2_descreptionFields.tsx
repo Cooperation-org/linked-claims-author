@@ -33,14 +33,10 @@ interface Step2Props {
 
 // Example list of skills for auto-search
 const skillsList = [
-  'Software Developer',
-  'Project Manager',
-  'Data Analyst',
-  'Marketing Coordinator',
-  'Community Gardening Coordinator',
-  'UX/UI Designer',
-  'Product Manager',
-  'Financial Analyst'
+  'Leadership',
+  'Customer Service',
+  'Landscape Design',
+  'Software Development'
 ]
 
 export function Step2({ register, watch, control, errors }: Readonly<Step2Props>) {
