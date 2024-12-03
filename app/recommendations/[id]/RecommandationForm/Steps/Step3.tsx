@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { useTheme } from '@mui/material/styles'
-import { Box, Typography, FormLabel, TextField, Button } from '@mui/material'
+import { Box, Typography, FormLabel, Button } from '@mui/material'
 import {
   UseFormRegister,
   FieldErrors,
@@ -11,23 +11,13 @@ import {
   UseFormSetValue
 } from 'react-hook-form'
 import {
-  formLabelStyles,
-  TextFieldStyles,
-  portfolioTypographyStyles,
-  addAnotherBoxStyles,
   skipButtonBoxStyles,
-  formBoxStyles,
-  formBoxStylesUrl,
-  addAnotherButtonStyles,
-  addAnotherIconStyles,
   skipButtonStyles
 } from '../../../../components/Styles/appStyles'
 import TextEditor from '../TextEditor/Texteditor'
 import { FormData } from '../../../../credentialForm/form/types/Types'
-import ClearIcon from '@mui/icons-material/Clear'
-import AddIcon from '@mui/icons-material/Add'
-
-import { handleUrlValidation } from '../../../../utils/urlValidation'
+import LinkAdder from '../../../../components/LinkAdder'
+import FileUploader from '../../../../components/FileUploader'
 
 interface Step3Props {
   errors: FieldErrors<FormData>
@@ -55,19 +45,33 @@ const Step3: React.FC<Step3Props> = ({
   fullName
 }) => {
   const theme = useTheme()
-  const [urlError, setUrlError] = useState<string[]>([])
   const displayName = fullName || ''
-
-  const handleUrlChange = async (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    index: number
-  ) => {
-    handleUrlValidation(event, setUrlError, index, urlError)
-  }
 
   const handleEditorChange = (field: string) => (value: string) => {
     setValue(field, value)
   }
+
+  const handleNameChange = (index: number, value: string) => {
+    setValue(`portfolio.${index}.name`, value)
+  }
+
+  const handleUrlChange = (index: number, value: string) => {
+    setValue(`portfolio.${index}.url`, value)
+  }
+
+  const handleAddLink = () => {
+    append({ name: '', url: '' })
+  }
+
+  const portfolioErrors = fields.reduce(
+    (acc, _, index) => {
+      if (errors?.portfolio?.[index]) {
+        acc[index] = errors.portfolio[index]
+      }
+      return acc
+    },
+    {} as Record<number, any>
+  )
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
@@ -84,6 +88,7 @@ const Step3: React.FC<Step3Props> = ({
           <Typography color='error'>{errors.recommendationText.message}</Typography>
         )}
       </Box>
+
       <Box>
         <FormLabel sx={{ fontWeight: 'bold' }} id='qualifications-label'>
           Your Qualifications
@@ -101,77 +106,26 @@ const Step3: React.FC<Step3Props> = ({
           <Typography color='error'>{errors.qualifications.message}</Typography>
         )}
       </Box>
+
       <Box>
         <Typography sx={{ mb: '10px' }}>
           Adding supporting evidence of your qualifications.
         </Typography>
-        {fields.map((field, index) => (
-          <React.Fragment key={field.id}>
-            <Box sx={formBoxStyles}>
-              <Typography sx={portfolioTypographyStyles}>
-                Evidence #{index + 1}
-                {index > 0 && (
-                  <ClearIcon
-                    type='button'
-                    onClick={() => remove(index)}
-                    sx={{ mt: '5px', cursor: 'pointer' }}
-                  />
-                )}
-              </Typography>
-              <FormLabel sx={formLabelStyles} id={`name-label-${index}`}>
-                Name
-              </FormLabel>
-              <TextField
-                {...register(`portfolio.${index}.name`)}
-                defaultValue={field.name}
-                placeholder='(e.g., LinkedIn profile, github repo, etc.)'
-                variant='outlined'
-                sx={TextFieldStyles}
-                aria-labelledby={`name-label-${index}`}
-                error={!!errors?.portfolio?.[index]?.name}
-                helperText={errors?.portfolio?.[index]?.name?.message}
-              />
-            </Box>
-            <Box sx={formBoxStylesUrl}>
-              <FormLabel sx={formLabelStyles} id={`url-label-${index}`}>
-                URL
-              </FormLabel>
-              <TextField
-                {...register(`portfolio.${index}.url`)}
-                defaultValue={field.url}
-                placeholder='https://'
-                variant='outlined'
-                sx={TextFieldStyles}
-                aria-labelledby={`url-label-${index}`}
-                error={!!errors?.portfolio?.[index]?.url}
-                onChange={event => handleUrlChange(event, index)}
-                helperText={urlError[index]}
-              />
-            </Box>
-            <Box
-              sx={{ bgcolor: theme.palette.t3LightGray }}
-              width={'100%'}
-              height={'1px'}
-            ></Box>
-          </React.Fragment>
-        ))}
-        {fields.length < 5 && (
-          <Box sx={addAnotherBoxStyles}>
-            <Button
-              type='button'
-              onClick={() => append({ name: '', url: '' })}
-              sx={addAnotherButtonStyles(theme)}
-              endIcon={
-                <Box sx={addAnotherIconStyles}>
-                  <AddIcon />
-                </Box>
-              }
-            >
-              Add another
-            </Button>
-          </Box>
-        )}
+        <LinkAdder
+          fields={fields}
+          onAdd={handleAddLink}
+          onRemove={remove}
+          onNameChange={handleNameChange}
+          onUrlChange={handleUrlChange}
+          errors={portfolioErrors}
+          maxLinks={5}
+          nameLabel='Name'
+          urlLabel='URL'
+          namePlaceholder='(e.g., LinkedIn profile, github repo, etc.)'
+          urlPlaceholder='https://'
+        />
       </Box>
+
       <Box sx={skipButtonBoxStyles}>
         <Button type='button' onClick={handleNext} sx={skipButtonStyles(theme)}>
           Skip
