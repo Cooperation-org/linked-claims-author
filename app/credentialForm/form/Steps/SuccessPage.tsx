@@ -21,7 +21,7 @@ import {
   NewLinkedin,
   NewEmail
 } from '../../../Assets/SVGs'
-
+import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
 import { FormData } from '../../../credentialForm/form/types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useStepContext } from '../StepContext'
@@ -41,12 +41,9 @@ interface SuccessPageProps {
 const SuccessPage: React.FC<SuccessPageProps> = ({
   formData,
   reset,
-  link,
   setLink,
   setFileId,
-  fileId,
-  storageOption,
-  selectedImage
+  fileId
 }) => {
   const { setActiveStep } = useStepContext()
   const [snackbarOpen, setSnackbarOpen] = useState(false)
@@ -349,6 +346,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         autoHideDuration={3000}
         onClose={() => setSnackbarOpen(false)}
         message='Link copied to clipboard!'
+      />
+      <LoadingOverlay
+        text='Saving credential. Patience is a virtue...'
+        open={fileId ? false : true}
       />
     </Box>
   )
