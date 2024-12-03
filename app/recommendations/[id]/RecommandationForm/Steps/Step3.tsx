@@ -66,7 +66,6 @@ interface Step3Props {
   readonly handleNext: () => void
   readonly handleBack: () => void
   readonly fullName: string
-  readonly fields: any
 }
 
 const StyledFormLabel = styled(FormLabel)({

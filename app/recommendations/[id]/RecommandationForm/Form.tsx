@@ -207,7 +207,6 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 watch={watch}
                 setValue={setValue}
                 errors={errors}
-                // fields={fields}
                 append={append}
                 remove={remove}
                 handleNext={handleNext}
