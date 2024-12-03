@@ -1,8 +1,8 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { useTheme } from '@mui/material/styles'
-import { Box, Typography, FormLabel, Button } from '@mui/material'
+import { Box, Typography, FormLabel, Button, Tabs, Tab, styled } from '@mui/material'
 import {
   UseFormRegister,
   FieldErrors,
@@ -15,25 +15,69 @@ import {
   skipButtonStyles
 } from '../../../../components/Styles/appStyles'
 import TextEditor from '../TextEditor/Texteditor'
-import { FormData } from '../../../../credentialForm/form/types/Types'
+import { FormData, FileItem } from '../../../../credentialForm/form/types/Types'
 import LinkAdder from '../../../../components/LinkAdder'
 import FileUploader from '../../../../components/FileUploader'
+import FileListDisplay from '../../../../components/FileList'
 
-interface Step3Props {
-  errors: FieldErrors<FormData>
-  fields: { id: string; name: string; url: string }[]
-  register: UseFormRegister<FormData>
-  append: UseFieldArrayAppend<FormData, 'portfolio'>
-  remove: (index: number) => void
-  watch: UseFormWatch<FormData>
-  setValue: UseFormSetValue<FormData>
-  handleNext: () => void
-  handleBack: () => void
-  fullName: string
+interface Portfolio {
+  name: string
+  url: string
+  googleId?: string
 }
 
+interface LocalPortfolioItem extends Portfolio {
+  id: string
+}
+
+interface TabPanelProps {
+  children?: React.ReactNode
+  index: number
+  value: number
+}
+
+interface FormFieldError {
+  type: string
+  message?: string
+}
+
+interface FormErrors {
+  name?: FormFieldError
+  url?: FormFieldError
+  googleId?: FormFieldError
+}
+
+interface Step3Props {
+  readonly errors: FieldErrors<FormData>
+  readonly register: UseFormRegister<FormData>
+  readonly append: UseFieldArrayAppend<FormData, 'portfolio'>
+  readonly remove: (index: number) => void
+  readonly watch: UseFormWatch<FormData>
+  readonly setValue: UseFormSetValue<FormData>
+  readonly handleNext: () => void
+  readonly handleBack: () => void
+  readonly fullName: string
+}
+
+const StyledFormLabel = styled(FormLabel)({
+  fontWeight: 'bold',
+  marginBottom: '8px',
+  display: 'block'
+})
+
+const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other }) => (
+  <div
+    role='tabpanel'
+    hidden={value !== index}
+    id={`evidence-tabpanel-${index}`}
+    aria-labelledby={`evidence-tab-${index}`}
+    {...other}
+  >
+    {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
+  </div>
+)
+
 const Step3: React.FC<Step3Props> = ({
-  fields,
   register,
   append,
   errors,
@@ -46,39 +90,193 @@ const Step3: React.FC<Step3Props> = ({
 }) => {
   const theme = useTheme()
   const displayName = fullName || ''
+  const [tabValue, setTabValue] = useState(0)
+  const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([])
+  const [files, setFiles] = useState<FileItem[]>([])
+  const portfolioFromForm = watch('portfolio') as Portfolio[] | undefined
+  const portfolioWatch = useMemo(() => portfolioFromForm || [], [portfolioFromForm])
 
-  const handleEditorChange = (field: string) => (value: string) => {
-    setValue(field, value)
-  }
+  const [localPortfolio, setLocalPortfolio] = useState<LocalPortfolioItem[]>([
+    { id: crypto.randomUUID(), name: '', url: '', googleId: undefined }
+  ])
 
-  const handleNameChange = (index: number, value: string) => {
-    setValue(`portfolio.${index}.name`, value)
-  }
-
-  const handleUrlChange = (index: number, value: string) => {
-    setValue(`portfolio.${index}.url`, value)
-  }
-
-  const handleAddLink = () => {
-    append({ name: '', url: '' })
-  }
-
-  const portfolioErrors = fields.reduce(
-    (acc, _, index) => {
-      if (errors?.portfolio?.[index]) {
-        acc[index] = errors.portfolio[index]
-      }
-      return acc
+  const handleEditorChange = useCallback(
+    (field: string) => (value: string) => {
+      setValue(field, value)
     },
-    {} as Record<number, any>
+    [setValue]
   )
+
+  const handleTabChange = useCallback((_: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue)
+  }, [])
+  const handleFilesSelected = useCallback(
+    (newFiles: FileItem[]) => {
+      setFiles(newFiles)
+      setSelectedFiles(newFiles)
+
+      const portfolioEntries: Portfolio[] = newFiles.map(file => ({
+        name: file.name,
+        url: file.url || '',
+        googleId: file.googleId
+      }))
+
+      setValue('portfolio', portfolioEntries)
+    },
+    [setValue]
+  )
+
+  const handleNameChange = useCallback(
+    (id: string, newName: string) => {
+      const updateFiles = (prevFiles: FileItem[]): FileItem[] =>
+        prevFiles.map(file => (file.id === id ? { ...file, name: newName } : file))
+
+      setFiles(updateFiles)
+      setSelectedFiles(updateFiles)
+    },
+    [setSelectedFiles]
+  )
+
+  const setAsFeatured = useCallback(
+    (id: string) => {
+      const updateFiles = (prevFiles: FileItem[]): FileItem[] => {
+        const updatedFiles = prevFiles.map(file => ({
+          ...file,
+          isFeatured: file.id === id
+        }))
+        return updatedFiles.sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured))
+      }
+
+      setFiles(updateFiles)
+      setSelectedFiles(updateFiles)
+    },
+    [setSelectedFiles]
+  )
+
+  const handleDelete = useCallback(
+    (id: string) => {
+      let isFeaturedFileDeleted = false
+
+      setFiles(prevFiles => {
+        const updatedFiles = prevFiles.filter(file => {
+          const shouldKeep = file.googleId !== id && file.id !== id
+          if (!shouldKeep && file === prevFiles[0]) {
+            isFeaturedFileDeleted = true
+          }
+          return shouldKeep
+        })
+
+        if (isFeaturedFileDeleted && updatedFiles.length > 0) {
+          updatedFiles[0].isFeatured = true
+        }
+        return updatedFiles
+      })
+
+      setSelectedFiles(prevFiles =>
+        prevFiles.filter(file => file.googleId !== id && file.id !== id)
+      )
+
+      const currentPortfolio = portfolioWatch
+      let updatedPortfolio = currentPortfolio.filter(
+        file => file.googleId && file.googleId !== id
+      )
+
+      const newFeaturedFile = files[1]
+      if (isFeaturedFileDeleted && newFeaturedFile?.googleId) {
+        setValue(
+          'evidenceLink',
+          `https://drive.google.com/uc?export=view&id=${newFeaturedFile.googleId}`
+        )
+        updatedPortfolio = updatedPortfolio.filter(
+          file => file.googleId !== newFeaturedFile.googleId
+        )
+      }
+      setValue('portfolio', updatedPortfolio)
+    },
+    [setValue, portfolioWatch, files]
+  )
+  const handleAddLink = useCallback(() => {
+    const newId = crypto.randomUUID()
+    const newLink: LocalPortfolioItem = {
+      id: newId,
+      name: '',
+      url: '',
+      googleId: undefined
+    }
+    setLocalPortfolio(prev => [...prev, newLink])
+    append({ name: '', url: '' })
+  }, [append])
+
+  const handleLinkNameChange = useCallback(
+    (index: number, value: string) => {
+      setLocalPortfolio(prev => {
+        const updated = [...prev]
+        if (updated[index]) {
+          updated[index] = { ...updated[index], name: value }
+        }
+        return updated
+      })
+
+      const updatedPortfolio = [...portfolioWatch]
+      if (updatedPortfolio[index]) {
+        updatedPortfolio[index] = { ...updatedPortfolio[index], name: value }
+        setValue('portfolio', updatedPortfolio)
+      }
+    },
+    [setValue, portfolioWatch]
+  )
+
+  const handleLinkUrlChange = useCallback(
+    (index: number, value: string) => {
+      setLocalPortfolio(prev => {
+        const updated = [...prev]
+        if (updated[index]) {
+          updated[index] = { ...updated[index], url: value }
+        }
+        return updated
+      })
+
+      const updatedPortfolio = [...portfolioWatch]
+      if (updatedPortfolio[index]) {
+        updatedPortfolio[index] = { ...updatedPortfolio[index], url: value }
+        setValue('portfolio', updatedPortfolio)
+      }
+    },
+    [setValue, portfolioWatch]
+  )
+  const isFormError = (value: unknown): value is FormErrors => {
+    if (typeof value !== 'object' || value === null) return false
+    const error = value as Record<string, unknown>
+    return (
+      ('name' in error && (error.name === undefined || typeof error.name === 'object')) ||
+      ('url' in error && (error.url === undefined || typeof error.url === 'object'))
+    )
+  }
+  const linkErrors = useMemo(() => {
+    if (!errors.portfolio) return undefined
+
+    return Object.entries(errors.portfolio).reduce(
+      (acc, [key, value]) => {
+        const index = parseInt(key)
+        if (!isNaN(index) && isFormError(value)) {
+          acc[index] = {
+            name: value.name?.message ? { message: value.name.message } : undefined,
+            url: value.url?.message ? { message: value.url.message } : undefined
+          }
+        }
+        return acc
+      },
+      {} as Record<number, { name?: { message?: string }; url?: { message?: string } }>
+    )
+  }, [errors.portfolio])
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+      {/* Recommendation Text */}
       <Box>
-        <FormLabel sx={{ fontWeight: 'bold' }} id='recommendation-text-label'>
+        <StyledFormLabel id='recommendation-text-label'>
           Recommendation Text <span style={{ color: 'red' }}>*</span>
-        </FormLabel>
+        </StyledFormLabel>
         <TextEditor
           value={watch('recommendationText') || ''}
           onChange={handleEditorChange('recommendationText')}
@@ -89,10 +287,9 @@ const Step3: React.FC<Step3Props> = ({
         )}
       </Box>
 
+      {/* Qualifications */}
       <Box>
-        <FormLabel sx={{ fontWeight: 'bold' }} id='qualifications-label'>
-          Your Qualifications
-        </FormLabel>
+        <StyledFormLabel id='qualifications-label'>Your Qualifications</StyledFormLabel>
         <Typography sx={{ marginBottom: '10px' }}>
           Please share how you are qualified to provide this recommendation. Sharing your
           qualifications will further increase the value of this recommendation.
@@ -107,23 +304,61 @@ const Step3: React.FC<Step3Props> = ({
         )}
       </Box>
 
+      {/* Supporting Evidence */}
       <Box>
-        <Typography sx={{ mb: '10px' }}>
+        <Typography sx={{ mb: '10px', fontWeight: 'medium' }}>
           Adding supporting evidence of your qualifications.
         </Typography>
-        <LinkAdder
-          fields={fields}
-          onAdd={handleAddLink}
-          onRemove={remove}
-          onNameChange={handleNameChange}
-          onUrlChange={handleUrlChange}
-          errors={portfolioErrors}
-          maxLinks={5}
-          nameLabel='Name'
-          urlLabel='URL'
-          namePlaceholder='(e.g., LinkedIn profile, github repo, etc.)'
-          urlPlaceholder='https://'
-        />
+
+        <Box sx={{ width: '100%', borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            aria-label='evidence upload method tabs'
+            centered
+          >
+            <Tab label='Upload Files' id='evidence-tab-0' />
+            <Tab label='Add Links' id='evidence-tab-1' />
+          </Tabs>
+        </Box>
+
+        <TabPanel value={tabValue} index={0}>
+          <FileUploader
+            onFilesSelected={handleFilesSelected}
+            maxFiles={10}
+            currentFiles={files}
+          />
+
+          <Typography
+            mt={2}
+            sx={{ textAlign: 'center', fontSize: '0.875rem', color: '#666' }}
+          >
+            The first file will be set as the featured evidence.
+          </Typography>
+
+          <FileListDisplay
+            files={selectedFiles}
+            onDelete={handleDelete}
+            onNameChange={handleNameChange}
+            onSetAsFeatured={setAsFeatured}
+          />
+        </TabPanel>
+
+        <TabPanel value={tabValue} index={1}>
+          <LinkAdder
+            fields={localPortfolio}
+            onAdd={handleAddLink}
+            onRemove={remove}
+            onNameChange={handleLinkNameChange}
+            onUrlChange={handleLinkUrlChange}
+            errors={linkErrors}
+            maxLinks={5}
+            nameLabel='Name'
+            urlLabel='URL'
+            namePlaceholder='(e.g., LinkedIn profile, GitHub repo, etc.)'
+            urlPlaceholder='https://'
+          />
+        </TabPanel>
       </Box>
 
       <Box sx={skipButtonBoxStyles}>
