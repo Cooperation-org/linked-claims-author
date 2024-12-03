@@ -12,7 +12,7 @@ interface TextEditorProps {
   placeholder?: string
 }
 // ignore this warning "This assertion is unnecessary since it does not change the type of the expression."
-const Clipboard = Quill.import('modules/clipboard') as any
+const Clipboard = Quill.import('modules/clipboard') as any //NOSONAR
 
 class PlainClipboard extends Clipboard {
   quill: any
