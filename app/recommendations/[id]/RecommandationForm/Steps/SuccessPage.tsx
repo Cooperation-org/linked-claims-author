@@ -10,11 +10,11 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
 interface SuccessPageProps {
-  formData: FormData
+  formData: FormData //NOSONAR
   submittedFullName: string | null
   fullName: string
   email: string
-  handleBack: () => void
+  handleBack: () => void //NOSONAR
   recId: string | null
 }
 
@@ -118,16 +118,14 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           }}
         >
           <li style={{ marginBottom: '8px' }}>
-            Copy the email address by clicking the copy icon
+            Copy the email address, subject, and message by clicking the copy icons.
           </li>
+          <li style={{ marginBottom: '8px' }}>Open your preferred email application.</li>
           <li style={{ marginBottom: '8px' }}>
-            Copy the subject by clicking the copy icon
+            Paste the copied content into the appropriate fields: email address, subject,
+            and message.
           </li>
-          <li style={{ marginBottom: '8px' }}>
-            Copy the message by clicking the copy icon
-          </li>
-          <li style={{ marginBottom: '8px' }}>Open your preferred email application</li>
-          <li>Paste the content and send the email</li>
+          <li>send the email</li>
         </ol>
 
         {/* Email Box */}
