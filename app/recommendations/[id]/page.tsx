@@ -20,12 +20,8 @@ const CredentialData = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { getContent, fetchFileMetadata, ownerEmail } = useGoogleDrive()
   const params = useParams()
-  const id =
-    typeof params?.id === 'string'
-      ? params.id
-      : Array.isArray(params?.id)
-        ? params.id[0]
-        : undefined
+  const idArray = Array.isArray(params?.id) ? params.id[0] : undefined
+  const id = typeof params?.id === 'string' ? params.id : idArray
 
   useEffect(() => {
     const fetchData = async () => {
