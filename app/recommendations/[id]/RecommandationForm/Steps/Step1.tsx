@@ -91,7 +91,7 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
           alignItems: 'center'
         }}
       >
-        Connect to Google Drive
+        Login with Google Drive
         <Tooltip title={tooltipTitle}>
           <Box sx={{ ml: 2, mt: '2px' }}>
             <SVGSinfo />
