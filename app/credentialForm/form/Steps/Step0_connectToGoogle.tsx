@@ -64,7 +64,7 @@ export function Step0() {
           fontSize: 24
         }}
       >
-        First, connect to Google Drive so you can save your data.
+        First, login with Google Drive so you can save your data.
       </Typography>
 
       {/* Connect to Google Drive Button */}
@@ -82,7 +82,7 @@ export function Step0() {
           backgroundColor: '#003FE0'
         }}
       >
-        Connect to Google Drive{' '}
+        Login with Google Drive{' '}
         <Tooltip title='You must have a Google Drive account and be able to login. This is where your credentials will be saved.'>
           <Box sx={{ ml: 2, mt: '2px' }}>
             <SVGSinfo />
