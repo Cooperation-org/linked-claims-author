@@ -79,39 +79,6 @@ const useGoogleDrive = () => {
       return null
     }
   }
-  const getComments = useCallback(
-    async (fileID: string): Promise<ClaimDetail[]> => {
-      if (!memoizedStorage) {
-        console.warn('Storage instance is not available for fetching comments.')
-        return []
-      }
-      try {
-        const fileComments = await memoizedStorage.getFileComments(fileID)
-
-        const comments: ClaimDetail[] = []
-
-        if (fileComments) {
-          await Promise.all(
-            fileComments.map(async (fileComment: any) => {
-              const ID = extractGoogleDriveId(fileComment.content)
-
-              if (ID) {
-                const comment = await memoizedStorage.retrieve(ID)
-
-                if (comment) comments.push(comment as unknown as ClaimDetail)
-              }
-            })
-          )
-        }
-
-        return comments
-      } catch (error) {
-        console.error('Error fetching comments:', error)
-        return []
-      }
-    },
-    [memoizedStorage]
-  )
 
   const fetchFileMetadata = useCallback(
     async (fileID: string, resourceKey: string = '') => {
@@ -153,7 +120,6 @@ const useGoogleDrive = () => {
     fetchFileMetadata,
     fileMetadata,
     ownerEmail,
-    getComments,
     storage
   }
 }
