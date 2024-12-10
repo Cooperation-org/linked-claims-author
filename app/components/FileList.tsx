@@ -1,9 +1,11 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box, Typography, TextField, styled } from '@mui/material'
 import Image from 'next/image'
 import { FileItem } from '../credentialForm/form/types/Types'
+import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
+GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
 interface FileListProps {
   files: FileItem[]
@@ -59,25 +61,56 @@ const SetAsFeaturedLabel = styled(Box)(({ theme }) => ({
 }))
 
 // Helper function to check if a file is an image
-const isImage = (fileName: string) => {
-  return /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName)
+const isImage = (fileName: string) => /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName)
+
+const isPDF = (fileName: string) => fileName.toLowerCase().endsWith('.pdf')
+
+const renderPDFThumbnail = async (file: FileItem) => {
+  try {
+    const loadingTask = getDocument(file.url)
+    const pdf = await loadingTask.promise
+    const page = await pdf.getPage(1)
+    const viewport = page.getViewport({ scale: 0.1 })
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    if (context) {
+      canvas.height = viewport.height
+      canvas.width = viewport.width
+      await page.render({ canvasContext: context, viewport }).promise
+      return canvas.toDataURL()
+    }
+  } catch (error) {
+    console.error('Error rendering PDF thumbnail:', error)
+  }
+  return '/fallback-pdf-thumbnail.png'
 }
 
-export default function FileListDisplay({
+const FileListDisplay = ({
   files,
   onDelete,
   onNameChange,
   onSetAsFeatured
-}: FileListProps) {
+}: FileListProps) => {
+  const [pdfThumbnails, setPdfThumbnails] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    files.forEach(async file => {
+      if (isPDF(file.name) && !pdfThumbnails[file.id]) {
+        const thumbnail = await renderPDFThumbnail(file)
+        setPdfThumbnails(prev => ({ ...prev, [file.id]: thumbnail }))
+      }
+    })
+  }, [files, pdfThumbnails])
+
   return (
     <FileListContainer>
       {files.map(file => (
-        <FileItemBox key={file.googleId || file.id} isFeatured={file.isFeatured}>
+        <FileItemBox key={file.googleId ?? file.id} isFeatured={file.isFeatured}>
           {file.isFeatured ? (
             <FeaturedLabel>Featured</FeaturedLabel>
           ) : (
             <SetAsFeaturedLabel onClick={() => onSetAsFeatured(file.id)}>
-              Featured
+              Set as Featured
             </SetAsFeaturedLabel>
           )}
 
@@ -90,39 +123,14 @@ export default function FileListDisplay({
                 height={80}
                 style={{ borderRadius: '8px' }}
               />
-            ) : file.name.toLowerCase().endsWith('.pdf') ? (
-              <Box
-                sx={{
-                  width: 80,
-                  height: 80,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#f3f3f3',
-                  borderRadius: '8px',
-                  fontSize: '0.9rem',
-                  color: '#666'
-                }}
-              >
-                PDF
-              </Box>
-            ) : file.name.toLowerCase().endsWith('.doc') ||
-              file.name.toLowerCase().endsWith('.docx') ? (
-              <Box
-                sx={{
-                  width: 80,
-                  height: 80,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#f3f3f3',
-                  borderRadius: '8px',
-                  fontSize: '0.9rem',
-                  color: '#666'
-                }}
-              >
-                DOC
-              </Box>
+            ) : isPDF(file.name) ? (
+              <Image
+                src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
+                alt={file.name.split('.')[0]}
+                width={80}
+                height={80}
+                style={{ borderRadius: '8px' }}
+              />
             ) : (
               <Box
                 sx={{
@@ -163,7 +171,7 @@ export default function FileListDisplay({
                 fontSize: '0.8rem',
                 ml: 2
               }}
-              onClick={() => onDelete(file.googleId || file.id)}
+              onClick={() => onDelete(file.googleId ?? file.id)}
             >
               Delete
             </Typography>
@@ -173,3 +181,5 @@ export default function FileListDisplay({
     </FileListContainer>
   )
 }
+
+export default FileListDisplay

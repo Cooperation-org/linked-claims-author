@@ -22,10 +22,12 @@ import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
 import { SVGDate, SVGBadge, CheckMarkSVG, LineSVG } from '../../Assets/SVGs'
-import { useSession, signIn } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
+import { getVCWithRecommendations } from '@cooperation/vc-storage'
+import EvidencePreview from './EvidencePreview'
 
 // Define types
 interface Portfolio {
@@ -64,6 +66,10 @@ interface ClaimDetail {
   }
 }
 
+interface ComprehensiveClaimDetailsProps {
+  onAchievementLoad?: (achievementName: string) => void
+}
+
 const cleanHTML = (htmlContent: any): string => {
   if (typeof htmlContent !== 'string') {
     return ''
@@ -76,7 +82,9 @@ const cleanHTML = (htmlContent: any): string => {
     .replace(/style="[^"]*"/g, '')
 }
 
-const ComprehensiveClaimDetails = () => {
+const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
+  onAchievementLoad
+}) => {
   const params = useParams()
   const fileID = params?.id as string
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
@@ -91,7 +99,7 @@ const ComprehensiveClaimDetails = () => {
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
   const isView = pathname?.includes('/view')
 
-  const { getContent, fetchFileMetadata, getComments } = useGoogleDrive()
+  const { getContent, fetchFileMetadata, storage } = useGoogleDrive()
 
   // State to manage expanded comments
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
@@ -123,14 +131,30 @@ const ComprehensiveClaimDetails = () => {
         const content = await getContent(fileID)
 
         if (content) {
-          setClaimDetail(content as unknown as any)
+          setClaimDetail(content as unknown as ClaimDetail)
+          const achievementName = content?.data?.credentialSubject?.achievement?.[0]?.name
+          if (achievementName && onAchievementLoad) {
+            onAchievementLoad(achievementName)
+          }
         }
 
         await fetchFileMetadata(fileID, '')
 
-        const commentsData = await getComments(fileID)
-        if (commentsData) {
-          setComments(commentsData as any)
+        //todo get recommendations from RELATIONS file recommendation array
+        if (!storage || !fileID) {
+          console.warn('Storage instance is not available.')
+          return
+        }
+        const type = window.location.pathname.includes('view')
+        if (type) {
+          const { recommendations } = await getVCWithRecommendations({
+            vcId: fileID,
+            storage
+          })
+          console.log('🚀 ~ fetchDriveData ~ recommendations:', recommendations)
+          if (recommendations) {
+            setComments(recommendations as any)
+          }
         }
       } catch (error) {
         console.error('Error fetching claim details:', error)
@@ -141,7 +165,16 @@ const ComprehensiveClaimDetails = () => {
     }
 
     fetchDriveData()
-  }, [accessToken, fileID, getContent, fetchFileMetadata, getComments, status])
+  }, [
+    accessToken,
+    fileID,
+    getContent,
+    fetchFileMetadata,
+    status,
+    storage,
+    isView,
+    onAchievementLoad
+  ])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -152,13 +185,7 @@ const ComprehensiveClaimDetails = () => {
 
   if (status === 'loading' || loading) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <CircularProgress />
       </Box>
     )
@@ -215,7 +242,6 @@ if (status === 'unauthenticated') {
 
   const credentialSubject = claimDetail?.data?.credentialSubject
   const achievement = credentialSubject?.achievement && credentialSubject.achievement[0]
-
   const hasValidEvidence =
     credentialSubject?.portfolio && credentialSubject?.portfolio.length > 0
 
@@ -247,20 +273,14 @@ if (status === 'unauthenticated') {
               }}
             >
               {credentialSubject?.evidenceLink ? (
-                <Image
-                  src={credentialSubject?.evidenceLink}
-                  alt='Achievement Evidence'
-                  width={500}
-                  height={300}
-                  style={{ borderRadius: '10px', objectFit: 'cover' }}
+                <EvidencePreview
+                  url={credentialSubject.evidenceLink}
+                  width={180}
+                  height={150}
                 />
               ) : (
                 <Box
-                  sx={{
-                    width: '15px',
-                    height: '100px',
-                    backgroundColor: 'transparent'
-                  }}
+                  sx={{ width: '15px', height: '100px', backgroundColor: 'transparent' }}
                 />
               )}
             </Box>
@@ -286,7 +306,7 @@ if (status === 'unauthenticated') {
               <Typography
                 sx={{ color: 't3BodyText', fontSize: '24px', fontWeight: 700, mt: 2 }}
               >
-                {achievement?.name || 'Unnamed Achievement'}
+                {achievement?.name ?? 'Unnamed Achievement'}
               </Typography>
             </Box>
 
@@ -325,32 +345,33 @@ if (status === 'unauthenticated') {
                       justifyContent: 'center'
                     }}
                   >
-                    <Image
-                      src={credentialSubject?.evidenceLink}
-                      alt='Achievement Evidence'
+                    <EvidencePreview
+                      url={credentialSubject.evidenceLink}
                       width={180}
                       height={150}
-                      style={{ borderRadius: '10px', objectFit: 'cover' }}
                     />
                   </Box>
                 )}
 
                 {achievement?.description && (
-                  <Typography
-                    sx={{
-                      fontFamily: 'Lato',
-                      fontSize: '17px',
-                      letterSpacing: '0.075px',
-                      lineHeight: '24px',
-                      mt: 2
-                    }}
-                  >
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: cleanHTML(achievement.description)
+                  <Link href={credentialSubject?.evidenceLink ?? ''} target='_blank'>
+                    <Typography
+                      sx={{
+                        cursor: 'pointer',
+                        fontFamily: 'Lato',
+                        fontSize: '17px',
+                        letterSpacing: '0.075px',
+                        lineHeight: '24px',
+                        mt: 2
                       }}
-                    />
-                  </Typography>
+                    >
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: cleanHTML(achievement.description)
+                        }}
+                      />
+                    </Typography>
+                  </Link>
                 )}
 
                 {achievement?.criteria?.narrative && (

@@ -3,6 +3,7 @@ import './PrivacyPolicy.css'
 import { Logo } from '../Assets/SVGs'
 
 const PrivacyPolicy = () => {
+
   const sections = [
     {
       title: 'Google API Access & Permissions',
