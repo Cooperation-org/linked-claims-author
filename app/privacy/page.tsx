@@ -1,80 +1,127 @@
-'use client'
-import { Box, Typography, Link } from '@mui/material'
 import React from 'react'
+import './PrivacyPolicy.css'
+import { Logo } from '../Assets/SVGs'
 
 const PrivacyPolicy = () => {
+  const sections = [
+    {
+      title: 'Google API Access & Permissions',
+      items: [
+        'Email Access (userinfo.email): Used to allow the user to send a copy to themselves',
+        'Profile Access (userinfo.profile): Used to prefill user data in the app',
+        'Drive File Access (drive.file): Used to save and manage user-authored credentials',
+        'Read-only Drive Access (drive.readonly): Enables viewing and recommendations for documents created by the user'
+      ]
+    },
+    {
+      title: 'Data Collection & Usage',
+      items: [
+        'We temporarily access your Google Account email and basic profile information strictly for authentication and pre-filling purposes',
+        'No personal data is stored on our servers',
+        'All authentication data is temporary and is not retained beyond your current session'
+      ]
+    },
+    {
+      title: 'Data Storage & Processing',
+      items: [
+        'User-created credentials are stored exclusively in your Google Drive',
+        'No personal data is stored on our servers',
+        "Data interactions occur directly between your browser and Google's services",
+        'Read-only access is used solely for peer review and recommendations'
+      ]
+    },
+    {
+      title: 'Data Sharing & Protection',
+      items: [
+        'Your data is never shared with third parties',
+        'All data transmissions use encrypted HTTPS connections',
+        'We implement OAuth 2.0 security protocols for authentication',
+        'Regular security audits and monitoring are conducted',
+        'Access tokens are securely stored in browser session only'
+      ]
+    }
+  ]
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '20px',
-        gap: '20px',
-        textAlign: 'left',
-        maxWidth: '800px',
-        margin: 'auto'
-      }}
-    >
-      <Typography variant='h4' sx={{ fontWeight: 700, mb: 2 }}>
-        OpenCreds Privacy Policy
-      </Typography>
+    <main className='privacy-policy-container'>
+      <div className='privacy-policy-box'>
+        <header className='privacy-policy-header'>
+          <a href='/' aria-label='OpenCreds Home' className='privacy-policy-link'>
+            <Logo />
+            <span className='privacy-policy-logo-text'>OpenCreds</span>
+          </a>
+        </header>
 
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        OpenCreds is an open-source web application developed by the
-        <Link
-          href='https://www.t3networkhub.org/'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          {' '}
-          T3 Innovation Network
-        </Link>
-        , a network of leading organizations and companies committed to an open
-        infrastructure for Learning and Employment Records compliant with the W3C
-        Verifiable Credential standard.
-      </Typography>
+        <section className='privacy-policy-paper'>
+          <h1 className='privacy-policy-heading'>Privacy Policy</h1>
 
-      <Typography sx={{ fontWeight: 600, mt: 2 }}>
-        What Personal Information We Collect
-      </Typography>
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        We do not collect any personal information. Any data or documents created by this
-        application are kept solely in storage under the user&apos;s control, such as
-        their own Google Drives.
-      </Typography>
+          <p className='privacy-policy-paragraph'>
+            OpenCreds is an open-source web application developed by the{' '}
+            <a
+              href='https://www.t3networkhub.org/'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='privacy-policy-link'
+            >
+              T3 Innovation Network
+            </a>{' '}
+            {''}, a network of leading organizations committed to open infrastructure for
+            Learning and Employment Records compliant with the W3C Verifiable Credential
+            standard.
+          </p>
 
-      <Typography sx={{ fontWeight: 600, mt: 2 }}>Additional Information</Typography>
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        We may change this Privacy Policy from time to time. If we make any significant
-        changes in the way we treat your personal information, we will make this clear on
-        our website or by contacting you directly.
-      </Typography>
+          {sections.map(({ title, items }) => (
+            <div key={title} className='privacy-policy-section'>
+              <h2 className='privacy-policy-section-heading'>{title}</h2>
+              <ul className='privacy-policy-list'>
+                {items.map((item, index) => (
+                  <li key={`${title}-${index}`} className='privacy-policy-list-item'>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
 
-      <Typography sx={{ fontSize: '16px', lineHeight: '1.6', mt: 2 }}>
-        The controller for your personal information is the Learner Credential Wallet
-        project at MIT. We can be contacted at{' '}
-        <Link href='mailto:support@opencreds.net'>support@opencreds.net</Link>.
-      </Typography>
+          <div className='privacy-policy-footer-note'>
+            <p className='privacy-policy-footer-paragraph'>
+              This Privacy Policy may change from time to time. Any significant changes in
+              data handling will be clearly communicated through policy updates.
+            </p>
+          </div>
 
-      <Typography
-        sx={{ fontSize: '14px', lineHeight: '1.6', mt: 4, color: 'text.secondary' }}
-      >
-        &copy; 2024, US Chamber of Commerce Foundation <br />
-        <Link href='https://t3networkhub.org' target='_blank' rel='noopener noreferrer'>
-          T3 Innovation Network
-        </Link>{' '}
-        | <Link href='/accessibility'>Accessibility</Link> |{' '}
-        <Link href='/terms'>Terms of Service</Link> |{' '}
-        <Link
-          href='https://github.com/Cooperation-org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          View on Github
-        </Link>
-      </Typography>
-    </Box>
+          <div className='privacy-policy-bottom-border'>
+            <p className='privacy-policy-footer-text'>
+              &copy; 2024, US Chamber of Commerce Foundation
+            </p>
+            <div className='privacy-policy-footer-links'>
+              <a
+                href='https://t3networkhub.org'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='privacy-policy-footer-link'
+              >
+                T3 Network
+              </a>
+              <a href='/accessibility' className='privacy-policy-footer-link'>
+                Accessibility
+              </a>
+              <a href='/terms' className='privacy-policy-footer-link'>
+                Terms
+              </a>
+              <a
+                href='https://github.com/Cooperation-org'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='privacy-policy-footer-link'
+              >
+                Github
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   )
 }
 
