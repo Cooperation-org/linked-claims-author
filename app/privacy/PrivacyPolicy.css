@@ -41,8 +41,8 @@
 }
 
 .privacy-policy-link {
-  display: flex;
-  align-items: center;
+  /* display: flex; */
+  /* align-items: center; */
   text-decoration: none;
   color: #3e3a8c;
 }
@@ -82,6 +82,7 @@
   line-height: 1.8;
   margin-bottom: 32px;
   color: #333333;
+  word-wrap: break-word;
 }
 
 .privacy-policy-section {
