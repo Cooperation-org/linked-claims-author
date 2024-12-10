@@ -5,18 +5,18 @@ import { Logo } from '../Assets/SVGs'
 const PrivacyPolicy = () => {
   const sections = [
     {
-      title: 'Google API Access & Permissions',
+      title: 'Google Permissions',
       items: [
-        'Email Access (userinfo.email): Used to allow the user to send a copy to themselves',
-        'Profile Access (userinfo.profile): Used to prefill user data in the app',
-        'Drive File Access (drive.file): Used to save and manage user-authored credentials',
-        'Read-only Drive Access (drive.readonly): Enables viewing and recommendations for documents created by the user'
+        'Used to all the user to send a copy of the credential they author to themselves',
+        'Profile Access: Used to prefill user data in the app',
+        'Used to save and manage user-authored credentials  to their Google Drive',
+        'Read-only Drive Access: Enables viewing and recommendations for documents created by the user'
       ]
     },
     {
       title: 'Data Collection & Usage',
       items: [
-        'We temporarily access your Google Account email and basic profile information strictly for authentication and pre-filling purposes',
+        'We temporarily access your Google Account email and basic profile information strictly for authentication and pre-filling of forms for user convenience.',
         'No personal data is stored on our servers',
         'All authentication data is temporary and is not retained beyond your current session'
       ]
@@ -27,7 +27,7 @@ const PrivacyPolicy = () => {
         'User-created credentials are stored exclusively in your Google Drive',
         'No personal data is stored on our servers',
         "Data interactions occur directly between your browser and Google's services",
-        'Read-only access is used solely for peer review and recommendations'
+        'Read-only access is used soley to enable viewing a credential the credential author sends to a third-party of their choice.'
       ]
     },
     {
@@ -37,7 +37,7 @@ const PrivacyPolicy = () => {
         'All data transmissions use encrypted HTTPS connections',
         'We implement OAuth 2.0 security protocols for authentication',
         'Regular security audits and monitoring are conducted',
-        'Access tokens are securely stored in browser session only'
+        'Access tokens are securely stored only in the browser for the duration of an authoring session'
       ]
     }
   ]
@@ -58,14 +58,14 @@ const PrivacyPolicy = () => {
           <p className='privacy-policy-paragraph'>
             OpenCreds is an open-source web application developed by the{' '}
             <a
-              href='https://www.t3networkhub.org/'
+              href='https://t3innovation.net'
               target='_blank'
               rel='noopener noreferrer'
               className='privacy-policy-link'
             >
               T3 Innovation Network
             </a>{' '}
-            {''}, a network of leading organizations committed to open infrastructure for
+            ,<br />a network of leading organizations committed to open infrastructure for
             Learning and Employment Records compliant with the W3C Verifiable Credential
             standard.
           </p>
