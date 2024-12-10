@@ -7,10 +7,10 @@ const PrivacyPolicy = () => {
     {
       title: 'Google Permissions',
       items: [
-        'Email is used by the application so credential authors can send a copy of the credential they author to themselves.',
+        'Email is used by the application so credential authors can send a copy of the credential they write to themselves.',
         'Profile access is used to pre-fill user data in the app.',
-        'Used to save and manage user-authored credentials  to their Google Drive.',
-        'Read-only Drive Access enables viewing and recommendations for documents created by the user.'
+        'File access enables users to save and manage user authorized credentials to their Google Drive.',
+        'Read-only Drive access enables viewing and recommendations for documents created by the user.'
       ]
     },
     {
