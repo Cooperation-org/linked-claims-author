@@ -22,6 +22,7 @@ import {
   commonTypographyStyles,
   evidenceListStyles
 } from '../components/Styles/appStyles'
+import useGoogleDrive from '../hooks/useGoogleDrive'
 
 // Define types
 interface Claim {
@@ -69,31 +70,39 @@ const ClaimsPage: React.FC = () => {
   const [openClaim, setOpenClaim] = useState<string | null>(null)
   const [detailedClaim, setDetailedClaim] = useState<ClaimDetail | null>(null)
   const [loadingClaims, setLoadingClaims] = useState<{ [key: string]: boolean }>({})
-  const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
   const [loading, setLoading] = useState(true)
   const { data: session } = useSession()
   const accessToken = session?.accessToken as string
-
-  useEffect(() => {
-    if (accessToken) {
-      const storageInstance = new GoogleDriveStorage(accessToken)
-      setStorage(storageInstance)
-    }
-  }, [accessToken])
+  const { storage } = useGoogleDrive()
 
   const getAllClaims = useCallback(async (): Promise<any> => {
     const claimsData = await storage?.getAllFilesByType('VCs')
+    console.log('🚀 ~ getAllClaims ~ claimsData:', claimsData)
     if (!claimsData?.length) return []
     return claimsData
   }, [storage])
 
   useEffect(() => {
     const fetchClaims = async () => {
-      setLoading(true)
-      const claimsData = await getAllClaims()
-      console.log(':  fetchClaims  claimsData', claimsData)
-      setClaims(claimsData)
-      setLoading(false)
+      try {
+        setLoading(true)
+
+        const claimsData = await getAllClaims()
+        console.log('🚀 ~ fetchClaims ~ claimsData:', claimsData)
+
+        // Assuming claimsData is an array of objects or arrays, process the data
+        const vcs = claimsData.map((file: { name: string }[]) =>
+          file.filter((f: { name: string }) => f.name !== 'RELATIONS')
+        )
+
+        console.log('🚀 ~ vcs ~ vcs:', vcs)
+
+        setClaims(vcs)
+      } catch (error) {
+        console.error('Error fetching claims:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchClaims()
@@ -137,19 +146,19 @@ const ClaimsPage: React.FC = () => {
           </Box>
         ) : (
           claims.map(claim => (
-            <div key={claim.id}>
+            <div key={claim[0].data.id}>
               <ListItem
                 button
-                onClick={() => handleClaimClick(claim.content.id, claim.content)}
+                onClick={() => handleClaimClick(claim[0].data.id, claim[0].data)}
               >
                 <ListItemText
-                  primary={claim.content.credentialSubject?.achievement?.[0]?.name}
+                  primary={claim[0].data?.credentialSubject.achievement[0]?.name}
                 />
-                {openClaim === claim.content.id ? <ExpandLess /> : <ExpandMore />}
+                {openClaim === claim[0].data.id ? <ExpandLess /> : <ExpandMore />}
               </ListItem>
-              <Collapse in={openClaim === claim.content.id} timeout='auto' unmountOnExit>
+              <Collapse in={openClaim === claim[0].data.id} timeout='auto' unmountOnExit>
                 <Container>
-                  {loadingClaims[claim.content.id] ? (
+                  {loadingClaims[claim[0].data.id] ? (
                     <CircularProgress />
                   ) : (
                     <Box>

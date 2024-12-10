@@ -1,8 +1,9 @@
 import React from 'react'
-import './PrivacyPolicy.css' // Import the CSS file
+import './PrivacyPolicy.css'
 import { Logo } from '../Assets/SVGs'
 
 const PrivacyPolicy = () => {
+
   const sections = [
     {
       title: 'Google API Access & Permissions',
@@ -122,6 +123,7 @@ const PrivacyPolicy = () => {
         </section>
       </div>
     </main>
+
   )
 }
 

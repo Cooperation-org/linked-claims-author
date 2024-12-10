@@ -155,17 +155,26 @@ const Form = ({ onStepChange }: any) => {
 
       const { didDocument, keyPair, issuerId } = await createDID(accessToken)
 
-      const saveResponse = await saveToGoogleDrive(
+      const saveResponse = await saveToGoogleDrive({
         storage,
-        {
+        data: {
           didDocument,
           keyPair
         },
-        'DID'
-      )
+        type: 'DID'
+      })
 
       const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
-      const file = (await saveToGoogleDrive(storage, res, 'VC')) as any
+      const file = (await saveToGoogleDrive({
+        storage,
+        data: res,
+        type: 'VC'
+      })) as any
+      const folderIds = await storage?.getFileParents(file.id)
+      const relationFile = await storage?.createRelationsFile({
+        vcFolderId: folderIds[0]
+      })
+      console.log('🚀 ~ sign ~ relationFile:', relationFile)
       setLink(`https://drive.google.com/file/d/${file.id}/view`)
       setFileId(`${file.id}`)
 

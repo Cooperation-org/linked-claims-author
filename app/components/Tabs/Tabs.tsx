@@ -25,20 +25,8 @@ interface TabsComponentProps {
   email: string
 }
 
-const TabsComponent: React.FC<TabsComponentProps> = ({
-  fullName,
-  // setFullName,
-  email
-}) => {
+const TabsComponent: React.FC<TabsComponentProps> = ({ fullName, email }) => {
   const [value, setValue] = useState(0)
-  // const [fileID, setFileID] = useState<string | null>(null)
-  // const params = useParams()
-  // const id =
-  //   typeof params?.id === 'string'
-  //     ? params.id
-  //     : Array.isArray(params?.id)
-  //       ? params.id[0]
-  //       : undefined
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -53,12 +41,22 @@ const TabsComponent: React.FC<TabsComponentProps> = ({
         aria-label='simple tabs example'
       >
         <Tab
-          sx={{ textTransform: 'capitalize' }}
+          sx={{
+            textTransform: 'capitalize',
+            fontSize: '20px',
+            fontWeight: 'bold',
+            color: 'black'
+          }}
           label='Recommendation'
           {...a11yProps(0)}
         />
         <Tab
-          sx={{ textTransform: 'capitalize' }}
+          sx={{
+            textTransform: 'capitalize',
+            fontSize: '20px',
+            fontWeight: 'bold',
+            color: 'black'
+          }}
           label={`View ${fullName}’s Credential`}
           {...a11yProps(1)}
         />
