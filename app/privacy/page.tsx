@@ -58,7 +58,7 @@ const PrivacyPolicy = () => {
           <p className='privacy-policy-paragraph'>
             OpenCreds is an open-source web application developed by the{' '}
             <a
-              href='https://t3innovation.net'
+              href='https://www.t3networkhub.org/'
               target='_blank'
               rel='noopener noreferrer'
               className='privacy-policy-link'
