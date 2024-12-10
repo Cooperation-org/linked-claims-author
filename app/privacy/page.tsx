@@ -7,37 +7,37 @@ const PrivacyPolicy = () => {
     {
       title: 'Google Permissions',
       items: [
-        'Used to all the user to send a copy of the credential they author to themselves',
-        'Profile Access: Used to prefill user data in the app',
-        'Used to save and manage user-authored credentials  to their Google Drive',
-        'Read-only Drive Access: Enables viewing and recommendations for documents created by the user'
+        'Email is used by the application so credential authors can send a copy of the credential they author to themselves.',
+        'Profile access is used to pre-fill user data in the app.',
+        'Used to save and manage user-authored credentials  to their Google Drive.',
+        'Read-only Drive Access enables viewing and recommendations for documents created by the user.'
       ]
     },
     {
       title: 'Data Collection & Usage',
       items: [
         'We temporarily access your Google Account email and basic profile information strictly for authentication and pre-filling of forms for user convenience.',
-        'No personal data is stored on our servers',
-        'All authentication data is temporary and is not retained beyond your current session'
+        'No personal data is stored on our servers.',
+        'All authentication data is temporary and is not retained beyond your current session.'
       ]
     },
     {
       title: 'Data Storage & Processing',
       items: [
-        'User-created credentials are stored exclusively in your Google Drive',
-        'No personal data is stored on our servers',
-        "Data interactions occur directly between your browser and Google's services",
+        'User-created credentials are stored exclusively in your Google Drive.',
+        'No personal data is stored on our servers.',
+        "Data interactions occur directly between your browser and Google's services.",
         'Read-only access is used soley to enable viewing a credential the credential author sends to a third-party of their choice.'
       ]
     },
     {
       title: 'Data Sharing & Protection',
       items: [
-        'Your data is never shared with third parties',
-        'All data transmissions use encrypted HTTPS connections',
-        'We implement OAuth 2.0 security protocols for authentication',
-        'Regular security audits and monitoring are conducted',
-        'Access tokens are securely stored only in the browser for the duration of an authoring session'
+        'Your data is never shared with third parties.',
+        'All data transmissions use encrypted HTTPS connections.',
+        'We implement OAuth 2.0 security protocols for authentication.',
+        'Regular security audits and monitoring are conducted.',
+        'Access tokens are securely stored only in the browser for the duration of an authoring session.'
       ]
     }
   ]
