@@ -1,39 +1,8 @@
-'use client'
-import { Box, Typography, Link, Container, Paper } from '@mui/material'
 import React from 'react'
+import './PrivacyPolicy.css'
 import { Logo } from '../Assets/SVGs'
-import { useTheme } from '@mui/material/styles'
 
 const PrivacyPolicy = () => {
-  const theme = useTheme()
-  
-  const sectionStyle = {
-    backgroundColor: 'white',
-    padding: { xs: '20px', md: '30px' },
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    margin: '10px 0',
-    width: '100%'
-  }
-
-  const headingStyle = {
-    color: theme.palette.t3DarkSlateBlue,
-    borderBottom: `2px solid ${theme.palette.t3DarkSlateBlue}`,
-    paddingBottom: '8px',
-    marginBottom: '16px'
-  }
-
-  const listItemStyle = {
-    marginBottom: '8px',
-    paddingLeft: '20px',
-    position: 'relative',
-    '&::before': {
-      content: '"•"',
-      position: 'absolute',
-      left: 0,
-      color: theme.palette.t3DarkSlateBlue
-    }
-  }
 
   const sections = [
     {
@@ -58,7 +27,7 @@ const PrivacyPolicy = () => {
       items: [
         'User-created credentials are stored exclusively in your Google Drive',
         'No personal data is stored on our servers',
-        'Data interactions occur directly between your browser and Google\'s services',
+        "Data interactions occur directly between your browser and Google's services",
         'Read-only access is used solely for peer review and recommendations'
       ]
     },
@@ -75,86 +44,85 @@ const PrivacyPolicy = () => {
   ]
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
-      <Box sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '24px',
-        maxWidth: '800px',
-        margin: 'auto',
-        backgroundColor: '#f5f5f7',
-        padding: { xs: '20px', md: '40px' },
-        borderRadius: '12px'
-      }}>
-        <Box sx={{
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          mb: 4
-        }}>
-          <Link href='/' aria-label='OpenCreds Home' sx={{ display: 'flex', alignItems: 'center' }}>
+    <main className='privacy-policy-container'>
+      <div className='privacy-policy-box'>
+        <header className='privacy-policy-header'>
+          <a href='/' aria-label='OpenCreds Home' className='privacy-policy-link'>
             <Logo />
-            <Typography variant="h5" sx={{
-              fontWeight: 700,
-              ml: 1,
-              color: theme.palette.t3DarkSlateBlue
-            }}>
-              OpenCreds
-            </Typography>
-          </Link>
-        </Box>
+            <span className='privacy-policy-logo-text'>OpenCreds</span>
+          </a>
+        </header>
 
-        <Paper elevation={0} sx={sectionStyle}>
-          <Typography variant='h4' sx={{ ...headingStyle, textAlign: 'center' }}>
-            Privacy Policy
-          </Typography>
+        <section className='privacy-policy-paper'>
+          <h1 className='privacy-policy-heading'>Privacy Policy</h1>
 
-          <Typography sx={{ fontSize: '16px', lineHeight: '1.8', mb: 4 }}>
-            OpenCreds is an open-source web application developed by the
-            <Link href='https://www.t3networkhub.org/' target='_blank' rel='noopener noreferrer'> T3 Innovation Network</Link>
-            , a network of leading organizations committed to open infrastructure for Learning and Employment Records compliant with W3C Verifiable Credential standard.
-          </Typography>
+          <p className='privacy-policy-paragraph'>
+            OpenCreds is an open-source web application developed by the{' '}
+            <a
+              href='https://www.t3networkhub.org/'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='privacy-policy-link'
+            >
+              T3 Innovation Network
+            </a>{' '}
+            {''}, a network of leading organizations committed to open infrastructure for
+            Learning and Employment Records compliant with the W3C Verifiable Credential
+            standard.
+          </p>
 
           {sections.map(({ title, items }) => (
-            <Box key={title} sx={{ mb: 4 }}>
-              <Typography variant='h6' sx={headingStyle}>
-                {title}
-              </Typography>
-              <Box component="ul" sx={{ 
-                listStyle: 'none', 
-                padding: 0,
-                margin: 0 
-              }}>
+            <div key={title} className='privacy-policy-section'>
+              <h2 className='privacy-policy-section-heading'>{title}</h2>
+              <ul className='privacy-policy-list'>
                 {items.map((item, index) => (
-                  <Box component="li" key={`${title}-${index}`} sx={listItemStyle}>
+                  <li key={`${title}-${index}`} className='privacy-policy-list-item'>
                     {item}
-                  </Box>
+                  </li>
                 ))}
-              </Box>
-            </Box>
+              </ul>
+            </div>
           ))}
 
-          <Box sx={{ mt: 4 }}>
-            <Typography variant='body2' sx={{ color: 'text.secondary', mb: 2 }}>
-              This Privacy Policy may change from time to time. Any significant changes in data handling will be clearly communicated through policy updates.
-            </Typography>
-          </Box>
+          <div className='privacy-policy-footer-note'>
+            <p className='privacy-policy-footer-paragraph'>
+              This Privacy Policy may change from time to time. Any significant changes in
+              data handling will be clearly communicated through policy updates.
+            </p>
+          </div>
 
-          <Box sx={{ mt: 4, borderTop: '1px solid #eee', pt: 4 }}>
-            <Typography variant='body2' sx={{ color: 'text.secondary', textAlign: 'center' }}>
+          <div className='privacy-policy-bottom-border'>
+            <p className='privacy-policy-footer-text'>
               &copy; 2024, US Chamber of Commerce Foundation
-              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 1 }}>
-                <Link href='https://t3networkhub.org' target='_blank' rel='noopener noreferrer'>T3 Network</Link>
-                <Link href='/accessibility'>Accessibility</Link>
-                <Link href='/terms'>Terms</Link>
-                <Link href='https://github.com/Cooperation-org' target='_blank' rel='noopener noreferrer'>Github</Link>
-              </Box>
-            </Typography>
-          </Box>
-        </Paper>
-      </Box>
-    </Container>
+            </p>
+            <div className='privacy-policy-footer-links'>
+              <a
+                href='https://t3networkhub.org'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='privacy-policy-footer-link'
+              >
+                T3 Network
+              </a>
+              <a href='/accessibility' className='privacy-policy-footer-link'>
+                Accessibility
+              </a>
+              <a href='/terms' className='privacy-policy-footer-link'>
+                Terms
+              </a>
+              <a
+                href='https://github.com/Cooperation-org'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='privacy-policy-footer-link'
+              >
+                Github
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   )
 }
 
