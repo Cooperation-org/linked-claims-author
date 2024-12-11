@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import HomeIcon from '@mui/icons-material/Home'
+import { SVGBack } from '../../../Assets/SVGs'
 
 interface DeclineRequestProps {
   fullName: string //NOSONAR
@@ -23,9 +23,32 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({ handleBack }) => {
         textAlign: 'center',
         border: '1px solid #ccc',
         borderRadius: '8px',
-        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)'
+        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+        position: 'relative'
       }}
     >
+      <Button
+        onClick={handleBack}
+        variant='text'
+        sx={{
+          position: 'absolute',
+          top: '16px',
+          left: '16px',
+          padding: '10px 24px',
+          textTransform: 'capitalize',
+          fontSize: '16px',
+          fontWeight: '600',
+          display: 'flex',
+          alignItems: 'center',
+          ':hover': {
+            backgroundColor: 'transparent'
+          }
+        }}
+      >
+        <SVGBack />
+        Back
+      </Button>
+
       <Typography
         sx={{
           fontSize: '24px',
@@ -45,29 +68,11 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({ handleBack }) => {
           my: 2
         }}
       >
-        We encourage you to respond to the requestor as appropriate.
+        Thank you, We encourage you to try our App.
       </Typography>
 
       <Button
-        onClick={handleBack}
-        sx={{
-          padding: '10px 24px',
-          borderRadius: '100px',
-          textTransform: 'capitalize',
-          fontFamily: 'Roboto',
-          textDecoration: 'underline',
-          fontWeight: '600',
-          lineHeight: '16px',
-          fontSize: '16px',
-          mt: 2
-        }}
-        variant='text'
-      >
-        Back
-      </Button>
-      <Button
         onClick={() => (window.location.href = '/')}
-        startIcon={<HomeIcon />}
         sx={{
           padding: '10px 24px',
           borderRadius: '100px',
@@ -80,7 +85,7 @@ const DeclineRequest: React.FC<DeclineRequestProps> = ({ handleBack }) => {
           }
         }}
       >
-        Home
+        Give it a try now
       </Button>
     </Box>
   )
