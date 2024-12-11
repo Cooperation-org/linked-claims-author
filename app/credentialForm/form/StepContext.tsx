@@ -1,11 +1,18 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback
+} from 'react'
 
 // Define the context structure
 interface StepContextType {
   activeStep: number
   loading: boolean
   setActiveStep: (step: number) => void
-  handleNext: () => void
+  handleNext: () => Promise<void>
   handleBack: () => void
   setUploadImageFn: (fn: () => Promise<void>) => void
 }
@@ -19,12 +26,16 @@ const StepContext = createContext<StepContextType>({
   setUploadImageFn: () => () => {}
 })
 
-export const StepProvider = ({ children }: { children: any }) => {
+export const StepProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeStep, setActiveStep] = useState(0)
   const [uploadImageFn, setUploadImageFn] = useState<() => Promise<void>>(
     () => async () => {}
   )
   const [loading, setLoading] = useState(false)
+  const excludedPaths = useMemo(
+    () => ['/', '/privacy', '/accessibility', '/terms', '/claims'],
+    []
+  )
 
   const getStepFromHash = () => {
     const hash = window.location.hash
@@ -38,12 +49,14 @@ export const StepProvider = ({ children }: { children: any }) => {
       const hashStep = getStepFromHash()
       const savedStep = localStorage.getItem('activeStep')
 
-      if (pathname === '/' || pathname === '/claims') {
-        setActiveStep(0)
+      if (excludedPaths.includes(pathname)) {
+        return
       } else if (hashStep !== null) {
         setActiveStep(hashStep)
       } else if (savedStep) {
         setActiveStep(Number(savedStep))
+      } else {
+        setActiveStep(0)
       }
     }
 
@@ -60,18 +73,19 @@ export const StepProvider = ({ children }: { children: any }) => {
       window.removeEventListener('popstate', handleLocationChange)
       window.removeEventListener('hashchange', handleLocationChange)
     }
-  }, [])
+  }, [excludedPaths])
 
   // Update localStorage and URL hash when the active step changes
   useEffect(() => {
-    localStorage.setItem('activeStep', String(activeStep))
-    const pathname = window.location.pathname
-    if (pathname !== '/' && pathname !== '/claims') {
-      window.location.hash = `#step${activeStep}`
+    if (excludedPaths.includes(window.location.pathname)) {
+      return
     }
-  }, [activeStep])
 
-  const handleNext = async () => {
+    localStorage.setItem('activeStep', String(activeStep))
+    window.location.hash = `#step${activeStep}`
+  }, [activeStep, excludedPaths])
+
+  const handleNext = useCallback(async () => {
     if (activeStep === 3 && typeof uploadImageFn === 'function') {
       setLoading(true) // Start loading
       try {
@@ -83,26 +97,25 @@ export const StepProvider = ({ children }: { children: any }) => {
       }
     }
     setActiveStep(prevStep => prevStep + 1) // Move to the next step
-  }
+  }, [activeStep, uploadImageFn])
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     setActiveStep(prevStep => (prevStep > 0 ? prevStep - 1 : 0))
-  }
+  }, [])
 
-  return (
-    <StepContext.Provider
-      value={{
-        activeStep,
-        setActiveStep,
-        handleNext,
-        handleBack,
-        setUploadImageFn,
-        loading
-      }}
-    >
-      {children}
-    </StepContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      activeStep,
+      setActiveStep,
+      handleNext,
+      handleBack,
+      setUploadImageFn,
+      loading
+    }),
+    [activeStep, handleNext, handleBack, setUploadImageFn, loading]
   )
+
+  return <StepContext.Provider value={contextValue}>{children}</StepContext.Provider>
 }
 
 export const useStepContext = () => useContext(StepContext)
