@@ -32,6 +32,8 @@ export default function AskForRecommendation() {
   const [messageToCopy, setMessageToCopy] = useState<string>('')
   const { getContent } = useGoogleDrive()
   const [achievementName, setAchievementName] = useState<string>('')
+  const [tooltipText, setTooltipText] = useState('Copy')
+
   const { reset } = useForm({
     defaultValues: {
       firstName: '',
@@ -92,7 +94,11 @@ export default function AskForRecommendation() {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(messageToCopy)
+      setTooltipText('Copied')
       showNotification('Text copied to clipboard!')
+      setTimeout(() => {
+        setTooltipText('Copy')
+      }, 1000)
     } catch (err) {
       showNotification('Failed to copy text')
     }
@@ -229,13 +235,16 @@ export default function AskForRecommendation() {
                 cursor: 'pointer',
                 padding: '8px',
                 borderRadius: '4px',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.08)'
-                },
-                flexShrink: 0
+                flexShrink: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
               }}
             >
               <ContentCopyIcon sx={{ color: '#666' }} />
+              <Typography sx={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                {tooltipText}
+              </Typography>
             </Box>
           </Box>
           <ComprehensiveClaimDetails onAchievementLoad={handleAchievementLoad} />
