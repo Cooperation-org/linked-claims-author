@@ -38,6 +38,7 @@ const Page = () => {
         }}
       >
         <Typography
+          variant='h1'
           sx={{
             color: '#000',
             fontFamily: 'Poppins',
@@ -124,26 +125,32 @@ const Page = () => {
                 </Typography>
               </Box>
               {feature.id === 4 && (
-                <Alert 
-                  severity="info" 
-                  sx={{ 
+                <Alert
+                  severity='info'
+                  sx={{
                     mt: 1,
                     width: '90%',
                     ml: 0,
                     backgroundColor: 'transparent',
                     border: 'none',
                     '& .MuiAlert-icon': {
-                      color: theme.palette.t3BodyText,
+                      color: theme.palette.t3BodyText
                     },
                     '& .MuiAlert-message': {
                       color: theme.palette.t3BodyText,
                       fontFamily: 'Lato',
                       fontSize: '14px',
-                      width: '90%',
-                    },
+                      width: '90%'
+                    }
                   }}
                 >
-During testing when you connect to Google Drive to establish the storage location for your credentials, you will get a warning message from Google, &quot;Google hasn&#39;t verified this app&quot;. Just look down and to the left and you&#39;ll see Advanced in smaller type. Click that and at the bottom the text that appears is &quot;Go to opencreds.net (unsafe)&quot; Click the link and proceed.  We are awaiting final Google Review of the code which we expect soon.
+                  During testing when you connect to Google Drive to establish the storage
+                  location for your credentials, you will get a warning message from
+                  Google, &quot;Google hasn&#39;t verified this app&quot;. Just look down
+                  and to the left and you&#39;ll see Advanced in smaller type. Click that
+                  and at the bottom the text that appears is &quot;Go to opencreds.net
+                  (unsafe)&quot; Click the link and proceed. We are awaiting final Google
+                  Review of the code which we expect soon.
                 </Alert>
               )}
             </Box>
@@ -217,24 +224,30 @@ During testing when you connect to Google Drive to establish the storage locatio
               </Typography>
             </Box>
             {feature.id === 4 && (
-              <Alert 
-                severity="info" 
-                sx={{ 
+              <Alert
+                severity='info'
+                sx={{
                   mt: 1,
                   ml: 4,
                   backgroundColor: 'transparent',
                   border: 'none',
                   '& .MuiAlert-icon': {
-                    color: theme.palette.t3BodyText,
+                    color: theme.palette.t3BodyText
                   },
                   '& .MuiAlert-message': {
                     color: theme.palette.t3BodyText,
                     fontFamily: 'Lato',
-                    fontSize: '14px',
-                  },
+                    fontSize: '14px'
+                  }
                 }}
               >
-              During testing when you connect to Google Drive to establish the storage location for your credentials, you will get a warning message from Google, &quot;Google hasn&#39;t verified this app&quot;.  Just look down and to the left and you&#39;ll see Advanced in smaller type.  Click that and at the bottom the text that appears is &quot;Go to <u>opencreds.net</u> (unsafe)&quot;.  Click the link and proceed.  We are awaiting final Google Review of the code which we expect soon.
+                During testing when you connect to Google Drive to establish the storage
+                location for your credentials, you will get a warning message from Google,
+                &quot;Google hasn&#39;t verified this app&quot;. Just look down and to the
+                left and you&#39;ll see Advanced in smaller type. Click that and at the
+                bottom the text that appears is &quot;Go to <u>opencreds.net</u>{' '}
+                (unsafe)&quot;. Click the link and proceed. We are awaiting final Google
+                Review of the code which we expect soon.
               </Alert>
             )}
           </Box>
