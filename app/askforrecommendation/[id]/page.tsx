@@ -32,6 +32,8 @@ export default function AskForRecommendation() {
   const [messageToCopy, setMessageToCopy] = useState<string>('')
   const { getContent } = useGoogleDrive()
   const [achievementName, setAchievementName] = useState<string>('')
+  const [tooltipText, setTooltipText] = useState('Copy')
+
   const { reset } = useForm({
     defaultValues: {
       firstName: '',
@@ -92,7 +94,11 @@ export default function AskForRecommendation() {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(messageToCopy)
+      setTooltipText('Copied')
       showNotification('Text copied to clipboard!')
+      setTimeout(() => {
+        setTooltipText('Copy')
+      }, 1000)
     } catch (err) {
       showNotification('Failed to copy text')
     }
@@ -185,36 +191,61 @@ export default function AskForRecommendation() {
             borderRadius: '4px',
             position: 'relative',
             border: '1px solid #e0e0e0',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%'
           }}
         >
-          <Typography
+          <Box
             sx={{
-              // whiteSpace: 'pre-wrap',
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word',
+              width: '100%',
               fontFamily: 'Lato',
               color: '#333',
               fontSize: '14px',
-              wordWrap: 'break-word'
+              flexGrow: 1
             }}
           >
-            {messageToCopy}
-          </Typography>
+            <Typography
+              sx={{
+                fontFamily: 'Lato',
+                color: '#333',
+                fontSize: '14px',
+                wordWrap: 'break-word',
+                overflowWrap: 'break-word',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                flexGrow: 1,
+                lineHeight: 1.5
+              }}
+            >
+              {messageToCopy}
+            </Typography>
 
-          <Box
-            onClick={copyToClipboard}
-            sx={{
-              position: 'absolute',
-              right: '12px',
-              top: '12px',
-              cursor: 'pointer',
-              padding: '8px',
-              borderRadius: '4px',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.04)'
-              }
-            }}
-          >
-            <ContentCopyIcon sx={{ color: '#666' }} />
+            <Box
+              onClick={copyToClipboard}
+              sx={{
+                width: 'fit-content',
+                cursor: 'pointer',
+                padding: '8px',
+                borderRadius: '4px',
+                flexShrink: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+              }}
+            >
+              <ContentCopyIcon sx={{ color: '#666' }} />
+              <Typography sx={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                {tooltipText}
+              </Typography>
+            </Box>
           </Box>
           <ComprehensiveClaimDetails onAchievementLoad={handleAchievementLoad} />
         </Box>

@@ -10,11 +10,11 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
 interface SuccessPageProps {
-  formData: FormData
+  formData: FormData //NOSONAR
   submittedFullName: string | null
   fullName: string
   email: string
-  handleBack: () => void
+  handleBack: () => void //NOSONAR
   recId: string | null
 }
 
@@ -27,6 +27,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
+  const [tooltipEmail, setTooltipEmail] = useState('Copy')
+  const [tooltipSubject, setTooltipSubject] = useState('Copy')
+  const [tooltipMessage, setTooltipMessage] = useState('Copy')
+
   const params = useParams()
   const id = params.id
 
@@ -43,10 +47,16 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     setSnackbarOpen(true)
   }
 
-  const copyToClipboard = async (text: string, type: string) => {
+  const copyToClipboard = async (
+    text: string,
+    type: string,
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
     try {
       await navigator.clipboard.writeText(text)
+      setter('Copied')
       showNotification(`${type} copied to clipboard!`, 'success')
+      setTimeout(() => setter('Copy'), 1500)
     } catch (err) {
       showNotification('Failed to copy text', 'error')
     }
@@ -118,28 +128,19 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           }}
         >
           <li style={{ marginBottom: '8px' }}>
-            Copy the email address by clicking the copy icon
+            Copy the email address, subject, and message by clicking the copy icons.
           </li>
+          <li style={{ marginBottom: '8px' }}>Open your preferred email application.</li>
           <li style={{ marginBottom: '8px' }}>
-            Copy the subject by clicking the copy icon
+            Paste the copied content into the appropriate fields: email address, subject,
+            and message.
           </li>
-          <li style={{ marginBottom: '8px' }}>
-            Copy the message by clicking the copy icon
-          </li>
-          <li style={{ marginBottom: '8px' }}>Open your preferred email application</li>
-          <li>Paste the content and send the email</li>
+          <li>send the email</li>
         </ol>
 
         {/* Email Box */}
         <Box sx={{ mb: 3 }}>
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: 500,
-              color: '#666',
-              mb: 1
-            }}
-          >
+          <Typography sx={{ fontSize: '14px', fontWeight: 500, color: '#666', mb: 1 }}>
             Email Address:
           </Typography>
           <Box
@@ -152,17 +153,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             }}
           >
             <Typography
-              sx={{
-                fontFamily: 'Lato',
-                color: '#333',
-                fontSize: '14px',
-                pr: 4
-              }}
+              sx={{ fontFamily: 'Lato', color: '#333', fontSize: '14px', pr: 4 }}
             >
               {email}
             </Typography>
             <Box
-              onClick={() => copyToClipboard(email, 'Email address')}
+              onClick={() => copyToClipboard(email, 'Email address', setTooltipEmail)}
               sx={{
                 position: 'absolute',
                 right: '12px',
@@ -171,26 +167,22 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                 cursor: 'pointer',
                 padding: '8px',
                 borderRadius: '4px',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                }
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
               }}
             >
               <ContentCopyIcon sx={{ color: '#666' }} />
+              <Typography sx={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                {tooltipEmail}
+              </Typography>
             </Box>
           </Box>
         </Box>
 
         {/* Subject Box */}
         <Box sx={{ mb: 3 }}>
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: 500,
-              color: '#666',
-              mb: 1
-            }}
-          >
+          <Typography sx={{ fontSize: '14px', fontWeight: 500, color: '#666', mb: 1 }}>
             Subject:
           </Typography>
           <Box
@@ -203,17 +195,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             }}
           >
             <Typography
-              sx={{
-                fontFamily: 'Lato',
-                color: '#333',
-                fontSize: '14px',
-                pr: 4
-              }}
+              sx={{ fontFamily: 'Lato', color: '#333', fontSize: '14px', pr: 4 }}
             >
               {subject}
             </Typography>
             <Box
-              onClick={() => copyToClipboard(subject, 'Subject')}
+              onClick={() => copyToClipboard(subject, 'Subject', setTooltipSubject)}
               sx={{
                 position: 'absolute',
                 right: '12px',
@@ -222,26 +209,22 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
                 cursor: 'pointer',
                 padding: '8px',
                 borderRadius: '4px',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                }
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
               }}
             >
               <ContentCopyIcon sx={{ color: '#666' }} />
+              <Typography sx={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                {tooltipSubject}
+              </Typography>
             </Box>
           </Box>
         </Box>
 
         {/* Message Box */}
         <Box>
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: 500,
-              color: '#666',
-              mb: 1
-            }}
-          >
+          <Typography sx={{ fontSize: '14px', fontWeight: 500, color: '#666', mb: 1 }}>
             Message:
           </Typography>
           <Box
@@ -255,7 +238,6 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           >
             <Typography
               sx={{
-                // whiteSpace: 'pre-wrap',
                 fontFamily: 'Lato',
                 color: '#333',
                 fontSize: '14px',
@@ -266,20 +248,24 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
               {message}
             </Typography>
             <Box
-              onClick={() => copyToClipboard(message, 'Message')}
+              onClick={() => copyToClipboard(message, 'Message', setTooltipMessage)}
               sx={{
                 position: 'absolute',
                 right: '12px',
-                top: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
                 cursor: 'pointer',
                 padding: '8px',
                 borderRadius: '4px',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                }
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
               }}
             >
               <ContentCopyIcon sx={{ color: '#666' }} />
+              <Typography sx={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                {tooltipMessage}
+              </Typography>
             </Box>
           </Box>
         </Box>
