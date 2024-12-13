@@ -242,27 +242,7 @@ export default function AskForRecommendation() {
             >
               {messageToCopy}
             </Typography>
-
-            {/* <Box
-              onClick={copyToClipboard}
-              sx={{
-                width: 'fit-content',
-                cursor: 'pointer',
-                padding: '8px',
-                borderRadius: '4px',
-                flexShrink: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
-              }}
-            >
-              <ContentCopyIcon sx={{ color: '#666' }} />
-              <Typography sx={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                {tooltipText}
-              </Typography>
-            </Box> */}
           </Box>
-
           <ComprehensiveClaimDetails onAchievementLoad={handleAchievementLoad} />
         </Box>
       </Box>
