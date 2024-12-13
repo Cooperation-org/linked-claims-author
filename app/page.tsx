@@ -1,4 +1,3 @@
-// page.tsx
 'use client'
 import React from 'react'
 import { Box, Button, Typography, useTheme, useMediaQuery, Theme } from '@mui/material'
@@ -124,8 +123,6 @@ const OPENCREDS_FEATURES = [
 
 const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCards }) => {
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-
   return (
     <Box
       sx={{
@@ -138,25 +135,6 @@ const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCard
         maxWidth: '1224px',
         px: { xs: 2, md: 4 },
         py: 4
-        // position: 'relative',
-        // '&::before': {
-        //   content: '""',
-        //   position: 'absolute',
-        //   top: 0,
-        //   left: 0,
-        //   right: 0,
-        //   bottom: 0,
-        //   backgroundImage: isMobile ? 'url(/Background.png)' : 'none',
-        //   backgroundSize: 'cover',
-        //   backgroundPosition: 'center',
-        //   backgroundRepeat: 'no-repeat',
-        //   opacity: 0.2,
-        //   zIndex: 0
-        // },
-        // '& > *': {
-        //   position: 'relative',
-        //   zIndex: 1
-        // }
       }}
     >
       <Box
@@ -397,10 +375,6 @@ const Page = () => {
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
-
-        // background: isMobile
-        //   ? '#FFFFFF'
-        //   : 'url(/Background.png) lightgray 50% / contain no-repeat, rgba(255, 255, 255, 0.5)',
         background:
           'url(/Background.png) lightgray 50% / contain no-repeat, rgba(255, 255, 255, 0.5)',
         backgroundSize: 'contain',
