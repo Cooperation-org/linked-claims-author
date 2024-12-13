@@ -16,7 +16,8 @@ import { Buttons } from './buttons/Buttons'
 import useLocalStorage from '../../../hooks/useLocalStorage'
 import { useStepContext } from '../../../credentialForm/form/StepContext'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
-import { createDID, signCred } from '../../../utils/signCred'
+import { createDID } from '../../../utils/signCred'
+import { signCred } from '../../../utils/credential'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import { StepTrackShape } from '../../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
@@ -107,7 +108,8 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
         formData,
         issuerId,
         keyPair,
-        'RECOMMENDATION'
+        'RECOMMENDATION',
+        VSFileId
       )
 
       // Step 4: Save the signed recommendation to Google Drive
