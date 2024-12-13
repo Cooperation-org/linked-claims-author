@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Box, Typography, CircularProgress, Alert, Snackbar } from '@mui/material'
+import { Box, Typography, CircularProgress, Alert, Snackbar, Button } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
 import { useParams } from 'next/navigation'
@@ -32,7 +32,6 @@ export default function AskForRecommendation() {
   const [messageToCopy, setMessageToCopy] = useState<string>('')
   const { getContent } = useGoogleDrive()
   const [achievementName, setAchievementName] = useState<string>('')
-  const [tooltipText, setTooltipText] = useState('Copy')
 
   const { reset } = useForm({
     defaultValues: {
@@ -94,11 +93,8 @@ export default function AskForRecommendation() {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(messageToCopy)
-      setTooltipText('Copied')
       showNotification('Text copied to clipboard!')
-      setTimeout(() => {
-        setTooltipText('Copy')
-      }, 1000)
+      setTimeout(() => {}, 1000)
     } catch (err) {
       showNotification('Failed to copy text')
     }
@@ -177,13 +173,32 @@ export default function AskForRecommendation() {
             fontFamily: 'Lato'
           }}
         >
-          <li style={{ marginBottom: '8px' }}>
-            Copy the message below using the copy icon
-          </li>
+          <li style={{ marginBottom: '8px' }}>Copy the message below using the Button</li>
           <li style={{ marginBottom: '8px' }}>Open your preferred email application</li>
           <li>Paste the message and send it to your desired recommender</li>
         </ol>
-
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+          <Button
+            onClick={copyToClipboard}
+            variant='outlined'
+            color='primary'
+            sx={{
+              borderRadius: '100px',
+              textTransform: 'lowercase',
+              fontFamily: 'Roboto',
+              color: '#FFFFFF',
+              fontSize: '14px',
+              width: 'fit-content',
+              backgroundColor: '#003FE0',
+              '&:hover': {
+                backgroundColor: '#003FE0'
+              }
+            }}
+            startIcon={<ContentCopyIcon />}
+          >
+            Copy the message
+          </Button>
+        </Box>
         <Box
           sx={{
             backgroundColor: 'white',
@@ -228,7 +243,7 @@ export default function AskForRecommendation() {
               {messageToCopy}
             </Typography>
 
-            <Box
+            {/* <Box
               onClick={copyToClipboard}
               sx={{
                 width: 'fit-content',
@@ -245,12 +260,12 @@ export default function AskForRecommendation() {
               <Typography sx={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
                 {tooltipText}
               </Typography>
-            </Box>
+            </Box> */}
           </Box>
+
           <ComprehensiveClaimDetails onAchievementLoad={handleAchievementLoad} />
         </Box>
       </Box>
-
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
