@@ -1,0 +1,21 @@
+name: Add PR to Project Board
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+
+jobs:
+  add-to-project:
+    name: Add PR to Project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v0.5.0
+        with:
+          # Replace these values with your specific project details
+          project-url: https://github.com/orgs/Cooperation-org/projects/4
+          # or for repository projects:
+          # project-url: https://github.com/users/YOUR_USERNAME/projects/YOUR_PROJECT_NUMBER
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+       
