@@ -13,10 +13,16 @@ jobs:
     steps:
       - uses: actions/add-to-project@v0.5.0
         with:
+<<<<<<< HEAD
           column: In Progress
+=======
+>>>>>>> 0e4343e (Create project-automation.yml)
           # Replace these values with your specific project details
           project-url: https://github.com/orgs/Cooperation-org/projects/4
           # or for repository projects:
           # project-url: https://github.com/users/YOUR_USERNAME/projects/YOUR_PROJECT_NUMBER
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+<<<<<<< HEAD
        
+=======
+>>>>>>> 0e4343e (Create project-automation.yml)
