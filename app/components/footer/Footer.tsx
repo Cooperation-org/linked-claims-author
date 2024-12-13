@@ -19,7 +19,8 @@ const Footer = () => {
         justifyContent: 'center',
         p: 2,
         gap: '25px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        flexWrap: 'wrap'
       }}
     >
       <Box
