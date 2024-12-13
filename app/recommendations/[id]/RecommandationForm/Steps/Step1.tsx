@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Typography, Button, Tooltip } from '@mui/material'
 import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { FormData } from '../../../../credentialForm/form/types/Types'
@@ -15,6 +15,12 @@ interface Step1Props {
 
 const Step1: React.FC<Step1Props> = ({ handleNext }) => {
   const { data: session } = useSession()
+
+  useEffect(() => {
+    if (session?.accessToken) {
+      handleNext()
+    }
+  }, [session, handleNext])
 
   const connectToGoogleDrive = async () => {
     if (session?.accessToken) {
@@ -38,7 +44,7 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
 
   // Determine main text based on authentication status
   const mainText = session?.accessToken
-    ? ''
+    ? 'You are already logged in. Proceeding to the next step...'
     : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
 
   return (
@@ -75,42 +81,46 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
         {mainText}
       </Typography>
 
-      <Button
-        variant='contained'
-        color='primary'
-        onClick={connectToGoogleDrive}
-        sx={{
-          mt: 2,
-          px: 4,
-          py: 0.5,
-          fontSize: '16px',
-          borderRadius: 5,
-          textTransform: 'none',
-          backgroundColor: '#003FE0',
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      >
-        Login with Google Drive
-        <Tooltip title={tooltipTitle}>
-          <Box sx={{ ml: 2, mt: '2px' }}>
-            <SVGSinfo />
-          </Box>
-        </Tooltip>
-      </Button>
+      {!session?.accessToken && (
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={connectToGoogleDrive}
+          sx={{
+            mt: 2,
+            px: 4,
+            py: 0.5,
+            fontSize: '16px',
+            borderRadius: 5,
+            textTransform: 'none',
+            backgroundColor: '#003FE0',
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          Login with Google Drive
+          <Tooltip title={tooltipTitle}>
+            <Box sx={{ ml: 2, mt: '2px' }}>
+              <SVGSinfo />
+            </Box>
+          </Tooltip>
+        </Button>
+      )}
 
-      <Button
-        variant='text'
-        color='primary'
-        onClick={() => handleNext()}
-        sx={{
-          fontSize: '14px',
-          textDecoration: 'underline',
-          textTransform: 'none'
-        }}
-      >
-        Continue without Saving
-      </Button>
+      {!session?.accessToken && (
+        <Button
+          variant='text'
+          color='primary'
+          onClick={() => handleNext()}
+          sx={{
+            fontSize: '14px',
+            textDecoration: 'underline',
+            textTransform: 'none'
+          }}
+        >
+          Continue without Saving
+        </Button>
+      )}
     </Box>
   )
 }
