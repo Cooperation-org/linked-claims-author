@@ -137,26 +137,26 @@ const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCard
         mr: 'auto',
         maxWidth: '1224px',
         px: { xs: 2, md: 4 },
-        py: 4,
-        position: 'relative',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundImage: isMobile ? 'url(/Background.png)' : 'none',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          opacity: 0.2,
-          zIndex: 0
-        },
-        '& > *': {
-          position: 'relative',
-          zIndex: 1
-        }
+        py: 4
+        // position: 'relative',
+        // '&::before': {
+        //   content: '""',
+        //   position: 'absolute',
+        //   top: 0,
+        //   left: 0,
+        //   right: 0,
+        //   bottom: 0,
+        //   backgroundImage: isMobile ? 'url(/Background.png)' : 'none',
+        //   backgroundSize: 'cover',
+        //   backgroundPosition: 'center',
+        //   backgroundRepeat: 'no-repeat',
+        //   opacity: 0.2,
+        //   zIndex: 0
+        // },
+        // '& > *': {
+        //   position: 'relative',
+        //   zIndex: 1
+        // }
       }}
     >
       <Box
@@ -364,6 +364,26 @@ const StepsSection: React.FC<SectionProps> = ({ theme }) => (
         </Box>
       ))}
     </Box>
+    <Link href='/credentialForm' passHref>
+      <Button
+        variant='contained'
+        sx={{
+          backgroundColor: theme.palette.t3ButtonBlue,
+          color: '#FFFFFF',
+          borderRadius: '100px',
+          py: 1.5,
+          px: 4,
+          textTransform: 'none',
+          fontSize: '16px',
+          mr: 'auto',
+          ml: 'auto',
+          display: { xs: 'block', md: 'none' },
+          mb: '90px'
+        }}
+      >
+        Start building your first skill
+      </Button>
+    </Link>
   </Box>
 )
 
@@ -377,9 +397,12 @@ const Page = () => {
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
-        background: isMobile
-          ? '#FFFFFF'
-          : 'url(/Background.png) lightgray 50% / contain no-repeat, rgba(255, 255, 255, 0.5)',
+
+        // background: isMobile
+        //   ? '#FFFFFF'
+        //   : 'url(/Background.png) lightgray 50% / contain no-repeat, rgba(255, 255, 255, 0.5)',
+        background:
+          'url(/Background.png) lightgray 50% / contain no-repeat, rgba(255, 255, 255, 0.5)',
         backgroundSize: 'contain',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
