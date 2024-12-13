@@ -1,4 +1,3 @@
-// cards.tsx
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
@@ -78,7 +77,6 @@ const Card = ({
           }
         }}
       >
-        {/* Header Section */}
         <Box
           sx={{
             display: 'flex',
@@ -100,7 +98,6 @@ const Card = ({
           <KeyboardArrowDownIcon sx={{ color: '#666', fontSize: '16px' }} />
         </Box>
 
-        {/* Description */}
         <Typography
           sx={{
             color: '#202E5B',
@@ -112,7 +109,6 @@ const Card = ({
           {description}
         </Typography>
 
-        {/* Image Section */}
         <Box
           sx={{
             position: 'relative',
@@ -122,7 +118,6 @@ const Card = ({
             mb: 1
           }}
         >
-          {/* Background Image */}
           <Box
             component='img'
             src={image}
@@ -134,7 +129,6 @@ const Card = ({
             }}
           />
 
-          {/* Play Button Overlay */}
           {showPlayButton && (
             <Box
               component='img'
@@ -152,7 +146,6 @@ const Card = ({
             />
           )}
 
-          {/* Timer */}
           {showTimer && (
             <Box
               sx={{
@@ -180,7 +173,6 @@ const Card = ({
           )}
         </Box>
 
-        {/* Criteria */}
         <Box sx={{ mb: 1 }}>
           <Typography
             sx={{
@@ -207,7 +199,6 @@ const Card = ({
           ))}
         </Box>
 
-        {/* Duration */}
         {showDuration && (
           <Box sx={{ mb: 1 }}>
             <Typography
@@ -232,7 +223,6 @@ const Card = ({
           </Box>
         )}
 
-        {/* Evidence */}
         {showEvidence && (
           <Box>
             <Typography
@@ -249,7 +239,7 @@ const Card = ({
               <Typography
                 key={`evidence-${index}`}
                 sx={{
-                  color: '#000E40', // Bullet and default text color
+                  color: '#000E40',
                   fontSize: '9px',
                   pl: 1,
                   lineHeight: 1.2
@@ -258,7 +248,7 @@ const Card = ({
                 •{' '}
                 <span
                   style={{
-                    color: '#003FE0', // Blue color for the text
+                    color: '#003FE0',
                     textDecoration: 'underline',
                     cursor: 'pointer'
                   }}
