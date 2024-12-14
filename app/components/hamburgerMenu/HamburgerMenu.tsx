@@ -96,105 +96,138 @@ const HamburgerMenu = () => {
             {session ? (
               <>
                 {/* Links with underline effect */}
-                <Link href='/claims' passHref>
+                <Link href='/credentialForm' passHref style={{ width: '100%' }}>
                   <Box
                     sx={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start'
+                      alignItems: 'center',
+                      width: '100%',
+                      justifyContent: 'space-between'
                     }}
                   >
-                    <Typography
+                    <Box
                       sx={{
-                        fontSize: '16px',
-                        fontWeight: isActive('/claims') ? '600' : '400',
-                        color: isActive('/claims') ? '#003FE0' : 'inherit',
-                        cursor: 'pointer',
-                        display: 'inline-block',
-                        position: 'relative',
-                        height: '22px'
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        flex: 1
                       }}
                     >
-                      My Skills
-                      {isActive('/claims') && (
-                        <Box
-                          sx={{
-                            height: '2px',
-                            width: '100%',
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                            backgroundColor: '#003FE0'
-                          }}
-                        />
-                      )}
-                    </Typography>
-                  </Box>
-                </Link>
-                <Link href='/credentialForm' passHref>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start'
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: isActive('/credentialForm') ? '600' : '400',
-                        color: isActive('/credentialForm') ? '#003FE0' : 'inherit',
-                        cursor: 'pointer',
-                        display: 'inline-block',
-                        position: 'relative',
-                        height: '22px'
-                      }}
-                    >
-                      Add a Skill
-                      {isActive('/credentialForm') && (
-                        <Box
-                          sx={{
-                            height: '2px',
-                            width: '100%',
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                            backgroundColor: '#003FE0'
-                          }}
-                        />
-                      )}
-                    </Typography>
-                  </Box>
-                </Link>
-                <Link href='/credentialImportForm' passHref>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start'
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: isActive('/credentialImportForm') ? '600' : '400',
-                        color: isActive('/credentialImportForm') ? '#003FE0' : 'inherit',
-                        cursor: 'pointer',
-                        height: '22px'
-                      }}
-                    >
-                      Import a Skill Credential
-                    </Typography>
-                    {isActive('/credentialImportForm') && (
-                      <Box
+                      <Typography
                         sx={{
-                          height: '2px',
-                          width: '100%',
-                          mt: '5px',
-                          backgroundColor: '#003FE0'
+                          fontSize: '16px',
+                          fontWeight: isActive('/credentialForm') ? '600' : '400',
+                          color: isActive('/credentialForm') ? '#003FE0' : 'inherit',
+                          cursor: 'pointer',
+                          display: 'inline-block',
+                          position: 'relative',
+                          height: '22px'
                         }}
-                      />
-                    )}
+                      >
+                        Add a New Skill
+                        {isActive('/credentialForm') && (
+                          <Box
+                            sx={{
+                              height: '2px',
+                              width: '100%',
+                              position: 'absolute',
+                              bottom: 0,
+                              left: 0,
+                              backgroundColor: '#003FE0'
+                            }}
+                          />
+                        )}
+                      </Typography>
+                    </Box>
+                    <ArrowForwardIosIcon fontSize='small' />
+                  </Box>
+                </Link>
+                <Link href='/claims ' passHref style={{ width: '100%' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%'
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start'
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: '16px',
+                          fontWeight: isActive('/claims') ? '600' : '400',
+                          color: isActive('/claims') ? '#003FE0' : 'inherit',
+                          cursor: 'pointer',
+                          display: 'inline-block',
+                          position: 'relative',
+                          height: '22px'
+                        }}
+                      >
+                        My Skills
+                        {isActive('/claims') && (
+                          <Box
+                            sx={{
+                              height: '2px',
+                              width: '100%',
+                              position: 'absolute',
+                              bottom: 0,
+                              left: 0,
+                              backgroundColor: '#003FE0'
+                            }}
+                          />
+                        )}
+                      </Typography>
+                    </Box>
+                    <ArrowForwardIosIcon fontSize='small' />
+                  </Box>
+                </Link>
+                <Link href='/credentialImportForm' passHref style={{ width: '100%' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%'
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start'
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: '16px',
+                          fontWeight: isActive('/credentialImportForm') ? '600' : '400',
+                          color: isActive('/credentialImportForm')
+                            ? '#003FE0'
+                            : 'inherit',
+                          cursor: 'pointer',
+                          height: '22px'
+                        }}
+                      >
+                        Import a Skill Credential
+                      </Typography>
+                      {isActive('/credentialImportForm') && (
+                        <Box
+                          sx={{
+                            height: '2px',
+                            width: '100%',
+                            mt: '5px',
+                            backgroundColor: '#003FE0'
+                          }}
+                        />
+                      )}
+                    </Box>
+                    <ArrowForwardIosIcon fontSize='small' />
                   </Box>
                 </Link>
               </>
@@ -225,7 +258,6 @@ const HamburgerMenu = () => {
                     textTransform: 'capitalize',
                     backgroundColor: '#003FE0',
                     color: '#FFF',
-                    // mt: 4,
                     mb: '30px',
                     '&:hover': {
                       backgroundColor: '#003FE0'
@@ -243,8 +275,9 @@ const HamburgerMenu = () => {
           </Box>
 
           {/* About and Support Links */}
-          {/* Uncomment these if needed */}
-          <Box sx={{ width: '100%' }}>
+          <Box
+            sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '22px' }}
+          >
             <Link href='/about' passHref>
               <Box
                 sx={{
@@ -262,14 +295,14 @@ const HamburgerMenu = () => {
                 <ArrowForwardIosIcon fontSize='small' />
               </Box>
             </Link>
-            <Link href='/support' passHref>
+            <Link href='mailto:support@opencreds.net' passHref>
               <Box
                 sx={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   width: '100%',
-                  mt: 2
+                  pb: '6px'
                 }}
               >
                 <Typography sx={{ fontWeight: 400, fontSize: '16px', height: '22px' }}>
