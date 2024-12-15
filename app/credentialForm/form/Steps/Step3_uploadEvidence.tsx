@@ -2,10 +2,14 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Box, Typography, styled, Card } from '@mui/material'
 =======
 import { Box, Typography, styled, Card, CardMedia } from '@mui/material'
 >>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
+=======
+import { Box, Typography, styled, Card } from '@mui/material'
+>>>>>>> af58c14 (applay the functionality of the movement up and down and delete the evidences)
 
 import FileListDisplay from '../../../components/FileList'
 import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-storage'
@@ -378,9 +382,13 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
               onNameChange={handleNameChange}
               onSetAsFeatured={setAsFeatured}
 <<<<<<< HEAD
+<<<<<<< HEAD
               onReorder={handleReorder}
 =======
 >>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
+=======
+              onReorder={handleReorder}
+>>>>>>> af58c14 (applay the functionality of the movement up and down and delete the evidences)
             />
             <SVGUploadMedia />
 
