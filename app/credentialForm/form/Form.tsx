@@ -210,7 +210,7 @@ const Form = ({ onStepChange }: any) => {
           gap: '30px',
           alignItems: 'center',
           justifyItems: 'center',
-          padding: ' 1px 20px 20px',
+          padding: ' 20px 20px 20px',
           overflow: 'auto',
           width: '100%',
           maxWidth: '720px',
@@ -226,18 +226,6 @@ const Form = ({ onStepChange }: any) => {
             maxWidth: { md: '720px' }
           }}
         >
-          {activeStep >= 2 && activeStep <= 4 && (
-            <Button
-              onClick={handleBack}
-              sx={{ textTransform: 'capitalize', p: '0', mr: '5px' }}
-            >
-              <Box sx={{ mt: 1 }}>
-                <SVGBack />
-              </Box>
-              Back
-            </Button>
-          )}
-
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 0 && (
               <Slide in={true} direction={direction} timeout={500}>

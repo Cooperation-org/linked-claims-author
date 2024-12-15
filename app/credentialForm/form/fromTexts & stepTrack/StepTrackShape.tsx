@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Box, Tooltip, Snackbar, Alert } from '@mui/material'
+import { Box, Tooltip, Snackbar, Alert, Button } from '@mui/material'
 import { useStepContext } from '../StepContext'
 import { useSession } from 'next-auth/react'
-import { SVGCompleteStep } from '../../../Assets/SVGs'
+import { SVGBack, SVGCompleteStep } from '../../../Assets/SVGs'
 
 export function StepTrackShape() {
-  const { activeStep, setActiveStep } = useStepContext()
+  const { activeStep, setActiveStep, handleBack, handleNext } = useStepContext()
   const { data: session } = useSession()
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
@@ -25,17 +25,20 @@ export function StepTrackShape() {
     let content
     let bgColor
     let textColor = 'black'
+    let borderColor
 
-    if (step < activeStep) {
+    if (step + 1 < activeStep) {
       // **Completed Steps**
       content = <SVGCompleteStep />
-    } else if (step === activeStep) {
+    } else if (step + 1 === activeStep) {
       content = step + 1
-      bgColor = '#003FE0'
+      bgColor = '#002bb3'
       textColor = 'white'
+      borderColor = '#002bb3'
     } else {
       content = step + 1
-      bgColor = '#d1d5db'
+      bgColor = 'white'
+      borderColor = '#002bb3'
     }
     const handleStepClick = () => {
       if (!session?.accessToken) {
@@ -62,6 +65,7 @@ export function StepTrackShape() {
             bgcolor: bgColor,
             color: textColor,
             borderRadius: '50%',
+            border: `1px solid ${borderColor}`,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -82,10 +86,24 @@ export function StepTrackShape() {
   }
 
   return (
-    <>
+    <Box
+      sx={{
+        display: 'flex',
+        gap: '10px',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      {activeStep >= 2 && activeStep <= 4 && (
+        <Button
+          onClick={handleBack}
+          sx={{ textTransform: 'capitalize', p: '0', mr: '5px' }}
+        >
+          Back
+        </Button>
+      )}
       <Box
         sx={{
-          width: '100%',
           display: 'flex',
           gap: '15px',
           justifyContent: 'center',
@@ -94,6 +112,15 @@ export function StepTrackShape() {
       >
         {Array.from({ length: TOTAL_STEPS }, (_, index) => renderStepBox(index))}
       </Box>
+
+      {activeStep === 3 && (
+        <Button
+          onClick={handleNext}
+          sx={{ textTransform: 'capitalize', p: '0', mr: '5px' }}
+        >
+          Skip
+        </Button>
+      )}
 
       <Snackbar
         open={openSnackbar}
@@ -107,7 +134,7 @@ export function StepTrackShape() {
             : 'Please sign in to navigate between steps.'}
         </Alert>
       </Snackbar>
-    </>
+    </Box>
   )
 }
 

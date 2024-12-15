@@ -52,12 +52,15 @@ export function Step1({ register, errors, handleNext }: Readonly<Step1Props>) {
     >
       <SVGSProfileName />
       <Typography sx={{ fontFamily: 'Lato', fontSize: '24px', fontWeight: 400 }}>
-        Hi, {session?.user?.name ?? 'Alice'}
+        Step 1
+      </Typography>
+      <Typography sx={{ fontFamily: 'Lato', fontSize: '24px', fontWeight: 400 }}>
+        please confirm your name
       </Typography>
       <StepTrackShape />
-      <Box>
+      <Box sx={{ width: '100%' }}>
         <FormLabel sx={formLabelStyles} id='name-label'>
-          Please confirm your first and last name:
+          Name (required)
         </FormLabel>
         <TextField
           {...register('fullName', {
