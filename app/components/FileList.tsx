@@ -5,9 +5,15 @@ import { Box, styled, Card, CardContent, IconButton } from '@mui/material'
 import Image from 'next/image'
 import { FileItem } from '../credentialForm/form/types/Types'
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
+<<<<<<< HEAD
 import DeleteIcon from '@mui/icons-material/Delete'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+=======
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
+import FileUploadIcon from '@mui/icons-material/FileUpload'
+import DeleteIcon from '@mui/icons-material/Delete'
+>>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
 interface FileListProps {
@@ -27,6 +33,10 @@ const FileListContainer = styled(Box)({
   width: '100%'
 })
 
+<<<<<<< HEAD
+=======
+// Helper function to check if a file is an image
+>>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
 const isImage = (fileName: string) => /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName)
 const isPDF = (fileName: string) => fileName.toLowerCase().endsWith('.pdf')
 
@@ -50,7 +60,11 @@ const renderPDFThumbnail = async (file: FileItem) => {
   return '/fallback-pdf-thumbnail.png'
 }
 
+<<<<<<< HEAD
 const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
+=======
+const FileListDisplay = ({ files, onDelete }: FileListProps) => {
+>>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
   const [pdfThumbnails, setPdfThumbnails] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -80,8 +94,22 @@ const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
 
   return (
     <FileListContainer>
+<<<<<<< HEAD
       {files.map((file, index) => (
         <Box sx={{ width: '100%' }} key={file.id}>
+=======
+      {files.map(file => (
+        <Box sx={{ width: '100%' }} key={file.id}>
+          {/* <FileItemBox key={file.googleId ?? file.id} isFeatured={file.isFeatured}>
+            {file.isFeatured ? (
+              <FeaturedLabel>Featured</FeaturedLabel>
+            ) : (
+              <SetAsFeaturedLabel onClick={() => onSetAsFeatured(file.id)}>
+                Set as Featured
+              </SetAsFeaturedLabel>
+            )}
+          </FileItemBox> */}
+>>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
           <Card
             sx={{
               width: '100%',
@@ -138,6 +166,7 @@ const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
                 borderBottomLeftRadius: 8,
                 borderBottomRightRadius: 8
               }}
+<<<<<<< HEAD
               onClick={e => e.stopPropagation()}
             >
               <IconButton
@@ -159,6 +188,20 @@ const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
                 disabled={index === files.length - 1}
               >
                 <KeyboardArrowDownIcon />
+=======
+            >
+              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
+                <DeleteIcon
+                  type='button'
+                  onClick={() => onDelete(file.googleId ?? file.id)}
+                />
+              </IconButton>
+              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
+                <FileUploadIcon />
+              </IconButton>
+              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
+                <FileDownloadIcon />
+>>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
               </IconButton>
             </Box>
           </Card>

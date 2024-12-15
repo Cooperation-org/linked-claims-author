@@ -1,7 +1,11 @@
 'use client'
 
 import React, { useState, useCallback, useEffect, useRef } from 'react'
+<<<<<<< HEAD
 import { Box, Typography, styled, Card } from '@mui/material'
+=======
+import { Box, Typography, styled, Card, CardMedia } from '@mui/material'
+>>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
 
 import FileListDisplay from '../../../components/FileList'
 import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-storage'
@@ -373,7 +377,10 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
               onDelete={handleDelete}
               onNameChange={handleNameChange}
               onSetAsFeatured={setAsFeatured}
+<<<<<<< HEAD
               onReorder={handleReorder}
+=======
+>>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
             />
             <SVGUploadMedia />
 
