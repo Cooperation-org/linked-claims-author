@@ -1,19 +1,24 @@
 import React, { useState } from 'react'
 import { useTheme } from '@mui/material/styles'
-import { Box, Typography, FormLabel, TextField, Button } from '@mui/material'
-import ClearIcon from '@mui/icons-material/Clear'
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  IconButton
+} from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import {
-  formLabelStyles,
-  TextFieldStyles,
-  portfolioTypographyStyles,
   addAnotherBoxStyles,
-  formBoxStyles,
-  formBoxStylesUrl,
   addAnotherButtonStyles,
   addAnotherIconStyles
 } from './Styles/appStyles'
 import { handleUrlValidation } from '../utils/urlValidation'
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
+import FileUploadIcon from '@mui/icons-material/FileUpload'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 interface LinkItem {
   id: string
@@ -42,11 +47,7 @@ const LinkAdder: React.FC<LinkAdderProps> = ({
   onNameChange,
   onUrlChange,
   maxLinks = 5,
-  errors = {},
-  nameLabel = 'Name',
-  urlLabel = 'URL',
-  namePlaceholder = '(e.g., LinkedIn profile, github repo, etc.)',
-  urlPlaceholder = 'https://'
+  errors = {}
 }) => {
   const theme = useTheme()
   const [urlErrors, setUrlErrors] = useState<string[]>([])
@@ -63,54 +64,90 @@ const LinkAdder: React.FC<LinkAdderProps> = ({
     <>
       {fields.map((field, index) => (
         <React.Fragment key={field.id}>
-          <Box sx={formBoxStyles}>
-            <Typography sx={portfolioTypographyStyles}>
-              Evidence #{index + 1}
-              {index > 0 && (
-                <ClearIcon
-                  type='button'
-                  onClick={() => onRemove(index)}
-                  sx={{ mt: '5px', cursor: 'pointer' }}
+          <Card
+            sx={{
+              width: '100%',
+              bgcolor: 'white',
+              borderRadius: 2
+            }}
+          >
+            <CardContent sx={{ p: 4 }}>
+              <Box sx={{ mb: 4, display: 'flex', gap: '15px', alignItems: 'center' }}>
+                {/* URL Input */}
+                <Typography
+                  variant='body1'
+                  component='label'
+                  htmlFor='url'
+                  sx={{ fontWeight: 500, color: 'gray.700', display: 'block', mb: 1 }}
+                >
+                  URL
+                </Typography>
+                <TextField
+                  id='url'
+                  value={field.url}
+                  onChange={e => handleUrlValidationChange(e, index)}
+                  fullWidth
+                  variant='outlined'
+                  placeholder='www.example.com'
+                  InputProps={{
+                    sx: { bgcolor: 'blue.50', borderRadius: 1 }
+                  }}
+                  aria-labelledby={`url-label-${index}`}
+                  error={!!errors[index]?.url}
+                  helperText={urlErrors[index]}
                 />
-              )}
-            </Typography>
-            <FormLabel sx={formLabelStyles} id={`name-label-${index}`}>
-              {nameLabel}
-            </FormLabel>
-            <TextField
-              value={field.name}
-              onChange={e => onNameChange(index, e.target.value)}
-              placeholder={namePlaceholder}
-              variant='outlined'
-              sx={TextFieldStyles}
-              aria-labelledby={`name-label-${index}`}
-              error={!!errors[index]?.name}
-              helperText={errors[index]?.name?.message}
-            />
-          </Box>
-          <Box sx={formBoxStylesUrl}>
-            <FormLabel sx={formLabelStyles} id={`url-label-${index}`}>
-              {urlLabel}
-            </FormLabel>
-            <TextField
-              value={field.url}
-              onChange={e => handleUrlValidationChange(e, index)}
-              placeholder={urlPlaceholder}
-              variant='outlined'
-              sx={TextFieldStyles}
-              aria-labelledby={`url-label-${index}`}
-              error={!!errors[index]?.url}
-              helperText={urlErrors[index]}
-            />
-          </Box>
-          <Box
-            sx={{ bgcolor: theme.palette.t3LightGray }}
-            width={'100%'}
-            height={'1px'}
-          />
+              </Box>
+
+              {/* Title Input */}
+              <Box sx={{ mb: 4, display: 'flex', gap: '15px', alignItems: 'center' }}>
+                <Typography
+                  variant='body1'
+                  component='label'
+                  htmlFor='title'
+                  sx={{ fontWeight: 500, color: 'gray.700', display: 'block', mb: 1 }}
+                >
+                  Title
+                </Typography>
+                <TextField
+                  id='title'
+                  value={field.name}
+                  onChange={e => onNameChange(index, e.target.value)}
+                  fullWidth
+                  variant='outlined'
+                  placeholder='Give this URL a clear name'
+                  aria-labelledby={`name-label-${index}`}
+                  error={!!errors[index]?.name}
+                  helperText={errors[index]?.name?.message}
+                />
+              </Box>
+            </CardContent>
+
+            {/* Action Buttons */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: 1,
+                bgcolor: '#242c41',
+                p: 2,
+                borderBottomLeftRadius: 8,
+                borderBottomRightRadius: 8
+              }}
+            >
+              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
+                <DeleteIcon type='button' onClick={() => onRemove(index)} />
+              </IconButton>
+              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
+                <FileUploadIcon />
+              </IconButton>
+              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
+                <FileDownloadIcon />
+              </IconButton>
+            </Box>
+          </Card>
         </React.Fragment>
       ))}
-      {fields.length < maxLinks && (
+      {fields.length < maxLinks && fields.length !== 0 && (
         <Box sx={addAnotherBoxStyles}>
           <Button
             type='button'

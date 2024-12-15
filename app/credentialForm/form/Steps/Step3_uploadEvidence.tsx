@@ -1,29 +1,16 @@
 'use client'
 
 import React, { useState, useCallback, useEffect, useRef } from 'react'
-import {
-  Box,
-  Typography,
-  styled,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Tabs,
-  Tab
-} from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Box, Typography, styled, Card, CardMedia } from '@mui/material'
 
 import FileListDisplay from '../../../components/FileList'
 import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-storage'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
 import { useStepContext } from '../StepContext'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
-import { TasksVector } from '../../../Assets/SVGs'
+import { TasksVector, SVGUplaodLink, SVGUploadMedia } from '../../../Assets/SVGs'
 import { StepTrackShape } from '../fromTexts & stepTrack/StepTrackShape'
-import TipIcon from '../../../Assets/Images/Light Bulb.png'
-import Image from 'next/image'
 import { FileItem } from '../types/Types'
-import FileUploader from '../../../components/FileUploader'
 import LinkAdder from '../../../components/LinkAdder'
 
 interface TabPanelProps {
@@ -65,17 +52,6 @@ const StyledTipBox = styled(Box)(({ theme }) => ({
   borderRadius: '1rem'
 }))
 
-const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other }) => (
-  <div
-    role='tabpanel'
-    hidden={value !== index}
-    id={`evidence-tabpanel-${index}`}
-    aria-labelledby={`evidence-tab-${index}`}
-    {...other}
-  >
-    {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
-  </div>
-)
 const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
   setValue,
   selectedFiles,
@@ -83,18 +59,22 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
   watch
 }) => {
   const { loading, setUploadImageFn } = useStepContext()
+  const [showLinkAdder, setShowLinkAdder] = useState(false)
+  const [showMediaAdder, setShowMediaAdder] = useState(false)
   const { storage } = useGoogleDrive()
-  const [tabValue, setTabValue] = useState(0)
   const [files, setFiles] = useState<FileItem[]>([...selectedFiles])
   const [links, setLinks] = useState<LinkItem[]>([
     { id: crypto.randomUUID(), name: '', url: '' }
   ])
+  const maxFiles = 10
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+  const handleFileUploadClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click()
+  }
   useEffect(() => {
     setFiles([...selectedFiles])
   }, [selectedFiles])
-  const handleTabChange = useCallback((_: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue)
-  }, [])
   const handleFilesSelected = useCallback(
     (newFiles: FileItem[]) => {
       setFiles(newFiles)
@@ -236,6 +216,58 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
     // @ts-ignore-next-line
     setUploadImageFn(() => handleUpload)
   }, [handleUpload, setUploadImageFn])
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = event.target.files
+    if (newFiles) {
+      if (files.length + newFiles.length > maxFiles) {
+        alert(`You can only upload a maximum of ${maxFiles} files.`)
+        return
+      }
+
+      const filesArray = Array.from(newFiles)
+      const isAnyFileFeatured = files.some(file => file.isFeatured)
+      let hasSetFeatured = isAnyFileFeatured
+
+      const processFile = (file: File) => {
+        return new Promise<FileItem>(resolve => {
+          const reader = new FileReader()
+          reader.onload = e => {
+            const newFileItem: FileItem = {
+              id: crypto.randomUUID(),
+              file: file,
+              name: file.name,
+              url: e.target?.result as string,
+              isFeatured: !hasSetFeatured && files.length === 0,
+              uploaded: false,
+              fileExtension: file.name.split('.').pop() ?? ''
+            }
+
+            if (newFileItem.isFeatured) hasSetFeatured = true
+            resolve(newFileItem)
+          }
+          reader.readAsDataURL(file)
+        })
+      }
+
+      Promise.all(filesArray.map(processFile)).then(newFileItems => {
+        const updatedFiles = [...files]
+        newFileItems.forEach(newFile => {
+          const duplicateIndex = updatedFiles.findIndex(f => f.name === newFile.name)
+          if (duplicateIndex !== -1) {
+            updatedFiles[duplicateIndex] = newFile
+          } else {
+            if (newFile.isFeatured) {
+              updatedFiles.unshift(newFile)
+            } else {
+              updatedFiles.push(newFile)
+            }
+          }
+        })
+        handleFilesSelected(updatedFiles)
+      })
+    }
+  }
   return (
     <Box
       sx={{
@@ -250,187 +282,104 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
     >
       <TasksVector />
 
+      <Typography sx={{ fontFamily: 'Lato', fontSize: '24px', fontWeight: 400 }}>
+        Step 3
+      </Typography>
       <Typography
         sx={{
           fontFamily: 'Lato',
-          fontSize: '24px',
+          fontSize: '16px',
           fontWeight: 400,
-          textAlign: 'center',
-          marginBottom: '16px'
+          maxWidth: '360px',
+          textAlign: 'center'
         }}
       >
-        Do you have any supporting evidence that you&apos;d like to add?
+        Do you have any supporting documentation or links that you would like to add?{' '}
       </Typography>
 
       <StepTrackShape />
-      <Box
-        sx={{
-          width: '100%',
-          backgroundColor: '#F8FAFC',
-          borderRadius: '12px',
-          p: 3,
-          border: '1px solid #E2E8F0'
-        }}
-      >
-        <Typography
-          sx={{
-            fontFamily: 'Lato',
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#334155',
-            mb: 2
-          }}
-        >
-          How to Add Your Evidence
-        </Typography>
 
-        <Accordion
-          defaultExpanded
-          sx={{
-            backgroundColor: 'transparent',
-            boxShadow: 'none',
-            '&:before': { display: 'none' }
-          }}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ padding: 0 }}>
-            <Typography sx={{ color: '#2563EB', fontWeight: 500 }}>
-              View detailed instructions
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Box
-              component='ol'
-              sx={{
-                ml: 2,
-                '& li': {
-                  mb: 1.5,
-                  color: '#334155',
-                  fontSize: '14px',
-                  lineHeight: 1.5
-                }
-              }}
-            >
-              <li>
-                <strong>Select Your Files:</strong> Click the upload area below to choose
-                up to 10 files that demonstrate your skill or achievement.
-              </li>
-              <li>
-                <strong>Featured Evidence:</strong> The first file you upload will
-                automatically become your featured evidence. This will be the primary
-                image displayed on your credential.
-              </li>
-              <li>
-                <strong>Manage Featured Evidence:</strong> You can change your featured
-                evidence at any time by clicking the star icon next to any file in your
-                list.
-              </li>
-              <li>
-                <strong>Supported Files:</strong> You can upload images, documents, or
-                other files that showcase your work and achievements.
-              </li>
-              <li>
-                <strong>File Names:</strong> You can edit file names after upload to
-                better describe your evidence.
-              </li>
+      <Box
+        display='flex'
+        flexDirection='column'
+        bgcolor='#FFFFFF'
+        gap={3}
+        borderRadius={2}
+        width='100%'
+      >
+        {/* Add Links Section */}
+
+        <CardStyle variant='outlined' onClick={() => setShowLinkAdder(true)}>
+          {showLinkAdder && (
+            <Box mb={3} width='100%'>
+              <LinkAdder
+                fields={links}
+                onAdd={handleAddLink}
+                onRemove={handleRemoveLink}
+                onNameChange={(index, value) => handleLinkChange(index, 'name', value)}
+                onUrlChange={(index, value) => handleLinkChange(index, 'url', value)}
+                maxLinks={5}
+                nameLabel='Name'
+                urlLabel='URL'
+                namePlaceholder='(e.g., LinkedIn profile, github repo, etc.)'
+                urlPlaceholder='https://'
+              />{' '}
             </Box>
-          </AccordionDetails>
-        </Accordion>
-      </Box>
-
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          width: '100%',
-          backgroundColor: '#D1E4FF',
-          p: '1rem',
-          borderRadius: '12px',
-          gap: '1rem'
-        }}
-      >
-        <Image src={TipIcon} alt='Tip Icon' width={100} height={100} />
-        <Typography
-          sx={{
-            fontFamily: 'Lato',
-            fontSize: '16px',
-            color: '#334155'
-          }}
-        >
-          The strength of your credential is significantly enhanced when you provide
-          supporting evidence. Your featured evidence will be prominently displayed.
-        </Typography>
-      </Box>
-      <Box sx={{ width: '100%', borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          aria-label='evidence upload method tabs'
-          centered
-        >
-          <Tab label='Upload Files' id='evidence-tab-0' />
-          <Tab label='Add Links' id='evidence-tab-1' />
-        </Tabs>
-      </Box>
-      <Box sx={{ width: '100%' }}>
-        <TabPanel value={tabValue} index={0}>
-          <FileUploader
-            onFilesSelected={handleFilesSelected}
-            maxFiles={10}
-            currentFiles={files}
-          />
-
-          <Typography
-            mt={2}
-            sx={{ textAlign: 'center', fontSize: '0.875rem', color: '#666' }}
-          >
-            The first image will always be the featured image.
+          )}
+          <SVGUplaodLink />
+          <Typography variant='body1' color='primary' align='center'>
+            + Add links
+            <br />
+            (social media, articles, your website, etc.)
           </Typography>
+        </CardStyle>
 
-          <FileListDisplay
-            files={[...selectedFiles]}
-            onDelete={handleDelete}
-            onNameChange={handleNameChange}
-            onSetAsFeatured={setAsFeatured}
-          />
-        </TabPanel>
-      </Box>
+        {/* Add Media Section */}
+        <Box width='100%'>
+          <CardStyle variant='outlined' onClick={handleFileUploadClick}>
+            <FileListDisplay
+              files={[...selectedFiles]}
+              onDelete={handleDelete}
+              onNameChange={handleNameChange}
+              onSetAsFeatured={setAsFeatured}
+            />
+            <SVGUploadMedia />
 
-      <Box sx={{ width: '100%' }}>
-        <TabPanel value={tabValue} index={1}>
-          <LinkAdder
-            fields={links}
-            onAdd={handleAddLink}
-            onRemove={handleRemoveLink}
-            onNameChange={(index, value) => handleLinkChange(index, 'name', value)}
-            onUrlChange={(index, value) => handleLinkChange(index, 'url', value)}
-            maxLinks={5}
-            nameLabel='Name'
-            urlLabel='URL'
-            namePlaceholder='(e.g., LinkedIn profile, github repo, etc.)'
-            urlPlaceholder='https://'
-          />
-        </TabPanel>
+            <Typography variant='body1' color='primary' align='center'>
+              + Add media
+              <br />
+              (images, documents, video)
+            </Typography>
+            <input
+              type='file'
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+              accept='*'
+              multiple
+            />
+          </CardStyle>
+        </Box>
       </Box>
 
       <LoadingOverlay text='Uploading files...' open={loading} />
     </Box>
   )
 }
-
-const UploadBox = styled(Box)({
+const CardStyle = styled(Card)({
+  padding: '40px 20px',
+  cursor: 'pointer',
+  width: '100%',
+  transition: 'all 0.3s ease',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  padding: '40px 20px',
+  p: 4,
+  borderRadius: 2,
+  gap: 2,
   border: '2px dashed #ccc',
-  borderRadius: '12px',
-  cursor: 'pointer',
-  width: '100%',
-  backgroundColor: '#F8FAFC',
-  transition: 'all 0.3s ease',
   '&:hover': {
-    borderColor: '#2563EB',
-    backgroundColor: '#F1F5F9'
+    borderColor: '#2563EB'
   }
 })
 

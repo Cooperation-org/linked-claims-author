@@ -1,10 +1,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Box, Typography, TextField, styled } from '@mui/material'
+import { Box, styled, Card, CardContent, IconButton } from '@mui/material'
 import Image from 'next/image'
 import { FileItem } from '../credentialForm/form/types/Types'
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
+import FileUploadIcon from '@mui/icons-material/FileUpload'
+import DeleteIcon from '@mui/icons-material/Delete'
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
 interface FileListProps {
@@ -19,46 +22,9 @@ const FileListContainer = styled(Box)({
   flexDirection: 'column',
   gap: '15px',
   paddingBottom: '20px',
-  marginTop: '1rem'
+  marginTop: '1rem',
+  width: '100%'
 })
-
-const FileItemBox = styled(Box)<{ isFeatured: boolean }>(({ isFeatured, theme }) => ({
-  display: 'flex',
-  alignItems: 'end',
-  padding: '10px',
-  border: `1px solid ${isFeatured ? theme.palette.primary.main : '#ccc'}`,
-  borderRadius: '8px',
-  position: 'relative'
-}))
-
-const FeaturedLabel = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  bottom: '5px',
-  left: '10px',
-  backgroundColor: theme.palette.primary.main,
-  color: '#fff',
-  padding: '2px 8px',
-  borderRadius: '4px',
-  fontSize: '12px'
-}))
-
-const SetAsFeaturedLabel = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  bottom: '5px',
-  left: '10px',
-  color: '#fff',
-  padding: '2px 8px',
-  borderRadius: '4px',
-  fontSize: '12px',
-  border: `1px solid ${theme.palette.primary.main}`,
-  cursor: 'pointer',
-  transition: 'background-color 0.3s',
-  backgroundColor: '#77777793',
-  '&:hover': {
-    backgroundColor: theme.palette.primary.main,
-    color: '#fff'
-  }
-}))
 
 // Helper function to check if a file is an image
 const isImage = (fileName: string) => /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName)
@@ -85,12 +51,7 @@ const renderPDFThumbnail = async (file: FileItem) => {
   return '/fallback-pdf-thumbnail.png'
 }
 
-const FileListDisplay = ({
-  files,
-  onDelete,
-  onNameChange,
-  onSetAsFeatured
-}: FileListProps) => {
+const FileListDisplay = ({ files, onDelete }: FileListProps) => {
   const [pdfThumbnails, setPdfThumbnails] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -105,78 +66,88 @@ const FileListDisplay = ({
   return (
     <FileListContainer>
       {files.map(file => (
-        <FileItemBox key={file.googleId ?? file.id} isFeatured={file.isFeatured}>
-          {file.isFeatured ? (
-            <FeaturedLabel>Featured</FeaturedLabel>
-          ) : (
-            <SetAsFeaturedLabel onClick={() => onSetAsFeatured(file.id)}>
-              Set as Featured
-            </SetAsFeaturedLabel>
-          )}
-
-          <Box sx={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-            {isImage(file.name) ? (
-              <Image
-                src={file.url}
-                alt={file.name.split('.')[0]}
-                width={80}
-                height={80}
-                style={{ borderRadius: '8px' }}
-              />
-            ) : isPDF(file.name) ? (
-              <Image
-                src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
-                alt={file.name.split('.')[0]}
-                width={80}
-                height={80}
-                style={{ borderRadius: '8px' }}
-              />
+        <Box sx={{ width: '100%' }} key={file.id}>
+          {/* <FileItemBox key={file.googleId ?? file.id} isFeatured={file.isFeatured}>
+            {file.isFeatured ? (
+              <FeaturedLabel>Featured</FeaturedLabel>
             ) : (
-              <Box
-                sx={{
-                  width: 80,
-                  height: 80,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#f3f3f3',
-                  borderRadius: '8px',
-                  fontSize: '0.9rem',
-                  color: '#666'
-                }}
-              >
-                FILE
-              </Box>
+              <SetAsFeaturedLabel onClick={() => onSetAsFeatured(file.id)}>
+                Set as Featured
+              </SetAsFeaturedLabel>
             )}
-          </Box>
+          </FileItemBox> */}
+          <Card
+            sx={{
+              width: '100%',
+              bgcolor: 'white',
+              borderRadius: 2
+            }}
+          >
+            <CardContent sx={{ p: 4, width: '100%' }}>
+              <Box sx={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
+                {isImage(file.name) ? (
+                  <img
+                    src={file.url}
+                    alt={file.name.split('.')[0]}
+                    width='100%'
+                    height='100%'
+                    style={{ borderRadius: '8px' }}
+                  />
+                ) : isPDF(file.name) ? (
+                  <Image
+                    src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
+                    alt={file.name.split('.')[0]}
+                    width={80}
+                    height={80}
+                    style={{ borderRadius: '8px' }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#f3f3f3',
+                      borderRadius: '8px',
+                      fontSize: '0.9rem',
+                      color: '#666'
+                    }}
+                  >
+                    FILE
+                  </Box>
+                )}
+              </Box>
+            </CardContent>
 
-          <Box sx={{ flex: 1 }}>
-            <Typography variant='caption' color='textSecondary'>
-              File name (publicly visible)
-            </Typography>
-            <TextField
-              variant='outlined'
-              size='small'
-              value={file.name.split('.')[0]}
-              onChange={e => onNameChange(file.id, e.target.value)}
-              sx={{ marginTop: '5px', width: '100%' }}
-            />
-          </Box>
-
-          <Box sx={{ marginLeft: 'auto' }}>
-            <Typography
+            {/* Action Buttons */}
+            <Box
               sx={{
-                cursor: 'pointer',
-                textAlign: 'end',
-                fontSize: '0.8rem',
-                ml: 2
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: 1,
+                bgcolor: '#242c41',
+                p: 2,
+                borderBottomLeftRadius: 8,
+                borderBottomRightRadius: 8
               }}
-              onClick={() => onDelete(file.googleId ?? file.id)}
             >
-              Delete
-            </Typography>
-          </Box>
-        </FileItemBox>
+              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
+                <DeleteIcon
+                  type='button'
+                  onClick={() => onDelete(file.googleId ?? file.id)}
+                />
+              </IconButton>
+              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
+                <FileUploadIcon />
+              </IconButton>
+              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
+                <FileDownloadIcon />
+              </IconButton>
+            </Box>
+          </Card>
+        </Box>
       ))}
     </FileListContainer>
   )
