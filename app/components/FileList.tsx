@@ -5,16 +5,17 @@ import { Box, styled, Card, CardContent, IconButton } from '@mui/material'
 import Image from 'next/image'
 import { FileItem } from '../credentialForm/form/types/Types'
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
-import FileDownloadIcon from '@mui/icons-material/FileDownload'
-import FileUploadIcon from '@mui/icons-material/FileUpload'
 import DeleteIcon from '@mui/icons-material/Delete'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
 interface FileListProps {
   files: FileItem[]
-  onDelete: (id: string) => void
+  onDelete: (event: React.MouseEvent, id: string) => void
   onNameChange: (id: string, newName: string) => void
   onSetAsFeatured: (id: string) => void
+  onReorder: (files: FileItem[]) => void
 }
 
 const FileListContainer = styled(Box)({
@@ -26,9 +27,7 @@ const FileListContainer = styled(Box)({
   width: '100%'
 })
 
-// Helper function to check if a file is an image
 const isImage = (fileName: string) => /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName)
-
 const isPDF = (fileName: string) => fileName.toLowerCase().endsWith('.pdf')
 
 const renderPDFThumbnail = async (file: FileItem) => {
@@ -51,7 +50,7 @@ const renderPDFThumbnail = async (file: FileItem) => {
   return '/fallback-pdf-thumbnail.png'
 }
 
-const FileListDisplay = ({ files, onDelete }: FileListProps) => {
+const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
   const [pdfThumbnails, setPdfThumbnails] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -63,19 +62,26 @@ const FileListDisplay = ({ files, onDelete }: FileListProps) => {
     })
   }, [files, pdfThumbnails])
 
+  const handleMoveItem = (
+    event: React.MouseEvent,
+    index: number,
+    direction: 'up' | 'down'
+  ) => {
+    event.stopPropagation()
+    const newFiles = [...files]
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+
+    if (newIndex >= 0 && newIndex < files.length) {
+      // Swap items
+      ;[newFiles[index], newFiles[newIndex]] = [newFiles[newIndex], newFiles[index]]
+      onReorder(newFiles)
+    }
+  }
+
   return (
     <FileListContainer>
-      {files.map(file => (
+      {files.map((file, index) => (
         <Box sx={{ width: '100%' }} key={file.id}>
-          {/* <FileItemBox key={file.googleId ?? file.id} isFeatured={file.isFeatured}>
-            {file.isFeatured ? (
-              <FeaturedLabel>Featured</FeaturedLabel>
-            ) : (
-              <SetAsFeaturedLabel onClick={() => onSetAsFeatured(file.id)}>
-                Set as Featured
-              </SetAsFeaturedLabel>
-            )}
-          </FileItemBox> */}
           <Card
             sx={{
               width: '100%',
@@ -132,18 +138,27 @@ const FileListDisplay = ({ files, onDelete }: FileListProps) => {
                 borderBottomLeftRadius: 8,
                 borderBottomRightRadius: 8
               }}
+              onClick={e => e.stopPropagation()}
             >
-              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
-                <DeleteIcon
-                  type='button'
-                  onClick={() => onDelete(file.googleId ?? file.id)}
-                />
+              <IconButton
+                sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
+                onClick={e => onDelete(e, file.googleId ?? file.id)}
+              >
+                <DeleteIcon />
               </IconButton>
-              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
-                <FileUploadIcon />
+              <IconButton
+                sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
+                onClick={e => handleMoveItem(e, index, 'up')}
+                disabled={index === 0}
+              >
+                <KeyboardArrowUpIcon />
               </IconButton>
-              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
-                <FileDownloadIcon />
+              <IconButton
+                sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
+                onClick={e => handleMoveItem(e, index, 'down')}
+                disabled={index === files.length - 1}
+              >
+                <KeyboardArrowDownIcon />
               </IconButton>
             </Box>
           </Card>
