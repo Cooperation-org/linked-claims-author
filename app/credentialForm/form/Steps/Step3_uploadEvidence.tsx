@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useCallback, useEffect, useRef } from 'react'
-import { Box, Typography, styled, Card, CardMedia } from '@mui/material'
+import { Box, Typography, styled, Card } from '@mui/material'
 
 import FileListDisplay from '../../../components/FileList'
 import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-storage'
@@ -82,6 +82,37 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
     },
     [setSelectedFiles]
   )
+
+  const handleReorder = useCallback(
+    (reorderedFiles: FileItem[]) => {
+      // Update local state
+      setFiles(reorderedFiles)
+      setSelectedFiles(reorderedFiles)
+
+      // Update portfolio items order in form
+      const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
+      const newPortfolioOrder = reorderedFiles
+        .filter(file => file.googleId) // Only include uploaded files
+        .map(file => ({
+          name: file.name,
+          url: `https://drive.google.com/uc?export=view&id=${file.googleId}`,
+          googleId: file.googleId
+        }))
+
+      // If there's a featured file (first in the list), update the evidenceLink
+      if (reorderedFiles[0]?.googleId) {
+        setValue(
+          'evidenceLink',
+          `https://drive.google.com/uc?export=view&id=${reorderedFiles[0].googleId}`
+        )
+      }
+
+      // Update the portfolio with the new order
+      setValue('portfolio', newPortfolioOrder)
+    },
+    [setValue, watch, setSelectedFiles]
+  )
+
   const handleUpload = useCallback(async () => {
     try {
       if (selectedFiles.length === 0) return
@@ -181,7 +212,8 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
     [setSelectedFiles]
   )
   const handleDelete = useCallback(
-    (id: string) => {
+    (event: React.MouseEvent, id: string) => {
+      event.stopPropagation()
       let isFeaturedFileDeleted = false
       setFiles(prevFiles => {
         const updatedFiles = prevFiles.filter(
@@ -342,6 +374,7 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
               onDelete={handleDelete}
               onNameChange={handleNameChange}
               onSetAsFeatured={setAsFeatured}
+              onReorder={handleReorder}
             />
             <SVGUploadMedia />
 
