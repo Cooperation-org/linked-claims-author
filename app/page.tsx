@@ -79,7 +79,7 @@ const EXAMPLE_CARDS = [
       'Code Repository (GitHub/Bitbucket)'
     ],
     width: '185px',
-    height: '410px',
+    height: '412px',
     rotation: 'rotate(5deg)',
     image: '/dev.jpg',
     showPlayButton: false,
