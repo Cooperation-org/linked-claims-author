@@ -18,7 +18,8 @@ import { createDID } from '../../../utils/signCred'
 import { signCred } from '../../../utils/credential'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
-import { Logo } from '../../../Assets/SVGs'
+import { SVGBadge } from '../../../Assets/SVGs'
+
 interface FormProps {
   fullName: string
   email: string
@@ -183,7 +184,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                   mt: 1
                 }}
               >
-                <Logo />
+                <SVGBadge />
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Typography
