@@ -162,6 +162,11 @@ const ClaimsPage: React.FC = () => {
     setOpenConfirmDialog(true)
     handleMenuClose()
   }
+  const handleCopyUrl = async (claimId: string) => {
+    const url = `http://localhost:3000/view/${claimId}`
+
+    navigator.clipboard.writeText(url)
+  }
 
   const handleConfirmDelete = async () => {
     if (!selectedClaim || !storage) return
@@ -350,6 +355,7 @@ const ClaimsPage: React.FC = () => {
                           </Button>
 
                           <Button
+                            onClick={() => handleCopyUrl(claim[0].id)}
                             sx={{
                               display: 'flex',
                               alignItems: 'center',
