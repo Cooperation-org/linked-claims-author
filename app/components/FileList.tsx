@@ -5,28 +5,17 @@ import { Box, styled, Card, CardContent, IconButton } from '@mui/material'
 import Image from 'next/image'
 import { FileItem } from '../credentialForm/form/types/Types'
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
-<<<<<<< HEAD
-<<<<<<< HEAD
 import DeleteIcon from '@mui/icons-material/Delete'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-=======
-import FileDownloadIcon from '@mui/icons-material/FileDownload'
-import FileUploadIcon from '@mui/icons-material/FileUpload'
-import DeleteIcon from '@mui/icons-material/Delete'
->>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
-=======
-import DeleteIcon from '@mui/icons-material/Delete'
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
->>>>>>> af58c14 (applay the functionality of the movement up and down and delete the evidences)
+
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
 interface FileListProps {
   files: FileItem[]
   onDelete: (event: React.MouseEvent, id: string) => void
-  onNameChange: (id: string, newName: string) => void
-  onSetAsFeatured: (id: string) => void
+  onNameChange?: (id: string, newName: string) => void
+  onSetAsFeatured?: (id: string) => void
   onReorder: (files: FileItem[]) => void
 }
 
@@ -39,13 +28,6 @@ const FileListContainer = styled(Box)({
   width: '100%'
 })
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-// Helper function to check if a file is an image
->>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
-=======
->>>>>>> af58c14 (applay the functionality of the movement up and down and delete the evidences)
 const isImage = (fileName: string) => /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName)
 const isPDF = (fileName: string) => fileName.toLowerCase().endsWith('.pdf')
 
@@ -69,15 +51,7 @@ const renderPDFThumbnail = async (file: FileItem) => {
   return '/fallback-pdf-thumbnail.png'
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
-=======
-const FileListDisplay = ({ files, onDelete }: FileListProps) => {
->>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
-=======
-const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
->>>>>>> af58c14 (applay the functionality of the movement up and down and delete the evidences)
+const FileListDisplay: React.FC<FileListProps> = ({ files, onDelete, onReorder }) => {
   const [pdfThumbnails, setPdfThumbnails] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -105,29 +79,52 @@ const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
     }
   }
 
+  const renderFilePreview = (file: FileItem) => {
+    if (isImage(file.name)) {
+      return (
+        <Image
+          src={file.url}
+          alt={file.name.split('.')[0]}
+          width={80}
+          height={80}
+          style={{ borderRadius: '8px' }}
+        />
+      )
+    } else if (isPDF(file.name)) {
+      return (
+        <Image
+          src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
+          alt={file.name.split('.')[0]}
+          width={80}
+          height={80}
+          style={{ borderRadius: '8px' }}
+        />
+      )
+    } else {
+      return (
+        <Box
+          sx={{
+            width: 80,
+            height: 80,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#f3f3f3',
+            borderRadius: '8px',
+            fontSize: '0.9rem',
+            color: '#666'
+          }}
+        >
+          FILE
+        </Box>
+      )
+    }
+  }
+
   return (
     <FileListContainer>
-<<<<<<< HEAD
-<<<<<<< HEAD
       {files.map((file, index) => (
         <Box sx={{ width: '100%' }} key={file.id}>
-=======
-      {files.map(file => (
-        <Box sx={{ width: '100%' }} key={file.id}>
-          {/* <FileItemBox key={file.googleId ?? file.id} isFeatured={file.isFeatured}>
-            {file.isFeatured ? (
-              <FeaturedLabel>Featured</FeaturedLabel>
-            ) : (
-              <SetAsFeaturedLabel onClick={() => onSetAsFeatured(file.id)}>
-                Set as Featured
-              </SetAsFeaturedLabel>
-            )}
-          </FileItemBox> */}
->>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
-=======
-      {files.map((file, index) => (
-        <Box sx={{ width: '100%' }} key={file.id}>
->>>>>>> af58c14 (applay the functionality of the movement up and down and delete the evidences)
           <Card
             sx={{
               width: '100%',
@@ -137,39 +134,7 @@ const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
           >
             <CardContent sx={{ p: 4, width: '100%' }}>
               <Box sx={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                {isImage(file.name) ? (
-                  <img
-                    src={file.url}
-                    alt={file.name.split('.')[0]}
-                    width='100%'
-                    height='100%'
-                    style={{ borderRadius: '8px' }}
-                  />
-                ) : isPDF(file.name) ? (
-                  <Image
-                    src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
-                    alt={file.name.split('.')[0]}
-                    width={80}
-                    height={80}
-                    style={{ borderRadius: '8px' }}
-                  />
-                ) : (
-                  <Box
-                    sx={{
-                      width: 80,
-                      height: 80,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: '#f3f3f3',
-                      borderRadius: '8px',
-                      fontSize: '0.9rem',
-                      color: '#666'
-                    }}
-                  >
-                    FILE
-                  </Box>
-                )}
+                {renderFilePreview(file)}
               </Box>
             </CardContent>
 
@@ -184,8 +149,6 @@ const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
                 borderBottomLeftRadius: 8,
                 borderBottomRightRadius: 8
               }}
-<<<<<<< HEAD
-<<<<<<< HEAD
               onClick={e => e.stopPropagation()}
             >
               <IconButton
@@ -207,36 +170,6 @@ const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
                 disabled={index === files.length - 1}
               >
                 <KeyboardArrowDownIcon />
-=======
-=======
-              onClick={e => e.stopPropagation()}
->>>>>>> af58c14 (applay the functionality of the movement up and down and delete the evidences)
-            >
-              <IconButton
-                sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
-                onClick={e => onDelete(e, file.googleId ?? file.id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-              <IconButton
-                sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
-                onClick={e => handleMoveItem(e, index, 'up')}
-                disabled={index === 0}
-              >
-                <KeyboardArrowUpIcon />
-              </IconButton>
-<<<<<<< HEAD
-              <IconButton sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}>
-                <FileDownloadIcon />
->>>>>>> e564c00 (match ui with wireframes on the creating cred flow (not complete yet))
-=======
-              <IconButton
-                sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
-                onClick={e => handleMoveItem(e, index, 'down')}
-                disabled={index === files.length - 1}
-              >
-                <KeyboardArrowDownIcon />
->>>>>>> af58c14 (applay the functionality of the movement up and down and delete the evidences)
               </IconButton>
             </Box>
           </Card>
