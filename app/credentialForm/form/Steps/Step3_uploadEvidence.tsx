@@ -139,7 +139,6 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
         })
       )
       const featuredFile = uploadedFiles.find(file => file.isFeatured)
-      const nonFeaturedFiles = uploadedFiles.filter(file => !file.isFeatured)
       if (featuredFile?.googleId) {
         setValue(
           'evidenceLink',
@@ -147,7 +146,7 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
         )
       }
       const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
-      const newPortfolioEntries: PortfolioItem[] = nonFeaturedFiles.map(file => ({
+      const newPortfolioEntries: PortfolioItem[] = uploadedFiles.map(file => ({
         name: file.name,
         url: `https://drive.google.com/uc?export=view&id=${file.googleId}`,
         googleId: file.googleId
