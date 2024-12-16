@@ -1,7 +1,19 @@
 'use client'
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { Typography, CircularProgress, Box, Button, MenuItem, Menu } from '@mui/material'
+import {
+  Typography,
+  CircularProgress,
+  Box,
+  Button,
+  MenuItem,
+  Menu,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from '@mui/material'
 import { useSession } from 'next-auth/react'
 import { BlueBadge } from '../Assets/SVGs'
 import useGoogleDrive from '../hooks/useGoogleDrive'
@@ -126,6 +138,7 @@ const ClaimsPage: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [showOverlappingCards, setShowOverlappingCards] = useState(false)
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, claim: any) => {
     setAnchorEl(event.currentTarget)
@@ -145,7 +158,12 @@ const ClaimsPage: React.FC = () => {
     handleMenuClose()
   }
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
+    setOpenConfirmDialog(true)
+    handleMenuClose()
+  }
+
+  const handleConfirmDelete = async () => {
     if (!selectedClaim || !storage) return
 
     try {
@@ -173,7 +191,7 @@ const ClaimsPage: React.FC = () => {
       setShowOverlappingCards(false)
     } finally {
       setIsDeleting(false)
-      handleMenuClose()
+      setOpenConfirmDialog(false)
     }
   }
 
@@ -426,6 +444,7 @@ const ClaimsPage: React.FC = () => {
                               Continuing editing
                             </span>
                           </MenuItem>
+
                           <MenuItem
                             onClick={handleDelete}
                             disabled={isDeleting}
@@ -464,6 +483,99 @@ const ClaimsPage: React.FC = () => {
           )
         )}
       </Box>
+      <Dialog
+        open={openConfirmDialog}
+        onClose={() => setOpenConfirmDialog(false)}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+        PaperProps={{
+          sx: {
+            backgroundColor: '#1a1c1e',
+            borderRadius: '12px',
+            maxWidth: '400px',
+            width: '100%',
+            padding: '24px'
+          }
+        }}
+      >
+        <DialogTitle
+          id='alert-dialog-title'
+          sx={{
+            color: '#fff',
+            fontSize: '24px',
+            padding: 0,
+            paddingBottom: '8px'
+          }}
+        >
+          Are you sure?
+        </DialogTitle>
+        <DialogContent sx={{ padding: 0 }}>
+          <DialogContentText
+            id='alert-dialog-description'
+            sx={{
+              color: 'rgba(255, 255, 255, 0.8)',
+              fontSize: '16px'
+            }}
+          >
+            You cannot recover deleted items and any links to this content will be broken.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            width: '100%',
+            padding: 0,
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Button
+            onClick={() => setOpenConfirmDialog(false)}
+            sx={{
+              backgroundColor: '#FFFFFF',
+              color: '#2563eb',
+              borderRadius: '100px',
+              padding: '8px 24px',
+              border: '1px solid #2563eb',
+              fontWeight: 'bold',
+              textTransform: 'none',
+              fontSize: '16px',
+              width: '50%',
+              '&:hover': {
+                backgroundColor: '#FFFFFF'
+              }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            disabled={isDeleting}
+            sx={{
+              backgroundColor: '#2563eb',
+              color: '#fff',
+              borderRadius: '100px',
+              padding: '8px 24px',
+              textTransform: 'none',
+              fontWeight: 'bold',
+              fontSize: '16px',
+              width: '50%',
+              '&:hover': {
+                backgroundColor: '#1d4ed8'
+              },
+              '&:disabled': {
+                backgroundColor: 'rgba(37, 99, 235, 0.5)',
+                color: 'rgba(255, 255, 255, 0.5)'
+              }
+            }}
+          >
+            {isDeleting ? (
+              <CircularProgress size={20} sx={{ color: '#fff' }} />
+            ) : (
+              'Yes, delete'
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <LoadingOverlay text='Deleting...' open={showOverlappingCards} />
     </Box>
   )
