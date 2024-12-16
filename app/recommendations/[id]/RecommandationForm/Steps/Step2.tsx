@@ -1,8 +1,13 @@
 'use client'
 
 import React from 'react'
-import { Box, FormLabel, TextField } from '@mui/material'
-import { UseFormRegister, FieldErrors, UseFormSetValue } from 'react-hook-form'
+import { Autocomplete, Box, FormLabel, TextField, Typography } from '@mui/material'
+import {
+  UseFormRegister,
+  FieldErrors,
+  UseFormSetValue,
+  Controller
+} from 'react-hook-form'
 import TextEditor from '../TextEditor/Texteditor'
 import { FormData } from '../../../../credentialForm/form/types/Types'
 import {
@@ -11,6 +16,7 @@ import {
   inputPropsStyles,
   TextFieldStyles
 } from '../../../../components/Styles/appStyles'
+import Step3 from './Step3'
 
 interface Step2Props {
   register: UseFormRegister<FormData>
@@ -18,9 +24,31 @@ interface Step2Props {
   setValue: UseFormSetValue<FormData>
   errors: FieldErrors<FormData>
   fullName: string
+  control: any
+  selectedFiles: any
+  setSelectedFiles: any
 }
 
-const Step2: React.FC<Step2Props> = ({ register, watch, setValue, errors, fullName }) => {
+const options = [
+  'Facebook',
+  'Twitter',
+  'Instagram',
+  'LinkedIn',
+  'GitHub',
+  'YouTube',
+  'Other'
+]
+
+const Step2: React.FC<Step2Props> = ({
+  register,
+  watch,
+  setValue,
+  errors,
+  fullName,
+  control,
+  selectedFiles,
+  setSelectedFiles
+}) => {
   const displayName = fullName || ''
 
   const handleEditorChange = (field: string) => (value: string) => {
@@ -28,40 +56,132 @@ const Step2: React.FC<Step2Props> = ({ register, watch, setValue, errors, fullNa
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-      <Box sx={{ width: '100%' }}>
-        <FormLabel sx={formLabelStyles} id='full-name-label'>
-          Full Name <span style={formLabelSpanStyles}> *</span>
-        </FormLabel>
-        <TextField
-          {...register('fullName', {
-            required: 'Full name is required'
-          })}
-          placeholder='Firstname Lastname'
-          variant='outlined'
-          sx={TextFieldStyles}
-          aria-labelledby='full-name-label'
-          inputProps={{
-            'aria-label': 'Full Name',
-            style: inputPropsStyles
-          }}
-          error={!!errors.fullName}
-          helperText={errors.fullName?.message}
-        />
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '30px',
+        bgcolor: '#f0f4f8',
+        borderRadius: 2
+      }}
+    >
+      <Box
+        sx={{
+          width: '100%',
+          bgcolor: 'white',
+          p: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '30px',
+          borderRadius: 2
+        }}
+      >
+        <Box sx={{ width: '100%' }}>
+          <Typography sx={{ fontSize: '32px', mb: '20px' }}>
+            Recommendation Details
+          </Typography>
+          <FormLabel sx={formLabelStyles} id='full-name-label'>
+            Name (required):{' '}
+          </FormLabel>
+          <TextField
+            {...register('fullName', {
+              required: 'Full name is required'
+            })}
+            placeholder='Firstname Lastname'
+            variant='outlined'
+            sx={TextFieldStyles}
+            aria-labelledby='full-name-label'
+            inputProps={{
+              'aria-label': 'Full Name',
+              style: inputPropsStyles
+            }}
+            error={!!errors.fullName}
+            helperText={errors.fullName?.message}
+          />
+        </Box>
+
+        <Box>
+          <FormLabel sx={formLabelStyles} id='name-label'>
+            How do you know {displayName} (required)?{' '}
+          </FormLabel>
+
+          <Controller
+            name='credentialName'
+            control={control}
+            rules={{ required: 'Skill name is required' }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Autocomplete
+                freeSolo
+                options={options}
+                value={value || ''}
+                onChange={(event, newValue) => {
+                  onChange(newValue)
+                }}
+                onInputChange={(event, newInputValue) => {
+                  onChange(newInputValue)
+                }}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    placeholder='Example: Caring for (cultivating) healthy plants'
+                    variant='outlined'
+                    sx={TextFieldStyles}
+                    aria-labelledby='name-label'
+                    inputProps={{
+                      ...params.inputProps,
+                      'aria-label': 'skill-name',
+                      style: inputPropsStyles
+                    }}
+                    error={!!error}
+                    helperText={error ? error.message : ''}
+                  />
+                )}
+              />
+            )}
+          />
+        </Box>
+
+        <Box>
+          <Typography sx={formLabelStyles} id='recommendation-text-label'>
+            Feel free to use the example text below or write your own recommendation:{' '}
+          </Typography>
+          <TextEditor
+            value={watch('recommendationText') || ''}
+            onChange={handleEditorChange('recommendationText')}
+            placeholder={`I’ve worked with ${displayName} for about two years, managing her at The Coffee Place. She is an excellent worker, prompt, and applies the skills she learned in Barista training on a daily basis.`}
+          />
+          {errors.recommendationText && (
+            <Typography color='error'>{errors.recommendationText.message}</Typography>
+          )}
+        </Box>
+
+        {/* Qualifications */}
+        <Box>
+          <Typography sx={formLabelStyles} id='qualifications-label'>
+            Your Qualifications (optional):
+          </Typography>
+          <Typography sx={{ marginBottom: '10px', fontSize: '14px' }}>
+            Please share how you are qualified to provide this recommendation. Sharing
+            your qualifications will further increase the value of this recommendation.
+          </Typography>
+          <TextEditor
+            value={watch('qualifications') || ''}
+            onChange={handleEditorChange('qualifications')}
+            placeholder={`e.g., I have over 10 years of experience in the field and have worked closely with ${displayName}.`}
+          />
+          {errors.qualifications && (
+            <Typography color='error'>{errors.qualifications.message}</Typography>
+          )}
+        </Box>
       </Box>
-      <Box>
-        <FormLabel sx={formLabelStyles} id='how-know-label'>
-          How do you know {displayName}? <span style={formLabelSpanStyles}> *</span>
-        </FormLabel>
-        <TextEditor
-          value={watch('howKnow')}
-          onChange={handleEditorChange('howKnow')}
-          placeholder={`e.g., I am ${displayName}’s former supervisor. I’ve known ${displayName} for 5 years.`}
-        />
-        {errors.howKnow && <p style={{ color: 'red' }}>{errors.howKnow.message}</p>}
-      </Box>
+
+      <Step3
+        watch={watch}
+        selectedFiles={selectedFiles}
+        setSelectedFiles={setSelectedFiles}
+        setValue={setValue}
+      />
     </Box>
   )
 }
-
 export default Step2
