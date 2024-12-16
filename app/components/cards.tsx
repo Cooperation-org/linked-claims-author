@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-
+import Image from 'next/image'
 interface CardProps {
   title?: string
   description?: string
@@ -84,7 +84,7 @@ const Card = ({
             mb: 0.5
           }}
         >
-          <img src='/Badge.svg' alt='Badge' />
+          <Image src='/Badge.svg' alt='Badge' fill height={24} width={24} />
           <Typography
             sx={{
               color: '#202E5B',
