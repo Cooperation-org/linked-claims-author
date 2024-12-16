@@ -19,7 +19,7 @@ interface CardProps {
 }
 
 const Card = ({
-  title = 'Example',
+  title = 'barista',
   description = 'I am able to demonstrate advanced skills in coffee preparation, customer service, and knowledge of coffee origins and brewing techniques.',
   criteria = [
     'Took 12 hours of barista classes',
@@ -37,7 +37,7 @@ const Card = ({
     'IMG_0640'
   ],
   width = '320px',
-  height = '467px',
+  height = 'auto',
   rotation = 'rotate(0deg)',
   image = '/coffee.jpeg',
   showPlayButton = true,
@@ -84,13 +84,20 @@ const Card = ({
             mb: 0.5
           }}
         >
-          <Image src='/Badge.svg' alt='Badge' fill height={24} width={24} />
+          <Image src='/Badge.svg' alt='Badge' height={20} width={20} />
           <Typography
             sx={{
               color: '#202E5B',
-              fontSize: '14px',
-              fontWeight: 600,
-              flex: 1
+              // fontSize: '14px',
+              // fontWeight: 600,
+              flex: 1,
+              ml: '11px',
+              fontFamily: 'Inter',
+              fontSize: '24px',
+              fontWeight: 700,
+              // lineHeight: normal,
+              letterSpacing: '0.12px',
+              textTransform: 'capitalize'
             }}
           >
             {title}
