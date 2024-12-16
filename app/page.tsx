@@ -11,7 +11,7 @@ interface SectionProps {
 const EXAMPLE_CARDS = [
   {
     id: 'barista',
-    title: 'Example',
+    title: 'barista',
     description:
       'I am able to demonstrate advanced skills in coffee preparation, customer service, and knowledge of coffee origins and brewing techniques.',
     criteria: [
@@ -30,7 +30,7 @@ const EXAMPLE_CARDS = [
       'IMG_0640'
     ],
     width: '185px',
-    height: '410px',
+    height: 'auto',
     rotation: 'rotate(-5deg)',
     image: '/coffee.jpeg',
     showPlayButton: true,
@@ -38,7 +38,7 @@ const EXAMPLE_CARDS = [
   },
   {
     id: 'chef',
-    title: 'Example',
+    title: 'chef',
     description:
       'I am able to prepare authentic Italian pasta dishes, showcasing expertise in traditional techniques, ingredient selection, and plating for fine dining experiences.',
     criteria: [
@@ -55,7 +55,7 @@ const EXAMPLE_CARDS = [
       'Pasta Plating Video'
     ],
     width: '200px',
-    height: '430px',
+    height: 'auto',
     rotation: 'rotate(0deg)',
     image: '/pasta-example.jpg',
     showPlayButton: true,
@@ -63,7 +63,7 @@ const EXAMPLE_CARDS = [
   },
   {
     id: 'developer',
-    title: 'Example',
+    title: 'developer',
     description:
       'I am able to demonstrate advanced skills in web development, including front-end design, back-end functionality, and deploying responsive, user-friendly websites.',
     criteria: [
@@ -78,8 +78,8 @@ const EXAMPLE_CARDS = [
       'Client Testimonials',
       'Code Repository (GitHub/Bitbucket)'
     ],
-    width: '185px',
-    height: '412px',
+    width: '190px',
+    height: 'auto',
     rotation: 'rotate(5deg)',
     image: '/dev.jpg',
     showPlayButton: false,
@@ -267,7 +267,7 @@ const MobileOpenCredsSection: React.FC<SectionProps> = ({ theme }) => (
       <Card
         {...EXAMPLE_CARDS[0]}
         width='180px'
-        height='400px'
+        height='auto'
         rotation='rotate(0deg)'
         showPlayButton={true}
         showTimer={true}
