@@ -6,20 +6,20 @@ import {
   CircularProgress,
   Box,
   Button,
-  IconButton,
-  Collapse,
-  Avatar,
-  useTheme,
-  useMediaQuery,
-  Paper,
+  MenuItem,
+  Menu,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Menu,
-  MenuItem,
-  Divider
+  Avatar,
+  Collapse,
+  Divider,
+  IconButton,
+  Paper,
+  useMediaQuery,
+  useTheme
 } from '@mui/material'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -117,9 +117,7 @@ const ClaimsPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [expandedCard, setExpandedCard] = useState<string | null>(null)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
-  const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [isDeleting, setIsDeleting] = useState(false)
-  const [showOverlappingCards, setShowOverlappingCards] = useState(false)
   const [desktopMenuAnchorEl, setDesktopMenuAnchorEl] = useState<null | HTMLElement>(null)
 
   const { data: session } = useSession()
@@ -128,6 +126,10 @@ const ClaimsPage: React.FC = () => {
   const router = useRouter()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [selectedClaim, setSelectedClaim] = useState<any>(null)
+  const [showOverlappingCards, setShowOverlappingCards] = useState(false)
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
 
   const handleDesktopMenuOpen = (event: React.MouseEvent<HTMLElement>, claim: any) => {
     event.stopPropagation()
@@ -152,6 +154,11 @@ const ClaimsPage: React.FC = () => {
     await navigator.clipboard.writeText(url)
   }
 
+  const handleDelete = () => {
+    setOpenConfirmDialog(true)
+    handleMenuClose()
+  }
+
   const handleConfirmDelete = async () => {
     if (!selectedClaim || !storage) return
 
@@ -168,9 +175,7 @@ const ClaimsPage: React.FC = () => {
       console.error('Error deleting claim:', error)
     } finally {
       setIsDeleting(false)
-      setOpenDeleteDialog(false)
-      setShowOverlappingCards(false)
-      setExpandedCard(null)
+      setOpenConfirmDialog(false)
     }
   }
 
