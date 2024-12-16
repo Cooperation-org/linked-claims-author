@@ -17,8 +17,7 @@ import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID, signCred } from '../../../utils/signCred'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
-import { SVGBadge } from '../../../Assets/SVGs'
-
+import { Logo } from '../../../Assets/SVGs'
 interface FormProps {
   fullName: string
   email: string
@@ -182,7 +181,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                   mt: 1
                 }}
               >
-                <SVGBadge />
+                <Logo />
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Typography
