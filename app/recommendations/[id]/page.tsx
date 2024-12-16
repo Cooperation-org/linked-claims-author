@@ -3,12 +3,11 @@
 import React, { useState, useEffect } from 'react'
 import { Typography, Box, useMediaQuery, Theme, CircularProgress } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { FormTextSteps, textGuid } from './RecommandationForm/fromTexts/FormTextSteps'
 import Credential from './viewCredential/Credential'
-import TabsComponent from '../../components/Tabs/Tabs'
 import { useStepContext } from '../../credentialForm/form/StepContext'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import { useParams } from 'next/navigation'
+import Form from './RecommandationForm/Form'
 
 const CredentialData = () => {
   const { activeStep, setActiveStep } = useStepContext()
@@ -86,10 +85,6 @@ const CredentialData = () => {
   return (
     <Box
       sx={{
-        // minHeight: {
-        //   xs: 'calc(100vh - 190px)',
-        //   md: 'calc(100vh - 381px)'
-        // },
         display: !isLargeScreen ? 'flex' : 'block',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -102,15 +97,7 @@ const CredentialData = () => {
         {activeStep === 0 && (
           <Credential setactivStep={setActiveStep} fullName={fullName} email={email} />
         )}
-        {activeStep !== 0 && (
-          <>
-            <FormTextSteps
-              activeStep={activeStep}
-              activeText={textGuid(fullName)[activeStep]}
-            />
-            <TabsComponent setFullName={setFullName} fullName={fullName} email={email} />
-          </>
-        )}
+        {activeStep !== 0 && <Form fullName={fullName} email={email} />}
       </Box>
     </Box>
   )
