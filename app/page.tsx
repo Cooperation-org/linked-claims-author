@@ -167,8 +167,8 @@ const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCard
             fontSize: { xs: '16px', md: '18px' }
           }}
         >
-          Whether it's caring for your family, volunteering, a side hustle, or on-the-job
-          learning, OpenCreds helps you document, verify, and share your unique
+          Whether it&apos;s caring for your family, volunteering, a side hustle, or
+          on-the-job learning, OpenCreds helps you document, verify, and share your unique
           experiences.
         </Typography>
         <Link href='/credentialForm' passHref>
