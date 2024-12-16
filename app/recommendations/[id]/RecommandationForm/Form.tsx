@@ -8,7 +8,7 @@ import { FormData } from '../../../credentialForm/form/types/Types'
 import { textGuid } from './fromTexts/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
-import DataPreview from './Steps/dataPreview'
+import DataPreview, { DataPreviewFormData } from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import useLocalStorage from '../../../hooks/useLocalStorage'
@@ -285,7 +285,9 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 handleBack={handleBack}
                 handleSign={handleFormSubmit}
                 isLoading={isLoading}
-                onUpdateFormData={handleUpdateFormData}
+                onUpdateFormData={
+                  handleUpdateFormData as (newData: DataPreviewFormData) => void
+                }
               />
             )}
             {activeStep === 4 && (
