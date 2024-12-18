@@ -30,11 +30,11 @@ interface Step2Props {
 }
 
 const options = [
-  'Facebook',
-  'Twitter',
-  'Instagram',
-  'LinkedIn',
-  'GitHub',
+  'Friend',
+  'Relative',
+  'Volunteered together',
+  'College',
+  'Other',
   'YouTube',
   'Other'
 ]
