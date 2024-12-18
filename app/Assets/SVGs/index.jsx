@@ -340,12 +340,12 @@ export const SVGUploadMedia = () => {
         <path
           d='M6.05172 8.86805L17.2131 7.00781V40.8603L12.3018 41.8942C9.01306 42.5866 5.79705 40.4429 5.17081 37.1409L1.14319 15.9044C0.515988 12.5973 2.73148 9.42142 6.05172 8.86805Z'
           stroke='#2563EB'
-          stroke-width='2'
+          strokeWidth='2'
         />
         <path
           d='M63.9483 8.86805L52.7869 7.00781V40.8603L57.6982 41.8942C60.9869 42.5866 64.203 40.4429 64.8292 37.1409L68.8568 15.9044C69.484 12.5973 67.2685 9.42142 63.9483 8.86805Z'
           stroke='#2563EB'
-          stroke-width='2'
+          strokeWidth='2'
         />
         <g filter='url(#filter0_dd_65_4275)'>
           <rect
@@ -355,15 +355,15 @@ export const SVGUploadMedia = () => {
             height='42.7541'
             rx='5'
             stroke='#2563EB'
-            stroke-width='2'
-            shape-rendering='crispEdges'
+            strokeWidth='2'
+            shapeRendering='crispEdges'
           />
         </g>
         <path
           d='M47.9353 43.8767H22.0664C19.305 43.8767 17.0664 41.6381 17.0664 38.8767L17.0664 35.4156L29.4732 22.2677L38.9834 33.2117C39.7841 34.1331 41.2162 34.1285 42.011 33.202L47.2464 27.0991L52.9353 33.2204V38.8767C52.9353 41.6381 50.6967 43.8767 47.9353 43.8767Z'
           fill='#EFF6FF'
           stroke='#2563EB'
-          stroke-width='2'
+          strokeWidth='2'
         />
         <circle
           cx='39.5897'
@@ -371,7 +371,7 @@ export const SVGUploadMedia = () => {
           r='4.16393'
           fill='#EFF6FF'
           stroke='#2563EB'
-          stroke-width='2'
+          strokeWidth='2'
         />
         <defs>
           <filter
@@ -381,9 +381,9 @@ export const SVGUploadMedia = () => {
             width='43.8691'
             height='51.7539'
             filterUnits='userSpaceOnUse'
-            color-interpolation-filters='sRGB'
+            colorInterpolationFilters='sRGB'
           >
-            <feFlood flood-opacity='0' result='BackgroundImageFix' />
+            <feFlood floodOpacity='0' result='BackgroundImageFix' />
             <feColorMatrix
               in='SourceAlpha'
               type='matrix'
@@ -442,7 +442,7 @@ export const SVGUplaodLink = () => {
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
       >
-        <g clip-path='url(#clip0_65_4253)'>
+        <g clipPath='url(#clip0_65_4253)'>
           <path
             d='M14.0759 14.5809C13.5787 15.078 12.7727 15.078 12.2755 14.5809L8.12236 10.4277C7.6252 9.93057 7.6252 9.12451 8.12236 8.62734C8.61953 8.13018 9.42559 8.13018 9.92275 8.62734L14.0759 12.7805C14.5731 13.2776 14.5731 14.0837 14.0759 14.5809ZM16.8007 11.3287C16.0976 11.3287 15.5276 10.7587 15.5276 10.0557V4.18223C15.5276 3.4791 16.0977 2.90918 16.8007 2.90918C17.5038 2.90918 18.0737 3.4792 18.0737 4.18223V10.0557C18.0738 10.7588 17.5038 11.3287 16.8007 11.3287ZM10.8238 17.3057C10.8238 16.6025 10.2538 16.0326 9.55078 16.0326H3.67734C2.97422 16.0326 2.4043 16.6026 2.4043 17.3057C2.4043 18.0088 2.97432 18.5787 3.67734 18.5787H9.55078C10.2538 18.5787 10.8238 18.0087 10.8238 17.3057ZM35.9225 36.4274C36.4196 35.9303 37.2257 35.9303 37.7229 36.4274L41.876 40.5806C42.3731 41.0777 42.3731 41.8838 41.876 42.381C41.3788 42.8781 40.5728 42.8781 40.0756 42.381L35.9225 38.2278C35.4253 37.7307 35.4253 36.9246 35.9225 36.4274ZM33.1977 39.6795C33.9008 39.6795 34.4707 40.2495 34.4707 40.9525V46.826C34.4707 47.5291 33.9007 48.099 33.1977 48.099C32.4945 48.099 31.9246 47.529 31.9246 46.826V40.9525C31.9246 40.2495 32.4946 39.6795 33.1977 39.6795ZM39.1746 33.7026C39.1746 34.4058 39.7446 34.9757 40.4477 34.9757H46.3211C47.0242 34.9757 47.5941 34.4057 47.5941 33.7026C47.5941 32.9995 47.0241 32.4296 46.3211 32.4296H40.4477C39.7446 32.4295 39.1746 32.9995 39.1746 33.7026Z'
             fill='#A4C2F7'
@@ -470,9 +470,9 @@ export const SVGUplaodLink = () => {
             width='41.168'
             height='40.5234'
             filterUnits='userSpaceOnUse'
-            color-interpolation-filters='sRGB'
+            colorInterpolationFilters='sRGB'
           >
-            <feFlood flood-opacity='0' result='BackgroundImageFix' />
+            <feFlood floodOpacity='0' result='BackgroundImageFix' />
             <feColorMatrix
               in='SourceAlpha'
               type='matrix'

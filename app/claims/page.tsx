@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 import {
+  Theme,
   Typography,
   CircularProgress,
   Box,
@@ -12,10 +13,17 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  Paper,
+  IconButton,
+  useTheme,
+  useMediaQuery,
+  SxProps,
+  Snackbar,
+  Alert
 } from '@mui/material'
 import { useSession } from 'next-auth/react'
-import { BlueBadge } from '../Assets/SVGs'
+import { BlueBadge, Logo } from '../Assets/SVGs'
 import useGoogleDrive from '../hooks/useGoogleDrive'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
@@ -23,41 +31,41 @@ import { useRouter } from 'next/navigation'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import EmailIcon from '@mui/icons-material/Email'
+import LinkIcon from '@mui/icons-material/Link'
+import FavoriteIcon from '@mui/icons-material/Favorite'
 import LoadingOverlay from '../components/Loading/LoadingOverlay'
 
 // Define types
-interface Claim {
-  [x: string]: any
-  id: string
-  achievementName: string
+interface Achievement {
+  name: string
+  type?: string[]
 }
 
-interface ClaimDetail {
-  '@context': string[]
+interface CredentialSubject {
+  name: string
+  achievement: Achievement[]
+  type?: string[]
+}
+
+interface FileContent {
   id: string
-  type: string[]
-  issuer: {
-    id: string
-    type: string[]
-  }
-  issuanceDate: string
-  expirationDate: string
-  credentialSubject: {
-    type: string[]
-    name: string
-    achievement: any
-    duration: string
-    portfolio: any
+  name: string
+  comments: string[]
+  content?: any
+  data?: {
+    credentialSubject: CredentialSubject
+    issuanceDate: string
+    '@context'?: string[]
+    id?: string
+    type?: string[]
   }
 }
 
-interface Comment {
-  author: string
-  howKnow: string
-  recommendationText: string
-  qualifications: string
-  createdTime: string
-}
+type FilesType = 'KEYPAIRs' | 'VCs' | 'SESSIONs' | 'DIDs' | 'RECOMMENDATIONs' | 'MEDIAs'
+
+// Utility functions
 
 const formatDate = (date: Date): string => {
   return date.toLocaleDateString('en-US', {
@@ -67,22 +75,50 @@ const formatDate = (date: Date): string => {
   })
 }
 
-let getTimeAgo = (isoDateString: string): string => {
-  // Create a new Date object from the ISO string
+const getTimeAgo = (isoDateString: string): string => {
   const date = new Date(isoDateString)
 
-  // Handle invalid dates
   if (isNaN(date.getTime())) {
     return 'Invalid date'
   }
 
-  return formatDate(date)
+  const now = new Date()
+  const diffInMilliseconds = now.getTime() - date.getTime()
+  const diffInSeconds = Math.floor(diffInMilliseconds / 1000)
+  const diffInMinutes = Math.floor(diffInSeconds / 60)
+  const diffInHours = Math.floor(diffInMinutes / 60)
+  const diffInDays = Math.floor(diffInHours / 24)
+
+  // Calculate months more accurately considering different month lengths
+  const months =
+    (now.getFullYear() - date.getFullYear()) * 12 + (now.getMonth() - date.getMonth())
+
+  if (months > 0) {
+    return `${months} ${months === 1 ? 'month' : 'months'} ago`
+  }
+
+  if (diffInDays >= 30) {
+    return `${diffInDays} days ago`
+  }
+
+  if (diffInDays > 0) {
+    return `${diffInDays} ${diffInDays === 1 ? 'day' : 'days'} ago`
+  }
+
+  if (diffInHours > 0) {
+    return `${diffInHours} ${diffInHours === 1 ? 'hour' : 'hours'} ago`
+  }
+
+  if (diffInMinutes > 0) {
+    return `${diffInMinutes} ${diffInMinutes === 1 ? 'minute' : 'minutes'} ago`
+  }
+
+  return `${diffInSeconds} ${diffInSeconds === 1 ? 'second' : 'seconds'} ago`
 }
 
 const getTimeDifference = (isoDateString: string): string => {
   const date = new Date(isoDateString)
 
-  // Handle invalid dates
   if (isNaN(date.getTime())) {
     return '0 seconds'
   }
@@ -98,457 +134,672 @@ const getTimeDifference = (isoDateString: string): string => {
   const months =
     (now.getFullYear() - date.getFullYear()) * 12 + (now.getMonth() - date.getMonth())
 
-  // If more than one month
   if (months > 0) {
     return `${months} ${months === 1 ? 'month' : 'months'}`
   }
 
-  // If more than 30 days but less than a month
   if (diffInDays >= 30) {
     return `${diffInDays} days`
   }
 
-  // If more than 24 hours but less than 30 days
   if (diffInDays > 0) {
     return `${diffInDays} ${diffInDays === 1 ? 'day' : 'days'}`
   }
 
-  // If more than 60 minutes but less than 24 hours
   if (diffInHours > 0) {
     return `${diffInHours} ${diffInHours === 1 ? 'hour' : 'hours'}`
   }
 
-  // If more than 60 seconds but less than 60 minutes
   if (diffInMinutes > 0) {
     return `${diffInMinutes} ${diffInMinutes === 1 ? 'minute' : 'minutes'}`
   }
 
-  // If less than 60 seconds
   return `${diffInSeconds} ${diffInSeconds === 1 ? 'second' : 'seconds'}`
 }
 
+// Styles function
+const getStyles = (isDesktop: boolean): Record<string, SxProps<Theme>> => {
+  return {
+    root: {
+      ...(isDesktop
+        ? {
+            p: '75px 100px 0 200px',
+            bgcolor: 'background.default'
+          }
+        : {
+            p: 2,
+            pt: 3,
+            bgcolor: '#F3F6FF',
+            minHeight: '100vh'
+          })
+    },
+    header: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: isDesktop ? 2 : 1.5,
+      mb: isDesktop ? '30px' : 4,
+      p: isDesktop ? '10px' : 0
+    },
+    userInfo: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 2,
+      flex: 1
+    },
+    title: {
+      ...(isDesktop
+        ? {
+            fontWeight: 'bold',
+            fontSize: '2rem',
+            color: '#1a1c1e'
+          }
+        : {
+            fontSize: 16,
+            whiteSpace: 'pre-line'
+          })
+    },
+    addButton: {
+      backgroundColor: '#003FE0',
+      color: 'white',
+      textTransform: 'none',
+      borderRadius: '100px',
+      ...(isDesktop
+        ? {
+            px: 4,
+            fontSize: 16
+          }
+        : {
+            width: '100%',
+            mb: 4,
+            py: 1.5
+          }),
+      '&:hover': {
+        backgroundColor: '#002db3'
+      }
+    },
+    cardBase: {
+      p: isDesktop ? 3 : 2,
+      backgroundColor: 'white',
+      borderRadius: isDesktop ? '16px' : '10px',
+      mb: isDesktop ? 3 : 2,
+      display: 'flex',
+      alignItems: 'center',
+      border: isDesktop ? 'none' : '3px solid',
+      borderColor: isDesktop ? 'transparent' : '#D1D5DB'
+    },
+    cardContent: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 2,
+      flex: 1
+    },
+    cardTitle: {
+      color: isDesktop ? '#1a1c1e' : '#202E5B',
+      fontWeight: 'bold',
+      fontSize: isDesktop ? 26 : 16
+    },
+    cardSubtitle: {
+      color: '#666',
+      fontSize: 16
+    },
+    menuItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 2,
+      p: 2,
+      '& .MuiSvgIcon-root': {
+        fontSize: 20
+      }
+    }
+  } as const
+}
+
 const ClaimsPage: React.FC = () => {
-  const [claims, setClaims] = useState<Claim[]>([])
-  const [isDeleting, setIsDeleting] = useState<boolean>(false)
+  const theme = useTheme()
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'))
+  const styles = getStyles(isDesktop)
+
+  // States
+  const [claims, setClaims] = useState<FileContent[]>([])
+  const [sessions, setSessions] = useState<FileContent[]>([])
   const [loading, setLoading] = useState(true)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [shareAnchorEl, setShareAnchorEl] = useState<null | HTMLElement>(null)
+  const [selectedItem, setSelectedItem] = useState<FileContent | null>(null)
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [isSession, setIsSession] = useState(false)
+  const [showOverlayLoader, setShowOverlayLoader] = useState(false)
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
+
+  // Hooks
   const { data: session } = useSession()
-  const accessToken = session?.accessToken as string
   const { storage } = useGoogleDrive()
   const router = useRouter()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [selectedClaim, setSelectedClaim] = useState<any>(null)
-  const [showOverlappingCards, setShowOverlappingCards] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, claim: any) => {
+  // Fetch data
+  const fetchData = useCallback(async () => {
+    if (!storage) return
+
+    try {
+      setLoading(true)
+
+      // Fetch VCs
+      const vcsResponse = (await storage.getAllFilesByType('VCs')) as FileContent[]
+      console.log('VCs response:', vcsResponse)
+
+      if (Array.isArray(vcsResponse)) {
+        const validVCs = vcsResponse.flatMap(fileGroup => {
+          if (!Array.isArray(fileGroup)) return []
+
+          const mainFile = fileGroup.find(f => f.name !== 'RELATIONS') as FileContent
+          if (!mainFile?.data?.credentialSubject?.achievement?.[0]?.name) {
+            return []
+          }
+
+          return [
+            {
+              id: mainFile.id,
+              name: mainFile.name,
+              comments: mainFile.comments || [],
+              data: mainFile.data
+            }
+          ]
+        })
+
+        console.log('Processed VCs:', validVCs)
+        setClaims(validVCs)
+      }
+
+      // Fetch Sessions
+      const sessionsResponse = (await storage.getAllFilesByType(
+        'SESSIONs'
+      )) as FileContent[]
+      console.log('Sessions response:', sessionsResponse)
+
+      if (Array.isArray(sessionsResponse)) {
+        const validSessions = sessionsResponse
+          .filter((file): file is FileContent => Boolean(file?.id && file?.name))
+          .map(file => ({
+            id: file.id,
+            name: file.name,
+            comments: file.comments || [],
+            data: file.data
+          }))
+
+        console.log('Processed sessions:', validSessions)
+        setSessions(validSessions)
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      setSnackbarMessage('Failed to fetch data.')
+      setSnackbarSeverity('error')
+      setSnackbarOpen(true)
+    } finally {
+      setLoading(false)
+    }
+  }, [storage])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  // Menu handlers
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    item: FileContent,
+    sessionItem = false
+  ) => {
     setAnchorEl(event.currentTarget)
-    setSelectedClaim(claim)
+    setSelectedItem(item)
+    setIsSession(sessionItem)
+  }
+
+  const handleShareButtonClick = (
+    event: React.MouseEvent<HTMLElement>,
+    item: FileContent
+  ) => {
+    setShareAnchorEl(event.currentTarget)
+    setSelectedItem(item)
   }
 
   const handleMenuClose = () => {
     setAnchorEl(null)
-    setSelectedClaim(null)
+    setSelectedItem(null)
+    setIsSession(false)
   }
 
-  const handleMakeCopy = () => {
-    handleMenuClose()
+  const handleShareMenuClose = () => {
+    setShareAnchorEl(null)
+    setSelectedItem(null)
   }
 
-  const handleContinueEditing = () => {
-    handleMenuClose()
+  // Snackbar handlers
+  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnackbarOpen(false)
+  }
+
+  // Action handlers
+  const handleCopyUrl = async () => {
+    if (!selectedItem?.id) return
+    const url = `${window.location.origin}/view/${selectedItem.id}`
+    try {
+      await navigator.clipboard.writeText(url)
+      setSnackbarMessage('URL copied to clipboard!')
+      setSnackbarSeverity('success')
+      setSnackbarOpen(true)
+    } catch (error) {
+      console.error('Failed to copy URL:', error)
+      setSnackbarMessage('Failed to copy URL.')
+      setSnackbarSeverity('error')
+      setSnackbarOpen(true)
+    }
+
+    if (isDesktop) {
+      handleShareMenuClose()
+    } else {
+      handleMenuClose()
+    }
   }
 
   const handleDelete = () => {
-    setOpenConfirmDialog(true)
+    setOpenDeleteDialog(true)
     handleMenuClose()
-  }
-  const handleCopyUrl = async (claimId: string) => {
-    const url = `http://localhost:3000/view/${claimId}`
-
-    navigator.clipboard.writeText(url)
   }
 
   const handleConfirmDelete = async () => {
-    if (!selectedClaim || !storage) return
+    if (!selectedItem?.id || !storage) return
 
     try {
       setIsDeleting(true)
-      setShowOverlappingCards(true)
-      const fileId = selectedClaim[0].id
-      const response = await storage.delete(fileId)
+      setShowOverlayLoader(true)
+      const response = await storage.delete(selectedItem.id)
 
       if (response !== null) {
-        setClaims(prevClaims => {
-          const filteredClaims = prevClaims.filter(claim => claim[0].id !== fileId)
-          return filteredClaims
-        })
-        console.log('Successfully deleted claim')
-
-        setTimeout(() => {
-          setShowOverlappingCards(false)
-        }, 2000)
+        if (isSession) {
+          setSessions(prev => prev.filter(item => item.id !== selectedItem.id))
+        } else {
+          setClaims(prev => prev.filter(item => item.id !== selectedItem.id))
+        }
+        setSnackbarMessage('Item deleted successfully.')
+        setSnackbarSeverity('success')
+        setSnackbarOpen(true)
       } else {
-        console.error('Failed to delete claim')
-        setShowOverlappingCards(false)
+        throw new Error('Deletion failed.')
       }
     } catch (error) {
-      console.error('Error deleting claim:', error)
-      setShowOverlappingCards(false)
+      console.error('Error deleting item:', error)
+      setSnackbarMessage('Failed to delete item.')
+      setSnackbarSeverity('error')
+      setSnackbarOpen(true)
     } finally {
       setIsDeleting(false)
-      setOpenConfirmDialog(false)
+      setShowOverlayLoader(false)
+      setOpenDeleteDialog(false)
     }
   }
 
-  // Add a function to check if claim has valid data
-  const isValidClaim = (claim: any) => {
-    return (
-      claim[0]?.data?.credentialSubject?.achievement[0]?.name &&
-      claim[0]?.data?.credentialSubject?.name
-    )
+  // LinkedIn share URL generator
+  const generateLinkedInUrl = (fileId: string): string => {
+    const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
+    const params = new URLSearchParams({
+      startTask: 'CERTIFICATION_NAME',
+      name:
+        selectedItem?.data?.credentialSubject?.achievement[0]?.name ??
+        'Certification Name',
+      organizationName: 'LinkedTrust',
+      issueYear: new Date(selectedItem?.data?.issuanceDate ?? '')
+        .getFullYear()
+        .toString(),
+      issueMonth: (
+        new Date(selectedItem?.data?.issuanceDate ?? '').getMonth() + 1
+      ).toString(),
+      expirationYear: (
+        new Date(selectedItem?.data?.issuanceDate ?? '').getFullYear() + 1
+      ).toString(),
+      expirationMonth: (
+        new Date(selectedItem?.data?.issuanceDate ?? '').getMonth() + 1
+      ).toString(),
+      certUrl: `https://opencreds.net/view/${fileId}`
+    })
+    return `${baseLinkedInUrl}?${params.toString()}`
   }
 
-  const getAllClaims = useCallback(async (): Promise<any> => {
-    const claimsData = await storage?.getAllFilesByType('VCs')
-    console.log('🚀 ~ getAllClaims ~ claimsData:', claimsData)
-    if (!claimsData?.length) return []
-    return claimsData
-  }, [storage])
+  // Render methods
+  const renderCard = (item: FileContent, index: number) => {
+    const isSessionItem = !item.data?.credentialSubject
+    const colors = ['#9747FF', '#14B8A6', '#F9A41A', '#9747FF']
+    const borderColor = colors[index % colors.length]
 
-  useEffect(() => {
-    const fetchClaims = async () => {
-      try {
-        setLoading(true)
-
-        const claimsData = await getAllClaims()
-        console.log('🚀 ~ fetchClaims ~ claimsData:', claimsData)
-
-        // Assuming claimsData is an array of objects or arrays, process the data
-        const vcs = claimsData.map((file: { name: string }[]) =>
-          file.filter((f: { name: string }) => f.name !== 'RELATIONS')
-        )
-
-        console.log('🚀 ~ vcs ~ vcs:', vcs)
-
-        setClaims(vcs)
-      } catch (error) {
-        console.error('Error fetching claims:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchClaims()
-  }, [accessToken, storage, getAllClaims])
-
-  return (
-    <Box sx={{ p: '75px 100px 0 200px' }}>
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between',
-          mb: '30px',
-          p: '10px'
-        }}
-      >
-        <Typography sx={{ fontWeight: 'bold' }} variant='h4'>
-          My Skills
-        </Typography>
-        <Button
-          onClick={() => router.push('/credentialForm')}
-          variant='contained'
-          sx={{
-            backgroundColor: '#003FE0',
-            textTransform: 'none',
-            borderRadius: '100px'
-          }}
-        >
-          Add a new skill
-        </Button>
-      </Box>
-
-      <Box>
-        {loading ? (
+    if (isDesktop) {
+      return (
+        <Paper sx={styles.cardBase} key={item.id}>
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '100%'
+              justifyContent: 'space-between',
+              width: '100%',
+              alignItems: 'center'
             }}
           >
-            <CircularProgress />
-          </Box>
-        ) : (
-          claims.map(
-            claim =>
-              isValidClaim(claim) && (
-                <Box sx={{ mb: '30px' }} key={claim[0].data.id}>
-                  <Box sx={{ p: 3, backgroundColor: 'white', borderRadius: '16px' }}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Box sx={{ mb: '20px' }}>
-                          <BlueBadge />
-                        </Box>
-                        <Box>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Typography
-                              sx={{
-                                color: 'blue.600',
-                                fontWeight: 'bold',
-                                fontSize: '26px'
-                              }}
-                            >
-                              {claim[0]?.data?.credentialSubject?.achievement[0]?.name ??
-                                ''}{' '}
-                              -
-                            </Typography>
-                            <Typography
-                              sx={{
-                                color: 'gray.700',
-                                fontWeight: 'bold',
-                                fontSize: '26px'
-                              }}
-                            >
-                              {getTimeAgo(claim[0]?.data?.issuanceDate)}
-                            </Typography>
-                          </Box>
-                          <Typography sx={{ color: 'gray.600', fontSize: '16px' }}>
-                            {claim[0]?.data?.credentialSubject?.name ?? ''} -{' '}
-                            {getTimeDifference(claim[0]?.data?.issuanceDate)}
-                          </Typography>
-                        </Box>
-                      </Box>
+            <Box sx={styles.cardContent}>
+              {isSessionItem ? <Logo /> : <BlueBadge />}
+              <Box>
+                <Typography sx={styles.cardTitle}>
+                  {isSessionItem
+                    ? item.name
+                    : item.data?.credentialSubject.achievement[0].name}
+                  {!isSessionItem && item.data?.issuanceDate && (
+                    <span style={{ color: '#666', marginLeft: 8 }}>
+                      - {getTimeAgo(item.data.issuanceDate)}
+                    </span>
+                  )}
+                </Typography>
+                {!isSessionItem && item.data?.credentialSubject.name && (
+                  <Typography sx={styles.cardSubtitle}>
+                    {item.data.credentialSubject.name}
+                  </Typography>
+                )}
+              </Box>
+            </Box>
 
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            borderRadius: '50px',
-                            border: '1px solid blue',
-                            backgroundColor: '#f0f6ff',
-                            p: '0 10px'
-                          }}
-                        >
-                          <Button
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              backgroundColor: '#f0f6ff',
-                              fontSize: '12px',
-                              color: '#003fe0',
-                              fontWeight: 'medium',
-                              '&:hover': { backgroundColor: 'gray.50' },
-                              borderRight: '1px solid #003fe0'
-                            }}
-                            startIcon={<PeopleAltIcon />}
-                          >
-                            Share
-                          </Button>
-
-                          <Button
-                            onClick={() => handleCopyUrl(claim[0].id)}
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              backgroundColor: '#f0f6ff',
-                              fontSize: '12px',
-                              fontWeight: 'medium',
-                              color: '#003fe0',
-                              '&:hover': { backgroundColor: 'gray.50' }
-                            }}
-                            startIcon={<ContentCopyIcon href={''} />}
-                          >
-                            Copy URL
-                          </Button>
-                        </Box>
-                        <Button onClick={event => handleMenuOpen(event, claim)}>
-                          <MoreVertIcon />
-                        </Button>
-                        <Menu
-                          anchorEl={anchorEl}
-                          open={Boolean(anchorEl)}
-                          onClose={handleMenuClose}
-                          anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right'
-                          }}
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
-                          }}
-                          sx={{
-                            '& .MuiPaper-root': {
-                              borderRadius: '8px',
-                              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                              padding: '8px',
-                              backgroundColor: 'white',
-                              width: '360px'
-                            }
-                          }}
-                        >
-                          <MenuItem
-                            onClick={handleMakeCopy}
-                            sx={{
-                              fontFamily: 'Inter',
-                              fontSize: '14px',
-                              gap: '12px',
-                              color: '#1976d2',
-                              '&:hover': {
-                                backgroundColor: 'rgba(25, 118, 210, 0.04)'
-                              },
-                              '& .MuiSvgIcon-root': {
-                                fontSize: '20px'
-                              },
-                              '& a': {
-                                color: 'inherit',
-                                textDecoration: 'underline',
-                                display: 'flex',
-                                alignItems: 'center',
-                                width: '100%'
-                              }
-                            }}
-                          >
-                            <ContentCopyIcon />
-                            <span style={{ textDecoration: 'underline' }}>
-                              Make a copy
-                            </span>
-                          </MenuItem>
-                          <MenuItem
-                            disabled={true}
-                            onClick={handleContinueEditing}
-                            sx={{
-                              fontFamily: 'Inter',
-                              fontSize: '14px',
-                              gap: '12px',
-                              color: '#1976d2',
-                              '&:hover': {
-                                backgroundColor: 'rgba(25, 118, 210, 0.04)'
-                              },
-                              '& .MuiSvgIcon-root': {
-                                fontSize: '20px'
-                              },
-                              '& a': {
-                                color: 'inherit',
-                                textDecoration: 'underline',
-                                display: 'flex',
-                                alignItems: 'center',
-                                width: '100%'
-                              }
-                            }}
-                          >
-                            <EditIcon />
-                            <span style={{ textDecoration: 'underline' }}>
-                              Continuing editing
-                            </span>
-                          </MenuItem>
-
-                          <MenuItem
-                            onClick={handleDelete}
-                            disabled={isDeleting}
-                            sx={{
-                              fontSize: '14px',
-                              gap: '12px',
-                              color: '#d32f2f',
-                              '&:hover': {
-                                backgroundColor: 'rgba(211, 47, 47, 0.04)'
-                              },
-                              '& .MuiSvgIcon-root': {
-                                fontSize: '20px'
-                              },
-                              '& a': {
-                                color: 'inherit',
-                                textDecoration: 'underline',
-                                display: 'flex',
-                                alignItems: 'center',
-                                width: '100%'
-                              }
-                            }}
-                          >
-                            {isDeleting ? (
-                              <CircularProgress size={20} color='error' />
-                            ) : (
-                              <DeleteIcon />
-                            )}
-                            <span style={{ textDecoration: 'underline' }}>Delete</span>
-                          </MenuItem>
-                        </Menu>
-                      </Box>
-                    </Box>
-                  </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {!isSessionItem && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    border: '1px solid #003fe0',
+                    borderRadius: '50px',
+                    overflow: 'hidden',
+                    backgroundColor: '#f0f6ff'
+                  }}
+                >
+                  <Button
+                    onClick={e => handleShareButtonClick(e, item)}
+                    startIcon={<PeopleAltIcon />}
+                    sx={{
+                      color: '#003fe0',
+                      borderRight: '1px solid #003fe0',
+                      px: 2,
+                      '&:hover': { backgroundColor: 'rgba(0, 63, 224, 0.04)' }
+                    }}
+                  >
+                    Share
+                  </Button>
+                  <Button
+                    onClick={handleCopyUrl}
+                    startIcon={<ContentCopyIcon />}
+                    sx={{
+                      color: '#003fe0',
+                      px: 2,
+                      '&:hover': { backgroundColor: 'rgba(0, 63, 224, 0.04)' }
+                    }}
+                  >
+                    Copy URL
+                  </Button>
                 </Box>
-              )
-          )
+              )}
+              <IconButton onClick={e => handleMenuOpen(e, item, isSessionItem)}>
+                <MoreVertIcon />
+              </IconButton>
+            </Box>
+          </Box>
+        </Paper>
+      )
+    }
+
+    // Mobile view with colored borders and only More options button
+    return (
+      <Paper
+        key={item.id}
+        sx={{
+          ...styles.cardBase,
+          borderColor: isSessionItem ? '#D1D5DB' : borderColor
+        }}
+      >
+        {!isSessionItem && (
+          <Box sx={{ mr: 1.5, color: borderColor }}>
+            {/* Optional icon or decoration */}
+          </Box>
+        )}
+        <Typography sx={{ flex: 1 }}>
+          {isSessionItem ? item.name : item.data?.credentialSubject.achievement[0].name}
+        </Typography>
+        <IconButton onClick={e => handleMenuOpen(e, item, isSessionItem)}>
+          <MoreVertIcon />
+        </IconButton>
+      </Paper>
+    )
+  }
+
+  const renderMenuItems = () => {
+    if (isSession) {
+      return (
+        <>
+          <MenuItem
+            onClick={() => {
+              router.push(`/credentialForm/${selectedItem?.id}`)
+              handleMenuClose()
+            }}
+            sx={styles.menuItem}
+          >
+            <EditIcon fontSize='small' />
+            Continue editing
+          </MenuItem>
+          <MenuItem
+            onClick={handleDelete}
+            sx={{ ...styles.menuItem, color: 'error.main' }}
+          >
+            <DeleteIcon fontSize='small' />
+            Delete
+          </MenuItem>
+        </>
+      )
+    }
+
+    if (!isDesktop) {
+      return (
+        <>
+          <MenuItem
+            onClick={() => {
+              router.push(`/recommendations/${selectedItem?.id}`)
+              handleMenuClose()
+            }}
+            sx={styles.menuItem}
+          >
+            <FavoriteIcon fontSize='small' />
+            Ask for a recommendation
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              const linkedInUrl = generateLinkedInUrl(selectedItem?.id ?? '')
+              window.open(linkedInUrl, '_blank')
+              handleMenuClose()
+            }}
+            sx={styles.menuItem}
+          >
+            <LinkedInIcon fontSize='small' />
+            Share to LinkedIn
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              window.location.href = `mailto:?subject=Check out my skill&body=${window.location.origin}/view/${selectedItem?.id}`
+              handleMenuClose()
+            }}
+            sx={styles.menuItem}
+          >
+            <EmailIcon fontSize='small' />
+            Share via Email
+          </MenuItem>
+          <MenuItem onClick={handleCopyUrl} sx={styles.menuItem}>
+            <LinkIcon fontSize='small' />
+            Copy URL
+          </MenuItem>
+          <MenuItem
+            onClick={handleDelete}
+            sx={{ ...styles.menuItem, color: 'error.main' }}
+          >
+            <DeleteIcon fontSize='small' />
+            Delete
+          </MenuItem>
+        </>
+      )
+    }
+
+    // Desktop view: only Delete option in the primary menu
+    return (
+      <MenuItem onClick={handleDelete} sx={{ ...styles.menuItem, color: 'error.main' }}>
+        <DeleteIcon fontSize='small' />
+        Delete
+      </MenuItem>
+    )
+  }
+
+  return (
+    <Box sx={styles.root}>
+      {/* Header */}
+      <Box sx={styles.header}>
+        {isDesktop ? (
+          <>
+            <Typography sx={styles.title}>My Skills</Typography>
+            <Button
+              variant='contained'
+              onClick={() => router.push('/credentialForm')}
+              sx={styles.addButton}
+            >
+              Add a new skill
+            </Button>
+          </>
+        ) : (
+          <>
+            <Box
+              component='img'
+              src={session?.user?.image ?? '/placeholder-avatar.png'}
+              alt='User avatar'
+              sx={{ width: 50, height: 50, borderRadius: '50%' }}
+            />
+            <Typography sx={styles.title}>
+              {`Hi, ${session?.user?.name ?? 'User'}!`}
+            </Typography>
+          </>
         )}
       </Box>
+
+      {!isDesktop && (
+        <Button
+          variant='contained'
+          fullWidth
+          sx={styles.addButton}
+          onClick={() => router.push('/credentialForm')}
+        >
+          Add a new skill
+        </Button>
+      )}
+
+      {/* Content */}
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          {isDesktop ? (
+            [...sessions, ...claims].map((item, index) => renderCard(item, index))
+          ) : (
+            <>
+              {sessions.length > 0 && (
+                <>
+                  <Typography sx={styles.title}>Work on a session:</Typography>
+                  {sessions.map((item, index) => renderCard(item, index))}
+                </>
+              )}
+              <Typography sx={styles.title}>Work with my existing skills:</Typography>
+              {claims.map((item, index) => renderCard(item, index))}
+            </>
+          )}
+        </>
+      )}
+
+      {/* Menus */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        sx={{ '& .MuiPaper-root': { width: 240, mt: 1 } }}
+      >
+        {renderMenuItems()}
+      </Menu>
+
+      {isDesktop && (
+        <Menu
+          anchorEl={shareAnchorEl}
+          open={Boolean(shareAnchorEl)}
+          onClose={handleShareMenuClose}
+          sx={{ '& .MuiPaper-root': { width: 240, mt: 1 } }}
+        >
+          <MenuItem
+            onClick={() => {
+              const linkedInUrl = generateLinkedInUrl(selectedItem?.id ?? '')
+              window.open(linkedInUrl, '_blank')
+              handleShareMenuClose()
+            }}
+            sx={styles.menuItem}
+          >
+            <LinkedInIcon fontSize='small' />
+            Share to LinkedIn
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              window.location.href = `mailto:?subject=Check out my skill&body=${window.location.origin}/view/${selectedItem?.id}`
+              handleShareMenuClose()
+            }}
+            sx={styles.menuItem}
+          >
+            <EmailIcon fontSize='small' />
+            Share via Email
+          </MenuItem>
+          <MenuItem onClick={handleCopyUrl} sx={styles.menuItem}>
+            <LinkIcon fontSize='small' />
+            Copy URL
+          </MenuItem>
+        </Menu>
+      )}
+
+      {/* Delete Dialog */}
       <Dialog
-        open={openConfirmDialog}
-        onClose={() => setOpenConfirmDialog(false)}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-        PaperProps={{
-          sx: {
-            backgroundColor: '#1a1c1e',
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        sx={{
+          '& .MuiDialog-paper': {
+            bgcolor: '#1a1c1e',
             borderRadius: '12px',
-            maxWidth: '400px',
+            maxWidth: 400,
             width: '100%',
-            padding: '24px'
+            p: 3
           }
         }}
       >
-        <DialogTitle
-          id='alert-dialog-title'
-          sx={{
-            color: '#fff',
-            fontSize: '24px',
-            padding: 0,
-            paddingBottom: '8px'
-          }}
-        >
-          Are you sure?
-        </DialogTitle>
-        <DialogContent sx={{ padding: 0 }}>
-          <DialogContentText
-            id='alert-dialog-description'
-            sx={{
-              color: 'rgba(255, 255, 255, 0.8)',
-              fontSize: '16px'
-            }}
-          >
+        <DialogTitle sx={{ color: 'white', p: 0, pb: 1 }}>Are you sure?</DialogTitle>
+        <DialogContent sx={{ p: 0 }}>
+          <DialogContentText sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
             You cannot recover deleted items and any links to this content will be broken.
           </DialogContentText>
         </DialogContent>
-        <DialogActions
-          sx={{
-            width: '100%',
-            padding: 0,
-            display: 'flex',
-            justifyContent: 'space-between'
-          }}
-        >
+        <DialogActions sx={{ p: 0, pt: 2, gap: 2 }}>
           <Button
-            onClick={() => setOpenConfirmDialog(false)}
+            onClick={() => setOpenDeleteDialog(false)}
             sx={{
-              backgroundColor: '#FFFFFF',
+              flex: 1,
+              bgcolor: 'white',
               color: '#2563eb',
-              borderRadius: '100px',
-              padding: '8px 24px',
               border: '1px solid #2563eb',
-              fontWeight: 'bold',
-              textTransform: 'none',
-              fontSize: '16px',
-              width: '50%',
-              '&:hover': {
-                backgroundColor: '#FFFFFF'
-              }
+              borderRadius: '100px'
             }}
           >
             Cancel
@@ -557,32 +808,37 @@ const ClaimsPage: React.FC = () => {
             onClick={handleConfirmDelete}
             disabled={isDeleting}
             sx={{
-              backgroundColor: '#2563eb',
-              color: '#fff',
+              flex: 1,
+              bgcolor: '#2563eb',
+              color: 'white',
               borderRadius: '100px',
-              padding: '8px 24px',
-              textTransform: 'none',
-              fontWeight: 'bold',
-              fontSize: '16px',
-              width: '50%',
-              '&:hover': {
-                backgroundColor: '#1d4ed8'
-              },
-              '&:disabled': {
-                backgroundColor: 'rgba(37, 99, 235, 0.5)',
-                color: 'rgba(255, 255, 255, 0.5)'
-              }
+              '&:hover': { bgcolor: '#1d4ed8' },
+              '&:disabled': { bgcolor: 'rgba(37, 99, 235, 0.5)' }
             }}
           >
-            {isDeleting ? (
-              <CircularProgress size={20} sx={{ color: '#fff' }} />
-            ) : (
-              'Yes, delete'
-            )}
+            {isDeleting ? <CircularProgress size={20} /> : 'Yes, delete'}
           </Button>
         </DialogActions>
       </Dialog>
-      <LoadingOverlay text='Deleting...' open={showOverlappingCards} />
+
+      {/* Snackbar for Notifications */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
+      {/* Loading Overlay */}
+      <LoadingOverlay text='Deleting...' open={showOverlayLoader} />
     </Box>
   )
 }
