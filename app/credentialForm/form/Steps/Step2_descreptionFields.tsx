@@ -46,7 +46,18 @@ export function Step2({ register, watch, control, errors }: Readonly<Step2Props>
     >
       <SVGDescribeBadge />
       <Typography sx={{ fontFamily: 'Lato', fontSize: '24px', fontWeight: 400 }}>
-        Describe your skill.{' '}
+        Step 2
+      </Typography>
+      <Typography
+        sx={{
+          fontFamily: 'Lato',
+          fontSize: '16px',
+          fontWeight: 400,
+          maxWidth: '360px',
+          textAlign: 'center'
+        }}
+      >
+        Now take a moment to describe the skill or experience you want to document.{' '}
       </Typography>
       <StepTrackShape />
       <Box sx={{ width: '100%' }}>
@@ -87,25 +98,6 @@ export function Step2({ register, watch, control, errors }: Readonly<Step2Props>
               )}
             />
           )}
-        />
-      </Box>
-
-      <Box sx={{ width: '100%' }}>
-        <FormLabel sx={formLabelStyles} id='duration-label'>
-          Time spent acquiring this skill:{' '}
-        </FormLabel>
-        <TextField
-          {...register('credentialDuration')}
-          placeholder='Example: 3 years'
-          variant='outlined'
-          sx={TextFieldStyles}
-          aria-labelledby='duration-label'
-          inputProps={{
-            'aria-label': 'weight',
-            style: inputPropsStyles
-          }}
-          error={!!errors.credentialDuration}
-          helperText={errors.credentialDuration?.message}
         />
       </Box>
 
@@ -169,6 +161,25 @@ export function Step2({ register, watch, control, errors }: Readonly<Step2Props>
               ? `${errors.description.message}`
               : `${watch('description').length}/${294} characters`
           }
+        />
+      </Box>
+
+      <Box sx={{ width: '100%' }}>
+        <FormLabel sx={formLabelStyles} id='duration-label'>
+          Time spent acquiring this skill:{' '}
+        </FormLabel>
+        <TextField
+          {...register('credentialDuration')}
+          placeholder='Example: 3 years'
+          variant='outlined'
+          sx={TextFieldStyles}
+          aria-labelledby='duration-label'
+          inputProps={{
+            'aria-label': 'weight',
+            style: inputPropsStyles
+          }}
+          error={!!errors.credentialDuration}
+          helperText={errors.credentialDuration?.message}
         />
       </Box>
     </Box>

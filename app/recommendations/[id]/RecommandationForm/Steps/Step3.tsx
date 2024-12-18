@@ -1,43 +1,17 @@
 'use client'
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react'
-import { useTheme } from '@mui/material/styles'
-import { Box, Typography, FormLabel, Button, Tabs, Tab, styled } from '@mui/material'
-import {
-  UseFormRegister,
-  FieldErrors,
-  UseFormWatch,
-  UseFieldArrayAppend,
-  UseFormSetValue
-} from 'react-hook-form'
-import {
-  skipButtonBoxStyles,
-  skipButtonStyles
-} from '../../../../components/Styles/appStyles'
-import TextEditor from '../TextEditor/Texteditor'
-import { FormData, FileItem } from '../../../../credentialForm/form/types/Types'
-import LinkAdder from '../../../../components/LinkAdder'
-import FileUploader from '../../../../components/FileUploader'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
+import { Box, Typography, styled, Card } from '@mui/material'
+
 import FileListDisplay from '../../../../components/FileList'
-import { uploadImageToGoogleDrive, GoogleDriveStorage } from '@cooperation/vc-storage'
+import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-storage'
 import useGoogleDrive from '../../../../hooks/useGoogleDrive'
 import { useStepContext } from '../../../../credentialForm/form/StepContext'
 import LoadingOverlay from '../../../../components/Loading/LoadingOverlay'
-
-interface PortfolioItem {
-  name: string
-  url: string
-  googleId?: string
-}
-interface Portfolio {
-  name: string
-  url: string
-  googleId?: string
-}
-
-interface LocalPortfolioItem extends Portfolio {
-  id: string
-}
+import { TasksVector, SVGUplaodLink, SVGUploadMedia } from '../../../../Assets/SVGs'
+import { FileItem } from '../../../../credentialForm/form/types/Types'
+import LinkAdder from '../../../../components/LinkAdder'
+import { formLabelStyles } from '../../../../components/Styles/appStyles'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -45,289 +19,138 @@ interface TabPanelProps {
   value: number
 }
 
-interface FormFieldError {
-  type: string
-  message?: string
+interface LinkItem {
+  id: string
+  name: string
+  url: string
 }
 
-interface FormErrors {
-  name?: FormFieldError
-  url?: FormFieldError
-  googleId?: FormFieldError
+interface PortfolioItem {
+  name: string
+  url: string
+  googleId?: string
 }
 
-interface Step3Props {
-  readonly errors: FieldErrors<FormData>
-  readonly register: UseFormRegister<FormData>
-  readonly append: UseFieldArrayAppend<FormData, 'portfolio'>
-  readonly remove: (index: number) => void
-  readonly watch: UseFormWatch<FormData>
-  readonly setValue: UseFormSetValue<FormData>
-  readonly handleNext: () => void
-  readonly handleBack: () => void
-  readonly fullName: string
+interface FileUploadAndListProps {
+  readonly setValue: (field: string, value: any, options?: any) => void
+  readonly selectedFiles: readonly FileItem[]
+  readonly setSelectedFiles: React.Dispatch<React.SetStateAction<FileItem[]>>
+  readonly watch: <T>(name: string) => T
 }
 
-const StyledFormLabel = styled(FormLabel)({
-  fontWeight: 'bold',
-  marginBottom: '8px',
-  display: 'block'
-})
+const StyledTipBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginBottom: '24px',
+  width: '100%',
+  maxWidth: '800px',
+  gap: '1rem',
+  marginTop: theme.spacing(2),
+  backgroundColor: '#D1E4FF',
+  padding: '0.6rem 1rem',
+  borderRadius: '1rem'
+}))
 
-const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other }) => (
-  <div
-    role='tabpanel'
-    hidden={value !== index}
-    id={`evidence-tabpanel-${index}`}
-    aria-labelledby={`evidence-tab-${index}`}
-    {...other}
-  >
-    {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
-  </div>
-)
-
-const Step3: React.FC<Step3Props> = ({
-  append,
-  errors,
-  remove,
-  watch,
+const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
   setValue,
-  handleNext,
-  fullName
+  selectedFiles,
+  setSelectedFiles,
+  watch
 }) => {
-  const theme = useTheme()
-  const displayName = fullName || ''
-  const [tabValue, setTabValue] = useState(0)
-  const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([])
-  const [files, setFiles] = useState<FileItem[]>([])
-  const portfolioFromForm = watch('portfolio') as Portfolio[] | undefined
-  const portfolioWatch = useMemo(() => portfolioFromForm || [], [portfolioFromForm])
-  const { storage } = useGoogleDrive()
   const { loading, setUploadImageFn } = useStepContext()
-
-  const [localPortfolio, setLocalPortfolio] = useState<LocalPortfolioItem[]>([
-    { id: crypto.randomUUID(), name: '', url: '', googleId: undefined }
+  const [showLinkAdder, setShowLinkAdder] = useState(false)
+  const { storage } = useGoogleDrive()
+  const [files, setFiles] = useState<FileItem[]>([...selectedFiles])
+  const [links, setLinks] = useState<LinkItem[]>([
+    { id: crypto.randomUUID(), name: '', url: '' }
   ])
+  const maxFiles = 10
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
-  const handleEditorChange = useCallback(
-    (field: string) => (value: string) => {
-      setValue(field, value)
-    },
-    [setValue]
-  )
-
-  const handleTabChange = useCallback((_: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue)
-  }, [])
+  const handleFileUploadClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click()
+  }
+  useEffect(() => {
+    setFiles([...selectedFiles])
+  }, [selectedFiles])
   const handleFilesSelected = useCallback(
     (newFiles: FileItem[]) => {
       setFiles(newFiles)
       setSelectedFiles(newFiles)
-
-      const portfolioEntries: Portfolio[] = newFiles.map(file => ({
-        name: file.name,
-        url: file.url || '',
-        googleId: file.googleId
-      }))
-
-      setValue('portfolio', portfolioEntries)
-    },
-    [setValue]
-  )
-
-  const handleNameChange = useCallback(
-    (id: string, newName: string) => {
-      const updateFiles = (prevFiles: FileItem[]): FileItem[] =>
-        prevFiles.map(file => (file.id === id ? { ...file, name: newName } : file))
-
-      setFiles(updateFiles)
-      setSelectedFiles(updateFiles)
     },
     [setSelectedFiles]
   )
 
-  const setAsFeatured = useCallback(
-    (id: string) => {
-      const updateFiles = (prevFiles: FileItem[]): FileItem[] => {
-        const updatedFiles = prevFiles.map(file => ({
-          ...file,
-          isFeatured: file.id === id
+  const handleReorder = useCallback(
+    (reorderedFiles: FileItem[]) => {
+      // Update local state
+      setFiles(reorderedFiles)
+      setSelectedFiles(reorderedFiles)
+
+      // Update portfolio items order in form
+      const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
+      const newPortfolioOrder = reorderedFiles
+        .filter(file => file.googleId) // Only include uploaded files
+        .map(file => ({
+          name: file.name,
+          url: `https://drive.google.com/uc?export=view&id=${file.googleId}`,
+          googleId: file.googleId
         }))
-        return updatedFiles.sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured))
-      }
 
-      setFiles(updateFiles)
-      setSelectedFiles(updateFiles)
-    },
-    [setSelectedFiles]
-  )
-
-  const handleDelete = useCallback(
-    (id: string) => {
-      let isFeaturedFileDeleted = false
-
-      setFiles(prevFiles => {
-        const updatedFiles = prevFiles.filter(file => {
-          const shouldKeep = file.googleId !== id && file.id !== id
-          if (!shouldKeep && file === prevFiles[0]) {
-            isFeaturedFileDeleted = true
-          }
-          return shouldKeep
-        })
-
-        if (isFeaturedFileDeleted && updatedFiles.length > 0) {
-          updatedFiles[0].isFeatured = true
-        }
-        return updatedFiles
-      })
-
-      setSelectedFiles(prevFiles =>
-        prevFiles.filter(file => file.googleId !== id && file.id !== id)
-      )
-
-      const currentPortfolio = portfolioWatch
-      let updatedPortfolio = currentPortfolio.filter(
-        file => file.googleId && file.googleId !== id
-      )
-
-      const newFeaturedFile = files[1]
-      if (isFeaturedFileDeleted && newFeaturedFile?.googleId) {
+      // If there's a featured file (first in the list), update the evidenceLink
+      if (reorderedFiles[0]?.googleId) {
         setValue(
           'evidenceLink',
-          `https://drive.google.com/uc?export=view&id=${newFeaturedFile.googleId}`
-        )
-        updatedPortfolio = updatedPortfolio.filter(
-          file => file.googleId !== newFeaturedFile.googleId
+          `https://drive.google.com/uc?export=view&id=${reorderedFiles[0].googleId}`
         )
       }
-      setValue('portfolio', updatedPortfolio)
+
+      // Update the portfolio with the new order
+      setValue('portfolio', newPortfolioOrder)
     },
-    [setValue, portfolioWatch, files]
+    [setValue, watch, setSelectedFiles]
   )
-  const handleAddLink = useCallback(() => {
-    const newId = crypto.randomUUID()
-    const newLink: LocalPortfolioItem = {
-      id: newId,
-      name: '',
-      url: '',
-      googleId: undefined
-    }
-    setLocalPortfolio(prev => [...prev, newLink])
-    append({ name: '', url: '' })
-  }, [append])
-
-  const handleLinkNameChange = useCallback(
-    (index: number, value: string) => {
-      setLocalPortfolio(prev => {
-        const updated = [...prev]
-        if (updated[index]) {
-          updated[index] = { ...updated[index], name: value }
-        }
-        return updated
-      })
-
-      const updatedPortfolio = [...portfolioWatch]
-      if (updatedPortfolio[index]) {
-        updatedPortfolio[index] = { ...updatedPortfolio[index], name: value }
-        setValue('portfolio', updatedPortfolio)
-      }
-    },
-    [setValue, portfolioWatch]
-  )
-
-  const handleLinkUrlChange = useCallback(
-    (index: number, value: string) => {
-      setLocalPortfolio(prev => {
-        const updated = [...prev]
-        if (updated[index]) {
-          updated[index] = { ...updated[index], url: value }
-        }
-        return updated
-      })
-
-      const updatedPortfolio = [...portfolioWatch]
-      if (updatedPortfolio[index]) {
-        updatedPortfolio[index] = { ...updatedPortfolio[index], url: value }
-        setValue('portfolio', updatedPortfolio)
-      }
-    },
-    [setValue, portfolioWatch]
-  )
-  const isFormError = (value: unknown): value is FormErrors => {
-    if (typeof value !== 'object' || value === null) return false
-    const error = value as Record<string, unknown>
-    return (
-      ('name' in error && (error.name === undefined || typeof error.name === 'object')) ||
-      ('url' in error && (error.url === undefined || typeof error.url === 'object'))
-    )
-  }
-  const linkErrors = useMemo(() => {
-    if (!errors.portfolio) return undefined
-
-    return Object.entries(errors.portfolio).reduce(
-      (acc, [key, value]) => {
-        const index = parseInt(key)
-        if (!isNaN(index) && isFormError(value)) {
-          acc[index] = {
-            name: value.name?.message ? { message: value.name.message } : undefined,
-            url: value.url?.message ? { message: value.url.message } : undefined
-          }
-        }
-        return acc
-      },
-      {} as Record<number, { name?: { message?: string }; url?: { message?: string } }>
-    )
-  }, [errors.portfolio])
 
   const handleUpload = useCallback(async () => {
     try {
       if (selectedFiles.length === 0) return
-
       const filesToUpload = selectedFiles.filter(
         fileItem => !fileItem.uploaded && fileItem.file && fileItem.name
       )
       if (filesToUpload.length === 0) return
-
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (fileItem, index) => {
           const newFile = new File([fileItem.file], fileItem.name, {
             type: fileItem.file.type
           })
-
           const uploadedFile = await uploadImageToGoogleDrive(
             storage as GoogleDriveStorage,
             newFile
           )
           const fileId = (uploadedFile as { id: string }).id
-
           return {
             ...fileItem,
             googleId: fileId,
             uploaded: true,
-            isFeatured: index === 0 && !watch('evidenceLink')
+            isFeatured: index === 0 && !watch<string>('evidenceLink')
           }
         })
       )
-
       const featuredFile = uploadedFiles.find(file => file.isFeatured)
-      const nonFeaturedFiles = uploadedFiles.filter(file => !file.isFeatured)
-
       if (featuredFile?.googleId) {
         setValue(
           'evidenceLink',
           `https://drive.google.com/uc?export=view&id=${featuredFile.googleId}`
         )
       }
-
-      const currentPortfolio = watch('portfolio') || []
-      const newPortfolioEntries: PortfolioItem[] = nonFeaturedFiles.map(file => ({
+      const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
+      const newPortfolioEntries: PortfolioItem[] = uploadedFiles.map(file => ({
         name: file.name,
         url: `https://drive.google.com/uc?export=view&id=${file.googleId}`,
         googleId: file.googleId
       }))
-
       setValue('portfolio', [...currentPortfolio, ...newPortfolioEntries])
-
       setSelectedFiles(prevFiles =>
         prevFiles.map(file => {
           const uploadedFile = uploadedFiles.find(f => f.name === file.name)
@@ -340,111 +163,248 @@ const Step3: React.FC<Step3Props> = ({
       console.error('Error uploading files:', error)
     }
   }, [selectedFiles, setValue, setSelectedFiles, storage, watch])
-
+  const handleAddLink = useCallback(() => {
+    setLinks(prev => [...prev, { id: crypto.randomUUID(), name: '', url: '' }])
+  }, [])
+  const handleRemoveLink = useCallback(
+    (index: number) => {
+      setLinks(prev => prev.filter((_, i) => i !== index))
+      const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
+      setValue(
+        'portfolio',
+        currentPortfolio.filter((_, i) => i !== index)
+      )
+    },
+    [setValue, watch]
+  )
+  const handleLinkChange = useCallback(
+    (index: number, field: 'name' | 'url', value: string) => {
+      setLinks(prev =>
+        prev.map((link, i) => (i === index ? { ...link, [field]: value } : link))
+      )
+      const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
+      const updatedPortfolio = [...currentPortfolio]
+      updatedPortfolio[index] = { ...updatedPortfolio[index], [field]: value }
+      setValue('portfolio', updatedPortfolio)
+    },
+    [setValue, watch]
+  )
+  const handleNameChange = useCallback(
+    (id: string, newName: string) => {
+      const updateFiles = (prevFiles: FileItem[]) =>
+        prevFiles.map(file => (file.id === id ? { ...file, name: newName } : file))
+      setFiles(updateFiles)
+      setSelectedFiles(updateFiles)
+    },
+    [setSelectedFiles]
+  )
+  const setAsFeatured = useCallback(
+    (id: string) => {
+      const updateFiles = (prevFiles: FileItem[]) =>
+        prevFiles
+          .map(file => ({ ...file, isFeatured: file.id === id }))
+          .sort((a, b) => (a.isFeatured === b.isFeatured ? 0 : a.isFeatured ? -1 : 1))
+      setFiles(updateFiles)
+      setSelectedFiles(updateFiles)
+    },
+    [setSelectedFiles]
+  )
+  const handleDelete = useCallback(
+    (event: React.MouseEvent, id: string) => {
+      event.stopPropagation()
+      let isFeaturedFileDeleted = false
+      setFiles(prevFiles => {
+        const updatedFiles = prevFiles.filter(
+          file => file.googleId !== id && file.id !== id
+        )
+        isFeaturedFileDeleted = prevFiles[0]?.googleId === id || prevFiles[0]?.id === id
+        if (isFeaturedFileDeleted && updatedFiles.length > 0) {
+          updatedFiles[0].isFeatured = true
+        }
+        return updatedFiles
+      })
+      setSelectedFiles(prevFiles =>
+        prevFiles.filter(file => file.googleId !== id && file.id !== id)
+      )
+      const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
+      let updatedPortfolio = currentPortfolio.filter(file => file.googleId !== id)
+      const newFeaturedFile = files[1]
+      if (isFeaturedFileDeleted && newFeaturedFile?.googleId) {
+        setValue(
+          'evidenceLink',
+          `https://drive.google.com/uc?export=view&id=${newFeaturedFile.googleId}`
+        )
+        updatedPortfolio = updatedPortfolio.filter(
+          file => file.googleId !== newFeaturedFile.googleId
+        )
+      }
+      setValue('portfolio', updatedPortfolio)
+    },
+    [setValue, watch, files, setSelectedFiles]
+  )
   useEffect(() => {
     // @ts-ignore-next-line
     setUploadImageFn(() => handleUpload)
   }, [handleUpload, setUploadImageFn])
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = event.target.files
+    if (newFiles) {
+      if (files.length + newFiles.length > maxFiles) {
+        alert(`You can only upload a maximum of ${maxFiles} files.`)
+        return
+      }
+
+      const filesArray = Array.from(newFiles)
+      const isAnyFileFeatured = files.some(file => file.isFeatured)
+      let hasSetFeatured = isAnyFileFeatured
+
+      const processFile = (file: File) => {
+        return new Promise<FileItem>(resolve => {
+          const reader = new FileReader()
+          reader.onload = e => {
+            const newFileItem: FileItem = {
+              id: crypto.randomUUID(),
+              file: file,
+              name: file.name,
+              url: e.target?.result as string,
+              isFeatured: !hasSetFeatured && files.length === 0,
+              uploaded: false,
+              fileExtension: file.name.split('.').pop() ?? ''
+            }
+
+            if (newFileItem.isFeatured) hasSetFeatured = true
+            resolve(newFileItem)
+          }
+          reader.readAsDataURL(file)
+        })
+      }
+
+      Promise.all(filesArray.map(processFile)).then(newFileItems => {
+        const updatedFiles = [...files]
+        newFileItems.forEach(newFile => {
+          const duplicateIndex = updatedFiles.findIndex(f => f.name === newFile.name)
+          if (duplicateIndex !== -1) {
+            updatedFiles[duplicateIndex] = newFile
+          } else {
+            if (newFile.isFeatured) {
+              updatedFiles.unshift(newFile)
+            } else {
+              updatedFiles.push(newFile)
+            }
+          }
+        })
+        handleFilesSelected(updatedFiles)
+      })
+    }
+  }
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-      {/* Recommendation Text */}
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+        maxWidth: '800px',
+        margin: '0 auto',
+        gap: '24px',
+        bgcolor: '#FFFFFF',
+        borderRadius: 2,
+        p: '20px'
+      }}
+    >
       <Box>
-        <StyledFormLabel id='recommendation-text-label'>
-          Recommendation Text <span style={{ color: 'red' }}>*</span>
-        </StyledFormLabel>
-        <TextEditor
-          value={watch('recommendationText') || ''}
-          onChange={handleEditorChange('recommendationText')}
-          placeholder={`e.g., ${displayName} managed a local garden for 2 years, organized weekly gardening workshops, led a community clean-up initiative.`}
-        />
-        {errors.recommendationText && (
-          <Typography color='error'>{errors.recommendationText.message}</Typography>
-        )}
-      </Box>
-
-      {/* Qualifications */}
-      <Box>
-        <StyledFormLabel id='qualifications-label'>Your Qualifications</StyledFormLabel>
-        <Typography sx={{ marginBottom: '10px' }}>
-          Please share how you are qualified to provide this recommendation. Sharing your
-          qualifications will further increase the value of this recommendation.
+        <Typography sx={formLabelStyles} id='qualifications-label'>
+          Supporting Documents and Links{' '}
         </Typography>
-        <TextEditor
-          value={watch('qualifications') || ''}
-          onChange={handleEditorChange('qualifications')}
-          placeholder={`e.g., I have over 10 years of experience in the field and have worked closely with ${displayName}.`}
-        />
-        {errors.qualifications && (
-          <Typography color='error'>{errors.qualifications.message}</Typography>
-        )}
-      </Box>
-
-      {/* Supporting Evidence */}
-      <Box>
-        <Typography sx={{ mb: '10px', fontWeight: 'medium' }}>
-          Adding supporting evidence of your qualifications.
+        <Typography sx={{ marginBottom: '10px', fontSize: '14px' }}>
+          The strength of your recommendation is significantly enhanced when you provide
+          supporting evidence of your qualifications.
         </Typography>
+      </Box>
+      <Box
+        display='flex'
+        flexDirection='column'
+        bgcolor='#FFFFFF'
+        gap={3}
+        borderRadius={2}
+        width='100%'
+      >
+        {/* Add Links Section */}
 
-        <Box sx={{ width: '100%', borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            aria-label='evidence upload method tabs'
-            centered
-          >
-            <Tab label='Upload Files' id='evidence-tab-0' />
-            <Tab label='Add Links' id='evidence-tab-1' />
-          </Tabs>
-        </Box>
-
-        <TabPanel value={tabValue} index={0}>
-          <FileUploader
-            onFilesSelected={handleFilesSelected}
-            maxFiles={10}
-            currentFiles={files}
-          />
-
-          <Typography
-            mt={2}
-            sx={{ textAlign: 'center', fontSize: '0.875rem', color: '#666' }}
-          >
-            The first file will be set as the featured evidence.
+        <CardStyle variant='outlined' onClick={() => setShowLinkAdder(true)}>
+          {showLinkAdder && (
+            <Box mb={3} width='100%'>
+              <LinkAdder
+                fields={links}
+                onAdd={handleAddLink}
+                onRemove={handleRemoveLink}
+                onNameChange={(index, value) => handleLinkChange(index, 'name', value)}
+                onUrlChange={(index, value) => handleLinkChange(index, 'url', value)}
+                maxLinks={5}
+                nameLabel='Name'
+                urlLabel='URL'
+                namePlaceholder='(e.g., LinkedIn profile, github repo, etc.)'
+                urlPlaceholder='https://'
+              />{' '}
+            </Box>
+          )}
+          <SVGUplaodLink />
+          <Typography variant='body1' color='primary' align='center'>
+            + Add links
+            <br />
+            (social media, articles, your website, etc.)
           </Typography>
+        </CardStyle>
 
-          <FileListDisplay
-            files={selectedFiles}
-            onDelete={handleDelete}
-            onNameChange={handleNameChange}
-            onSetAsFeatured={setAsFeatured}
-          />
-        </TabPanel>
+        {/* Add Media Section */}
+        <Box width='100%'>
+          <CardStyle variant='outlined' onClick={handleFileUploadClick}>
+            <FileListDisplay
+              files={[...selectedFiles]}
+              onDelete={handleDelete}
+              onNameChange={handleNameChange}
+              onSetAsFeatured={setAsFeatured}
+              onReorder={handleReorder}
+            />
+            <SVGUploadMedia />
 
-        <TabPanel value={tabValue} index={1}>
-          <LinkAdder
-            fields={localPortfolio}
-            onAdd={handleAddLink}
-            onRemove={remove}
-            onNameChange={handleLinkNameChange}
-            onUrlChange={handleLinkUrlChange}
-            errors={linkErrors}
-            maxLinks={5}
-            nameLabel='Name'
-            urlLabel='URL'
-            namePlaceholder='(e.g., LinkedIn profile, GitHub repo, etc.)'
-            urlPlaceholder='https://'
-          />
-        </TabPanel>
+            <Typography variant='body1' color='primary' align='center'>
+              + Add media
+              <br />
+              (images, documents, video)
+            </Typography>
+            <input
+              type='file'
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+              accept='*'
+              multiple
+            />
+          </CardStyle>
+        </Box>
       </Box>
 
-      <Box sx={skipButtonBoxStyles}>
-        <Button type='button' onClick={handleNext} sx={skipButtonStyles(theme)}>
-          Skip
-        </Button>
-      </Box>
       <LoadingOverlay text='Uploading files...' open={loading} />
     </Box>
   )
 }
+const CardStyle = styled(Card)({
+  padding: '40px 20px',
+  cursor: 'pointer',
+  width: '100%',
+  transition: 'all 0.3s ease',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  p: 4,
+  borderRadius: 2,
+  gap: 2,
+  border: '2px dashed #ccc',
+  '&:hover': {
+    borderColor: '#2563EB'
+  }
+})
 
-export default Step3
+export default FileUploadAndList
