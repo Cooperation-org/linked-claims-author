@@ -139,7 +139,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
         qualifications: '',
         explainAnswer: ''
       })
-      setActiveStep(6)
+      setActiveStep(4)
     } catch (error) {
       console.error('Error during form submission:', error)
     } finally {
