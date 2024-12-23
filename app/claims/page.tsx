@@ -22,23 +22,16 @@ import {
   useTheme
 } from '@mui/material'
 import { useSession } from 'next-auth/react'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { useRouter } from 'next/navigation'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DeleteIcon from '@mui/icons-material/Delete'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import useGoogleDrive from '../hooks/useGoogleDrive'
 import LoadingOverlay from '../components/Loading/LoadingOverlay'
 
-import {
-  SVGHeart,
-  SVGLinkedIn,
-  SVGEmail,
-  SVGCopy,
-  SVGTrush,
-  BlueBadge
-} from '../Assets/SVGs'
+import { SVGHeart, SVGLinkedIn, SVGEmail, SVGCopy, BlueBadge } from '../Assets/SVGs'
 
 // Types
 interface Claim {
@@ -157,11 +150,6 @@ const ClaimsPage: React.FC = () => {
   const handleDelete = () => {
     setOpenConfirmDialog(true)
     handleMenuClose()
-  }
-  const handleCopyUrl = async (claimId: string) => {
-    const url = `http://localhost:3000/view/${claimId}`
-
-    navigator.clipboard.writeText(url)
   }
 
   const handleConfirmDelete = async () => {
