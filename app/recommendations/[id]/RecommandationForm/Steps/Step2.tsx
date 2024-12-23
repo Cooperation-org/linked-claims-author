@@ -29,15 +29,7 @@ interface Step2Props {
   setSelectedFiles: any
 }
 
-const options = [
-  'Facebook',
-  'Twitter',
-  'Instagram',
-  'LinkedIn',
-  'GitHub',
-  'YouTube',
-  'Other'
-]
+const options = ['Friend', 'Relative', 'Volunteered together', 'College', 'Other']
 
 const Step2: React.FC<Step2Props> = ({
   register,

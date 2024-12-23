@@ -15,7 +15,7 @@ import {
   DialogTitle
 } from '@mui/material'
 import { useSession } from 'next-auth/react'
-import { BlueBadge } from '../Assets/SVGs'
+import { BlueBadge, SVGCopy, SVGExport, SVGHeart, SVGLinkedIn } from '../Assets/SVGs'
 import useGoogleDrive from '../hooks/useGoogleDrive'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
@@ -417,13 +417,41 @@ const ClaimsPage: React.FC = () => {
                               }
                             }}
                           >
-                            <ContentCopyIcon />
+                            <SVGHeart />
                             <span style={{ textDecoration: 'underline' }}>
-                              Make a copy
+                              Ask for a recommendation
                             </span>
+                            <SVGExport />
                           </MenuItem>
                           <MenuItem
-                            disabled={true}
+                            onClick={handleContinueEditing}
+                            sx={{
+                              fontFamily: 'Inter',
+                              fontSize: '14px',
+                              gap: '12px',
+                              color: '#1976d2',
+                              '&:hover': {
+                                backgroundColor: 'rgba(25, 118, 210, 0.04)'
+                              },
+                              '& .MuiSvgIcon-root': {
+                                fontSize: '20px'
+                              },
+                              '& a': {
+                                color: 'inherit',
+                                textDecoration: 'underline',
+                                display: 'flex',
+                                alignItems: 'center',
+                                width: '100%'
+                              }
+                            }}
+                          >
+                            <SVGLinkedIn />
+                            <span style={{ textDecoration: 'underline' }}>
+                              Share to LikedIn
+                            </span>
+                            <SVGExport />
+                          </MenuItem>
+                          <MenuItem
                             onClick={handleContinueEditing}
                             sx={{
                               fontFamily: 'Inter',
@@ -447,19 +475,46 @@ const ClaimsPage: React.FC = () => {
                           >
                             <EditIcon />
                             <span style={{ textDecoration: 'underline' }}>
-                              Continuing editing
+                              Share via Email
                             </span>
+                            <SVGExport />
+                          </MenuItem>
+                          <MenuItem
+                            onClick={handleContinueEditing}
+                            sx={{
+                              fontFamily: 'Inter',
+                              fontSize: '14px',
+                              gap: '12px',
+                              color: '#1976d2',
+                              '&:hover': {
+                                backgroundColor: 'rgba(25, 118, 210, 0.04)'
+                              },
+                              '& .MuiSvgIcon-root': {
+                                fontSize: '20px'
+                              },
+                              '& a': {
+                                color: 'inherit',
+                                textDecoration: 'underline',
+                                display: 'flex',
+                                alignItems: 'center',
+                                width: '100%'
+                              }
+                            }}
+                          >
+                            <SVGCopy />
+                            <span style={{ textDecoration: 'underline' }}>Copy URL</span>
                           </MenuItem>
 
                           <MenuItem
                             onClick={handleDelete}
                             disabled={isDeleting}
                             sx={{
+                              fontFamily: 'Inter',
                               fontSize: '14px',
                               gap: '12px',
-                              color: '#d32f2f',
+                              color: '#1976d2',
                               '&:hover': {
-                                backgroundColor: 'rgba(211, 47, 47, 0.04)'
+                                backgroundColor: 'rgba(25, 118, 210, 0.04)'
                               },
                               '& .MuiSvgIcon-root': {
                                 fontSize: '20px'
