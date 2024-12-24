@@ -19,9 +19,16 @@ interface FormData {
   explainAnswer?: string
   portfolio?: Portfolio[]
 }
-
+export interface DataPreviewFormData {
+  fullName?: string
+  howKnow?: string
+  recommendationText?: string
+  qualifications?: string
+  explainAnswer?: string
+  portfolio?: Portfolio[]
+}
 interface DataPreviewProps {
-  formData: FormData
+  formData: DataPreviewFormData
   fullName: string
   handleNext: () => void
   handleBack: () => void
