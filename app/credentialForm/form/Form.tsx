@@ -155,17 +155,26 @@ const Form = ({ onStepChange }: any) => {
 
       const { didDocument, keyPair, issuerId } = await createDID(accessToken)
 
-      const saveResponse = await saveToGoogleDrive(
+      const saveResponse = await saveToGoogleDrive({
         storage,
-        {
+        data: {
           didDocument,
           keyPair
         },
-        'DID'
-      )
+        type: 'DID'
+      })
 
       const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
-      const file = (await saveToGoogleDrive(storage, res, 'VC')) as any
+      const file = (await saveToGoogleDrive({
+        storage,
+        data: res,
+        type: 'VC'
+      })) as any
+      const folderIds = await storage?.getFileParents(file.id)
+      const relationFile = await storage?.createRelationsFile({
+        vcFolderId: folderIds[0]
+      })
+      console.log('🚀 ~ sign ~ relationFile:', relationFile)
       setLink(`https://drive.google.com/file/d/${file.id}/view`)
       setFileId(`${file.id}`)
 
@@ -201,7 +210,7 @@ const Form = ({ onStepChange }: any) => {
           gap: '30px',
           alignItems: 'center',
           justifyItems: 'center',
-          padding: ' 1px 20px 20px',
+          padding: ' 20px 20px 20px',
           overflow: 'auto',
           width: '100%',
           maxWidth: '720px',
@@ -217,18 +226,6 @@ const Form = ({ onStepChange }: any) => {
             maxWidth: { md: '720px' }
           }}
         >
-          {activeStep >= 2 && activeStep <= 4 && (
-            <Button
-              onClick={handleBack}
-              sx={{ textTransform: 'capitalize', p: '0', mr: '5px' }}
-            >
-              <Box sx={{ mt: 1 }}>
-                <SVGBack />
-              </Box>
-              Back
-            </Button>
-          )}
-
           <FormControl sx={{ width: '100%' }}>
             {activeStep === 0 && (
               <Slide in={true} direction={direction} timeout={500}>

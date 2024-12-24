@@ -35,26 +35,13 @@ export function Buttons({
         justifyContent: activeStep === 1 || activeStep === 0 ? 'center' : 'space-between'
       }}
     >
-      {activeStep !== 0 && activeStep !== 1 && activeStep !== 6 && handleBack && (
+      {activeStep === 2 && (
         <Button sx={StyledButton} type='submit' color='secondary'>
           Save & Exit
         </Button>
       )}
-      {activeStep < 4 && activeStep !== 1 && (
-        <Button
-          sx={{
-            ...nextButtonStyle,
-            maxWidth: '355px'
-          }}
-          onClick={handleNext}
-          color='primary'
-          disabled={!isValid || isLoading}
-          variant='contained'
-        >
-          Next
-        </Button>
-      )}
-      {activeStep === 5 && handleSign && (
+
+      {activeStep === 3 && handleSign && (
         <Tooltip title={tooltipText} arrow>
           <span>
             <Button
@@ -73,7 +60,7 @@ export function Buttons({
           </span>
         </Tooltip>
       )}
-      {activeStep === 4 && (
+      {activeStep === 2 && (
         <Button
           sx={nextButtonStyle}
           onClick={handleNext}

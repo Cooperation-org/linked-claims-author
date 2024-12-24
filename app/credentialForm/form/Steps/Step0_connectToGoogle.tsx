@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Typography, Tooltip } from '@mui/material'
 import { signIn, useSession } from 'next-auth/react'
 import { SVGFolder, SVGSinfo } from '../../../Assets/SVGs'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
+import { useStepContext } from '../StepContext'
 
 export function Step0() {
   const { data: session } = useSession()
+  const { activeStep, handleNext, setActiveStep } = useStepContext()
   const [loading, setLoading] = useState(false)
 
   const connectToGoogleDrive = async () => {
     if (session?.accessToken) {
       setLoading(true)
-      window.location.hash = '#step1'
+      handleNext()
       return
     }
 
@@ -25,12 +27,18 @@ export function Step0() {
 
       setLoading(true)
       setTimeout(() => {
-        window.location.hash = '#step1'
+        setActiveStep(1)
       }, 500)
     } catch (error) {
       console.error('Error connecting to Google Drive:', error)
     }
   }
+
+  useEffect(() => {
+    if (session?.accessToken && activeStep === 0) {
+      setActiveStep(1)
+    }
+  }, [session, activeStep, setActiveStep])
 
   return (
     <Box
@@ -64,7 +72,7 @@ export function Step0() {
           fontSize: 24
         }}
       >
-        First, connect to Google Drive so you can save your data.
+        First, login with Google Drive so you can save your data.
       </Typography>
 
       {/* Connect to Google Drive Button */}
@@ -82,7 +90,7 @@ export function Step0() {
           backgroundColor: '#003FE0'
         }}
       >
-        Connect to Google Drive{' '}
+        Login with Google Drive{' '}
         <Tooltip title='You must have a Google Drive account and be able to login. This is where your credentials will be saved.'>
           <Box sx={{ ml: 2, mt: '2px' }}>
             <SVGSinfo />
@@ -92,7 +100,7 @@ export function Step0() {
       <Button
         variant='text'
         color='primary'
-        onClick={() => (window.location.hash = '#step1')}
+        onClick={() => setActiveStep(1)}
         sx={{
           fontSize: '14px',
           fontWeight: 600,

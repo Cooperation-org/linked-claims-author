@@ -83,16 +83,21 @@ const signCred = async (
     const credentialEngine = getCredentialEngine(accessToken)
     if (type === 'RECOMMENDATION') {
       formData = generateRecommendationData(data)
-      signedVC = await credentialEngine.signVC(
-        formData,
-        'RECOMMENDATION',
+      signedVC = await credentialEngine.signVC({
+        data: formData,
+        type: 'RECOMMENDATION',
         keyPair,
-        issuerDid
-      )
+        issuerId: issuerDid
+      })
     } else {
       formData = generateCredentialData(data)
       console.log('🚀 ~ formData:', formData)
-      signedVC = await credentialEngine.signVC(formData, 'VC', keyPair, issuerDid)
+      signedVC = await credentialEngine.signVC({
+        data: formData,
+        type: 'VC',
+        keyPair,
+        issuerId: issuerDid
+      })
     }
 
     return signedVC

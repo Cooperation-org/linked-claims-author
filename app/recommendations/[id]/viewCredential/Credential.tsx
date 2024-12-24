@@ -95,7 +95,7 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
           }}
           variant='text'
         >
-          Decline Recommendation Request
+          Decline/Ignore Recommendation Request
         </Button>
       </Box>
       <Typography

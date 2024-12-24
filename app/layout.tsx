@@ -1,75 +1,100 @@
-'use client'
+import { Metadata } from 'next'
+import ClientLayout from './ClientLayout'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import NavBar from './components/navbar/NavBar'
-import Providers from './components/signing/Providers'
-import { CssBaseline, ThemeProvider, Box } from '@mui/material'
-import Footer from './components/footer/Footer'
-import Theme from './theme'
-import Head from 'next/head'
-import { StepProvider } from './credentialForm/form/StepContext'
-import { usePathname } from 'next/navigation'
-import background from './Assets/Images/Background.svg' // Import background image
 
 const inter = Inter({ subsets: ['latin'] })
+export const metadata: Metadata = {
+  title: 'OpenCreds',
+  description:
+    'OpenCreds offers the ultimate solution for managing your professional credentials. Capture, store, and share your achievements securely to unlock new opportunities.',
+  keywords:
+    'Credential Management, Professional Credentials, Secure Storage, Share Achievements, OpenCreds',
+  authors: [{ name: 'Linked Trust' }],
+  metadataBase: new URL('https://opencreds.net'),
+  openGraph: {
+    title: 'OpenCreds',
+    description:
+      'Manage your professional credentials securely and efficiently with OpenCreds. Capture, store, and share your achievements to unlock new opportunities.',
+    url: 'https://opencreds.net',
+    siteName: 'OpenCreds',
+    images: [
+      {
+        url: '/images/og-image.png',
+        width: 1200,
+        height: 630
+      }
+    ],
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'OpenCreds',
+    description:
+      'Securely manage and share your professional credentials with OpenCreds. Enhance your career opportunities with our comprehensive credential management solution.',
+    images: ['/images/og-image.png']
+  },
+  applicationName: 'OpenCreds',
+  formatDetection: {
+    telephone: false
+  },
+  manifest: '/site.webmanifest',
+  other: {
+    'apple-mobile-web-app-capable': 'yes',
+    'mobile-web-app-capable': 'yes'
+  }
+}
+
+// Structured data
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'OpenCreds',
+  url: 'https://opencreds.net',
+  applicationCategory: 'CredentialManagement',
+  operatingSystem: 'Web-based',
+  description:
+    'OpenCreds is a secure and efficient credential management platform. Easily capture, store, and share your professional credentials to unlock new opportunities.',
+  featureList: [
+    'Credential Capture',
+    'Secure Storage',
+    'Easy Sharing',
+    'Recommendation Requests',
+    'Integration with Professional Networks'
+  ],
+  sameAs: [
+    'https://github.com/Cooperation-org',
+    'https://linkedin.com/company/linkedtrust/'
+  ],
+  publisher: {
+    '@type': 'Organization',
+    name: 'OpenCreds',
+    url: 'https://opencreds.net',
+    logo: 'https://opencreds.net/images/logo.png'
+  },
+  applicationSubCategory: 'Credential Management'
+}
 
 export default function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const pathname = usePathname()
-
   return (
-    <ThemeProvider theme={Theme}>
-      <CssBaseline />
-      <html lang='en'>
-        <Head>
-          <title>OpenCreds</title>
-          <script src='https://accounts.google.com/gsi/client' async defer></script>
-        </Head>
-        <body
-          style={{
-            margin: 0,
-            padding: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh'
-            // backgroundColor: '#F0F4F8'
-          }}
-        >
-          <Providers>
-            <StepProvider>
-              <NavBar />
-              <Box
-                component='main'
-                sx={{
-                  flexGrow: 1,
-                  minHeight: `calc(100vh - 255px)`,
-                  backgroundImage: pathname === '/' ? `url(${background.src})` : 'none',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundBlendMode: pathname === '/' ? 'overlay' : 'normal',
-                  backgroundColor:
-                    pathname === '/'
-                      ? {
-                          xs: 'rgba(255, 255, 255, 0.8)',
-                          md: 'rgba(255, 255, 255, 0.85)'
-                        }
-                      : {
-                          xs: '#FFFFFF',
-                          md: '#F0F4F8'
-                        }
-                }}
-              >
-                {children}
-              </Box>
-              <Footer />
-            </StepProvider>
-          </Providers>
-        </body>
-      </html>
-    </ThemeProvider>
+    <html lang='en' className={inter.className}>
+      <head>
+        <script
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        <script src='https://accounts.google.com/gsi/client' async defer />
+        <link rel='preconnect' href='https://fonts.googleapis.com' />
+        <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='' />
+        <link rel='apple-touch-icon' sizes='180x180' href='/icons/apple-touch-icon.png' />
+        <link rel='icon' type='image/png' sizes='32x32' href='/icons/favicon-32x32.png' />
+        <link rel='icon' type='image/png' sizes='16x16' href='/icons/favicon-16x16.png' />
+      </head>
+      <ClientLayout>{children}</ClientLayout>
+    </html>
   )
 }

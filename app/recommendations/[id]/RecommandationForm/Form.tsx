@@ -1,27 +1,24 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, Button } from '@mui/material'
+import { useForm, FormProvider } from 'react-hook-form'
+import { FormControl, Box, Link, Typography } from '@mui/material'
 import { useParams } from 'next/navigation'
 import { FormData } from '../../../credentialForm/form/types/Types'
-import { textGuid, SuccessText } from './fromTexts/FormTextSteps'
+import { textGuid } from './fromTexts/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
-import Step3 from './Steps/Step3'
-import Step4 from './Steps/Step4'
 import DataPreview from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import useLocalStorage from '../../../hooks/useLocalStorage'
 import { useStepContext } from '../../../credentialForm/form/StepContext'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
-import { createDID, signCred } from '../../../utils/signCred'
+import { createDID } from '../../../utils/signCred'
+import { signCred } from '../../../utils/credential'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
-import { StepTrackShape } from '../../../credentialForm/form/fromTexts & stepTrack/StepTrackShape'
-import { SVGBack } from '../../../Assets/SVGs'
-
+import { Logo } from '../../../Assets/SVGs'
 interface FormProps {
   fullName: string
   email: string
@@ -43,6 +40,8 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [tooltipText, setTooltipText] = useState('saving your recommendation')
+  const [recId, setRecId] = useState<string | null>(null)
+  const [selectedFiles, setSelectedFiles] = useState<any[]>([])
 
   const defaultValues: FormData = storedValue
 
@@ -60,11 +59,6 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
     reset,
     formState: { errors, isValid }
   } = methods
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'portfolio'
-  })
 
   const formData = watch()
   const params = useParams()
@@ -91,14 +85,14 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
       const { didDocument, keyPair, issuerId } = newDid
 
       // Save the DID document and keyPair to Google Drive
-      await saveToGoogleDrive(
+      await saveToGoogleDrive({
         storage,
-        {
+        data: {
           didDocument,
           keyPair
         },
-        'DID'
-      )
+        type: 'DID'
+      })
 
       // Step 3: Sign the credential (recommendation)
       const signedCred = await signCred(
@@ -106,17 +100,17 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
         formData,
         issuerId,
         keyPair,
-        'RECOMMENDATION'
+        'RECOMMENDATION',
+        VSFileId
       )
 
       // Step 4: Save the signed recommendation to Google Drive
-      const savedRecommendation = await saveToGoogleDrive(storage, signedCred, 'SESSION')
-      const commentFileID = (savedRecommendation as { id: string }).id
-      console.log('🚀 ~ savedRecommendation:', savedRecommendation)
-
-      // Step 5: Add a comment to a specific file in Google Drive
-      const rec = await storage.addCommentToFile(VSFileId, commentFileID)
-      console.log(rec)
+      const savedRecommendation = await saveToGoogleDrive({
+        storage,
+        data: signedCred,
+        type: 'RECOMMENDATION'
+      })
+      setRecId(savedRecommendation.id)
       return signedCred // Return the signed credential as a result
     } catch (error: any) {
       console.error('Error during signing process:', error.message)
@@ -163,29 +157,66 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
           alignItems: 'center',
           marginTop: '5px',
           padding: '20px',
-          width: '100%',
+          width: '99vw',
           maxWidth: '720px',
-          backgroundColor: '#FFF',
+          minWidth: '320px',
+          backgroundColor: '#f0f4f8',
           margin: 'auto',
           marginBottom: '20px'
         }}
         onSubmit={handleFormSubmit}
       >
-        {activeStep >= 2 && activeStep <= 4 && (
-          <Button
-            onClick={handleBack}
-            sx={{ textTransform: 'capitalize', p: '0', mr: '100%', ml: '50px' }}
+        {activeStep === 2 && (
+          <Box
+            sx={{
+              backgroundColor: 'white',
+              p: 2,
+              borderRadius: 2,
+              width: '100%'
+            }}
           >
-            <Box sx={{ mt: 1 }}>
-              <SVGBack />
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+              <Box
+                sx={{
+                  backgroundColor: 'blue.50',
+                  borderRadius: '8px',
+                  mt: 1
+                }}
+              >
+                <Logo />
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                <Typography
+                  variant='h6'
+                  sx={{ fontWeight: 'bold', color: 'text.primary' }}
+                >
+                  Create your recommendation
+                </Typography>
+                <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                  You can also{' '}
+                  <Link
+                    href='#'
+                    sx={{
+                      color: 'primary.main',
+                      '&:hover': {
+                        color: 'primary.dark'
+                      },
+                      textDecoration: 'underline'
+                    }}
+                    onClick={e => {
+                      e.preventDefault()
+                      console.log('Save & Exit clicked')
+                    }}
+                  >
+                    Save & Exit
+                  </Link>{' '}
+                  to keep this as a draft.
+                </Typography>
+              </Box>
             </Box>
-            Back
-          </Button>
+          </Box>
         )}
-        <StepTrackShape />
         {activeStep === 0 && <ComprehensiveClaimDetails />}
-
-        {activeStep === 7 && <SuccessText />}
 
         <Box sx={{ width: '100%' }}>
           <FormControl sx={{ width: '100%' }}>
@@ -199,46 +230,29 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 errors={errors}
                 setValue={setValue}
                 fullName={fullName}
+                control={control}
+                selectedFiles={selectedFiles}
+                setSelectedFiles={setSelectedFiles}
               />
             )}
             {activeStep === 3 && (
-              <Step3
-                register={register}
-                watch={watch}
-                setValue={setValue}
-                errors={errors}
-                fields={fields}
-                append={append}
-                remove={remove}
-                handleNext={handleNext}
-                handleBack={handleBack}
-                fullName={fullName}
-              />
-            )}
-            {activeStep === 4 && (
-              <Step4
-                watch={watch}
-                setValue={setValue}
-                errors={errors}
-                fullName={fullName}
-              />
-            )}
-            {activeStep === 5 && (
               <DataPreview
                 formData={formData}
                 fullName={fullName}
                 handleNext={handleNext}
                 handleBack={handleBack}
                 handleSign={handleFormSubmit}
+                isLoading={isLoading}
               />
             )}
-            {activeStep === 6 && (
+            {activeStep === 4 && (
               <SuccessPage
                 formData={formData}
                 submittedFullName={submittedFullName}
                 fullName={fullName}
                 email={email}
                 handleBack={handleBack}
+                recId={recId}
               />
             )}
           </FormControl>
