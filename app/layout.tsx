@@ -40,8 +40,6 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   other: {
-    // add the google-site-verification when applying in google search "https://search.google.com/search-console/welcome"
-    // 'google-site-verification': '', // Add your verification code
     'apple-mobile-web-app-capable': 'yes',
     'mobile-web-app-capable': 'yes'
   }

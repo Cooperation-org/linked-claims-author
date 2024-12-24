@@ -72,7 +72,8 @@ const signCred = async (
   data: any,
   issuerDid: string,
   keyPair: string,
-  type: 'RECOMMENDATION' | 'VC'
+  type: 'RECOMMENDATION' | 'VC',
+  vcFileId: any
 ) => {
   if (!accessToken) {
     throw new Error('Access token is not provided')
@@ -87,7 +88,8 @@ const signCred = async (
         data: formData,
         type: 'RECOMMENDATION',
         keyPair,
-        issuerId: issuerDid
+        issuerId: issuerDid,
+        vcFileId
       })
     } else {
       formData = generateCredentialData(data)
