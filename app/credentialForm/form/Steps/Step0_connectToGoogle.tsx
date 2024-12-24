@@ -76,20 +76,7 @@ export function Step0() {
       </Typography>
 
       {/* Connect to Google Drive Button */}
-      <Button
-        variant='contained'
-        color='primary'
-        onClick={connectToGoogleDrive}
-        sx={{
-          mt: 2,
-          px: 4,
-          py: 0.5,
-          fontSize: '16px',
-          borderRadius: 5,
-          textTransform: 'none',
-          backgroundColor: '#003FE0'
-        }}
-      >
+      <Button variant='actionButton' color='primary' onClick={connectToGoogleDrive}>
         Login with Google Drive{' '}
         <Tooltip title='You must have a Google Drive account and be able to login. This is where your credentials will be saved.'>
           <Box sx={{ ml: 2, mt: '2px' }}>

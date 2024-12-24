@@ -15,7 +15,6 @@ import {
   formLabelStyles,
   CustomTextField,
   customTextFieldStyles,
-  aiBoxStyles,
   UseAIStyles
 } from '../../../components/Styles/appStyles'
 import { UseFormRegister, FieldErrors, Controller } from 'react-hook-form'
@@ -127,7 +126,7 @@ export function Step2({ register, watch, control, errors }: Readonly<Step2Props>
               : `${watch('credentialDescription').length}/${294} characters`
           }
         />
-        <Box sx={aiBoxStyles}>
+        <Box sx={{ display: 'flex', gap: '5px' }}>
           <SVGSparkles />
           <Tooltip title='Under development' arrow>
             <FormLabel sx={UseAIStyles} id='ai-description-label'>
