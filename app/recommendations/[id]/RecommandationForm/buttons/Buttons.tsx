@@ -16,13 +16,10 @@ interface ButtonsProps {
 
 export function Buttons({
   activeStep,
-  handleBack,
   handleNext,
   handleSign,
-  maxSteps,
   isValid,
-  isLoading = false,
-  tooltipText = ''
+  isLoading = false
 }: Readonly<ButtonsProps>) {
   return (
     <Box
@@ -31,7 +28,7 @@ export function Buttons({
         height: '40px',
         display: 'flex',
         gap: '15px',
-        justifyContent: activeStep === 1 || activeStep === 0 ? 'center' : 'space-between'
+        justifyContent: 'center'
       }}
     >
       {activeStep === 2 && (
