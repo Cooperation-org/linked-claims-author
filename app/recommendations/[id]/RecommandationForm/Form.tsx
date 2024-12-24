@@ -164,7 +164,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
         }}
         onSubmit={handleFormSubmit}
       >
-        {activeStep === 2 && (
+        {(activeStep === 2 || activeStep === 3) && (
           <Box
             sx={{
               backgroundColor: 'white',
@@ -184,32 +184,66 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 <Logo />
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                <Typography
-                  variant='h6'
-                  sx={{ fontWeight: 'bold', color: 'text.primary' }}
-                >
-                  Create your recommendation
-                </Typography>
-                <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                  You can also{' '}
-                  <Link
-                    href='#'
-                    sx={{
-                      color: 'primary.main',
-                      '&:hover': {
-                        color: 'primary.dark'
-                      },
-                      textDecoration: 'underline'
-                    }}
-                    onClick={e => {
-                      e.preventDefault()
-                      console.log('Save & Exit clicked')
-                    }}
+                {activeStep === 2 && (
+                  <Typography
+                    variant='h6'
+                    sx={{ fontWeight: 'bold', color: 'text.primary' }}
                   >
-                    Save & Exit
-                  </Link>{' '}
-                  to keep this as a draft.
-                </Typography>
+                    Create your recommendation
+                  </Typography>
+                )}
+                {activeStep === 3 && (
+                  <Typography
+                    variant='h6'
+                    sx={{ fontWeight: 'bold', color: 'text.primary' }}
+                  >
+                    Review before signing
+                  </Typography>
+                )}
+                {activeStep === 2 && (
+                  <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                    You can also{' '}
+                    <Link
+                      href='#'
+                      sx={{
+                        color: 'primary.main',
+                        '&:hover': {
+                          color: 'primary.dark'
+                        },
+                        textDecoration: 'underline'
+                      }}
+                      onClick={e => {
+                        e.preventDefault()
+                        console.log('Save & Exit clicked')
+                      }}
+                    >
+                      Save & Exit
+                    </Link>{' '}
+                    to keep this as a draft.
+                  </Typography>
+                )}
+                {activeStep === 3 && (
+                  <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                    if everythink looks good, select{'  '}
+                    <Link
+                      href='#'
+                      sx={{
+                        color: 'primary.main',
+                        '&:hover': {
+                          color: 'primary.dark'
+                        },
+                        textDecoration: 'underline'
+                      }}
+                      onClick={e => {
+                        e.preventDefault()
+                        console.log('Save & Exit clicked')
+                      }}
+                    >
+                      Save & Exit
+                    </Link>{' '}
+                    to complete your recommendation.
+                  </Typography>
+                )}
               </Box>
             </Box>
           </Box>
@@ -270,5 +304,4 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
     </FormProvider>
   )
 }
-
 export default Form
