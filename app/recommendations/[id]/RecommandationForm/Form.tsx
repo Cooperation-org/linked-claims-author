@@ -19,6 +19,7 @@ import { signCred } from '../../../utils/credential'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import { Logo } from '../../../Assets/SVGs'
+
 interface FormProps {
   fullName: string
   email: string
@@ -147,6 +148,13 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
     }
   })
 
+  // New function to handle form data updates from DataPreview
+  const handleUpdateFormData = (newData: FormData) => {
+    Object.keys(newData).forEach(key => {
+      return setValue(key as any, newData[key as keyof FormData])
+    })
+  }
+
   return (
     <FormProvider {...methods}>
       <form
@@ -226,7 +234,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 )}
                 {activeStep === 3 && (
                   <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                    if everythink looks good, select{'  '}
+                    if everything looks good, select{'  '}
                     <Link
                       href='#'
                       sx={{
@@ -277,6 +285,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 handleBack={handleBack}
                 handleSign={handleFormSubmit}
                 isLoading={isLoading}
+                onUpdateFormData={handleUpdateFormData}
               />
             )}
             {activeStep === 4 && (
@@ -306,4 +315,5 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
     </FormProvider>
   )
 }
+
 export default Form
