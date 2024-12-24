@@ -30,7 +30,7 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
 
     try {
       await signIn('google', {
-        callbackUrl: `${window.location.origin}/credentialForm#step1`
+        callbackUrl: `${window.location.origin}/recommendations#step1`
       })
     } catch (error) {
       console.error('Error connecting to Google Drive:', error)
