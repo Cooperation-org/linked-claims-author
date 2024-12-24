@@ -40,32 +40,6 @@ import {
   BlueBadge
 } from '../Assets/SVGs'
 
-// Types
-interface Claim {
-  [x: string]: any
-  id: string
-  achievementName: string
-}
-
-interface ClaimDetail {
-  '@context': string[]
-  id: string
-  type: string[]
-  issuer: {
-    id: string
-    type: string[]
-  }
-  issuanceDate: string
-  expirationDate: string
-  credentialSubject: {
-    type: string[]
-    name: string
-    achievement: any
-    duration: string
-    portfolio: any
-  }
-}
-
 const borderColors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f97316', '#22c55e', '#6366f1']
 
 const getRandomBorderColor = () => {
