@@ -12,7 +12,6 @@ import TextEditor from '../TextEditor/Texteditor'
 import { FormData } from '../../../../credentialForm/form/types/Types'
 import {
   formLabelStyles,
-  formLabelSpanStyles,
   inputPropsStyles,
   TextFieldStyles
 } from '../../../../components/Styles/appStyles'

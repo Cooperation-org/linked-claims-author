@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { nextButtonStyle } from '../../../components/Styles/appStyles'
 import { SVGCheckMarks } from '../../../Assets/SVGs'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { featuresRecommentations } from '../RecommandationForm/fromTexts/FormTextSteps'
@@ -77,7 +76,7 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
           flexDirection: 'column'
         }}
       >
-        <Button onClick={handleClick} sx={{ ...nextButtonStyle, width: '100%', mb: 1 }}>
+        <Button variant='nextButton' onClick={handleClick} sx={{ width: '100%', mb: 1 }}>
           Get Started
         </Button>
         <Button

@@ -89,6 +89,15 @@ declare module '@mui/material/Typography' {
   }
 }
 
+// Add this new declaration for custom button variant
+declare module '@mui/material/Button' {
+  interface ButtonPropsVariantOverrides {
+    actionButton: true
+    nextButton: true
+    finishButton: true
+  }
+}
+
 const Theme = createTheme({
   palette: {
     primary: {
@@ -158,7 +167,78 @@ const Theme = createTheme({
       lineHeight: 'normal'
     }
   }),
-  components: {},
+  components: {
+    MuiButton: {
+      variants: [
+        {
+          props: { variant: 'actionButton' },
+          style: {
+            padding: '10px 40px',
+            borderRadius: '100px',
+            textTransform: 'capitalize',
+            fontFamily: 'sans-serif',
+            fontWeight: '600',
+            lineHeight: '20px',
+            fontSize: '16px',
+            backgroundColor: '#003FE0',
+            color: '#FFFFFF',
+            '&:hover': {
+              backgroundColor: '#003FE0'
+            },
+            '&.Mui-disabled': {
+              backgroundColor: '#d1d5db',
+              color: '#3D4048'
+            }
+          }
+        },
+        {
+          props: { variant: 'nextButton' },
+          style: {
+            padding: '10px 24px',
+            borderRadius: '100px',
+            textTransform: 'capitalize',
+            fontFamily: 'Roboto',
+            fontWeight: '600',
+            lineHeight: '20px',
+            backgroundColor: '#003FE0',
+            color: '#FFFFFF',
+            flexGrow: 8,
+            fontSize: '14px',
+            width: 'fit-content',
+            maxWidth: '230px',
+            '&:hover': {
+              backgroundColor: '#003FE0'
+            },
+            '&.Mui-disabled': {
+              backgroundColor: '#d1d5db', // using t3Disabled color
+              color: '#3D4048'
+            }
+          }
+        },
+        {
+          props: { variant: 'finishButton' },
+          style: {
+            padding: '10px 24px',
+            borderRadius: '100px',
+            textTransform: 'capitalize',
+            fontFamily: 'Roboto',
+            fontWeight: '600',
+            lineHeight: '20px',
+            border: '1px solid  #003FE0',
+            color: '#003FE0',
+            '&:hover': {
+              backgroundColor: '#eff6ff'
+            },
+            '&.Mui-disabled': {
+              backgroundColor: '#d1d5db', // using t3Disabled color
+              color: '#3D4048'
+            },
+            backgroundColor: '#eff6ff'
+          }
+        }
+      ]
+    }
+  },
   breakpoints: {
     values: {
       xs: 0,
