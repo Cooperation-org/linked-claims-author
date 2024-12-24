@@ -6,32 +6,39 @@ import {
   CircularProgress,
   Box,
   Button,
-  MenuItem,
-  Menu,
+  IconButton,
+  Collapse,
+  Avatar,
+  useTheme,
+  useMediaQuery,
+  Paper,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Avatar,
-  Collapse,
-  Divider,
-  IconButton,
-  Paper,
-  useMediaQuery,
-  useTheme
+  Menu,
+  MenuItem,
+  Divider
 } from '@mui/material'
 import { useSession } from 'next-auth/react'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { useRouter } from 'next/navigation'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DeleteIcon from '@mui/icons-material/Delete'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import useGoogleDrive from '../hooks/useGoogleDrive'
 import LoadingOverlay from '../components/Loading/LoadingOverlay'
 
-import { SVGHeart, SVGLinkedIn, SVGEmail, SVGCopy, BlueBadge } from '../Assets/SVGs'
+import {
+  SVGHeart,
+  SVGLinkedIn,
+  SVGEmail,
+  SVGCopy,
+  SVGTrush,
+  BlueBadge
+} from '../Assets/SVGs'
 
 // Types
 interface Claim {
@@ -110,7 +117,9 @@ const ClaimsPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [expandedCard, setExpandedCard] = useState<string | null>(null)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [showOverlappingCards, setShowOverlappingCards] = useState(false)
   const [desktopMenuAnchorEl, setDesktopMenuAnchorEl] = useState<null | HTMLElement>(null)
 
   const { data: session } = useSession()
@@ -119,10 +128,6 @@ const ClaimsPage: React.FC = () => {
   const router = useRouter()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [selectedClaim, setSelectedClaim] = useState<any>(null)
-  const [showOverlappingCards, setShowOverlappingCards] = useState(false)
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
 
   const handleDesktopMenuOpen = (event: React.MouseEvent<HTMLElement>, claim: any) => {
     event.stopPropagation()
@@ -147,11 +152,6 @@ const ClaimsPage: React.FC = () => {
     await navigator.clipboard.writeText(url)
   }
 
-  const handleDelete = () => {
-    setOpenConfirmDialog(true)
-    handleMenuClose()
-  }
-
   const handleConfirmDelete = async () => {
     if (!selectedClaim || !storage) return
 
@@ -168,7 +168,9 @@ const ClaimsPage: React.FC = () => {
       console.error('Error deleting claim:', error)
     } finally {
       setIsDeleting(false)
-      setOpenConfirmDialog(false)
+      setOpenDeleteDialog(false)
+      setShowOverlappingCards(false)
+      setExpandedCard(null)
     }
   }
 
