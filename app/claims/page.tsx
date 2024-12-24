@@ -12,13 +12,13 @@ import {
   useTheme,
   useMediaQuery,
   Paper,
-  MenuItem,
-  Menu,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Menu,
+  MenuItem,
   Divider
 } from '@mui/material'
 import { useSession } from 'next-auth/react'
@@ -39,56 +39,6 @@ import {
   SVGTrush,
   BlueBadge
 } from '../Assets/SVGs'
-
-
-const formatDate = (date: Date): string => {
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
-
-const getTimeAgo = (isoDateString: string): string => {
-  const date = new Date(isoDateString)
-
-  if (isNaN(date.getTime())) {
-    return 'Invalid date'
-  }
-
-  const now = new Date()
-  const diffInMilliseconds = now.getTime() - date.getTime()
-  const diffInSeconds = Math.floor(diffInMilliseconds / 1000)
-  const diffInMinutes = Math.floor(diffInSeconds / 60)
-  const diffInHours = Math.floor(diffInMinutes / 60)
-  const diffInDays = Math.floor(diffInHours / 24)
-
-  // Calculate months more accurately considering different month lengths
-  const months =
-    (now.getFullYear() - date.getFullYear()) * 12 + (now.getMonth() - date.getMonth())
-
-  if (months > 0) {
-    return `${months} ${months === 1 ? 'month' : 'months'} ago`
-  }
-
-  if (diffInDays >= 30) {
-    return `${diffInDays} days ago`
-  }
-
-  if (diffInDays > 0) {
-    return `${diffInDays} ${diffInDays === 1 ? 'day' : 'days'} ago`
-  }
-
-  if (diffInHours > 0) {
-    return `${diffInHours} ${diffInHours === 1 ? 'hour' : 'hours'} ago`
-  }
-
-  if (diffInMinutes > 0) {
-    return `${diffInMinutes} ${diffInMinutes === 1 ? 'minute' : 'minutes'} ago`
-  }
-
-  return `${diffInSeconds} ${diffInSeconds === 1 ? 'second' : 'seconds'} ago`
-}
 
 const borderColors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f97316', '#22c55e', '#6366f1']
 
@@ -226,6 +176,7 @@ const ClaimsPage: React.FC = () => {
         setLoading(false)
       }
     }
+
     fetchClaims()
   }, [getAllClaims])
 
