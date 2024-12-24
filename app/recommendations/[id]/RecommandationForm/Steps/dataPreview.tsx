@@ -27,7 +27,7 @@ interface DataPreviewProps {
   handleBack: () => void
   handleSign: () => void
   isLoading: boolean
-  onUpdateFormData: (newData: FormData) => void
+  onUpdateFormData: (newData: any) => void
 }
 
 const cleanHTML = (htmlContent: any): string => {
