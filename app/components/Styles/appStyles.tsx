@@ -1,4 +1,5 @@
 import { styled, TextField, Theme } from '@mui/material'
+import { SxProps } from '@mui/material/styles'
 
 export const CustomTextField = styled(TextField)({
   '& .MuiInputBase-root': {

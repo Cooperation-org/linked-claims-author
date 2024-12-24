@@ -8,14 +8,13 @@ import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
 import DeleteIcon from '@mui/icons-material/Delete'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
 interface FileListProps {
   files: FileItem[]
   onDelete: (event: React.MouseEvent, id: string) => void
-  onNameChange?: (id: string, newName: string) => void
-  onSetAsFeatured?: (id: string) => void
+  onNameChange: (id: string, newName: string) => void
+  onSetAsFeatured: (id: string) => void
   onReorder: (files: FileItem[]) => void
 }
 
@@ -51,7 +50,7 @@ const renderPDFThumbnail = async (file: FileItem) => {
   return '/fallback-pdf-thumbnail.png'
 }
 
-const FileListDisplay: React.FC<FileListProps> = ({ files, onDelete, onReorder }) => {
+const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
   const [pdfThumbnails, setPdfThumbnails] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -79,48 +78,6 @@ const FileListDisplay: React.FC<FileListProps> = ({ files, onDelete, onReorder }
     }
   }
 
-  const renderFilePreview = (file: FileItem) => {
-    if (isImage(file.name)) {
-      return (
-        <Image
-          src={file.url}
-          alt={file.name.split('.')[0]}
-          width={80}
-          height={80}
-          style={{ borderRadius: '8px' }}
-        />
-      )
-    } else if (isPDF(file.name)) {
-      return (
-        <Image
-          src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
-          alt={file.name.split('.')[0]}
-          width={80}
-          height={80}
-          style={{ borderRadius: '8px' }}
-        />
-      )
-    } else {
-      return (
-        <Box
-          sx={{
-            width: 80,
-            height: 80,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#f3f3f3',
-            borderRadius: '8px',
-            fontSize: '0.9rem',
-            color: '#666'
-          }}
-        >
-          FILE
-        </Box>
-      )
-    }
-  }
-
   return (
     <FileListContainer>
       {files.map((file, index) => (
@@ -134,7 +91,39 @@ const FileListDisplay: React.FC<FileListProps> = ({ files, onDelete, onReorder }
           >
             <CardContent sx={{ p: 4, width: '100%' }}>
               <Box sx={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                {renderFilePreview(file)}
+                {isImage(file.name) ? (
+                  <img
+                    src={file.url}
+                    alt={file.name.split('.')[0]}
+                    width='100%'
+                    height='100%'
+                    style={{ borderRadius: '8px' }}
+                  />
+                ) : isPDF(file.name) ? (
+                  <Image
+                    src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
+                    alt={file.name.split('.')[0]}
+                    width={80}
+                    height={80}
+                    style={{ borderRadius: '8px' }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#f3f3f3',
+                      borderRadius: '8px',
+                      fontSize: '0.9rem',
+                      color: '#666'
+                    }}
+                  >
+                    FILE
+                  </Box>
+                )}
               </Box>
             </CardContent>
 

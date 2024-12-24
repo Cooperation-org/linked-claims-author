@@ -8,7 +8,7 @@ import { FormData } from '../../../credentialForm/form/types/Types'
 import { textGuid } from './fromTexts/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
-import DataPreview, { DataPreviewFormData } from './Steps/dataPreview'
+import DataPreview from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import useLocalStorage from '../../../hooks/useLocalStorage'
@@ -19,7 +19,6 @@ import { signCred } from '../../../utils/credential'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import { Logo } from '../../../Assets/SVGs'
-
 interface FormProps {
   fullName: string
   email: string
@@ -285,9 +284,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 handleBack={handleBack}
                 handleSign={handleFormSubmit}
                 isLoading={isLoading}
-                onUpdateFormData={
-                  handleUpdateFormData as (newData: DataPreviewFormData) => void
-                }
+                onUpdateFormData={handleUpdateFormData}
               />
             )}
             {activeStep === 4 && (
