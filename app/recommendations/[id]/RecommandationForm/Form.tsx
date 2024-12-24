@@ -8,7 +8,7 @@ import { FormData } from '../../../credentialForm/form/types/Types'
 import { textGuid } from './fromTexts/FormTextSteps'
 import Step1 from './Steps/Step1'
 import Step2 from './Steps/Step2'
-import DataPreview from './Steps/dataPreview'
+import DataPreview, { DataPreviewFormData } from './Steps/dataPreview'
 import SuccessPage from './Steps/SuccessPage'
 import { Buttons } from './buttons/Buttons'
 import useLocalStorage from '../../../hooks/useLocalStorage'
@@ -19,6 +19,7 @@ import { signCred } from '../../../utils/credential'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import { Logo } from '../../../Assets/SVGs'
+
 interface FormProps {
   fullName: string
   email: string
@@ -139,13 +140,20 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
         qualifications: '',
         explainAnswer: ''
       })
-      setActiveStep(6)
+      setActiveStep(4)
     } catch (error) {
       console.error('Error during form submission:', error)
     } finally {
       setIsLoading(false)
     }
   })
+
+  // New function to handle form data updates from DataPreview
+  const handleUpdateFormData = (newData: FormData) => {
+    Object.keys(newData).forEach(key => {
+      return setValue(key as any, newData[key as keyof FormData])
+    })
+  }
 
   return (
     <FormProvider {...methods}>
@@ -166,7 +174,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
         }}
         onSubmit={handleFormSubmit}
       >
-        {activeStep === 2 && (
+        {(activeStep === 2 || activeStep === 3) && (
           <Box
             sx={{
               backgroundColor: 'white',
@@ -186,32 +194,66 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 <Logo />
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                <Typography
-                  variant='h6'
-                  sx={{ fontWeight: 'bold', color: 'text.primary' }}
-                >
-                  Create your recommendation
-                </Typography>
-                <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                  You can also{' '}
-                  <Link
-                    href='#'
-                    sx={{
-                      color: 'primary.main',
-                      '&:hover': {
-                        color: 'primary.dark'
-                      },
-                      textDecoration: 'underline'
-                    }}
-                    onClick={e => {
-                      e.preventDefault()
-                      console.log('Save & Exit clicked')
-                    }}
+                {activeStep === 2 && (
+                  <Typography
+                    variant='h6'
+                    sx={{ fontWeight: 'bold', color: 'text.primary' }}
                   >
-                    Save & Exit
-                  </Link>{' '}
-                  to keep this as a draft.
-                </Typography>
+                    Create your recommendation
+                  </Typography>
+                )}
+                {activeStep === 3 && (
+                  <Typography
+                    variant='h6'
+                    sx={{ fontWeight: 'bold', color: 'text.primary' }}
+                  >
+                    Review before signing
+                  </Typography>
+                )}
+                {activeStep === 2 && (
+                  <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                    You can also{' '}
+                    <Link
+                      href='#'
+                      sx={{
+                        color: 'primary.main',
+                        '&:hover': {
+                          color: 'primary.dark'
+                        },
+                        textDecoration: 'underline'
+                      }}
+                      onClick={e => {
+                        e.preventDefault()
+                        console.log('Save & Exit clicked')
+                      }}
+                    >
+                      Save & Exit
+                    </Link>{' '}
+                    to keep this as a draft.
+                  </Typography>
+                )}
+                {activeStep === 3 && (
+                  <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                    if everything looks good, select{'  '}
+                    <Link
+                      href='#'
+                      sx={{
+                        color: 'primary.main',
+                        '&:hover': {
+                          color: 'primary.dark'
+                        },
+                        textDecoration: 'underline'
+                      }}
+                      onClick={e => {
+                        e.preventDefault()
+                        console.log('Save & Exit clicked')
+                      }}
+                    >
+                      Save & Exit
+                    </Link>{' '}
+                    to complete your recommendation.
+                  </Typography>
+                )}
               </Box>
             </Box>
           </Box>
@@ -243,6 +285,9 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
                 handleBack={handleBack}
                 handleSign={handleFormSubmit}
                 isLoading={isLoading}
+                onUpdateFormData={
+                  handleUpdateFormData as (newData: DataPreviewFormData) => void
+                }
               />
             )}
             {activeStep === 4 && (

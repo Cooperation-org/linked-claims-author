@@ -196,41 +196,11 @@ const NavBar = () => {
 
         {/* Sign In/Out Button */}
         {session ? (
-          <Button
-            sx={{
-              padding: '10px 20px',
-              borderRadius: '100px',
-              textTransform: 'capitalize',
-              fontFamily: 'Roboto',
-              fontWeight: '600',
-              lineHeight: '20px',
-              backgroundColor: '#003FE0',
-              color: '#FFF',
-              '&:hover': {
-                backgroundColor: '#003FE0'
-              }
-            }}
-            onClick={() => signOut()}
-          >
+          <Button variant='actionButton' onClick={() => signOut()}>
             Sign Out
           </Button>
         ) : (
-          <Button
-            sx={{
-              padding: '10px 20px',
-              borderRadius: '100px',
-              textTransform: 'capitalize',
-              fontFamily: 'Roboto',
-              fontWeight: '600',
-              lineHeight: '20px',
-              backgroundColor: '#003FE0',
-              color: '#FFF',
-              '&:hover': {
-                backgroundColor: '#003FE0'
-              }
-            }}
-            onClick={() => signIn()}
-          >
+          <Button variant='actionButton' onClick={() => signIn()}>
             Sign In
           </Button>
         )}

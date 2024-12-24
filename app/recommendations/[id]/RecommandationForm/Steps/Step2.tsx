@@ -12,7 +12,6 @@ import TextEditor from '../TextEditor/Texteditor'
 import { FormData } from '../../../../credentialForm/form/types/Types'
 import {
   formLabelStyles,
-  formLabelSpanStyles,
   inputPropsStyles,
   TextFieldStyles
 } from '../../../../components/Styles/appStyles'
@@ -29,15 +28,7 @@ interface Step2Props {
   setSelectedFiles: any
 }
 
-const options = [
-  'Facebook',
-  'Twitter',
-  'Instagram',
-  'LinkedIn',
-  'GitHub',
-  'YouTube',
-  'Other'
-]
+const options = ['Friend', 'Relative', 'Volunteered together', 'College', 'Other']
 
 const Step2: React.FC<Step2Props> = ({
   register,

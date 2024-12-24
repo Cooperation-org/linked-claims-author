@@ -1,8 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Box, Button, Tooltip, CircularProgress } from '@mui/material'
-import { StyledButton, nextButtonStyle } from '../../../../components/Styles/appStyles'
+import { Box, Button } from '@mui/material'
 
 interface ButtonsProps {
   activeStep: number
@@ -17,13 +16,10 @@ interface ButtonsProps {
 
 export function Buttons({
   activeStep,
-  handleBack,
   handleNext,
   handleSign,
-  maxSteps,
   isValid,
-  isLoading = false,
-  tooltipText = ''
+  isLoading = false
 }: Readonly<ButtonsProps>) {
   return (
     <Box
@@ -32,39 +28,30 @@ export function Buttons({
         height: '40px',
         display: 'flex',
         gap: '15px',
-        justifyContent: activeStep === 1 || activeStep === 0 ? 'center' : 'space-between'
+        justifyContent: 'center'
       }}
     >
       {activeStep === 2 && (
-        <Button sx={StyledButton} type='submit' color='secondary'>
+        <Button variant='finishButton' type='submit' color='secondary'>
           Save & Exit
         </Button>
       )}
 
       {activeStep === 3 && handleSign && (
-        <Tooltip title={tooltipText} arrow>
-          <span>
-            <Button
-              sx={nextButtonStyle}
-              onClick={handleSign}
-              color='primary'
-              disabled={!isValid || isLoading}
-              variant='contained'
-            >
-              {isLoading ? (
-                <CircularProgress size={24} color='inherit' />
-              ) : (
-                'Finish & Sign'
-              )}
-            </Button>
-          </span>
-        </Tooltip>
+        <Button
+          onClick={handleSign}
+          color='primary'
+          disabled={!isValid || isLoading}
+          variant='nextButton'
+        >
+          Finish & Sign
+        </Button>
       )}
       {activeStep === 2 && (
         <Button
-          sx={nextButtonStyle}
+          variant='nextButton'
           onClick={handleNext}
-          disabled={activeStep === maxSteps - 1 || isLoading}
+          disabled={!isValid || isLoading}
           color='primary'
         >
           Preview
