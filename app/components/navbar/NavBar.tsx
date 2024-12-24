@@ -198,14 +198,15 @@ const NavBar = () => {
         {session ? (
           <Button
             sx={{
-              padding: '10px 20px',
+              padding: '10px 40px',
               borderRadius: '100px',
               textTransform: 'capitalize',
-              fontFamily: 'Roboto',
+              fontFamily: 'sans-serif',
               fontWeight: '600',
               lineHeight: '20px',
+              fontSize: '16px',
               backgroundColor: '#003FE0',
-              color: '#FFF',
+              color: '#FFFFFF',
               '&:hover': {
                 backgroundColor: '#003FE0'
               }
@@ -217,14 +218,15 @@ const NavBar = () => {
         ) : (
           <Button
             sx={{
-              padding: '10px 20px',
+              padding: '10px 40px',
               borderRadius: '100px',
               textTransform: 'capitalize',
-              fontFamily: 'Roboto',
+              fontFamily: 'sans-serif',
               fontWeight: '600',
               lineHeight: '20px',
+              fontSize: '16px',
               backgroundColor: '#003FE0',
-              color: '#FFF',
+              color: '#FFFFFF',
               '&:hover': {
                 backgroundColor: '#003FE0'
               }
