@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Box, Button, CircularProgress } from '@mui/material'
-import { nextButtonStyle, StyledButton } from '../../../components/Styles/appStyles'
 
 interface ButtonsProps {
   activeStep: number
@@ -16,7 +15,6 @@ interface ButtonsProps {
 
 export function Buttons({
   activeStep,
-  handleBack,
   handleNext,
   handleSign,
   isValid,
@@ -35,40 +33,40 @@ export function Buttons({
     >
       {activeStep !== 0 && (
         <Button
-          sx={{ ...StyledButton, minWidth: '130px' }}
+          sx={{ minWidth: '130px' }}
           onClick={handleSaveSession}
           color='secondary'
+          variant='finishButton'
         >
           Save & Exit
         </Button>
       )}
       {activeStep === 3 && (
-        <Button sx={StyledButton} onClick={handleNext} color='secondary'>
+        <Button variant='finishButton' onClick={handleNext} color='secondary'>
           Skip
         </Button>
       )}
       {(activeStep === 1 || (activeStep !== 4 && activeStep !== 0)) && (
         <Button
-          sx={nextButtonStyle}
           onClick={handleNext}
           color='primary'
           disabled={activeStep !== 0 && activeStep !== 3 && !isValid}
-          variant='contained'
+          variant='nextButton'
         >
           Next
         </Button>
       )}
       {activeStep === 4 && (
-        <Button sx={nextButtonStyle} onClick={handleSign} color='primary'>
+        <Button variant='nextButton' onClick={handleSign} color='primary'>
           Finish & Sign
         </Button>
       )}
       {activeStep === 5 && (
         <Button
-          sx={nextButtonStyle}
           onClick={handleNext}
           disabled={loading} // Disable button during loading
           color='primary'
+          variant='nextButton'
         >
           {loading ? (
             <>
