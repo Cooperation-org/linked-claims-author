@@ -110,6 +110,22 @@ const ClaimsPage: React.FC = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
+  const handleRecommendationClick = async (claimId: string, e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    const url = `${window.location.origin}/recommendations/${claimId}`
+    await navigator.clipboard.writeText(url)
+  }
+
+  const handleEmailShare = (claim: any, e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    const url = `${window.location.origin}/view/${claim[0].id}`
+    const subject = encodeURIComponent(
+      claim[0].data.credentialSubject.achievement[0].name
+    )
+    const body = encodeURIComponent(url)
+    const mailtoLink = `mailto:?subject=${subject}&body=${body}`
+    window.open(mailtoLink)
+  }
   const handleDesktopMenuOpen = (event: React.MouseEvent<HTMLElement>, claim: any) => {
     event.stopPropagation()
     setDesktopMenuAnchorEl(event.currentTarget)
@@ -118,7 +134,6 @@ const ClaimsPage: React.FC = () => {
 
   const handleDesktopMenuClose = () => {
     setDesktopMenuAnchorEl(null)
-    setSelectedClaim(null)
   }
 
   const handleCardClick = (claimId: string) => {
@@ -140,16 +155,20 @@ const ClaimsPage: React.FC = () => {
       setIsDeleting(true)
       setShowOverlappingCards(true)
       const fileId = selectedClaim[0].id
-      const response = await storage.delete(fileId)
 
-      if (response !== null) {
-        setClaims(prevClaims => prevClaims.filter(claim => claim[0].id !== fileId))
-      }
+      await storage.delete(fileId)
+
+      // Immediately update the UI by filtering out the deleted claim
+      setClaims(prevClaims => prevClaims.filter(claim => claim[0]?.id !== fileId))
+
+      // Reset all states
+      setOpenDeleteDialog(false)
+      setSelectedClaim(null)
+      setDesktopMenuAnchorEl(null)
     } catch (error) {
       console.error('Error deleting claim:', error)
     } finally {
       setIsDeleting(false)
-      setOpenDeleteDialog(false)
       setShowOverlappingCards(false)
       setExpandedCard(null)
     }
@@ -203,7 +222,7 @@ const ClaimsPage: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               gap: 1,
-              mb: 2
+              mb: 3
             }}
           >
             <Avatar
@@ -223,21 +242,16 @@ const ClaimsPage: React.FC = () => {
 
           <Button
             fullWidth
-            variant='contained'
+            variant='nextButton'
             onClick={() => router.push('/credentialForm')}
-            sx={{
-              borderRadius: '100px',
-              textTransform: 'none',
-              mb: 3,
-              p: '10px 0',
-              fontWeight: 'bold',
-              fontSize: '16px'
-            }}
           >
             Add a new skill
           </Button>
 
-          <Typography variant='subtitle1' sx={{ fontSize: '24px', fontFamily: 'Lato' }}>
+          <Typography
+            variant='subtitle1'
+            sx={{ fontSize: '24px', fontFamily: 'Lato', mt: 2 }}
+          >
             Work with my existing skills:
           </Typography>
         </Box>
@@ -256,12 +270,9 @@ const ClaimsPage: React.FC = () => {
             My Skills
           </Typography>
           <Button
-            variant='contained'
+            variant='nextButton'
+            sx={{ textTransform: 'none' }}
             onClick={() => router.push('/credentialForm')}
-            sx={{
-              borderRadius: '100px',
-              textTransform: 'none'
-            }}
           >
             Add a new skill
           </Button>
@@ -421,6 +432,7 @@ const ClaimsPage: React.FC = () => {
                       >
                         <Button
                           startIcon={<SVGHeart />}
+                          onClick={e => handleRecommendationClick(claim[0].id, e)}
                           fullWidth
                           sx={{
                             justifyContent: 'flex-start',
@@ -443,6 +455,7 @@ const ClaimsPage: React.FC = () => {
                         </Button>
                         <Button
                           startIcon={<SVGEmail />}
+                          onClick={e => handleEmailShare(claim, e)}
                           fullWidth
                           sx={{
                             justifyContent: 'flex-start',
@@ -502,7 +515,13 @@ const ClaimsPage: React.FC = () => {
             }
           }}
         >
-          <MenuItem onClick={handleDesktopMenuClose} sx={{ py: 1.5, gap: 2 }}>
+          <MenuItem
+            onClick={e => {
+              handleRecommendationClick(selectedClaim?.[0].id, e)
+              handleDesktopMenuClose()
+            }}
+            sx={{ py: 1.5, gap: 2 }}
+          >
             <SVGHeart />
             <Typography>Ask for a recommendation</Typography>
           </MenuItem>
@@ -510,7 +529,13 @@ const ClaimsPage: React.FC = () => {
             <SVGLinkedIn />
             <Typography>Share to LinkedIn</Typography>
           </MenuItem>
-          <MenuItem onClick={handleDesktopMenuClose} sx={{ py: 1.5, gap: 2 }}>
+          <MenuItem
+            onClick={e => {
+              handleEmailShare(selectedClaim, e)
+              handleDesktopMenuClose()
+            }}
+            sx={{ py: 1.5, gap: 2 }}
+          >
             <SVGEmail />
             <Typography>Share via Email</Typography>
           </MenuItem>

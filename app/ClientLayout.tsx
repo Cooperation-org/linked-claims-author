@@ -45,10 +45,7 @@ export default function ClientLayout({
                         xs: 'rgba(255, 255, 255, 0.8)',
                         md: 'rgba(255, 255, 255, 0.85)'
                       }
-                    : {
-                        xs: '#FFFFFF',
-                        md: '#F0F4F8'
-                      }
+                    : '#F0F4F8'
               }}
             >
               {children}
