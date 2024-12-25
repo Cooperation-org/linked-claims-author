@@ -200,7 +200,7 @@ const NavBar = () => {
             Sign Out
           </Button>
         ) : (
-          <Button variant='actionButton' onClick={() => signIn()}>
+          <Button variant='actionButton' onClick={() => signIn('google')}>
             Sign In
           </Button>
         )}
