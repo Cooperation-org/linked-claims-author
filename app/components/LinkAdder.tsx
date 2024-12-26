@@ -34,10 +34,10 @@ interface LinkAdderProps {
   onUrlChange: (index: number, value: string) => void
   maxLinks?: number
   errors?: Record<number, { name?: { message?: string }; url?: { message?: string } }>
-  nameLabel?: string
-  urlLabel?: string
-  namePlaceholder?: string
-  urlPlaceholder?: string
+  nameLabel?: string //NOSONAR
+  urlLabel?: string //NOSONAR
+  namePlaceholder?: string //NOSONAR
+  urlPlaceholder?: string //NOSONAR
 }
 
 const LinkAdder: React.FC<LinkAdderProps> = ({

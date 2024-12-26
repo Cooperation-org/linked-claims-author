@@ -24,7 +24,6 @@ import { usePathname, useParams } from 'next/navigation'
 import { SVGDate, SVGBadge, CheckMarkSVG, LineSVG } from '../../Assets/SVGs'
 import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
-import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { getVCWithRecommendations } from '@cooperation/vc-storage'
 import EvidencePreview from './EvidencePreview'
@@ -140,20 +139,20 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
 
         await fetchFileMetadata(fileID, '')
 
-        //todo get recommendations from RELATIONS file recommendation array
+        // NOSONAR todo get recommendations from RELATIONS file recommendation array (KEEP THIS TODO)
         if (!storage || !fileID) {
           console.warn('Storage instance is not available.')
           return
         }
-        const type = window.location.pathname.includes('view')
-        if (type) {
+        const pathIncludesView = window?.location?.pathname?.includes('view') ?? false
+        if (pathIncludesView) {
           const { recommendations } = await getVCWithRecommendations({
             vcId: fileID,
             storage
           })
           console.log('🚀 ~ fetchDriveData ~ recommendations:', recommendations)
           if (recommendations) {
-            setComments(recommendations as any)
+            setComments(recommendations as ClaimDetail[])
           }
         }
       } catch (error) {
@@ -191,36 +190,41 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     )
   }
 
-if (status === 'unauthenticated') {
-  return (
-    <Container sx={{ maxWidth: '800px' }}>
-      <Typography variant='h6' align='center'>
-        Please sign in to view this claim.
-      </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}></Box>
-      <Alert 
-        severity="info" 
-        sx={{ 
-          mt: 2,
-          backgroundColor: 'transparent',
-          border: 'none',
-          '& .MuiAlert-icon': {
-            color: (theme) => theme.palette.t3BodyText,
-          },
-          '& .MuiAlert-message': {
-            color: (theme) => theme.palette.t3BodyText,
-            fontFamily: 'Lato',
-            fontSize: '14px',
-            textAlign: 'center',
-          },
-          width: '100%',
-        }}
-      >
-        Our app is currently in development mode with Google. You may see a warning that the app is not verified - this is normal during our development phase. While we work on getting verified, you can safely proceed by clicking &quot;Continue&quot; on the warning screen, then &quot;Continue&quot; again on the &quot;Google hasn&#39;t verified this app&quot; screen. Your data remains secure and protected by Google&#39;s security measures.
-      </Alert>
-    </Container>
-  )
-}
+  if (status === 'unauthenticated') {
+    return (
+      <Container sx={{ maxWidth: '800px' }}>
+        <Typography variant='h6' align='center'>
+          Please sign in to view this claim.
+        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}></Box>
+        <Alert
+          severity='info'
+          sx={{
+            mt: 2,
+            backgroundColor: 'transparent',
+            border: 'none',
+            '& .MuiAlert-icon': {
+              color: theme => theme.palette.t3BodyText
+            },
+            '& .MuiAlert-message': {
+              color: theme => theme.palette.t3BodyText,
+              fontFamily: 'Lato',
+              fontSize: '14px',
+              textAlign: 'center'
+            },
+            width: '100%'
+          }}
+        >
+          Our app is currently in development mode with Google. You may see a warning that
+          the app is not verified - this is normal during our development phase. While we
+          work on getting verified, you can safely proceed by clicking
+          &quot;Continue&quot; on the warning screen, then &quot;Continue&quot; again on
+          the &quot;Google hasn&#39;t verified this app&quot; screen. Your data remains
+          secure and protected by Google&#39;s security measures.
+        </Alert>
+      </Container>
+    )
+  }
 
   if (errorMessage) {
     return (
@@ -241,9 +245,10 @@ if (status === 'unauthenticated') {
   }, 2000)
 
   const credentialSubject = claimDetail?.data?.credentialSubject
-  const achievement = credentialSubject?.achievement && credentialSubject.achievement[0]
-  const hasValidEvidence =
-    credentialSubject?.portfolio && credentialSubject?.portfolio.length > 0
+  const achievement = credentialSubject?.achievement?.[0]
+  const hasValidEvidence = credentialSubject?.portfolio?.length
+    ? credentialSubject.portfolio.length > 0
+    : false
 
   return (
     <Container sx={{ maxWidth: '800px' }}>
@@ -328,7 +333,7 @@ if (status === 'unauthenticated') {
                   <SVGDate />
                 </Box>
                 <Typography sx={{ color: 't3BodyText', fontSize: '13px' }}>
-                  {credentialSubject?.duration}
+                  {credentialSubject.duration}
                 </Typography>
               </Box>
             )}
@@ -381,7 +386,7 @@ if (status === 'unauthenticated') {
                       <li>
                         <span
                           dangerouslySetInnerHTML={{
-                            __html: cleanHTML(achievement?.criteria?.narrative)
+                            __html: cleanHTML(achievement.criteria.narrative)
                           }}
                         />
                       </li>
@@ -401,9 +406,9 @@ if (status === 'unauthenticated') {
                         color: 'blue'
                       }}
                     >
-                      {credentialSubject?.portfolio?.map((portfolioItem, idx) => (
+                      {credentialSubject?.portfolio?.map(portfolioItem => (
                         <li
-                          key={`main-portfolio-${idx}`}
+                          key={portfolioItem.url}
                           style={{
                             cursor: 'pointer',
                             width: 'fit-content',
@@ -487,196 +492,205 @@ if (status === 'unauthenticated') {
         </Box>
       )}
 
-      {/* Comments Section */}
-
       {isView && claimDetail && (
         <Box>
-          {loading ? (
-            <Box display='flex' justifyContent='center' my={2}>
-              <CircularProgress size={24} />
-            </Box>
-          ) : comments && comments.length > 0 ? (
-            <List sx={{ p: 0, mb: 2 }}>
-              {comments.map((comment: ClaimDetail, index: number) => (
-                <React.Fragment key={index}>
-                  <Box
+          {(() => {
+            if (loading) {
+              return (
+                <Box display='flex' justifyContent='center' my={2}>
+                  <CircularProgress size={24} />
+                </Box>
+              )
+            }
+            if (comments && comments.length > 0) {
+              return (
+                <List sx={{ p: 0, mb: 2 }}>
+                  {comments.map(comment => {
+                    const commentId = comment.data.id
+                    return (
+                      <React.Fragment key={commentId}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-end',
+                            pr: '30px'
+                          }}
+                        >
+                          <LineSVG />
+                        </Box>
+                        <ListItem
+                          sx={{ borderRadius: '10px', border: '1px solid #003FE0' }}
+                          alignItems='flex-start'
+                          secondaryAction={
+                            <IconButton
+                              edge='end'
+                              onClick={() => handleToggleComment(commentId)}
+                              aria-label='expand'
+                            >
+                              {expandedComments[commentId] ? (
+                                <ExpandLess />
+                              ) : (
+                                <ExpandMore />
+                              )}
+                            </IconButton>
+                          }
+                        >
+                          <ListItemText
+                            primary={
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '10px'
+                                }}
+                              >
+                                <SVGBadge />
+                                <Box>
+                                  <Typography variant='h6' component='div'>
+                                    {comment.data.credentialSubject?.name}
+                                  </Typography>
+                                  <Typography variant='body2' color='text.secondary'>
+                                    Vouched for {credentialSubject?.name}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                            }
+                          />
+                        </ListItem>
+                        <Collapse
+                          in={expandedComments[commentId]}
+                          timeout='auto'
+                          unmountOnExit
+                        >
+                          <Box sx={{ pl: 7, pr: 2, pb: 2 }}>
+                            {comment.data.credentialSubject?.howKnow && (
+                              <Box sx={{ mt: 1 }}>
+                                <Typography variant='subtitle2' color='text.secondary'>
+                                  How They Know Each Other:
+                                </Typography>
+                                <Typography variant='body2'>
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: cleanHTML(
+                                        comment.data.credentialSubject.howKnow
+                                      )
+                                    }}
+                                  />
+                                </Typography>
+                              </Box>
+                            )}
+                            {comment.data.credentialSubject?.recommendationText && (
+                              <Box sx={{ mt: 1 }}>
+                                <Typography variant='subtitle2' color='text.secondary'>
+                                  Recommendation:
+                                </Typography>
+                                <Typography variant='body2'>
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: cleanHTML(
+                                        comment.data.credentialSubject.recommendationText
+                                      )
+                                    }}
+                                  />
+                                </Typography>
+                              </Box>
+                            )}
+                            {comment.data.credentialSubject?.qualifications && (
+                              <Box sx={{ mt: 1 }}>
+                                <Typography variant='subtitle2' color='text.secondary'>
+                                  Your Qualifications:
+                                </Typography>
+                                <Typography variant='body2'>
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: cleanHTML(
+                                        comment.data.credentialSubject.qualifications
+                                      )
+                                    }}
+                                  />
+                                </Typography>
+                              </Box>
+                            )}
+                            {comment.data.credentialSubject?.explainAnswer && (
+                              <Box sx={{ mt: 1 }}>
+                                <Typography variant='subtitle2' color='text.secondary'>
+                                  Explain Your Answer:
+                                </Typography>
+                                <Typography variant='body2'>
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: cleanHTML(
+                                        comment.data.credentialSubject.explainAnswer
+                                      )
+                                    }}
+                                  />
+                                </Typography>
+                              </Box>
+                            )}
+                            {Array.isArray(comment.data.credentialSubject?.portfolio) &&
+                              comment.data.credentialSubject.portfolio.length > 0 && (
+                                <Box sx={{ mt: 1 }}>
+                                  <Typography variant='subtitle2' color='text.secondary'>
+                                    Supporting Evidence:
+                                  </Typography>
+                                  {comment.data.credentialSubject.portfolio.map(item => (
+                                    <Box key={item.url} sx={{ mt: 1 }}>
+                                      {item.name && item.url ? (
+                                        <MuiLink
+                                          href={item.url}
+                                          underline='hover'
+                                          color='primary'
+                                          sx={{
+                                            fontSize: '15px',
+                                            textDecoration: 'underline',
+                                            color: '#003fe0'
+                                          }}
+                                          target='_blank'
+                                        >
+                                          {item.name}
+                                        </MuiLink>
+                                      ) : null}
+                                    </Box>
+                                  ))}
+                                </Box>
+                              )}
+                          </Box>
+                        </Collapse>
+                        <Divider component='li' />
+                      </React.Fragment>
+                    )
+                  })}
+                </List>
+              )
+            }
+            return (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '10px',
+                  mb: '20px'
+                }}
+              >
+                <Typography variant='body2'>No recommendations available.</Typography>
+                <Link href={`/askforrecommendation/${fileID}`}>
+                  <Button
+                    variant='contained'
                     sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-end',
-                      pr: '30px'
+                      backgroundColor: '#003FE0',
+                      textTransform: 'none',
+                      borderRadius: '100px',
+                      width: { xs: 'fit-content', sm: '300px', md: '300px' }
                     }}
                   >
-                    <LineSVG />
-                  </Box>
-                  <ListItem
-                    sx={{ borderRadius: '10px', border: '1px solid #003FE0' }}
-                    alignItems='flex-start'
-                    secondaryAction={
-                      <IconButton
-                        edge='end'
-                        onClick={() =>
-                          handleToggleComment(comment.data.id || index.toString())
-                        }
-                        aria-label='expand'
-                      >
-                        {expandedComments[comment.data.id || index.toString()] ? (
-                          <ExpandLess />
-                        ) : (
-                          <ExpandMore />
-                        )}
-                      </IconButton>
-                    }
-                  >
-                    <ListItemText
-                      primary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <SVGBadge />
-                          <Box>
-                            <Typography variant='h6' component='div'>
-                              {comment.data.credentialSubject?.name}
-                            </Typography>
-                            <Typography variant='body2' color='text.secondary'>
-                              Vouched for {credentialSubject?.name}
-                            </Typography>
-                          </Box>
-                        </Box>
-                      }
-                    />
-                  </ListItem>
-                  <Collapse
-                    in={expandedComments[comment.data.id || index.toString()]}
-                    timeout='auto'
-                    unmountOnExit
-                  >
-                    <Box sx={{ pl: 7, pr: 2, pb: 2 }}>
-                      {/* How They Know Each Other */}
-                      {comment.data.credentialSubject?.howKnow && (
-                        <Box sx={{ mt: 1 }}>
-                          <Typography variant='subtitle2' color='text.secondary'>
-                            How They Know Each Other:
-                          </Typography>
-                          <Typography variant='body2'>
-                            <span
-                              dangerouslySetInnerHTML={{
-                                __html: cleanHTML(comment.data.credentialSubject.howKnow)
-                              }}
-                            />
-                          </Typography>
-                        </Box>
-                      )}
-                      {/* Recommendation Text */}
-                      {comment.data.credentialSubject?.recommendationText && (
-                        <Box sx={{ mt: 1 }}>
-                          <Typography variant='subtitle2' color='text.secondary'>
-                            Recommendation:
-                          </Typography>
-                          <Typography variant='body2'>
-                            <span
-                              dangerouslySetInnerHTML={{
-                                __html: cleanHTML(
-                                  comment.data.credentialSubject.recommendationText
-                                )
-                              }}
-                            />
-                          </Typography>
-                        </Box>
-                      )}
-                      {/* Your Qualifications */}
-                      {comment.data.credentialSubject?.qualifications && (
-                        <Box sx={{ mt: 1 }}>
-                          <Typography variant='subtitle2' color='text.secondary'>
-                            Your Qualifications:
-                          </Typography>
-                          <Typography variant='body2'>
-                            <span
-                              dangerouslySetInnerHTML={{
-                                __html: cleanHTML(
-                                  comment.data.credentialSubject.qualifications
-                                )
-                              }}
-                            />
-                          </Typography>
-                        </Box>
-                      )}
-                      {/* Explain Your Answer */}
-                      {comment.data.credentialSubject?.explainAnswer && (
-                        <Box sx={{ mt: 1 }}>
-                          <Typography variant='subtitle2' color='text.secondary'>
-                            Explain Your Answer:
-                          </Typography>
-                          <Typography variant='body2'>
-                            <span
-                              dangerouslySetInnerHTML={{
-                                __html: cleanHTML(
-                                  comment.data.credentialSubject.explainAnswer
-                                )
-                              }}
-                            />
-                          </Typography>
-                        </Box>
-                      )}
-                      {/* Supporting Evidence */}
-                      {Array.isArray(comment.data.credentialSubject?.portfolio) &&
-                        comment.data.credentialSubject.portfolio.length > 0 && (
-                          <Box sx={{ mt: 1 }}>
-                            <Typography variant='subtitle2' color='text.secondary'>
-                              Supporting Evidence:
-                            </Typography>
-                            {comment.data.credentialSubject.portfolio.map((item, idx) => (
-                              <Box key={`comment-portfolio-${idx}`} sx={{ mt: 1 }}>
-                                {item.name && item.url ? (
-                                  <MuiLink
-                                    href={item.url}
-                                    underline='hover'
-                                    color='primary'
-                                    sx={{
-                                      fontSize: '15px',
-                                      textDecoration: 'underline',
-                                      color: '#003fe0'
-                                    }}
-                                    target='_blank'
-                                  >
-                                    {item.name}
-                                  </MuiLink>
-                                ) : null}
-                              </Box>
-                            ))}
-                          </Box>
-                        )}
-                    </Box>
-                  </Collapse>
-                  {/* Add Divider between comments */}
-                  {index < comments.length - 1 && <Divider component='li' />}
-                </React.Fragment>
-              ))}
-            </List>
-          ) : (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '10px',
-                mb: '20px'
-              }}
-            >
-              <Typography variant='body2'>No recommendations available.</Typography>
-              <Link href={`/askforrecommendation/${fileID}`}>
-                <Button
-                  variant='contained'
-                  sx={{
-                    backgroundColor: '#003FE0',
-                    textTransform: 'none',
-                    borderRadius: '100px',
-                    width: { xs: 'fit-content', sm: '300px', md: '300px' }
-                  }}
-                >
-                  Ask for Recommendation
-                </Button>
-              </Link>
-            </Box>
-          )}
+                    Ask for Recommendation
+                  </Button>
+                </Link>
+              </Box>
+            )
+          })()}
         </Box>
       )}
     </Container>

@@ -88,14 +88,11 @@ const Card = ({
           <Typography
             sx={{
               color: '#202E5B',
-              // fontSize: '14px',
-              // fontWeight: 600,
               flex: 1,
               ml: '11px',
               fontFamily: 'Inter',
               fontSize: '24px',
               fontWeight: 700,
-              // lineHeight: normal,
               letterSpacing: '0.12px',
               textTransform: 'capitalize'
             }}
@@ -191,9 +188,9 @@ const Card = ({
           >
             Earning criteria:
           </Typography>
-          {criteria.map((item, index) => (
+          {criteria.map(item => (
             <Typography
-              key={`criteria-${index}`}
+              key={item}
               sx={{
                 color: '#000E40',
                 fontSize: '9px',
@@ -242,9 +239,9 @@ const Card = ({
             >
               Supporting Evidence:
             </Typography>
-            {evidence.map((item, index) => (
+            {evidence.map(item => (
               <Typography
-                key={`evidence-${index}`}
+                key={item}
                 sx={{
                   color: '#000E40',
                   fontSize: '9px',

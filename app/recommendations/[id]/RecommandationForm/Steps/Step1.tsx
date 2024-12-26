@@ -8,8 +8,8 @@ import { SVGFolder, SVGSinfo } from '../../../../Assets/SVGs'
 import { signIn, useSession } from 'next-auth/react'
 
 interface Step1Props {
-  watch: UseFormWatch<FormData>
-  setValue: UseFormSetValue<FormData>
+  watch: UseFormWatch<FormData> //NOSONAR
+  setValue: UseFormSetValue<FormData> //NOSONAR
   handleNext: () => void
 }
 

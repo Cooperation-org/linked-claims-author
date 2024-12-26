@@ -2,20 +2,18 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useForm, useFieldArray } from 'react-hook-form'
-import { FormControl, Box, Slide, Button } from '@mui/material'
+import { useForm } from 'react-hook-form'
+import { FormControl, Box, Slide } from '@mui/material'
 import { FormData } from './types/Types'
 import { Step0 } from './Steps/Step0_connectToGoogle'
 import { Buttons } from './buttons/Buttons'
 import DataComponent from './Steps/dataPreview'
-import { SVGBack } from '../../Assets/SVGs'
 import { createDID, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { useSession, signIn } from 'next-auth/react'
 import { handleSign } from '../../utils/formUtils'
 import { saveSession } from '../../utils/saveSession'
 import SnackMessage from '../../components/SnackMessage'
-import SessionDialog from '../../components/SessionDialog'
 import { useStepContext } from './StepContext'
 import SuccessPage from './Steps/SuccessPage'
 import FileUploadAndList from './Steps/Step3_uploadEvidence'
@@ -29,13 +27,13 @@ const Form = ({ onStepChange }: any) => {
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [hasSignedIn, setHasSignedIn] = useState(false)
   const [snackMessage, setSnackMessage] = useState('')
-  const [userSessions, setUserSessions] = useState<{}[]>([])
-  const [openDialog, setOpenDialog] = useState(false)
   const [fileId, setFileId] = useState('')
-  const [image, setImage] = useState('')
   const [selectedFiles, setSelectedFiles] = useState<any[]>([])
+  const [userSessions, setUserSessions] = useState<{}[]>([]) //NOSONAR
+  const [openDialog, setOpenDialog] = useState(false) //NOSONAR
+  const [image, setImage] = useState('') //NOSONAR
 
-  const characterLimit = 294
+  // const characterLimit = 294
   const { data: session } = useSession()
   const accessToken = session?.accessToken
 
@@ -86,21 +84,20 @@ const Form = ({ onStepChange }: any) => {
       setErrorMessage('Failed to fetch user sessions')
     }
   }
-
-  const handleuserSessionselect = (session: any) => {
-    // Set the selected session values into the form
-    setValue('fullName', session.fullName)
-    setValue('persons', session.persons)
-    setValue('credentialName', session.credentialName)
-    setValue('credentialDuration', session.credentialDuration)
-    setValue('credentialDescription', session.credentialDescription)
-    setValue('portfolio', session.portfolio)
-    setValue('evidenceLink', session?.evidenceLink)
-    setValue('description', session.description)
-
-    // Close the dialog
-    setOpenDialog(false)
-  }
+  //NOSONAR
+  // const handleuserSessionselect = (session: any) => {
+  //   // Set the selected session values into the form
+  //   setValue('fullName', session.fullName)
+  //   setValue('persons', session.persons)
+  //   setValue('credentialName', session.credentialName)
+  //   setValue('credentialDuration', session.credentialDuration)
+  //   setValue('credentialDescription', session.credentialDescription)
+  //   setValue('portfolio', session.portfolio)
+  //   setValue('evidenceLink', session?.evidenceLink)
+  //   setValue('description', session.description)
+  //   // Close the dialog
+  //   setOpenDialog(false)
+  // }
 
   useEffect(() => {
     onStepChange()
@@ -153,23 +150,27 @@ const Form = ({ onStepChange }: any) => {
         return
       }
 
-      const { didDocument, keyPair, issuerId } = await createDID(accessToken)
-
-      const saveResponse = await saveToGoogleDrive({
-        storage,
-        data: {
-          didDocument,
-          keyPair
-        },
-        type: 'DID'
-      })
+      const {
+        // didDocument,
+        keyPair,
+        issuerId
+      } = await createDID(accessToken)
+      //NOSONAR
+      // const saveResponse = await saveToGoogleDrive({
+      //   storage,
+      //   data: {
+      //     didDocument,
+      //     keyPair
+      //   },
+      //   type: 'DID'
+      // })
 
       const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
-      const file = (await saveToGoogleDrive({
+      const file = await saveToGoogleDrive({
         storage,
         data: res,
         type: 'VC'
-      })) as any
+      })
       const folderIds = await storage?.getFileParents(file.id)
       const relationFile = await storage?.createRelationsFile({
         vcFolderId: folderIds[0]

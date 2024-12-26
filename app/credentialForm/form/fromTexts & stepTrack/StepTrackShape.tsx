@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Box, Tooltip, Snackbar, Alert, Button } from '@mui/material'
 import { useStepContext } from '../StepContext'
 import { useSession } from 'next-auth/react'
-import { SVGBack, SVGCompleteStep } from '../../../Assets/SVGs'
+import { SVGCompleteStep } from '../../../Assets/SVGs'
 
 export function StepTrackShape() {
   const { activeStep, setActiveStep, handleBack, handleNext } = useStepContext()

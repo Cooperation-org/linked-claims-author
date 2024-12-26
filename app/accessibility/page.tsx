@@ -1,7 +1,7 @@
 'use client'
 import { Box, Typography, Link } from '@mui/material'
 import React from 'react'
-import USChamberLogo from '../Assets/SVGs/index'
+// import USChamberLogo from '../Assets/SVGs/index'
 
 const AccessibilityPolicy = () => {
   return (

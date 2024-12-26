@@ -41,16 +41,13 @@ const FetchedData: React.FC<FetchedDataProps> = ({
         if (fileID) {
           setFileID(fileID)
 
-          // Fetch the data using getContent
           const data = await getContent(fileID)
           console.log('Fetched data from Google Drive:', data)
           setDriveData(data)
           setFullName(data?.data.credentialSubject?.name ?? 'User')
 
-          // Fetch metadata
           await fetchFileMetadata(fileID, '')
 
-          // Set email from metadata
           if (ownerEmail) {
             setEmail(ownerEmail)
           }
@@ -76,99 +73,98 @@ const FetchedData: React.FC<FetchedDataProps> = ({
 
   return (
     <Box sx={{ border: '1px solid #003FE0', borderRadius: '10px', p: '15px' }}>
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <CircularProgress />
-        </Box>
-      ) : driveData ? (
-        <>
-          <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-            <SVGBadge />
-            <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
-              {driveData.credentialSubject?.name || fileMetadata?.name} has claimed:
-            </Typography>
-          </Box>
-          <Box>
-            <Box>
-              <Typography
-                sx={{
-                  color: '#202E5B',
-                  fontFamily: 'Inter',
-                  fontSize: '24px',
-                  fontWeight: 700,
-                  letterSpacing: '0.075px',
-                  mb: '10px'
-                }}
-              >
-                {driveData.credentialSubject?.achievement[0]?.name}
-              </Typography>
-              <Box sx={{ ...credentialBoxStyles, bgcolor: '#d5e1fb' }}>
-                <Box sx={{ mt: '2px' }}>
-                  <SVGDate />
-                </Box>
-                <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
-                  {driveData.credentialSubject?.duration}
+      {(() => {
+        if (loading) {
+          return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <CircularProgress />
+            </Box>
+          )
+        }
+        if (driveData) {
+          return (
+            <>
+              <Box sx={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                <SVGBadge />
+                <Typography sx={{ fontWeight: 700, fontSize: '13px', color: '#202E5B' }}>
+                  {driveData.credentialSubject?.name || fileMetadata?.name} has claimed:
                 </Typography>
               </Box>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '20px'
-              }}
-            >
-              {driveData?.credentialSubject?.achievement[0]?.description && (
-                <Typography
-                  sx={{
-                    fontFamily: 'Lato',
-                    fontSize: '17px',
-                    letterSpacing: '0.075px',
-                    lineHeight: '24px'
-                  }}
-                >
-                  {driveData?.credentialSubject?.achievement[0]?.description.replace(
-                    /<\/?[^>]+>/gi,
-                    ''
-                  )}
-                </Typography>
-              )}
-              {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative && (
+              <Box>
                 <Box>
-                  <Typography>What does that entail?:</Typography>
-                  <ul style={{ marginLeft: '25px' }}>
-                    <li>
-                      {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative.replace(
+                  <Typography
+                    sx={{
+                      color: '#202E5B',
+                      fontFamily: 'Inter',
+                      fontSize: '24px',
+                      fontWeight: 700,
+                      letterSpacing: '0.075px',
+                      mb: '10px'
+                    }}
+                  >
+                    {driveData.credentialSubject?.achievement[0]?.name}
+                  </Typography>
+                  <Box sx={{ ...credentialBoxStyles, bgcolor: '#d5e1fb' }}>
+                    <Box sx={{ mt: '2px' }}>
+                      <SVGDate />
+                    </Box>
+                    <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
+                      {driveData.credentialSubject?.duration}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  {driveData?.credentialSubject?.achievement[0]?.description && (
+                    <Typography
+                      sx={{
+                        fontFamily: 'Lato',
+                        fontSize: '17px',
+                        letterSpacing: '0.075px',
+                        lineHeight: '24px'
+                      }}
+                    >
+                      {driveData.credentialSubject.achievement[0].description.replace(
                         /<\/?[^>]+>/gi,
                         ''
                       )}
-                    </li>
-                  </ul>
+                    </Typography>
+                  )}
+                  {driveData?.credentialSubject?.achievement[0]?.criteria?.narrative && (
+                    <Box>
+                      <Typography>What does that entail?:</Typography>
+                      <ul style={{ marginLeft: '25px' }}>
+                        <li>
+                          {driveData.credentialSubject.achievement[0].criteria.narrative.replace(
+                            /<\/?[^>]+>/gi,
+                            ''
+                          )}
+                        </li>
+                      </ul>
+                    </Box>
+                  )}
+                  {driveData?.credentialSubject?.portfolio?.length > 0 && (
+                    <Box>
+                      <Typography>Supporting Evidence:</Typography>
+                      <ul style={evidenceListStyles}>
+                        {driveData.credentialSubject.portfolio.map(
+                          (porto: { url: string; name: string }) => (
+                            <li key={porto.url}>
+                              <Link href={porto.url} target='_blank'>
+                                {porto.name}
+                              </Link>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </Box>
+                  )}
                 </Box>
-              )}
-              {driveData?.credentialSubject?.portfolio &&
-                driveData?.credentialSubject?.portfolio.length > 0 && (
-                  <Box>
-                    <Typography>Supporting Evidence:</Typography>
-                    <ul style={evidenceListStyles}>
-                      {driveData?.credentialSubject?.portfolio?.map(
-                        (porto: { url: any; name: any }) => (
-                          <li key={porto.url}>
-                            <Link href={porto.url} target='_blank'>
-                              {porto.name}
-                            </Link>
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </Box>
-                )}
-            </Box>
-          </Box>
-        </>
-      ) : (
-        <Typography>Data not available.</Typography>
-      )}
+              </Box>
+            </>
+          )
+        }
+        return <Typography>Data not available.</Typography>
+      })()}
     </Box>
   )
 }

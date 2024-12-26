@@ -1,10 +1,15 @@
 'use client'
 import React, { useState } from 'react'
-import { Box, Link, TextField, FormLabel, Typography, CircularProgress } from '@mui/material'
-import { useRouter } from 'next/navigation'
-import { useSession, signIn } from 'next-auth/react'
+import {
+  Box,
+  Link,
+  TextField,
+  FormLabel,
+  Typography,
+  CircularProgress
+} from '@mui/material'
+import { useSession } from 'next-auth/react'
 import { importCredential } from '../utils/importCred'
-import { makeGoogleDriveLink } from '../utils/googleDrive'
 
 const formLabelStyles = {
   fontFamily: 'Lato',
@@ -30,32 +35,32 @@ const textFieldInputProps = {
 
 interface FileResult {
   success: boolean
-  error?: string | undefined
-  fileId?: string | undefined
+  error?: string
+  fileId?: string
   file?: { id: string | undefined }
 }
 
 // Separate status message component for cleaner organization
-function StatusMessage({ fileResult }: { fileResult: FileResult | null }) {
+function StatusMessage({ fileResult }: Readonly<{ fileResult: FileResult | null }>) {
   if (!fileResult) return null
 
   if (!fileResult.success || !fileResult.file) {
     return (
-      <Typography 
-        sx={{ 
+      <Typography
+        sx={{
           color: 'error.main',
           mt: 2,
           textAlign: 'center'
         }}
       >
-        {fileResult.error || "Unknown error"}
+        {fileResult.error ?? 'Unknown error'}
       </Typography>
     )
   }
 
   return (
-    <Typography 
-      sx={{ 
+    <Typography
+      sx={{
         color: 'success.main',
         mt: 2,
         textAlign: 'center'
@@ -69,7 +74,7 @@ function StatusMessage({ fileResult }: { fileResult: FileResult | null }) {
 function SimpleCredentialForm() {
   const [fileResult, setFileResult] = useState<FileResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  
+
   const { data: session } = useSession()
   const accessToken = session?.accessToken
 
@@ -80,8 +85,11 @@ function SimpleCredentialForm() {
     const formData = new FormData(event.currentTarget)
     const credentialUrl = formData.get('credentialUrl') as string
 
-    if (! accessToken) {
-      setFileResult({ success: false, error: 'Please login first before attempting to import credential' })
+    if (!accessToken) {
+      setFileResult({
+        success: false,
+        error: 'Please login first before attempting to import credential'
+      })
       setIsLoading(false)
       return
     }
@@ -91,9 +99,9 @@ function SimpleCredentialForm() {
       setFileResult(result)
       setIsLoading(false)
     } catch (error) {
-      setFileResult({ 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error occurred' 
+      setFileResult({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
       })
       setIsLoading(false)
     }
@@ -112,15 +120,15 @@ function SimpleCredentialForm() {
       <Typography sx={{ fontFamily: 'Lato', fontSize: '24px', fontWeight: 400 }}>
         Credential Import
       </Typography>
-      
+
       <form onSubmit={handleSubmit}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <FormLabel sx={{ ...formLabelStyles, mb:2}} id='credential-url-label'>
+          <FormLabel sx={{ ...formLabelStyles, mb: 2 }} id='credential-url-label'>
             Enter your credential URL:
           </FormLabel>
           <TextField
-            name="credentialUrl"
-            placeholder="https://..."
+            name='credentialUrl'
+            placeholder='https://...'
             variant='outlined'
             sx={TextFieldStyles}
             aria-labelledby='credential-url-label'
@@ -132,7 +140,7 @@ function SimpleCredentialForm() {
               <CircularProgress size={24} />
             </Box>
           )}
-          {!isLoading && <StatusMessage fileResult={fileResult} /> }
+          {!isLoading && <StatusMessage fileResult={fileResult} />}
         </Box>
       </form>
     </Box>
@@ -156,4 +164,3 @@ export default function Page() {
     </Box>
   )
 }
-

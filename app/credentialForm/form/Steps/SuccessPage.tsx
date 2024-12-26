@@ -20,7 +20,6 @@ import {
   BlueBadge,
   NewCopy,
   NewLinkedin
-  // NewEmail
 } from '../../../Assets/SVGs'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
 import { FormData } from '../../../credentialForm/form/types/Types'
@@ -31,12 +30,12 @@ interface SuccessPageProps {
   setActiveStep: (step: number) => void //NOSONAR
   formData: FormData | null
   reset: () => void
-  link: string
   setLink: (link: string) => void
   setFileId: (fileId: string) => void
-  storageOption: string
   fileId: string
-  selectedImage: string
+  link: string //NOSONAR
+  storageOption: string //NOSONAR
+  selectedImage: string //NOSONAR
 }
 
 interface SnackbarState {
@@ -418,10 +417,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           {snackbar.message}
         </Alert>
       </Snackbar>
-      <LoadingOverlay
-        text='Saving credential. Patience is a virtue...'
-        open={fileId ? false : true}
-      />
+      <LoadingOverlay text='Saving credential. Patience is a virtue...' open={!fileId} />
     </Box>
   )
 }

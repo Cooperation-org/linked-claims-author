@@ -8,13 +8,14 @@ import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
 import DeleteIcon from '@mui/icons-material/Delete'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
 interface FileListProps {
   files: FileItem[]
   onDelete: (event: React.MouseEvent, id: string) => void
-  onNameChange: (id: string, newName: string) => void
-  onSetAsFeatured: (id: string) => void
+  onNameChange: (id: string, newName: string) => void //NOSONAR
+  onSetAsFeatured: (id: string) => void //NOSONAR
   onReorder: (files: FileItem[]) => void
 }
 
@@ -80,90 +81,106 @@ const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
 
   return (
     <FileListContainer>
-      {files.map((file, index) => (
-        <Box sx={{ width: '100%' }} key={file.id}>
-          <Card
-            sx={{
-              width: '100%',
-              bgcolor: 'white',
-              borderRadius: 2
-            }}
-          >
-            <CardContent sx={{ p: 4, width: '100%' }}>
-              <Box sx={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                {isImage(file.name) ? (
-                  <img
-                    src={file.url}
-                    alt={file.name.split('.')[0]}
-                    width='100%'
-                    height='100%'
-                    style={{ borderRadius: '8px' }}
-                  />
-                ) : isPDF(file.name) ? (
-                  <Image
-                    src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
-                    alt={file.name.split('.')[0]}
-                    width={80}
-                    height={80}
-                    style={{ borderRadius: '8px' }}
-                  />
-                ) : (
-                  <Box
-                    sx={{
-                      width: 80,
-                      height: 80,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: '#f3f3f3',
-                      borderRadius: '8px',
-                      fontSize: '0.9rem',
-                      color: '#666'
-                    }}
-                  >
-                    FILE
-                  </Box>
-                )}
-              </Box>
-            </CardContent>
-
-            {/* Action Buttons */}
+      {files.map((file, index) => {
+        let content
+        if (isImage(file.name)) {
+          content = (
+            <Image
+              src={file.url}
+              alt={file.name.split('.')[0]}
+              width={80}
+              height={80}
+              style={{ borderRadius: '8px' }}
+            />
+          )
+        } else if (isPDF(file.name)) {
+          content = (
+            <Image
+              src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
+              alt={file.name.split('.')[0]}
+              width={80}
+              height={80}
+              style={{ borderRadius: '8px' }}
+            />
+          )
+        } else {
+          content = (
             <Box
               sx={{
+                width: 80,
+                height: 80,
                 display: 'flex',
-                justifyContent: 'flex-end',
-                gap: 1,
-                bgcolor: '#242c41',
-                p: 2,
-                borderBottomLeftRadius: 8,
-                borderBottomRightRadius: 8
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#f3f3f3',
+                borderRadius: '8px',
+                fontSize: '0.9rem',
+                color: '#666'
               }}
-              onClick={e => e.stopPropagation()}
             >
-              <IconButton
-                sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
-                onClick={e => onDelete(e, file.googleId ?? file.id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-              <IconButton
-                sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
-                onClick={e => handleMoveItem(e, index, 'up')}
-                disabled={index === 0}
-              >
-                <KeyboardArrowUpIcon />
-              </IconButton>
-              <IconButton
-                sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
-                onClick={e => handleMoveItem(e, index, 'down')}
-                disabled={index === files.length - 1}
-              >
-                <KeyboardArrowDownIcon />
-              </IconButton>
+              FILE
             </Box>
-          </Card>
-        </Box>
-      ))}
+          )
+        }
+
+        return (
+          <Box sx={{ width: '100%' }} key={file.id}>
+            <Card
+              sx={{
+                width: '100%',
+                bgcolor: 'white',
+                borderRadius: 2
+              }}
+            >
+              <CardContent sx={{ p: 4, width: '100%' }}>
+                <Box
+                  sx={{
+                    marginRight: '10px',
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
+                >
+                  {content}
+                </Box>
+              </CardContent>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  gap: 1,
+                  bgcolor: '#242c41',
+                  p: 2,
+                  borderBottomLeftRadius: 8,
+                  borderBottomRightRadius: 8
+                }}
+                onClick={e => e.stopPropagation()}
+              >
+                <IconButton
+                  sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
+                  onClick={e => onDelete(e, file.googleId ?? file.id)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <IconButton
+                  sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
+                  onClick={e => handleMoveItem(e, index, 'up')}
+                  disabled={index === 0}
+                >
+                  <KeyboardArrowUpIcon />
+                </IconButton>
+                <IconButton
+                  sx={{ color: 'white', '&:hover': { bgcolor: 'slate.800' } }}
+                  onClick={e => handleMoveItem(e, index, 'down')}
+                  disabled={index === files.length - 1}
+                >
+                  <KeyboardArrowDownIcon />
+                </IconButton>
+              </Box>
+            </Card>
+          </Box>
+        )
+      })}
     </FileListContainer>
   )
 }

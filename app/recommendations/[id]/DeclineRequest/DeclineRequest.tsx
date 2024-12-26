@@ -1,6 +1,5 @@
 import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import { SVGBack } from '../../../Assets/SVGs'
 import HomeIcon from '@mui/icons-material/Home'
 
 interface DeclineRequestProps {

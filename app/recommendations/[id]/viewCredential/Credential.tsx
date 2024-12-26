@@ -21,12 +21,13 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
   const [showDeclineRequest, setShowDeclineRequest] = useState(false)
 
   const params = useParams()
-  const id =
-    typeof params?.id === 'string'
-      ? params.id
-      : Array.isArray(params?.id)
-        ? params.id[0]
-        : undefined
+  let id: string | undefined
+
+  if (typeof params?.id === 'string') {
+    id = params.id
+  } else if (Array.isArray(params?.id)) {
+    id = params.id[0]
+  }
 
   if (!id) {
     console.error('Error: Missing credential data.')
@@ -38,6 +39,7 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
       </Box>
     )
   }
+
   const handleClick = () => {
     setactivStep(1)
   }
@@ -112,45 +114,43 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
       <Box
         sx={{ display: 'flex', flexDirection: 'column', minWidth: '210px', gap: '15px' }}
       >
-        {featuresRecommentations(fullName).map(
-          (feature: { id: any; name: any; description: any }) => (
-            <Box
-              key={feature.id}
+        {featuresRecommentations(fullName).map(feature => (
+          <Box
+            key={feature.id}
+            sx={{
+              display: 'flex',
+              lineHeight: 'normal',
+              alignItems: 'center',
+              width: '100%'
+            }}
+          >
+            <SVGCheckMarks />
+            <Typography
               sx={{
-                display: 'flex',
-                lineHeight: 'normal',
-                alignItems: 'center',
-                width: '100%'
+                color: theme.palette.t3BodyText,
+                flexShrink: 1,
+                fontFamily: 'Lato',
+                fontSize: '18px',
+                fontWeight: '600',
+                lineHeight: '21.6px',
+                m: '0 5px 0 15px'
               }}
             >
-              <SVGCheckMarks />
-              <Typography
-                sx={{
-                  color: theme.palette.t3BodyText,
-                  flexShrink: 1,
-                  fontFamily: 'Lato',
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  lineHeight: '21.6px',
-                  m: '0 5px 0 15px'
-                }}
-              >
-                {feature.name}
-              </Typography>
-              <InfoOutlinedIcon
-                sx={{
-                  width: '15px',
-                  height: '15px',
-                  mt: '3px',
-                  cursor: 'pointer',
-                  color: theme.palette.primary.main
-                }}
-                aria-label={`More information about ${feature.name}`}
-                titleAccess={`More information about ${feature.name}`}
-              />
-            </Box>
-          )
-        )}
+              {feature.name}
+            </Typography>
+            <InfoOutlinedIcon
+              sx={{
+                width: '15px',
+                height: '15px',
+                mt: '3px',
+                cursor: 'pointer',
+                color: theme.palette.primary.main
+              }}
+              aria-label={`More information about ${feature.name}`}
+              titleAccess={`More information about ${feature.name}`}
+            />
+          </Box>
+        ))}
       </Box>
     </Box>
   )

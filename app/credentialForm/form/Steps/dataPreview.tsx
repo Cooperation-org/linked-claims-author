@@ -15,21 +15,26 @@ import { StepTrackShape } from '../fromTexts & stepTrack/StepTrackShape'
 
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
 
-const cleanHTML = (htmlContent: string) => {
-  return htmlContent
+const cleanHTML = (htmlContent: string) =>
+  htmlContent
     .replace(/<p><br><\/p>/g, '')
     .replace(/<p><\/p>/g, '')
     .replace(/<br>/g, '')
     .replace(/class="[^"]*"/g, '')
     .replace(/style="[^"]*"/g, '')
-}
 
 interface DataPreviewProps {
   formData: FormData
-  selectedFiles: any[]
+  selectedFiles: {
+    id: string
+    name: string
+    url: string
+    isFeatured?: boolean
+  }[]
 }
 
 const isPDF = (fileName: string) => fileName.toLowerCase().endsWith('.pdf')
+
 const renderPDFThumbnail = async (fileUrl: string) => {
   try {
     const loadingTask = getDocument(fileUrl)
@@ -47,15 +52,14 @@ const renderPDFThumbnail = async (fileUrl: string) => {
   } catch (error) {
     console.error('Error rendering PDF thumbnail:', error)
   }
-  return '/fallback-pdf-thumbnail.png' // fallback image
+  return '/fallback-pdf-thumbnail.png'
 }
 
 const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) => {
-  console.log(':  formData', formData)
   const theme: Theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
-
   const [pdfThumbnails, setPdfThumbnails] = useState<Record<string, string>>({})
+
   useEffect(() => {
     selectedFiles.forEach(async file => {
       if (isPDF(file.name) && !pdfThumbnails[file.id]) {
@@ -65,13 +69,58 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) =>
     })
   }, [selectedFiles, pdfThumbnails])
 
-  const handleNavigate = (url: string, target: string = '_self') => {
+  const handleNavigate = (url: string, target = '_self') => {
     window.open(url, target)
   }
 
-  const hasValidEvidence = formData.portfolio?.some(
-    (porto: { name: any; url: any }) => porto.name && porto.url
-  )
+  const hasValidEvidence = formData.portfolio?.some(porto => porto.name && porto.url)
+
+  const getCleanedDescription = (): string => {
+    if (!formData?.description) return ''
+    if (typeof formData.description === 'string') {
+      return cleanHTML(formData.description)
+    }
+    return ''
+  }
+
+  const renderFeaturedEvidence = () => {
+    if (!formData.evidenceLink) {
+      return <Box sx={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }} />
+    }
+
+    const featuredFiles = selectedFiles.filter(f => f.isFeatured)
+    if (featuredFiles.length === 0) {
+      return <Box sx={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }} />
+    }
+
+    return featuredFiles.map(file => (
+      <Box key={file.id} sx={{ width: isLargeScreen ? '179px' : '100%' }}>
+        {isPDF(file.name) ? (
+          <img
+            style={{
+              borderRadius: '20px',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+            src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
+            alt='PDF Preview'
+          />
+        ) : (
+          <img
+            style={{
+              borderRadius: '20px',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+            src={file.url}
+            alt='Certification Evidence'
+          />
+        )}
+      </Box>
+    ))
+  }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
@@ -83,7 +132,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) =>
           textAlign: 'center'
         }}
       >
-        Here’s what you’ve created!{' '}
+        Here’s what you’ve created!
       </Typography>
       <StepTrackShape />
       <Box
@@ -110,7 +159,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) =>
             <Box sx={commonTypographyStyles}>
               <span
                 dangerouslySetInnerHTML={{
-                  __html: cleanHTML(formData.credentialDescription as any)
+                  __html: cleanHTML(formData.credentialDescription)
                 }}
               />
             </Box>
@@ -124,52 +173,14 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) =>
             mb: '10px'
           }}
         >
-          {formData?.evidenceLink ? (
-            selectedFiles.filter(f => f.isFeatured).length > 0 ? (
-              selectedFiles
-                .filter(f => f.isFeatured)
-                .map(file => (
-                  <Box key={file.id} sx={{ width: isLargeScreen ? '179px' : '100%' }}>
-                    {isPDF(file.name) ? (
-                      <img
-                        style={{
-                          borderRadius: '20px',
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
-                        src={pdfThumbnails[file.id] ?? '/fallback-pdf-thumbnail.png'}
-                        alt='PDF Preview'
-                      />
-                    ) : (
-                      <img
-                        style={{
-                          borderRadius: '20px',
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
-                        src={file.url}
-                        alt='Certification Evidence'
-                      />
-                    )}
-                  </Box>
-                ))
-            ) : (
-              <Box sx={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }} />
-            )
-          ) : (
-            <Box sx={{ width: !isLargeScreen ? '100%' : '179px', height: '100%' }} />
-          )}
+          {renderFeaturedEvidence()}
         </Box>
+
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <Typography sx={commonTypographyStyles}>
-            <span
-              dangerouslySetInnerHTML={{
-                __html: cleanHTML(formData?.description as any)
-              }}
-            />
+            <span dangerouslySetInnerHTML={{ __html: getCleanedDescription() }} />
           </Typography>
+
           {formData.credentialDuration && (
             <Typography sx={{ ...commonTypographyStyles, fontSize: '13px' }}>
               Duration:
@@ -186,28 +197,60 @@ const DataPreview: React.FC<DataPreviewProps> = ({ formData, selectedFiles }) =>
             <Box sx={commonTypographyStyles}>
               <Typography sx={{ display: 'block' }}>Evidence:</Typography>
               <ul style={evidenceListStyles}>
-                <li
-                  style={{ cursor: 'pointer', width: 'fit-content' }}
-                  key={formData.evidenceLink}
-                  onClick={() =>
-                    handleNavigate(formData.evidenceLink as string, '_blank')
-                  }
-                >
-                  {formData.evidenceLink}
+                <li style={{ listStyle: 'none' }}>
+                  <Box
+                    component='button'
+                    type='button'
+                    sx={{
+                      cursor: 'pointer',
+                      p: 0,
+                      m: 0,
+                      background: 'none',
+                      border: 'none',
+                      textAlign: 'left',
+                      fontSize: 'inherit',
+                      fontFamily: 'inherit',
+                      color: 'blue',
+                      textDecoration: 'underline',
+                      width: 'fit-content'
+                    }}
+                    onClick={() =>
+                      formData.evidenceLink &&
+                      handleNavigate(formData.evidenceLink, '_blank')
+                    }
+                    aria-label='Open main evidence link'
+                  >
+                    {formData.evidenceLink}
+                  </Box>
                 </li>
-                {formData.portfolio.map(
-                  (porto: { name: any; url: React.Key | null | undefined }) =>
-                    porto.name &&
-                    porto.url && (
-                      <li
-                        style={{ cursor: 'pointer', width: 'fit-content' }}
-                        key={porto.url}
-                        onClick={() => handleNavigate(porto.url as string, '_blank')}
+                {formData.portfolio?.map(porto => {
+                  if (!porto.name || !porto.url) return null
+                  return (
+                    <li style={{ listStyle: 'none' }} key={porto.url}>
+                      <Box
+                        component='button'
+                        type='button'
+                        sx={{
+                          cursor: 'pointer',
+                          p: 0,
+                          m: 0,
+                          background: 'none',
+                          border: 'none',
+                          textAlign: 'left',
+                          fontSize: 'inherit',
+                          fontFamily: 'inherit',
+                          color: 'blue',
+                          textDecoration: 'underline',
+                          width: 'fit-content'
+                        }}
+                        onClick={() => handleNavigate(porto.url.toString(), '_blank')}
+                        aria-label={`Open portfolio link: ${porto.name}`}
                       >
                         {porto.name}
-                      </li>
-                    )
-                )}
+                      </Box>
+                    </li>
+                  )
+                })}
               </ul>
             </Box>
           )}

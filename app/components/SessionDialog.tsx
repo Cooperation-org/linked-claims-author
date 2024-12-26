@@ -8,12 +8,18 @@ import {
   DialogActions,
   Button,
   List,
-  ListItem,
+  ListItemButton,
   ListItemText
 } from '@mui/material'
 
 interface SessionDialogProps {
-  userSessions: Array<any>
+  userSessions: Array<{
+    id: string
+    content: {
+      fullName?: string
+      storageOption?: string
+    }
+  }>
   open: boolean
   onSelect: (session: any) => void
   onCancel: () => void
@@ -26,6 +32,7 @@ const SessionDialog: React.FC<SessionDialogProps> = ({
   onCancel
 }) => {
   if (userSessions.length === 0) return null
+
   return (
     <Dialog open={open} onClose={onCancel}>
       <DialogTitle>
@@ -34,13 +41,13 @@ const SessionDialog: React.FC<SessionDialogProps> = ({
       </DialogTitle>
       <DialogContent>
         <List>
-          {userSessions.map((session, index) => (
-            <ListItem button key={index} onClick={() => onSelect(session.content)}>
+          {userSessions.map(session => (
+            <ListItemButton key={session.id} onClick={() => onSelect(session.content)}>
               <ListItemText
-                primary={session.content.fullName || 'Unnamed Session'}
-                secondary={session.content.storageOption || 'Unknown Storage'}
+                primary={session.content.fullName ?? 'Unnamed Session'}
+                secondary={session.content.storageOption ?? 'Unknown Storage'}
               />
-            </ListItem>
+            </ListItemButton>
           ))}
         </List>
       </DialogContent>

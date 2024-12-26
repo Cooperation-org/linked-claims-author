@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Typography, Button, Drawer, IconButton, Divider } from '@mui/material'
+import { Box, Typography, Button, Drawer, IconButton } from '@mui/material'
 import { SVGCheckMarks, HamburgerMenuSVG, CloseIcon } from '../../Assets/SVGs'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import Link from 'next/link'

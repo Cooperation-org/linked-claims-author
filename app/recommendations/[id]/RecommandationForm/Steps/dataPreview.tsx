@@ -23,9 +23,9 @@ interface FormData {
 interface DataPreviewProps {
   formData: FormData
   fullName: string
-  handleNext: () => void
-  handleBack: () => void
-  handleSign: () => void
+  handleNext: () => void //NOSONAR
+  handleBack: () => void //NOSONAR
+  handleSign: () => void //NOSONAR
   isLoading: boolean
   onUpdateFormData: (newData: any) => void
 }
@@ -152,7 +152,7 @@ const EditableCard = ({
             </Typography>
           ) : (
             <Box display='flex' alignItems={isQuote ? 'center' : 'flex-start'}>
-              {icon && icon}
+              {icon}
               <Typography
                 variant='body2'
                 sx={{
@@ -259,7 +259,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({
         )}
 
         {Array.isArray(formData.portfolio) &&
-          formData.portfolio.filter(item => item.name || item.url).length > 0 && (
+          formData.portfolio.some(item => item.name || item.url) && (
             <Card
               variant='outlined'
               sx={{
@@ -280,8 +280,8 @@ const DataPreview: React.FC<DataPreviewProps> = ({
               </Typography>
               {formData.portfolio
                 .filter(item => item.name || item.url)
-                .map((item, index) => (
-                  <Box key={`portfolio-item-${index}`} sx={{ mt: 1 }}>
+                .map(item => (
+                  <Box key={`portfolio-item-${item.url}`} sx={{ mt: 1 }}>
                     {item.name && item.url ? (
                       <Link
                         href={item.url}
@@ -293,6 +293,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({
                           color: '#003fe0'
                         }}
                         target='_blank'
+                        rel='noopener noreferrer'
                       >
                         {item.name}
                       </Link>

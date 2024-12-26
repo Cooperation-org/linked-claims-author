@@ -192,9 +192,7 @@ const ClaimsPage: React.FC = () => {
       try {
         setLoading(true)
         const claimsData = await getAllClaims()
-        const vcs = claimsData.map((file: any[]) =>
-          file.filter((f: { name: string }) => f.name !== 'RELATIONS')
-        )
+        const vcs = transformClaims(claimsData)
         setClaims(vcs)
       } catch (error) {
         console.error('Error fetching claims:', error)
@@ -205,6 +203,12 @@ const ClaimsPage: React.FC = () => {
 
     fetchClaims()
   }, [getAllClaims])
+
+  function transformClaims(claimsData: any[]): any[] {
+    return claimsData.map((file: any[]) =>
+      file.filter((f: { name: string }) => f.name !== 'RELATIONS')
+    )
+  }
 
   return (
     <Box
@@ -507,11 +511,13 @@ const ClaimsPage: React.FC = () => {
           anchorEl={desktopMenuAnchorEl}
           open={Boolean(desktopMenuAnchorEl)}
           onClose={handleDesktopMenuClose}
-          PaperProps={{
-            sx: {
-              width: 320,
-              mt: 1,
-              borderRadius: 2
+          slotProps={{
+            paper: {
+              sx: {
+                width: 320,
+                mt: 1,
+                borderRadius: 2
+              }
             }
           }}
         >

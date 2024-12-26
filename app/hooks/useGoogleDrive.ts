@@ -26,7 +26,7 @@ interface ClaimDetail {
 
 const useGoogleDrive = () => {
   const { data: session } = useSession()
-  const [fileMetadata, setFileMetadata] = useState<any | null>(null)
+  const [fileMetadata, setFileMetadata] = useState<any>(null)
   const [ownerEmail, setOwnerEmail] = useState<string | null>(null)
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
   const accessToken = session?.accessToken
@@ -62,23 +62,22 @@ const useGoogleDrive = () => {
     },
     [memoizedStorage]
   )
-
-  const extractGoogleDriveId = (url: string) => {
-    const marker = '/file/d/'
-    const startIndex = url.indexOf(marker)
-
-    if (startIndex !== -1) {
-      const idPart = url.substring(startIndex + marker.length)
-      const endIndex = idPart.indexOf('/')
-      if (endIndex !== -1) {
-        return idPart.substring(0, endIndex)
-      } else {
-        return idPart
-      }
-    } else {
-      return null
-    }
-  }
+  //NOSONAR
+  // const extractGoogleDriveId = (url: string) => {
+  //   const marker = '/file/d/'
+  //   const startIndex = url.indexOf(marker)
+  //   if (startIndex !== -1) {
+  //     const idPart = url.substring(startIndex + marker.length)
+  //     const endIndex = idPart.indexOf('/')
+  //     if (endIndex !== -1) {
+  //       return idPart.substring(0, endIndex)
+  //     } else {
+  //       return idPart
+  //     }
+  //   } else {
+  //     return null
+  //   }
+  // }
 
   const fetchFileMetadata = useCallback(
     async (fileID: string, resourceKey: string = '') => {

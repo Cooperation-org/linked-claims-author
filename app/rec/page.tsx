@@ -20,7 +20,7 @@ const Page = () => {
     howKnow: any
     name: string
     qualifications: string
-    portfolio: any
+    portfolio: Array<{ url: string; title: string }>
   } | null>()
 
   const SectionTitle = styled(Typography)(({ theme }) => ({
@@ -60,9 +60,9 @@ const Page = () => {
         console.log('No recommendation file recId')
         return
       }
-      const recommendation = await storage.retrieve(recId as string)
-      setRecommendation(recommendation?.data.credentialSubject)
-      console.log('Recommendation file recId:', recommendation)
+      const recommendationFile = await storage.retrieve(recId)
+      setRecommendation(recommendationFile?.data.credentialSubject)
+      console.log('Recommendation file recId:', recommendationFile)
     }
     fetchRecommendation()
   }, [recId, storage])
@@ -74,7 +74,7 @@ const Page = () => {
         return
       }
       const master = await getVCWithRecommendations({
-        vcId: vcId as string,
+        vcId: vcId,
         storage
       })
       console.log('🚀 ~ handleApprove ~ master:', master)
@@ -103,8 +103,7 @@ const Page = () => {
           <CardHeader
             sx={{
               borderBottom: '1px solid rgba(25, 118, 210, 0.08)',
-              bgcolor: 'background.paper',
-              '& .MuiCardHeader-content': {}
+              bgcolor: 'background.paper'
             }}
             avatar={
               <CheckCircleIcon
@@ -116,7 +115,7 @@ const Page = () => {
               />
             }
             title={
-              <Typography variant='h6'>{recommendation?.name} Taylor vouch </Typography>
+              <Typography variant='h6'>{recommendation?.name} Taylor vouch</Typography>
             }
           />
 
@@ -126,18 +125,18 @@ const Page = () => {
               <Typography color='text.primary'>
                 <span
                   dangerouslySetInnerHTML={{
-                    __html: cleanHTML(recommendation?.recommendationText as any)
+                    __html: cleanHTML(recommendation.recommendationText)
                   }}
                 />
               </Typography>
             </ContentSection>
 
             <ContentSection>
-              <SectionTitle>How {recommendation?.name} knows you</SectionTitle>
+              <SectionTitle>How {recommendation.name} knows you</SectionTitle>
               <Typography color='text.primary'>
                 <span
                   dangerouslySetInnerHTML={{
-                    __html: cleanHTML(recommendation?.howKnow as any)
+                    __html: cleanHTML(recommendation.howKnow)
                   }}
                 />
               </Typography>
@@ -148,31 +147,32 @@ const Page = () => {
               <Typography color='text.primary'>
                 <span
                   dangerouslySetInnerHTML={{
-                    __html: cleanHTML(recommendation?.qualifications as any)
+                    __html: cleanHTML(recommendation.qualifications)
                   }}
                 />
               </Typography>
             </ContentSection>
 
-            {recommendation?.portfolio > 0 && (
-              <ContentSection sx={{ mb: 0 }}>
-                <SectionTitle>Supporting Evidence</SectionTitle>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {recommendation?.portfolio.map((evidence: any, index: any) => (
-                    <Link
-                      key={index}
-                      href={evidence.url}
-                      underline='hover'
-                      color='primary'
-                      target='_blank'
-                      rel='noopener noreferrer'
-                    >
-                      {evidence.title}
-                    </Link>
-                  ))}
-                </Box>
-              </ContentSection>
-            )}
+            {Array.isArray(recommendation.portfolio) &&
+              recommendation.portfolio.length > 0 && (
+                <ContentSection sx={{ mb: 0 }}>
+                  <SectionTitle>Supporting Evidence</SectionTitle>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {recommendation.portfolio.map(evidence => (
+                      <Link
+                        key={evidence.url}
+                        href={evidence.url}
+                        underline='hover'
+                        color='primary'
+                        target='_blank'
+                        rel='noopener noreferrer'
+                      >
+                        {evidence.title}
+                      </Link>
+                    ))}
+                  </Box>
+                </ContentSection>
+              )}
           </CardContent>
           <Box
             sx={{
