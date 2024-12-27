@@ -27,7 +27,11 @@ const HamburgerMenu = () => {
 
   return (
     <>
-      <IconButton onClick={toggleDrawer} aria-label='Open menu'>
+      <IconButton
+        sx={{ padding: '0px', mr: '15px' }}
+        onClick={toggleDrawer}
+        aria-label='Open menu'
+      >
         <HamburgerMenuSVG />
       </IconButton>
       <Drawer anchor='left' open={isOpen} onClose={toggleDrawer}>

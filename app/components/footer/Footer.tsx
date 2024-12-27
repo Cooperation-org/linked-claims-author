@@ -20,15 +20,16 @@ const Footer = () => {
         p: 2,
         gap: '25px',
         overflow: 'hidden',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        mt: '60px'
       }}
     >
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          ml: { xs: 0, md: '12.5vw' }
+          alignItems: 'flex-start',
+          ml: { xs: 0, md: '240px' }
         }}
       >
         <Box
@@ -46,10 +47,12 @@ const Footer = () => {
               fontFamily: 'Lato',
               fontSize: '18px',
               fontWeight: 400,
-              letterSpacing: '-0.15px'
+              letterSpacing: '-0.15px',
+              lineHeight: '24px'
             }}
           >
-            100% data privacy - no tracking, you own your data forever.
+            100% data privacy - no tracking,
+            <br /> you own your data forever.
           </Typography>
         </Box>
         <Box
@@ -57,7 +60,6 @@ const Footer = () => {
             display: 'flex',
             width: '100%',
             justifyContent: 'center ',
-            px: { xs: 2, md: 4 },
             gap: { xs: '30px', md: '34px' },
             alignItems: 'center'
           }}
@@ -66,7 +68,8 @@ const Footer = () => {
             sx={{
               color: theme.palette.t3LightGray,
               fontFamily: 'Lato',
-              fontSize: '13px',
+              fontSize: '14px',
+              letterSpacing: '-0.14px',
               fontWeight: 400
             }}
           >
@@ -77,7 +80,8 @@ const Footer = () => {
               sx={{
                 color: theme.palette.t3LightGray,
                 fontFamily: 'Lato',
-                fontSize: '13px',
+                fontSize: '14px',
+                letterSpacing: '-0.14px',
                 fontWeight: 400,
                 textDecoration: 'underline',
                 cursor: 'pointer'
@@ -86,12 +90,13 @@ const Footer = () => {
               Data & Privacy Policy
             </Typography>
           </Link>
-          <Link href={'mailto:support@opencreds.net'}>
+          {/* <Link href={'mailto:support@opencreds.net'}>
             <Typography
               sx={{
                 color: theme.palette.t3LightGray,
                 fontFamily: 'Lato',
-                fontSize: '13px',
+                fontSize: '14px',
+                letterSpacing: '-0.14px',
                 fontWeight: 400,
                 textDecoration: 'underline',
                 cursor: 'pointer'
@@ -99,7 +104,7 @@ const Footer = () => {
             >
               support@opencreds.net
             </Typography>
-          </Link>
+          </Link> */}
         </Box>
       </Box>
     </Box>

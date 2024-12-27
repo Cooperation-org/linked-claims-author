@@ -2,109 +2,29 @@
 import React from 'react'
 import { Box, Button, Typography, useTheme, useMediaQuery, Theme } from '@mui/material'
 import Link from 'next/link'
-import Card from './components/cards'
-
+import Image from 'next/image'
 interface SectionProps {
-  theme: Theme
+  theme: Theme //NOSONAR
 }
-
-const EXAMPLE_CARDS = [
-  {
-    id: 'barista',
-    title: 'barista',
-    description:
-      'I am able to demonstrate advanced skills in coffee preparation, customer service, and knowledge of coffee origins and brewing techniques.',
-    criteria: [
-      'Took 12 hours of barista classes',
-      'Received positive customer surveys',
-      'Received positive teacher feedback'
-    ],
-    duration: '2 Days',
-    evidence: [
-      'Video of the Perfect Pour',
-      'Coffee Portfolio',
-      'Training Campus Certification',
-      'Scent training',
-      'IMG_0624',
-      'Tamping',
-      'IMG_0640'
-    ],
-    width: '185px',
-    height: 'auto',
-    rotation: 'rotate(-5deg)',
-    image: '/coffee.jpeg',
-    showPlayButton: true,
-    showTimer: true
-  },
-  {
-    id: 'chef',
-    title: 'chef',
-    description:
-      'I am able to prepare authentic Italian pasta dishes, showcasing expertise in traditional techniques, ingredient selection, and plating for fine dining experiences.',
-    criteria: [
-      'Completed 10 hours of Italian culinary classes',
-      'Successfully presented pasta dishes in a practical exam',
-      'Received feedback from a certified Italian chef'
-    ],
-    duration: '3 Days',
-    evidence: [
-      'Recipe Portfolio',
-      'Culinary Exam Certification',
-      'IMG_2022',
-      'Handmade Pasta Techniques',
-      'Pasta Plating Video'
-    ],
-    width: '200px',
-    height: 'auto',
-    rotation: 'rotate(0deg)',
-    image: '/pasta-example.jpg',
-    showPlayButton: true,
-    showTimer: true
-  },
-  {
-    id: 'developer',
-    title: 'developer',
-    description:
-      'I am able to demonstrate advanced skills in web development, including front-end design, back-end functionality, and deploying responsive, user-friendly websites.',
-    criteria: [
-      'Built and deployed three fully functional websites for clients',
-      'Completed a 15-hour advanced web development bootcamp',
-      'Received testimonials from clients for delivering high-quality work on time'
-    ],
-    duration: '1 Month',
-    evidence: [
-      'Portfolio of Completed Websites',
-      'Bootcamp Certification',
-      'Client Testimonials',
-      'Code Repository (GitHub/Bitbucket)'
-    ],
-    width: '190px',
-    height: 'auto',
-    rotation: 'rotate(5deg)',
-    image: '/dev.jpg',
-    showPlayButton: false,
-    showTimer: false
-  }
-]
 
 const STEPS = [
   {
     id: 'capture',
-    title: 'Capture your skills',
+    title: '1. Capture your skills',
     icon: '/Document.svg',
     description:
       'Add your experiences, from school activities, caregiving, volunteering, to special projects and more.'
   },
   {
     id: 'validate',
-    title: 'Add validation',
+    title: '2. Add validation',
     icon: '/Human Insurance.svg',
     description:
       'Upload proof of your skills and request recommendations from trusted connections.'
   },
   {
     id: 'share',
-    title: 'Share',
+    title: '3. Share',
     icon: '/Network.svg',
     description:
       'Share your skills with employers, add them to your resume, or to your LinkedIn profile.'
@@ -123,6 +43,7 @@ const OPENCREDS_FEATURES = [
 
 const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCards }) => {
   const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   return (
     <Box
       sx={{
@@ -132,56 +53,88 @@ const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCard
         alignItems: 'center',
         ml: 'auto',
         mr: 'auto',
-        maxWidth: '1224px',
-        px: { xs: 2, md: 4 },
-        py: 4
+        width: { xs: '100%', md: '100%' },
+        maxWidth: '1400px',
+        px: { xs: 2, md: 'auto' },
+        pb: 4,
+        pt: { xs: '43px', md: '75px' }
       }}
     >
       <Box
         sx={{
-          maxWidth: { xs: '100%', md: '60%' },
-          textAlign: { xs: 'center', md: 'left' },
-          alignSelf: { xs: 'center', md: 'flex-end' },
-          pr: { xs: 0, md: 4 },
-          height: { xs: 'auto', md: '432px' },
-          mt: { xs: '43px', md: 0 }
+          width: { xs: '100%', md: '40vw' },
+          maxWidth: { xs: '100%', md: '771px' },
+          textAlign: 'left',
+          alignSelf: { xs: 'center', md: 'flex-start' },
+          pr: { xs: 0, md: 0 },
+          mr: { xs: 0, md: '71px' },
+          height: { xs: 'auto', md: '432px' }
+          // mt: { xs: '43px', md: 0 }
         }}
       >
         <Typography
           variant='h2'
           sx={{
             color: theme.palette.t3Black,
-            mb: '10px',
+            mb: { xs: '15px', md: '10px' },
             fontFamily: 'poppins',
             fontSize: { xs: '30px', md: '50px' },
-            fontWeight: 'bolder'
+            fontWeight: 'bolder',
+            lineHeight: { xs: '37.5px', md: '62.5px' },
+            maxWidth: { xs: '360px', md: '771px' }
           }}
         >
-          Showcase the skills that define you.
+          {isMobile ? (
+            'Showcase the skills that define you.'
+          ) : (
+            <>
+              Showcase the skills
+              <br />
+              that define you.
+            </>
+          )}
         </Typography>
+
         <Typography
           variant='body1'
           sx={{
             color: theme.palette.t3BodyText,
             mb: '30px',
-            fontSize: { xs: '16px', md: '18px' }
+            fontSize: { xs: '16px', md: '18px' },
+            lineHeight: '22.5px'
           }}
         >
-          Whether it&apos;s caring for your family, volunteering, a side hustle, or
-          on-the-job learning, OpenCreds helps you document, verify, and share your unique
-          experiences.
+          {isMobile ? (
+            'Whether it’s caring for your family, volunteering, a side hustle, or on-the-job learning, OpenCreds helps you document, verify, and share your unique experiences.'
+          ) : (
+            <>
+              Whether it&apos;s caring for your family, volunteering, a side hustle,
+              <br />
+              or on-the-job learning, OpenCreds helps you document, verify,
+              <br />
+              and share your unique experiences.
+            </>
+          )}
         </Typography>
+
         <Link href='/credentialForm' passHref>
           <Button
             variant='contained'
             sx={{
               backgroundColor: theme.palette.t3ButtonBlue,
               color: '#FFFFFF',
+              width: { xs: '195px', md: '177px' },
+              maxWidth: { xs: '195px', md: '177px' },
+              maxHeight: { xs: '40px', md: '52px' },
               borderRadius: '100px',
-              py: 1.5,
-              px: 4,
+              py: '22px',
+              px: '20px',
               textTransform: 'none',
-              fontSize: '16px'
+              fontSize: '16px',
+              fontFamily: 'Roboto',
+              lineHeight: '20px',
+              fontWeight: '500',
+              mb: { xs: '19px', md: 0 }
             }}
           >
             Build your first skill
@@ -195,16 +148,10 @@ const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCard
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'center',
-            alignItems: 'center',
-            gap: 0,
-            maxWidth: '565px',
-            maxHeight: '467px',
-            mt: 4
+            alignItems: 'center'
           }}
         >
-          {EXAMPLE_CARDS.map(card => (
-            <Card key={card.id} {...card} />
-          ))}
+          <Image priority src='/3Cards.svg' alt='cards' width={559} height={467}></Image>
         </Box>
       )}
     </Box>
@@ -215,16 +162,20 @@ const MobileOpenCredsSection: React.FC<SectionProps> = ({ theme }) => (
   <Box
     sx={{
       background: 'linear-gradient(180deg, #F1F5FC, #FFFFFF)',
-      py: 5,
-      px: { xs: 2, md: 8 }
+      py: '15px',
+      px: { xs: '10px', md: 8 },
+      mt: '15px'
     }}
   >
     <Typography
       variant='h4'
       sx={{
         color: theme.palette.t3Black,
-        textAlign: 'center',
-        mb: 4
+        textAlign: { xs: 'left', md: 'center' },
+        mb: '22.5px',
+        fontFamily: 'poppins',
+        fontSize: '22px',
+        fontWeight: '700'
       }}
     >
       What are OpenCreds?
@@ -234,8 +185,10 @@ const MobileOpenCredsSection: React.FC<SectionProps> = ({ theme }) => (
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: 4
+        alignItems: 'flex-start',
+        gap: '15px',
+        pt: '15px',
+        pb: '30px'
       }}
     >
       <Box sx={{ flex: 1 }}>
@@ -243,17 +196,24 @@ const MobileOpenCredsSection: React.FC<SectionProps> = ({ theme }) => (
           variant='body1'
           sx={{
             color: theme.palette.t3BodyText,
-            mb: 2
+            mb: '15px',
+            fontSize: '18px',
+            fontWeight: 700
           }}
         >
           OpenCreds are verifiable skills that you create to showcase your experiences.
+          <br />
+          <br />
+          OpenCreds are:
         </Typography>
         <Box
           component='ul'
           sx={{
             color: theme.palette.t3BodyText,
             pl: 2,
-            mb: 0
+            mb: 0,
+            fontSize: '14px',
+            fontWeight: 400
           }}
         >
           {OPENCREDS_FEATURES.map(feature => (
@@ -263,31 +223,24 @@ const MobileOpenCredsSection: React.FC<SectionProps> = ({ theme }) => (
           ))}
         </Box>
       </Box>
-
-      <Card
-        {...EXAMPLE_CARDS[0]}
-        width='180px'
-        height='auto'
-        rotation='rotate(0deg)'
-        showPlayButton={true}
-        showTimer={true}
-        showDuration={true}
-      />
+      <Box sx={{ height: '100%', width: 'auto' }}>
+        <Image priority src='/1Card.svg' alt='openCreds' width={131} height={304}></Image>
+      </Box>
     </Box>
   </Box>
 )
 
 const StepsSection: React.FC<SectionProps> = ({ theme }) => (
-  <Box sx={{ maxWidth: '1224px', px: { xs: 0, md: 8 }, mr: 'auto', ml: 'auto' }}>
+  <Box sx={{ maxWidth: '1400px', mr: 'auto', ml: 'auto' }}>
     <Box
       sx={{
         display: 'flex',
-        width: { xs: 'auto', md: '360px' },
+        width: { xs: '92.308vw', md: '360px' },
         height: '39px',
         mr: 'auto',
         ml: 'auto',
-        mt: '28px',
-        mb: '30px',
+        mt: { xs: '15px', md: '60px' },
+        mb: '15px',
         justifyContent: 'center',
         alignItems: 'center'
       }}
@@ -296,12 +249,13 @@ const StepsSection: React.FC<SectionProps> = ({ theme }) => (
         sx={{
           textAlign: 'center',
           color: theme.palette.t3Black,
-          mb: 4,
-          fontSize: { xs: '22px', md: '26px' },
+          fontSize: '22px',
+          pb: '10px',
+          px: '15px',
           fontFamily: 'Poppins',
           fontStyle: 'normal',
           fontWeight: '600',
-          lineHeight: '125%'
+          lineHeight: '27.5px'
         }}
       >
         How it works - 3 simple steps
@@ -313,7 +267,7 @@ const StepsSection: React.FC<SectionProps> = ({ theme }) => (
         flexDirection: { xs: 'column', md: 'row' },
         gap: { xs: 3, md: 4 },
         px: { xs: '17.5px', md: 8 },
-        mb: 6
+        mb: { xs: '15px', md: '0px' }
       }}
     >
       {STEPS.map(step => (
@@ -322,7 +276,12 @@ const StepsSection: React.FC<SectionProps> = ({ theme }) => (
           sx={{
             background: '#EEF5FF',
             borderRadius: '8px',
-            p: 3,
+            pt: '15px',
+            pb: { xs: '15px', md: '30px' },
+            px: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
             flex: 1,
             textAlign: 'center'
           }}
@@ -331,12 +290,27 @@ const StepsSection: React.FC<SectionProps> = ({ theme }) => (
             component='img'
             src={step.icon}
             alt={step.title}
-            sx={{ mb: 2, width: '60px', height: '60px' }}
+            sx={{ mb: '15px', width: '60px', height: '60px' }}
           />
-          <Typography variant='h6' sx={{ color: theme.palette.t3BodyText, mb: 2 }}>
+          <Typography
+            sx={{
+              color: theme.palette.t3BodyText,
+              mb: '15px',
+              fontSize: '18px',
+              fontWeight: 700,
+              lineHeight: '22px'
+            }}
+          >
             {step.title}
           </Typography>
-          <Typography variant='body2' sx={{ color: theme.palette.t3BodyText }}>
+          <Typography
+            sx={{
+              fontFamily: 'Lato',
+              fontWeight: 400,
+              fontSize: '18px',
+              color: theme.palette.t3BodyText
+            }}
+          >
             {step.description}
           </Typography>
         </Box>
@@ -348,15 +322,19 @@ const StepsSection: React.FC<SectionProps> = ({ theme }) => (
         sx={{
           backgroundColor: theme.palette.t3ButtonBlue,
           color: '#FFFFFF',
+          fontFamily: 'Roboto',
           borderRadius: '100px',
           py: 1.5,
           px: 4,
           textTransform: 'none',
           fontSize: '16px',
-          mr: 'auto',
-          ml: 'auto',
+          lineHeight: '20px',
+          mx: 'auto',
           display: { xs: 'block', md: 'none' },
-          mb: '90px'
+          mb: '30px',
+          width: { xs: '100%', md: 'auto' },
+          maxWidth: '360px',
+          fontWeight: 500
         }}
       >
         Start building your first skill
