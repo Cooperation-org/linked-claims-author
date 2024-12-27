@@ -37,7 +37,8 @@ import {
   SVGEmail,
   SVGCopy,
   SVGTrush,
-  BlueBadge
+  BlueBadge,
+  SVGExport
 } from '../Assets/SVGs'
 
 // Types
@@ -432,6 +433,7 @@ const ClaimsPage: React.FC = () => {
                       >
                         <Button
                           startIcon={<SVGHeart />}
+                          endIcon={<SVGExport />}
                           onClick={e => handleRecommendationClick(claim[0].id, e)}
                           fullWidth
                           sx={{
@@ -444,6 +446,7 @@ const ClaimsPage: React.FC = () => {
                         </Button>
                         <Button
                           startIcon={<SVGLinkedIn />}
+                          endIcon={<SVGExport />}
                           fullWidth
                           sx={{
                             justifyContent: 'flex-start',
@@ -455,6 +458,7 @@ const ClaimsPage: React.FC = () => {
                         </Button>
                         <Button
                           startIcon={<SVGEmail />}
+                          endIcon={<SVGExport />}
                           onClick={e => handleEmailShare(claim, e)}
                           fullWidth
                           sx={{
@@ -523,11 +527,17 @@ const ClaimsPage: React.FC = () => {
             sx={{ py: 1.5, gap: 2 }}
           >
             <SVGHeart />
-            <Typography>Ask for a recommendation</Typography>
+            <Typography sx={{ textDecoration: 'underline', color: '#003fe0' }}>
+              Ask for a recommendation
+            </Typography>
+            <SVGExport />
           </MenuItem>
           <MenuItem onClick={handleDesktopMenuClose} sx={{ py: 1.5, gap: 2 }}>
             <SVGLinkedIn />
-            <Typography>Share to LinkedIn</Typography>
+            <Typography sx={{ textDecoration: 'underline', color: '#003fe0' }}>
+              Share to LinkedIn
+            </Typography>
+            <SVGExport />
           </MenuItem>
           <MenuItem
             onClick={e => {
@@ -537,7 +547,10 @@ const ClaimsPage: React.FC = () => {
             sx={{ py: 1.5, gap: 2 }}
           >
             <SVGEmail />
-            <Typography>Share via Email</Typography>
+            <Typography sx={{ textDecoration: 'underline', color: '#003fe0' }}>
+              Share via Email
+            </Typography>
+            <SVGExport />
           </MenuItem>
           <MenuItem
             onClick={e => {
@@ -547,7 +560,9 @@ const ClaimsPage: React.FC = () => {
             sx={{ py: 1.5, gap: 2 }}
           >
             <SVGCopy />
-            <Typography>Copy URL</Typography>
+            <Typography sx={{ textDecoration: 'underline', color: '#003fe0' }}>
+              Copy URL
+            </Typography>
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -557,7 +572,9 @@ const ClaimsPage: React.FC = () => {
             sx={{ py: 1.5, gap: 2 }}
           >
             <SVGTrush />
-            <Typography>Delete</Typography>
+            <Typography sx={{ textDecoration: 'underline', color: '#003fe0' }}>
+              Delete
+            </Typography>
           </MenuItem>
         </Menu>
       )}
