@@ -2,10 +2,84 @@
 import React from 'react'
 import { Box, Button, Typography, useTheme, useMediaQuery, Theme } from '@mui/material'
 import Link from 'next/link'
-import Image from 'next/image'
+import Card from './components/cards'
 interface SectionProps {
   theme: Theme //NOSONAR
 }
+const EXAMPLE_CARDS = [
+  {
+    id: 'caretaker',
+    title: 'Example',
+    description:
+      'I am able to attend to the care of an older adult with complex medical needs. This includes day-to-day care as well as basic medical care.',
+    criteria: [
+      'Solo caretaker certification',
+      'Completed caretaker training program',
+      'Basic medical care instructions',
+      'Have CPR certification'
+    ],
+    duration: '5 Years',
+    evidence: ['IMG_0630', 'IMG_0624', 'IMG_0640'],
+    width: '195px',
+    height: '385px',
+    rotation: 'rotate(-5deg)',
+    image: '/caretaker.jpeg',
+    showPlayButton: false,
+    showTimer: false
+  },
+  {
+    id: 'barista',
+    title: 'Example',
+    description:
+      'I am able to demonstrate advanced skills in coffee preparation, customer service, and knowledge of coffee origins and brewing techniques.',
+    criteria: [
+      'Took 12 hours of barista classes',
+      'Received positive customer surveys',
+      'Received positive teacher feedback'
+    ],
+    duration: '2 Days',
+    evidence: [
+      'Video of the Perfect Pour',
+      'Coffee Portfolio',
+      'Training Campus Certification',
+      'Scent training',
+      'IMG_0624',
+      'Tamping',
+      'IMG_0640'
+    ],
+    width: '195px',
+    height: '410px',
+    rotation: 'rotate(0deg)',
+    image: '/coffee.jpeg',
+    showPlayButton: true,
+    showTimer: true
+  },
+  {
+    id: 'landscaper',
+    title: 'Example',
+    description:
+      'I am able to demonstrate advanced skills in landscaping, including hedge art, gardening, and outdoor hardscaping.',
+    criteria: [
+      'Worked 3 years as landscaper',
+      'Received local landscaping award program',
+      'Received positive client reviews'
+    ],
+    duration: '2 Weeks',
+    evidence: [
+      'Portfolio of Garden Care',
+      'Landscaper Portfolio',
+      'Hardscape Training',
+      'IMG_0624',
+      'IMG_0640'
+    ],
+    width: '195px',
+    height: '400px',
+    rotation: 'rotate(5deg)',
+    image: '/landscape.jpeg',
+    showPlayButton: true,
+    showTimer: true
+  }
+]
 
 const STEPS = [
   {
@@ -151,7 +225,9 @@ const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCard
             alignItems: 'center'
           }}
         >
-          <Image priority src='/3Cards.svg' alt='cards' width={559} height={467}></Image>
+          {EXAMPLE_CARDS.map(card => (
+            <Card key={card.id} {...card} />
+          ))}
         </Box>
       )}
     </Box>
@@ -224,7 +300,15 @@ const MobileOpenCredsSection: React.FC<SectionProps> = ({ theme }) => (
         </Box>
       </Box>
       <Box sx={{ height: '100%', width: 'auto' }}>
-        <Image priority src='/1Card.svg' alt='openCreds' width={131} height={304}></Image>
+        <Card
+          {...EXAMPLE_CARDS[1]}
+          width='195px'
+          height='410px'
+          rotation='rotate(0deg)'
+          showPlayButton={true}
+          showTimer={true}
+          showDuration={true}
+        />
       </Box>
     </Box>
   </Box>
