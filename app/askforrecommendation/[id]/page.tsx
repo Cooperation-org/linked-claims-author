@@ -50,7 +50,7 @@ export default function AskForRecommendation() {
       setIsLoading(true)
       try {
         const content = await getContent(fileID)
-        setDriveData(content)
+        setDriveData(content as any)
         const achievement = content?.data?.credentialSubject?.achievement?.[0]
         const name = achievement?.name || 'your skill'
         const baseMessage = generateMessage(name, fileID)
