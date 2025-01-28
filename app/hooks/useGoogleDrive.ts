@@ -55,7 +55,7 @@ const useGoogleDrive = () => {
         throw new Error(`Failed to fetch file: ${response.status} ${response.statusText}`)
       }
 
-      const blob = await response.blob()
+      const blob = (await response.blob()) as any
 
       let data = blob
 
