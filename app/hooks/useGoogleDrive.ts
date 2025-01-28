@@ -46,22 +46,35 @@ const useGoogleDrive = () => {
 
   const memoizedStorage = storage
 
-  const getContent = useCallback(
-    async (fileID: string): Promise<ClaimDetail | null> => {
-      if (!memoizedStorage) {
-        console.warn('Storage instance is not available.')
-        return null
+  const getContent = useCallback(async (fileID: string) => {
+    try {
+      const response = await fetch(`/api/drive/${fileID}`)
+
+      console.log(':  getContent  response', response)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch file: ${response.status} ${response.statusText}`)
       }
-      try {
-        const file = await memoizedStorage.retrieve(fileID)
-        return file as unknown as ClaimDetail
-      } catch (error) {
-        console.error('Error retrieving file:', error)
-        return null
+
+      const blob = await response.blob()
+
+      let data = blob
+
+      const text = await blob.text()
+      data = JSON.parse(text)
+
+      return {
+        success: true,
+        data,
+        contentType: response.headers.get('content-type')
       }
-    },
-    [memoizedStorage]
-  )
+    } catch (error) {
+      console.error('Error fetching file:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      }
+    }
+  }, [])
 
   const extractGoogleDriveId = (url: string) => {
     const marker = '/file/d/'
