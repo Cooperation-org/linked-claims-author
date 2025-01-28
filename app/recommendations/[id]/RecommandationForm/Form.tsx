@@ -19,6 +19,7 @@ import { signCred } from '../../../utils/credential'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import { Logo } from '../../../Assets/SVGs'
+import { getCookie } from '../../../utils/cookie'
 interface FormProps {
   fullName: string
   email: string
@@ -26,8 +27,7 @@ interface FormProps {
 
 const Form: React.FC<FormProps> = ({ fullName, email }) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
-  const { data: session } = useSession()
-  const accessToken = session?.accessToken
+  const accessToken = getCookie('accessToken')
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
     fullName: '',
