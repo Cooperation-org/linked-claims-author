@@ -3,13 +3,13 @@
 import React, { useState } from 'react'
 import { Box, Tooltip, Snackbar, Alert, Button } from '@mui/material'
 import { useStepContext } from '../StepContext'
-import { useSession } from 'next-auth/react'
 import { SVGBack, SVGCompleteStep } from '../../../Assets/SVGs'
+import { getCookie } from '../../../utils/cookie'
 
 export function StepTrackShape() {
   const { activeStep, setActiveStep, handleBack, handleNext } = useStepContext()
-  const { data: session } = useSession()
   const [openSnackbar, setOpenSnackbar] = useState(false)
+  const accessToken = getCookie('accessToken')
 
   const pathname = typeof window !== 'undefined' ? window.location.pathname : ''
   const TOTAL_STEPS = pathname.includes('/recommendations') ? 7 : 4
@@ -41,7 +41,7 @@ export function StepTrackShape() {
       borderColor = '#002bb3'
     }
     const handleStepClick = () => {
-      if (!session?.accessToken) {
+      if (!accessToken) {
         setOpenSnackbar(true)
         return
       }
@@ -53,7 +53,7 @@ export function StepTrackShape() {
       }
     }
 
-    const isClickable = session?.accessToken && step <= activeStep
+    const isClickable = accessToken && step <= activeStep
 
     return (
       <Tooltip title={`Step ${step + 1}`} key={step}>
@@ -129,7 +129,7 @@ export function StepTrackShape() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert onClose={handleCloseSnackbar} severity='warning' sx={{ width: '100%' }}>
-          {session?.accessToken
+          {accessToken
             ? 'You cannot navigate to future steps.'
             : 'Please sign in to navigate between steps.'}
         </Alert>

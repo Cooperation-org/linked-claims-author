@@ -28,7 +28,7 @@ const FetchedData: React.FC<FetchedDataProps> = ({
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const { data: session } = useSession()
-  const accessToken = session?.accessToken
+  const accessToken = getCookie('accessToken')
 
   const { getContent, fetchFileMetadata, fileMetadata, ownerEmail } = useGoogleDrive()
 

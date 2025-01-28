@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Box } from '@mui/material'
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
 import { useSession } from 'next-auth/react'
+import { getCookie } from '../../utils/cookie'
 
 // Set up PDF.js worker
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
@@ -33,17 +34,17 @@ const EvidencePreview: React.FC<EvidencePreviewProps> = ({
   const [thumbnailUrl, setThumbnailUrl] = useState<string>(url)
   const [loading, setLoading] = useState(true)
   const [shouldTryPDF, setShouldTryPDF] = useState(isPDF(url))
-  const { data: session } = useSession()
+  const accessToken = getCookie('accessToken')
 
   useEffect(() => {
     const generatePDFThumbnail = async () => {
-      if (!session?.accessToken) return
+      if (!accessToken) return
 
       try {
         const fileId = RegExp(/[?&]id=([^&]+)/).exec(url)?.[1]
         if (!fileId) throw new Error('Invalid Google Drive URL')
 
-        const proxyUrl = `/api/pdf-proxy?fileId=${fileId}&access_token=${session.accessToken}`
+        const proxyUrl = `/api/pdf-proxy?fileId=${fileId}&access_token=${accessToken}`
 
         const response = await fetch(proxyUrl)
         if (!response.ok) throw new Error('Failed to fetch PDF')
@@ -92,7 +93,7 @@ const EvidencePreview: React.FC<EvidencePreviewProps> = ({
     }
 
     handleFile()
-  }, [url, shouldTryPDF, session?.accessToken, width, height])
+  }, [url, shouldTryPDF, accessToken, width, height])
 
   const handleImageError = () => {
     console.log('Image failed to load, trying as PDF')
