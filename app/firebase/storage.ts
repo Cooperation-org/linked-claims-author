@@ -1,5 +1,5 @@
-import { db } from '../config/firebase'
 import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { db } from './config/firebase'
 
 export const storeRefreshToken = async (
   userId: string,
