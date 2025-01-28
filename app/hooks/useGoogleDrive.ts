@@ -30,6 +30,7 @@ const useGoogleDrive = () => {
   const [ownerEmail, setOwnerEmail] = useState<string | null>(null)
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
   const accessToken = session?.accessToken
+  console.log(':  useGoogleDrive  accessToken', accessToken)
 
   useEffect(() => {
     if (accessToken) {
@@ -45,24 +46,41 @@ const useGoogleDrive = () => {
   }, [accessToken])
 
   const memoizedStorage = storage
+  const getContent = useCallback(async (fileID: string) => {
+    const corsProxy = 'https://api.allorigins.win/raw?url='
+    const driveUrl = `https://drive.google.com/uc?id=${fileID}&export=download`
+    const url = `${corsProxy}${encodeURIComponent(driveUrl)}`
 
-  const getContent = useCallback(
-    async (fileID: string): Promise<ClaimDetail | null> => {
-      if (!memoizedStorage) {
-        console.warn('Storage instance is not available.')
-        return null
+    try {
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch file: ${response.status} ${response.statusText}`)
       }
-      try {
-        const file = await memoizedStorage.retrieve(fileID)
-        return file as unknown as ClaimDetail
-      } catch (error) {
-        console.error('Error retrieving file:', error)
-        return null
-      }
-    },
-    [memoizedStorage]
-  )
 
+      const blob = await response.blob()
+
+      // Handle different file types
+      let data = blob
+
+      // data = await blob.text();
+
+      // If you know it's JSON
+      const text = await blob.text()
+      data = JSON.parse(text)
+
+      return {
+        success: true,
+        data,
+        contentType: blob.type
+      }
+    } catch (error) {
+      console.error('Error fetching file:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      }
+    }
+  }, [])
   const extractGoogleDriveId = (url: string) => {
     const marker = '/file/d/'
     const startIndex = url.indexOf(marker)
