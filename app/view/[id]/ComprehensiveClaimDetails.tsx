@@ -24,10 +24,11 @@ import { usePathname, useParams } from 'next/navigation'
 import { SVGDate, SVGBadge, CheckMarkSVG, LineSVG } from '../../Assets/SVGs'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import { getVCWithRecommendations } from '@cooperation/vc-storage'
+import { getVCWithRecommendations, GoogleDriveStorage } from '@cooperation/vc-storage'
 import EvidencePreview from './EvidencePreview'
 import { getCookie } from '../../utils/cookie'
 import { getFileTokens } from '../../firebase/storage'
+import { refreshAccessToken } from '../../firebase/auth'
 
 // Define types
 interface Portfolio {
@@ -99,8 +100,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
   const isView = pathname?.includes('/view')
 
-  const { getContent, fetchFileMetadata, storage } = useGoogleDrive()
-
   // State to manage expanded comments
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
 
@@ -146,50 +145,32 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       setAccessToken(tokens.accessToken)
       console.log('Tokens fetched successfully:', tokens)
 
+      const cur = getCookie('accessToken')
+
+      // const newAccessToken = await refreshAccessToken()
+      const storage = new GoogleDriveStorage(cur as string)
+      console.log('🚀 ~ fetchDriveData ~ cur:', cur)
       console.log('Fetching file from storage...')
+      const file = await storage?.retrieve(fileID) // Assume this is async
+      console.log('Retrieved file:', file)
 
-      let file
-      let content = null
-      let retries = 5 // Number of retries before failing
-
-      while (retries > 0) {
-        file = await storage?.retrieve(fileID)
-        console.log('Retrieved file:', file)
-
-        // Check if file content exists
-        if (file?.data?.body) {
-          try {
-            content = JSON.parse(file.data.body) // Parse the JSON safely
-            console.log('File content parsed successfully:', content)
-
-            // ✅ If valid content is found, stop retrying and update state
-            setClaimDetail(content as any)
-            retries = 0 // ✅ Immediately exit the loop
-            break
-          } catch (parseError) {
-            console.error('Error parsing file content:', parseError)
-            throw new Error('Invalid JSON in file content.')
-          }
-        }
-
-        console.warn(
-          `File content not available yet, retrying... (${retries} retries left)`
-        )
-        await new Promise(res => setTimeout(res, 1000)) // Wait 1 sec before retrying
-        retries--
+      // Check if file content exists
+      if (!file?.data?.body) {
+        throw new Error('File content is empty or unavailable.')
       }
 
-      // ✅ Ensure that we only show an error if content is *never* retrieved
-      if (!content) {
-        throw new Error('File content is empty or unavailable after multiple attempts.')
-      }
+      // Parse the file content
+      const content = file.data.body // Parse the JSON safely
+      console.log('File content parsed successfully:', content)
+
+      setClaimDetail(content)
     } catch (error) {
       console.error('Error fetching claim details:', error)
       setErrorMessage('Failed to fetch claim details.')
     } finally {
       setLoading(false)
     }
-  }, [fileID, storage])
+  }, [fileID])
 
   useEffect(() => {
     if (!fileID) {
@@ -205,17 +186,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     }
 
     fetchDriveData()
-  }, [
-    accessToken,
-    fileID,
-    getContent,
-    fetchFileMetadata,
-    storage,
-    isView,
-    onAchievementLoad,
-    fetchDriveData,
-    loadingAccessToken
-  ])
+  }, [accessToken, fileID, isView, onAchievementLoad, fetchDriveData, loadingAccessToken])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
