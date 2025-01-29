@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import {
   Alert,
   Box,
@@ -22,13 +22,12 @@ import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
 import { SVGDate, SVGBadge, CheckMarkSVG, LineSVG } from '../../Assets/SVGs'
-import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
-import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { getVCWithRecommendations } from '@cooperation/vc-storage'
 import EvidencePreview from './EvidencePreview'
 import { getCookie } from '../../utils/cookie'
+import { getFileTokens } from '../../firebase/storage'
 
 // Define types
 interface Portfolio {
@@ -91,11 +90,12 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [comments, setComments] = useState<ClaimDetail[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const [loadingAccessToken, setLoadingAccessToken] = useState<boolean>(false)
+  const [accessToken, setAccessToken] = useState<string | null>()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const pathname = usePathname()
-  const accessToken = getCookie('accessToken')
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
   const isView = pathname?.includes('/view')
 
@@ -104,6 +104,93 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   // State to manage expanded comments
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
 
+  const fetchAccessToken = useCallback(async () => {
+    if (!fileID) {
+      setErrorMessage('Invalid claim ID.')
+      setLoading(false)
+      return
+    }
+
+    setLoadingAccessToken(true)
+    try {
+      const tokens = await getFileTokens({ googleFileId: fileID })
+      if (!tokens?.accessToken) {
+        setErrorMessage('You need to log in to view this content.')
+        return
+      }
+      setAccessToken(tokens.accessToken)
+    } catch (error) {
+      console.error('Error fetching access token:', error)
+      setErrorMessage('Failed to fetch access token.')
+    } finally {
+      setLoadingAccessToken(false)
+    }
+  }, [fileID])
+
+  useEffect(() => {
+    fetchAccessToken()
+  }, [fetchAccessToken])
+
+  const fetchDriveData = useCallback(async () => {
+    setLoading(true)
+    setErrorMessage(null) // Clear previous errors
+
+    try {
+      console.log('Fetching tokens...')
+      const tokens = await getFileTokens({ googleFileId: fileID })
+
+      if (!tokens?.accessToken) {
+        throw new Error('No access token available.')
+      }
+
+      setAccessToken(tokens.accessToken)
+      console.log('Tokens fetched successfully:', tokens)
+
+      console.log('Fetching file from storage...')
+
+      let file
+      let content = null
+      let retries = 5 // Number of retries before failing
+
+      while (retries > 0) {
+        file = await storage?.retrieve(fileID)
+        console.log('Retrieved file:', file)
+
+        // Check if file content exists
+        if (file?.data?.body) {
+          try {
+            content = JSON.parse(file.data.body) // Parse the JSON safely
+            console.log('File content parsed successfully:', content)
+
+            // ✅ If valid content is found, stop retrying and update state
+            setClaimDetail(content as any)
+            retries = 0 // ✅ Immediately exit the loop
+            break
+          } catch (parseError) {
+            console.error('Error parsing file content:', parseError)
+            throw new Error('Invalid JSON in file content.')
+          }
+        }
+
+        console.warn(
+          `File content not available yet, retrying... (${retries} retries left)`
+        )
+        await new Promise(res => setTimeout(res, 1000)) // Wait 1 sec before retrying
+        retries--
+      }
+
+      // ✅ Ensure that we only show an error if content is *never* retrieved
+      if (!content) {
+        throw new Error('File content is empty or unavailable after multiple attempts.')
+      }
+    } catch (error) {
+      console.error('Error fetching claim details:', error)
+      setErrorMessage('Failed to fetch claim details.')
+    } finally {
+      setLoading(false)
+    }
+  }, [fileID, storage])
+
   useEffect(() => {
     if (!fileID) {
       setErrorMessage('Invalid claim ID.')
@@ -111,57 +198,10 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       return
     }
 
-    if (status === 'loading') {
-      return
-    }
-
-    if (status === 'unauthenticated') {
-      setLoading(false)
-      return
-    }
-
-    if (!accessToken) {
+    if (!accessToken && !loadingAccessToken) {
       setErrorMessage('You need to log in to view this content.')
       setLoading(false)
-      return
-    }
-
-    const fetchDriveData = async () => {
-      try {
-        const content = await getContent(fileID)
-
-        if (content) {
-          setClaimDetail(content as unknown as ClaimDetail)
-          const achievementName = content?.data?.credentialSubject?.achievement?.[0]?.name
-          if (achievementName && onAchievementLoad) {
-            onAchievementLoad(achievementName)
-          }
-        }
-
-        await fetchFileMetadata(fileID, '')
-
-        //todo get recommendations from RELATIONS file recommendation array
-        if (!storage || !fileID) {
-          console.warn('Storage instance is not available.')
-          return
-        }
-        const type = window.location.pathname.includes('view')
-        if (type) {
-          const { recommendations } = await getVCWithRecommendations({
-            vcId: fileID,
-            storage
-          })
-          console.log('🚀 ~ fetchDriveData ~ recommendations:', recommendations)
-          if (recommendations) {
-            setComments(recommendations as any)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching claim details:', error)
-        setErrorMessage('Failed to fetch claim details.')
-      } finally {
-        setLoading(false)
-      }
+      // return
     }
 
     fetchDriveData()
@@ -170,10 +210,11 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     fileID,
     getContent,
     fetchFileMetadata,
-    status,
     storage,
     isView,
-    onAchievementLoad
+    onAchievementLoad,
+    fetchDriveData,
+    loadingAccessToken
   ])
 
   const handleToggleComment = (commentId: string) => {
@@ -183,7 +224,23 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     }))
   }
 
-  if (status === 'loading' || loading) {
+  if (loadingAccessToken) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '50vh'
+        }}
+      >
+        <CircularProgress />
+        <Typography sx={{ ml: 2 }}>Fetching access token...</Typography>
+      </Box>
+    )
+  }
+
+  if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <CircularProgress />
@@ -191,41 +248,41 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     )
   }
 
-  if (status === 'unauthenticated') {
-    return (
-      <Container sx={{ maxWidth: '800px' }}>
-        <Typography variant='h6' align='center'>
-          Please sign in to view this claim.
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}></Box>
-        <Alert
-          severity='info'
-          sx={{
-            mt: 2,
-            backgroundColor: 'transparent',
-            border: 'none',
-            '& .MuiAlert-icon': {
-              color: theme => theme.palette.t3BodyText
-            },
-            '& .MuiAlert-message': {
-              color: theme => theme.palette.t3BodyText,
-              fontFamily: 'Lato',
-              fontSize: '14px',
-              textAlign: 'center'
-            },
-            width: '100%'
-          }}
-        >
-          Our app is currently in development mode with Google. You may see a warning that
-          the app is not verified - this is normal during our development phase. While we
-          work on getting verified, you can safely proceed by clicking
-          &quot;Continue&quot; on the warning screen, then &quot;Continue&quot; again on
-          the &quot;Google hasn&#39;t verified this app&quot; screen. Your data remains
-          secure and protected by Google&#39;s security measures.
-        </Alert>
-      </Container>
-    )
-  }
+  // if (status === 'unauthenticated') {
+  //   return (
+  //     <Container sx={{ maxWidth: '800px' }}>
+  //       <Typography variant='h6' align='center'>
+  //         Please sign in to view this claim.
+  //       </Typography>
+  //       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}></Box>
+  //       <Alert
+  //         severity='info'
+  //         sx={{
+  //           mt: 2,
+  //           backgroundColor: 'transparent',
+  //           border: 'none',
+  //           '& .MuiAlert-icon': {
+  //             color: theme => theme.palette.t3BodyText
+  //           },
+  //           '& .MuiAlert-message': {
+  //             color: theme => theme.palette.t3BodyText,
+  //             fontFamily: 'Lato',
+  //             fontSize: '14px',
+  //             textAlign: 'center'
+  //           },
+  //           width: '100%'
+  //         }}
+  //       >
+  //         Our app is currently in development mode with Google. You may see a warning that
+  //         the app is not verified - this is normal during our development phase. While we
+  //         work on getting verified, you can safely proceed by clicking
+  //         &quot;Continue&quot; on the warning screen, then &quot;Continue&quot; again on
+  //         the &quot;Google hasn&#39;t verified this app&quot; screen. Your data remains
+  //         secure and protected by Google&#39;s security measures.
+  //       </Alert>
+  //     </Container>
+  //   )
+  // }
 
   if (errorMessage) {
     return (
