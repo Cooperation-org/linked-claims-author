@@ -21,7 +21,6 @@ import {
   MenuItem,
   Divider
 } from '@mui/material'
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
@@ -40,6 +39,7 @@ import {
   BlueBadge,
   SVGExport
 } from '../Assets/SVGs'
+import { getLocalStorage } from '../utils/cookie'
 
 // Types
 interface Claim {
@@ -104,8 +104,6 @@ const ClaimsPage: React.FC = () => {
   const [showOverlappingCards, setShowOverlappingCards] = useState(false)
   const [desktopMenuAnchorEl, setDesktopMenuAnchorEl] = useState<null | HTMLElement>(null)
 
-  const { data: session } = useSession()
-  console.log(':  session', session)
   const { storage } = useGoogleDrive()
   const router = useRouter()
   const theme = useTheme()
@@ -229,11 +227,12 @@ const ClaimsPage: React.FC = () => {
             <Avatar
               sx={{ border: '2px solid #003fe0' }}
               alt='Profile Picture'
-              src={session?.user?.image}
+              src={getLocalStorage('user')?.image}
             />
             <Box>
               <Typography variant='h6'>
-                Hi, <span style={{ color: '#033fe0' }}>{session?.user?.name}</span>
+                Hi,{' '}
+                <span style={{ color: '#033fe0' }}>{getLocalStorage('user')?.name}</span>
               </Typography>
               <Typography variant='body2' color='text.secondary'>
                 What would you like to do?

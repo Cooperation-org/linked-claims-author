@@ -5,8 +5,8 @@ import { Box, Typography, Button, Tooltip } from '@mui/material'
 import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { FormData } from '../../../../credentialForm/form/types/Types'
 import { SVGFolder, SVGSinfo } from '../../../../Assets/SVGs'
-import { signIn, useSession } from 'next-auth/react'
 import { getCookie } from '../../../../utils/cookie'
+import { signInWithGoogle } from '../../../../firebase/auth'
 
 interface Step1Props {
   watch: UseFormWatch<FormData>
@@ -30,9 +30,7 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
     }
 
     try {
-      await signIn('google', {
-        callbackUrl: `${window.location.origin}/recommendations#step1`
-      })
+      await signInWithGoogle()
     } catch (error) {
       console.error('Error connecting to Google Drive:', error)
     }

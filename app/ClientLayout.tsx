@@ -7,7 +7,6 @@ import Theme from './theme'
 import { StepProvider } from './credentialForm/form/StepContext'
 import { usePathname } from 'next/navigation'
 import background from './Assets/Images/Background.svg'
-import Providers from './components/signing/Providers'
 
 export default function ClientLayout({
   children
@@ -26,33 +25,31 @@ export default function ClientLayout({
     >
       <ThemeProvider theme={Theme}>
         <CssBaseline />
-        <Providers>
-          <StepProvider>
-            <NavBar />
-            <Box
-              component='main'
-              sx={{
-                flexGrow: 1,
-                minHeight: `calc(100vh - 315px)`,
-                backgroundImage: pathname === '/' ? `url(${background.src})` : 'none',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundBlendMode: pathname === '/' ? 'overlay' : 'normal',
-                backgroundColor:
-                  pathname === '/'
-                    ? {
-                        xs: 'rgba(255, 255, 255, 0.8)',
-                        md: 'rgba(255, 255, 255, 0.85)'
-                      }
-                    : '#F0F4F8'
-              }}
-            >
-              {children}
-            </Box>
-            <Footer />
-          </StepProvider>
-        </Providers>
+        <StepProvider>
+          <NavBar />
+          <Box
+            component='main'
+            sx={{
+              flexGrow: 1,
+              minHeight: `calc(100vh - 315px)`,
+              backgroundImage: pathname === '/' ? `url(${background.src})` : 'none',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundBlendMode: pathname === '/' ? 'overlay' : 'normal',
+              backgroundColor:
+                pathname === '/'
+                  ? {
+                      xs: 'rgba(255, 255, 255, 0.8)',
+                      md: 'rgba(255, 255, 255, 0.85)'
+                    }
+                  : '#F0F4F8'
+            }}
+          >
+            {children}
+          </Box>
+          <Footer />
+        </StepProvider>
       </ThemeProvider>
     </body>
   )

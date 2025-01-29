@@ -11,7 +11,6 @@ import DataComponent from './Steps/dataPreview'
 import { SVGBack } from '../../Assets/SVGs'
 import { createDID, signCred } from '../../utils/signCred'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
-import { useSession, signIn } from 'next-auth/react'
 import { handleSign } from '../../utils/formUtils'
 import { saveSession } from '../../utils/saveSession'
 import SnackMessage from '../../components/SnackMessage'
@@ -21,7 +20,9 @@ import SuccessPage from './Steps/SuccessPage'
 import FileUploadAndList from './Steps/Step3_uploadEvidence'
 import { Step1 } from './Steps/Step1_userName'
 import { Step2 } from './Steps/Step2_descreptionFields'
-import { getCookie } from '../../utils/cookie'
+import { getCookie, getLocalStorage } from '../../utils/cookie'
+import { signInWithGoogle } from '../../firebase/auth'
+import { storeFileTokens } from '../../firebase/storage'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep, loading } = useStepContext()
@@ -37,8 +38,8 @@ const Form = ({ onStepChange }: any) => {
   const [selectedFiles, setSelectedFiles] = useState<any[]>([])
 
   const characterLimit = 294
-  const { data: session } = useSession()
   const accessToken = getCookie('accessToken')
+  const refreshToken = getCookie('refresh_token')
 
   const storage = new GoogleDriveStorage(accessToken as string)
 
@@ -54,7 +55,7 @@ const Form = ({ onStepChange }: any) => {
   } = useForm<FormData>({
     defaultValues: {
       storageOption: 'Google Drive',
-      fullName: session?.user?.name ?? '',
+      fullName: getLocalStorage('user')?.name ?? '',
       persons: '',
       credentialName: '',
       credentialDuration: '',
@@ -117,7 +118,7 @@ const Form = ({ onStepChange }: any) => {
       !accessToken &&
       !hasSignedIn
     ) {
-      const signInSuccess = await signIn('google')
+      const signInSuccess = await signInWithGoogle()
       if (!signInSuccess || !accessToken) return
       setHasSignedIn(true)
       handleNext()
@@ -149,7 +150,7 @@ const Form = ({ onStepChange }: any) => {
 
   const sign = async (data: any) => {
     try {
-      if (!accessToken) {
+      if (!accessToken || !refreshToken) {
         setErrorMessage('Access token is missing')
         return
       }
@@ -178,6 +179,16 @@ const Form = ({ onStepChange }: any) => {
       console.log('🚀 ~ sign ~ relationFile:', relationFile)
       setLink(`https://drive.google.com/file/d/${file.id}/view`)
       setFileId(`${file.id}`)
+      // Save the file tokens to Firestore
+      await storeFileTokens({
+        googleFileId: file.id,
+        ownerId: 'me',
+        tokens: {
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          expiresAt: Date.now() + 3600 * 1000 // 1 hour from now
+        }
+      })
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
       return res

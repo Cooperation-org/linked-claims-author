@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Box } from '@mui/material'
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
-import { useSession } from 'next-auth/react'
 import { getCookie } from '../../utils/cookie'
 
 // Set up PDF.js worker

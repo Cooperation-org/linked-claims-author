@@ -11,7 +11,6 @@ import {
   evidenceListStyles
 } from '../../../components/Styles/appStyles'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
-import { useSession } from 'next-auth/react'
 import { getCookie } from '../../../utils/cookie'
 
 interface FetchedDataProps {

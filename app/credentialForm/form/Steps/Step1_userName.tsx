@@ -14,9 +14,9 @@ import {
   UseFormSetValue
 } from 'react-hook-form'
 import { FormData } from '../types/Types'
-import { useSession } from 'next-auth/react'
 import { SVGSProfileName } from '../../../Assets/SVGs'
 import { StepTrackShape } from '../fromTexts & stepTrack/StepTrackShape'
+import { getLocalStorage } from '../../../utils/cookie'
 
 interface Step1Props {
   register: UseFormRegister<FormData>
@@ -27,8 +27,6 @@ interface Step1Props {
 }
 
 export function Step1({ register, errors, handleNext }: Readonly<Step1Props>) {
-  const { data: session } = useSession()
-
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       event.preventDefault()
@@ -67,7 +65,7 @@ export function Step1({ register, errors, handleNext }: Readonly<Step1Props>) {
             required: 'Full name is required'
           })}
           placeholder={
-            session?.user?.name ?? 'e.g., Maria Fernández or Kumar Enterprises'
+            getLocalStorage('user')?.name ?? 'e.g., Maria Fernández or Kumar Enterprises'
           }
           variant='outlined'
           sx={TextFieldStyles}

@@ -8,10 +8,7 @@ import {
   Typography,
   CircularProgress
 } from '@mui/material'
-import { useRouter } from 'next/navigation'
-import { useSession, signIn } from 'next-auth/react'
 import { importCredential } from '../utils/importCred'
-import { makeGoogleDriveLink } from '../utils/googleDrive'
 import { getCookie } from '../utils/cookie'
 
 const formLabelStyles = {

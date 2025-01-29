@@ -1,8 +1,5 @@
 'use client'
 
-import { GoogleDriveStorage } from '@cooperation/vc-storage'
-// import { signIn } from 'next-auth/react'  // will use later
-
 export const copyFormValuesToClipboard = (codeToCopy: string) => {
   navigator.clipboard
     .writeText(codeToCopy)

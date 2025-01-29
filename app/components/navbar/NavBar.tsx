@@ -3,14 +3,15 @@ import React from 'react'
 import { Box, Typography, Button } from '@mui/material'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useSession, signIn, signOut } from 'next-auth/react'
 import HamburgerMenu from '../hamburgerMenu/HamburgerMenu'
 import { Logo } from '../../Assets/SVGs'
+import { getCookie } from '../../utils/cookie'
+import { logout, signInWithGoogle } from '../../firebase/auth'
 
 const NavBar = () => {
   const theme = useTheme()
   const pathname = usePathname()
-  const { data: session } = useSession()
+  const session = getCookie('session')
 
   const isActive = (path: string): boolean => pathname === path
 
@@ -215,7 +216,7 @@ const NavBar = () => {
               justifyContent: 'center'
             }}
             variant='actionButton'
-            onClick={() => signOut()}
+            onClick={logout}
           >
             Sign Out
           </Button>
@@ -231,7 +232,7 @@ const NavBar = () => {
               justifyContent: 'center'
             }}
             variant='actionButton'
-            onClick={() => signIn('google')}
+            onClick={signInWithGoogle}
           >
             Sign In
           </Button>

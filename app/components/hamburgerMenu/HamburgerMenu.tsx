@@ -1,11 +1,12 @@
 import React from 'react'
 import { Box, Typography, Button, Drawer, IconButton, Divider } from '@mui/material'
 import { SVGCheckMarks, HamburgerMenuSVG, CloseIcon } from '../../Assets/SVGs'
-import { useSession, signIn, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Logo } from '../../Assets/SVGs/index'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import { getCookie } from '../../utils/cookie'
+import { logout, signInWithGoogle } from '../../firebase/auth'
 
 const features = [
   { id: 1, name: 'Capture any skill or experience' },
@@ -15,7 +16,6 @@ const features = [
 ]
 
 const HamburgerMenu = () => {
-  const { data: session } = useSession()
   const [isOpen, setIsOpen] = React.useState(false)
   const pathname = usePathname()
 
@@ -97,7 +97,7 @@ const HamburgerMenu = () => {
               pt: '22px'
             }}
           >
-            {session ? (
+            {getCookie('accessToken') ? (
               <>
                 {/* Links with underline effect */}
                 <Link href='/credentialForm' passHref style={{ width: '100%' }}>
@@ -267,8 +267,8 @@ const HamburgerMenu = () => {
                       backgroundColor: '#003FE0'
                     }
                   }}
-                  onClick={() => {
-                    signIn()
+                  onClick={async () => {
+                    await signInWithGoogle()
                     toggleDrawer()
                   }}
                 >
@@ -318,7 +318,7 @@ const HamburgerMenu = () => {
           </Box>
 
           {/* Logout Button */}
-          {session && (
+          {getCookie('accessToken') && (
             <Button
               sx={{
                 width: '100%',
@@ -331,8 +331,8 @@ const HamburgerMenu = () => {
                   backgroundColor: '#003FE0'
                 }
               }}
-              onClick={() => {
-                signOut()
+              onClick={async () => {
+                await logout()
                 toggleDrawer()
               }}
             >

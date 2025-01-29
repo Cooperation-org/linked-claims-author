@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
 import { getCookie } from '../utils/cookie'
 
