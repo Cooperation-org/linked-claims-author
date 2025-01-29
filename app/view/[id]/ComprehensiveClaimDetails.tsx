@@ -159,7 +159,9 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       const content = await getContent(fileID)
       console.log('File content parsed successfully:', content)
 
-      setClaimDetail(content)
+      if (content.success) {
+        setClaimDetail(content.data)
+      }
     } catch (error) {
       console.error('Error fetching claim details:', error)
       setErrorMessage(
