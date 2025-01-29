@@ -23,14 +23,14 @@ export function Step0() {
         callbackUrl: `${window.location.origin}/credentialForm#step1`
       })
 
-      // After successful sign-in, update the hash to step1
-
       setLoading(true)
       setTimeout(() => {
         setActiveStep(1)
       }, 500)
     } catch (error) {
       console.error('Error connecting to Google Drive:', error)
+    } finally {
+      setLoading(false)
     }
   }
 

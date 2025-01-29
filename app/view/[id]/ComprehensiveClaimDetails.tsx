@@ -100,6 +100,8 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
   const isView = pathname?.includes('/view')
 
+  const { getContent } = useGoogleDrive()
+
   // State to manage expanded comments
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
 
@@ -141,20 +143,20 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       console.log('🚀 ~ fetchDriveData ~ accessToken:', accessToken)
 
       // Use the token to fetch the file
-      const tokens = await getFileTokens({ googleFileId: fileID })
-      console.log('🚀 ~ fetchDriveData ~ tokens:', tokens)
-      const res = await refreshAccessToken(tokens?.refreshToken as string)
-      console.log('🚀 ~ fetchDriveData ~ res:', res)
+      // const tokens = await getFileTokens({ googleFileId: fileID })
+      // console.log('🚀 ~ fetchDriveData ~ tokens:', tokens)
+      // const res = await refreshAccessToken(tokens?.refreshToken as string)
+      // console.log('🚀 ~ fetchDriveData ~ res:', res)
 
-      const storage = new GoogleDriveStorage(res)
-      console.log('Fetching file from storage...')
-      const file = await storage?.retrieve(fileID)
+      // const storage = new GoogleDriveStorage(res)
+      // console.log('Fetching file from storage...')
+      // const file = await storage?.retrieve(fileID)
 
-      if (!file?.data?.body) {
-        throw new Error('File content is empty or unavailable.')
-      }
+      // if (!file?.data?.body) {
+      //   throw new Error('File content is empty or unavailable.')
+      // }
 
-      const content = JSON.parse(file.data.body)
+      const content = await getContent(fileID)
       console.log('File content parsed successfully:', content)
 
       setClaimDetail(content)

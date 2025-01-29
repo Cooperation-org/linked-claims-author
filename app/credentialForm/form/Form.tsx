@@ -166,6 +166,8 @@ const Form = ({ onStepChange }: any) => {
         type: 'DID'
       })
 
+      console.log('access token', accessToken)
+
       const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
       const file = (await saveToGoogleDrive({
         storage,
