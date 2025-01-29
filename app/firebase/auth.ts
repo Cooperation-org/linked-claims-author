@@ -30,10 +30,7 @@ export const signInWithGoogle = async (): Promise<{
       expires: 7
     })
 
-    console.log('Access Token:', accessToken)
     setCookie('accessToken', accessToken, {})
-
-    setLocalStorage('user', JSON.stringify(result.user))
 
     return {
       user: result.user,

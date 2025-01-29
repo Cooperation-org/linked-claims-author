@@ -1,37 +1,44 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Typography, Tooltip } from '@mui/material'
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { signIn, useSession } from 'next-auth/react'
 import { SVGFolder, SVGSinfo } from '../../../Assets/SVGs'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
 import { useStepContext } from '../StepContext'
-import { auth } from '../../../firebase/config/firebase'
-import { signInWithGoogle } from '../../../firebase/auth'
 
 export function Step0() {
+  const { data: session } = useSession()
   const { activeStep, handleNext, setActiveStep } = useStepContext()
   const [loading, setLoading] = useState(false)
 
   const connectToGoogleDrive = async () => {
-    try {
+    if (session?.accessToken) {
       setLoading(true)
-      const result = await signInWithGoogle()
-      console.log('🚀 ~ connectToGoogleDrive ~ result:', result)
+      handleNext()
+      return
+    }
 
-      if (result?.accessToken) {
-        handleNext()
-      }
+    try {
+      // Initiate Google sign-in
+      await signIn('google', {
+        callbackUrl: `${window.location.origin}/credentialForm#step1`
+      })
+
+      // After successful sign-in, update the hash to step1
+
+      setLoading(true)
+      setTimeout(() => {
+        setActiveStep(1)
+      }, 500)
     } catch (error) {
       console.error('Error connecting to Google Drive:', error)
-      setLoading(false)
     }
   }
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || 'null')
-    if (user && activeStep === 0) {
+    if (session?.accessToken && activeStep === 0) {
       setActiveStep(1)
     }
-  }, [activeStep, setActiveStep])
+  }, [session, activeStep, setActiveStep])
 
   return (
     <Box
