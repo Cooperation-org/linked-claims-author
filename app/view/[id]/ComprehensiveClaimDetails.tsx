@@ -26,9 +26,12 @@ import useGoogleDrive from '../../hooks/useGoogleDrive'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { getVCWithRecommendations, GoogleDriveStorage } from '@cooperation/vc-storage'
 import EvidencePreview from './EvidencePreview'
-import { getCookie } from '../../utils/cookie'
+import { getCookie, getLocalStorage } from '../../utils/cookie'
 import { getFileTokens } from '../../firebase/storage'
-import { refreshAccessToken } from '../../firebase/auth'
+import GoogleAuthHandler, { refreshAccessToken } from '../../firebase/auth'
+import { getIdToken } from 'firebase/auth'
+import { auth } from '../../firebase/config/firebase'
+import PublicDriveViewer from '../../firebase/auth'
 
 // Define types
 interface Portfolio {
@@ -113,6 +116,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     setLoadingAccessToken(true)
     try {
       const tokens = await getFileTokens({ googleFileId: fileID })
+      console.log('🚀 ~ fetchAccessToken ~ tokens:', tokens)
       if (!tokens?.accessToken) {
         setErrorMessage('You need to log in to view this content.')
         return
@@ -132,41 +136,31 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
 
   const fetchDriveData = useCallback(async () => {
     setLoading(true)
-    setErrorMessage(null) // Clear previous errors
+    setErrorMessage(null)
 
     try {
-      console.log('Fetching tokens...')
-      const tokens = await getFileTokens({ googleFileId: fileID })
+      // Get token using the file ID
+      const accessToken = await PublicDriveViewer.getTokensForFile(fileID)
+      console.log('🚀 ~ fetchDriveData ~ accessToken:', accessToken)
 
-      if (!tokens?.accessToken) {
-        throw new Error('No access token available.')
-      }
-
-      setAccessToken(tokens.accessToken)
-      console.log('Tokens fetched successfully:', tokens)
-
-      const cur = getCookie('accessToken')
-
-      // const newAccessToken = await refreshAccessToken()
-      const storage = new GoogleDriveStorage(cur as string)
-      console.log('🚀 ~ fetchDriveData ~ cur:', cur)
+      // Use the token to fetch the file
+      const storage = new GoogleDriveStorage(accessToken)
       console.log('Fetching file from storage...')
-      const file = await storage?.retrieve(fileID) // Assume this is async
-      console.log('Retrieved file:', file)
+      const file = await storage?.retrieve(fileID)
 
-      // Check if file content exists
       if (!file?.data?.body) {
         throw new Error('File content is empty or unavailable.')
       }
 
-      // Parse the file content
-      const content = file.data.body // Parse the JSON safely
+      const content = file.data.body
       console.log('File content parsed successfully:', content)
 
       setClaimDetail(content)
     } catch (error) {
       console.error('Error fetching claim details:', error)
-      setErrorMessage('Failed to fetch claim details.')
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Failed to fetch claim details.'
+      )
     } finally {
       setLoading(false)
     }
