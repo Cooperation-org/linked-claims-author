@@ -52,3 +52,37 @@ export const logout = async (): Promise<void> => {
     console.error('Error signing out:', error)
   }
 }
+
+export const refreshAccessToken = async (refreshToken: string) => {
+  try {
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+    const clientSecret = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET
+    if (!clientId || !clientSecret) {
+      throw new Error('Missing Environment Variables Google client ID or secret')
+    }
+    const response = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        refresh_token: refreshToken,
+        grant_type: 'refresh_token'
+      })
+    })
+
+    const data = await response.json()
+
+    if (response.ok) {
+      return data.access_token
+    }
+
+    console.error('Error refreshing access token:', data.error_description)
+    return null
+  } catch (error) {
+    console.error('Error during token refresh:', error)
+    return null
+  }
+}
