@@ -50,17 +50,15 @@ const useGoogleDrive = () => {
     try {
       const response = await fetch(`/api/drive/${fileID}`)
 
-      console.log(':  getContent  response', response)
       if (!response.ok) {
         throw new Error(`Failed to fetch file: ${response.status} ${response.statusText}`)
       }
 
-      const blob = (await response.blob()) as any
-
-      let data = blob
-
+      const blob = await response.blob()
       const text = await blob.text()
-      data = JSON.parse(text)
+      const dataBody = JSON.parse(text)
+      const data = JSON.parse(dataBody.body)
+      console.log(':  getContent  data', data)
 
       return {
         success: true,
