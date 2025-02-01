@@ -22,7 +22,6 @@ import FileUploadAndList from './Steps/Step3_uploadEvidence'
 import { Step1 } from './Steps/Step1_userName'
 import { Step2 } from './Steps/Step2_descreptionFields'
 import { getCookie } from '../../utils/cookie'
-import { storeFileTokens } from '../../firebase/storage'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep, loading } = useStepContext()
@@ -174,15 +173,7 @@ const Form = ({ onStepChange }: any) => {
         data: res,
         type: 'VC'
       })) as any
-      await storeFileTokens({
-        googleFileId: file.id,
-        ownerId: issuerId,
-        tokens: {
-          accessToken: session?.accessToken as string,
-          refreshToken: session?.refreshToken as string,
-          expiresAt: Date.now() + 3600
-        }
-      })
+
       const folderIds = await storage?.getFileParents(file.id)
       const relationFile = await storage?.createRelationsFile({
         vcFolderId: folderIds[0]

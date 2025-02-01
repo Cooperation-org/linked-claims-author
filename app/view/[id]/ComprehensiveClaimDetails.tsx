@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
-
-import React, { useEffect, useCallback, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Alert,
   Box,
@@ -22,29 +21,23 @@ import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
 import { SVGDate, SVGBadge, CheckMarkSVG, LineSVG } from '../../Assets/SVGs'
+import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
+import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import { getVCWithRecommendations, GoogleDriveStorage } from '@cooperation/vc-storage'
+import { getVCWithRecommendations } from '@cooperation/vc-storage'
 import EvidencePreview from './EvidencePreview'
-import { getCookie, getLocalStorage } from '../../utils/cookie'
-import { getFileTokens } from '../../firebase/storage'
-import { getIdToken } from 'firebase/auth'
-import { auth } from '../../firebase/config/firebase'
-import { refreshAccessToken } from '../../firebase/auth'
-
 // Define types
 interface Portfolio {
   name: string
   url: string
 }
-
 interface Achievement {
   name: string
   description: string
   criteria?: { narrative: string }
   image?: { id: string }
 }
-
 interface CredentialSubject {
   name: string
   achievement?: Achievement[]
@@ -57,20 +50,19 @@ interface CredentialSubject {
   qualifications?: string
   explainAnswer?: string
 }
-
 interface ClaimDetail {
-  '@context': string[]
-  id: string
-  type: string[]
-  issuanceDate: string
-  expirationDate: string
-  credentialSubject: CredentialSubject
+  data: {
+    '@context': string[]
+    id: string
+    type: string[]
+    issuanceDate: string
+    expirationDate: string
+    credentialSubject: CredentialSubject
+  }
 }
-
 interface ComprehensiveClaimDetailsProps {
   onAchievementLoad?: (achievementName: string) => void
 }
-
 const cleanHTML = (htmlContent: any): string => {
   if (typeof htmlContent !== 'string') {
     return ''
@@ -82,7 +74,6 @@ const cleanHTML = (htmlContent: any): string => {
     .replace(/class="[^"]*"/g, '')
     .replace(/style="[^"]*"/g, '')
 }
-
 const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   onAchievementLoad
 }) => {
@@ -91,103 +82,72 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [comments, setComments] = useState<ClaimDetail[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const [loadingAccessToken, setLoadingAccessToken] = useState<boolean>(false)
-  const [accessToken, setAccessToken] = useState<string | null>()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const pathname = usePathname()
+  const { data: session, status } = useSession()
+  const accessToken = session?.accessToken
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
   const isView = pathname?.includes('/view')
-
-  const { getContent } = useGoogleDrive()
-
+  const { getContent, fetchFileMetadata, storage } = useGoogleDrive()
   // State to manage expanded comments
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
-
-  const fetchAccessToken = useCallback(async () => {
-    if (!fileID) {
-      setErrorMessage('Invalid claim ID.')
-      setLoading(false)
-      return
-    }
-
-    setLoadingAccessToken(true)
-    try {
-      console.log(1)
-      const tokens = await getFileTokens({ googleFileId: fileID })
-      console.log('🚀 ~ fetchAccessToken ~ tokens:', tokens)
-      if (!tokens?.accessToken) {
-        setErrorMessage('You need to log in to view this content.')
-        return
-      }
-      setAccessToken(tokens.accessToken)
-    } catch (error) {
-      console.error('Error fetching access token:', error)
-      setErrorMessage('Failed to fetch access token.')
-    } finally {
-      setLoadingAccessToken(false)
-    }
-  }, [fileID])
-
-  useEffect(() => {
-    fetchAccessToken()
-  }, [fetchAccessToken])
-
-  const fetchDriveData = useCallback(async () => {
-    setLoading(true)
-    setErrorMessage(null)
-
-    try {
-      // Get token using the file ID
-      console.log('🚀 ~ fetchDriveData ~ accessToken:', accessToken)
-
-      // Use the token to fetch the file
-      // const tokens = await getFileTokens({ googleFileId: fileID })
-      // console.log('🚀 ~ fetchDriveData ~ tokens:', tokens)
-      // const res = await refreshAccessToken(tokens?.refreshToken as string)
-      // console.log('🚀 ~ fetchDriveData ~ res:', res)
-
-      // const storage = new GoogleDriveStorage(res)
-      // console.log('Fetching file from storage...')
-      // const file = await storage?.retrieve(fileID)
-
-      // if (!file?.data?.body) {
-      //   throw new Error('File content is empty or unavailable.')
-      // }
-
-      const content = await getContent(fileID)
-      console.log('File content parsed successfully:', content)
-
-      if (content.success) {
-        setClaimDetail(content.data)
-      }
-    } catch (error) {
-      console.error('Error fetching claim details:', error)
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Failed to fetch claim details.'
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [accessToken, fileID])
-
   useEffect(() => {
     if (!fileID) {
       setErrorMessage('Invalid claim ID.')
       setLoading(false)
       return
     }
-
-    if (!accessToken && !loadingAccessToken) {
+    if (status === 'loading') {
+      return
+    }
+    if (status === 'unauthenticated') {
+      setLoading(false)
+      return
+    }
+    if (!accessToken) {
       setErrorMessage('You need to log in to view this content.')
       setLoading(false)
-      // return
+      return
+    }
+    const fetchDriveData = async () => {
+      try {
+        const content = await getContent(fileID)
+        if (content) {
+          setClaimDetail(content as unknown as ClaimDetail)
+          const achievementName = content?.data?.credentialSubject?.achievement?.[0]?.name
+          if (achievementName && onAchievementLoad) {
+            onAchievementLoad(achievementName)
+          }
+        }
+        await fetchFileMetadata(fileID, '')
+        //todo get recommendations from RELATIONS file recommendation array
+        if (!storage || !fileID) {
+          console.warn('Storage instance is not available.')
+          return
+        }
+        const type = window.location.pathname.includes('view')
+        if (type) {
+          const { recommendations } = await getVCWithRecommendations({
+            vcId: fileID,
+            storage
+          })
+          console.log('🚀 ~ fetchDriveData ~ recommendations:', recommendations)
+          if (recommendations) {
+            setComments(recommendations as any)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching claim details:', error)
+        setErrorMessage('Failed to fetch claim details.')
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchDriveData()
   }, [accessToken, fileID, getContent])
-
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -195,24 +155,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       [commentId]: !prevState[commentId]
     }))
   }
-
-  if (loadingAccessToken) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '50vh'
-        }}
-      >
-        <CircularProgress />
-        <Typography sx={{ ml: 2 }}>Fetching access token...</Typography>
-      </Box>
-    )
-  }
-
-  if (loading) {
+  if (status === 'loading' || loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <CircularProgress />
@@ -227,7 +170,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       </Typography>
     )
   }
-
   setTimeout(() => {
     if (!claimDetail) {
       return (
@@ -237,13 +179,10 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       )
     }
   }, 2000)
-
-  const credentialSubject = claimDetail?.credentialSubject
-  console.log('🚀 ~ credentialSubject:', credentialSubject)
+  const credentialSubject = claimDetail?.data?.credentialSubject
   const achievement = credentialSubject?.achievement && credentialSubject.achievement[0]
   const hasValidEvidence =
     credentialSubject?.portfolio && credentialSubject?.portfolio.length > 0
-
   return (
     <Container sx={{ maxWidth: '800px' }}>
       {claimDetail && (
@@ -284,7 +223,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
               )}
             </Box>
           )}
-
           <Box sx={{ flex: 1 }}>
             <Box
               sx={{
@@ -308,7 +246,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                 {achievement?.name ?? 'Unnamed Achievement'}
               </Typography>
             </Box>
-
             {credentialSubject?.duration && (
               <Box
                 sx={{
@@ -331,7 +268,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                 </Typography>
               </Box>
             )}
-
             {!isAskForRecommendation && (
               <>
                 {credentialSubject?.evidenceLink && (
@@ -351,7 +287,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                     />
                   </Box>
                 )}
-
                 {achievement?.description && (
                   <Link href={credentialSubject?.evidenceLink ?? ''} target='_blank'>
                     <Typography
@@ -372,7 +307,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                     </Typography>
                   </Link>
                 )}
-
                 {achievement?.criteria?.narrative && (
                   <Box sx={{ mt: 2 }}>
                     <Typography>What does that entail?:</Typography>
@@ -387,7 +321,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                     </ul>
                   </Box>
                 )}
-
                 {hasValidEvidence && (
                   <Box sx={{ mt: 3 }}>
                     <Typography sx={{ fontWeight: 600 }}>
@@ -423,7 +356,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                 )}
               </>
             )}
-
             {pathname?.includes('/claims') && (
               <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
                 <Link href={`/view/${fileID}`}>
@@ -452,7 +384,6 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                 </Link>
               </Box>
             )}
-
             {pathname?.includes('/view') && claimDetail && (
               <Box
                 sx={{ display: 'flex', flexDirection: 'column', gap: '4px', mt: '20px' }}
@@ -485,9 +416,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
           </Box>
         </Box>
       )}
-
       {/* Comments Section */}
-
       {isView && claimDetail && (
         <Box>
           {loading ? (
@@ -515,11 +444,11 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                       <IconButton
                         edge='end'
                         onClick={() =>
-                          handleToggleComment(comment.id || index.toString())
+                          handleToggleComment(comment.data.id || index.toString())
                         }
                         aria-label='expand'
                       >
-                        {expandedComments[comment.id || index.toString()] ? (
+                        {expandedComments[comment.data.id || index.toString()] ? (
                           <ExpandLess />
                         ) : (
                           <ExpandMore />
@@ -533,7 +462,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                           <SVGBadge />
                           <Box>
                             <Typography variant='h6' component='div'>
-                              {comment.credentialSubject?.name}
+                              {comment.data.credentialSubject?.name}
                             </Typography>
                             <Typography variant='body2' color='text.secondary'>
                               Vouched for {credentialSubject?.name}
@@ -544,13 +473,13 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                     />
                   </ListItem>
                   <Collapse
-                    in={expandedComments[comment.id || index.toString()]}
+                    in={expandedComments[comment.data.id || index.toString()]}
                     timeout='auto'
                     unmountOnExit
                   >
                     <Box sx={{ pl: 7, pr: 2, pb: 2 }}>
                       {/* How They Know Each Other */}
-                      {comment.credentialSubject?.howKnow && (
+                      {comment.data.credentialSubject?.howKnow && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             How They Know Each Other:
@@ -558,14 +487,14 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                           <Typography variant='body2'>
                             <span
                               dangerouslySetInnerHTML={{
-                                __html: cleanHTML(comment.credentialSubject.howKnow)
+                                __html: cleanHTML(comment.data.credentialSubject.howKnow)
                               }}
                             />
                           </Typography>
                         </Box>
                       )}
                       {/* Recommendation Text */}
-                      {comment.credentialSubject?.recommendationText && (
+                      {comment.data.credentialSubject?.recommendationText && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Recommendation:
@@ -574,7 +503,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: cleanHTML(
-                                  comment.credentialSubject.recommendationText
+                                  comment.data.credentialSubject.recommendationText
                                 )
                               }}
                             />
@@ -582,7 +511,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                         </Box>
                       )}
                       {/* Your Qualifications */}
-                      {comment.credentialSubject?.qualifications && (
+                      {comment.data.credentialSubject?.qualifications && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Your Qualifications:
@@ -591,7 +520,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: cleanHTML(
-                                  comment.credentialSubject.qualifications
+                                  comment.data.credentialSubject.qualifications
                                 )
                               }}
                             />
@@ -599,7 +528,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                         </Box>
                       )}
                       {/* Explain Your Answer */}
-                      {comment.credentialSubject?.explainAnswer && (
+                      {comment.data.credentialSubject?.explainAnswer && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Explain Your Answer:
@@ -607,20 +536,22 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                           <Typography variant='body2'>
                             <span
                               dangerouslySetInnerHTML={{
-                                __html: cleanHTML(comment.credentialSubject.explainAnswer)
+                                __html: cleanHTML(
+                                  comment.data.credentialSubject.explainAnswer
+                                )
                               }}
                             />
                           </Typography>
                         </Box>
                       )}
                       {/* Supporting Evidence */}
-                      {Array.isArray(comment.credentialSubject?.portfolio) &&
-                        comment.credentialSubject.portfolio.length > 0 && (
+                      {Array.isArray(comment.data.credentialSubject?.portfolio) &&
+                        comment.data.credentialSubject.portfolio.length > 0 && (
                           <Box sx={{ mt: 1 }}>
                             <Typography variant='subtitle2' color='text.secondary'>
                               Supporting Evidence:
                             </Typography>
-                            {comment.credentialSubject.portfolio.map((item, idx) => (
+                            {comment.data.credentialSubject.portfolio.map((item, idx) => (
                               <Box key={`comment-portfolio-${idx}`} sx={{ mt: 1 }}>
                                 {item.name && item.url ? (
                                   <MuiLink
