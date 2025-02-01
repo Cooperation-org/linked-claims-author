@@ -33,7 +33,7 @@ export default function ClientLayout({
               component='main'
               sx={{
                 flexGrow: 1,
-                minHeight: `calc(100vh - 255px)`,
+                minHeight: `calc(100vh - 315px)`,
                 backgroundImage: pathname === '/' ? `url(${background.src})` : 'none',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',

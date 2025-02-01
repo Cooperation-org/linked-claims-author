@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown'
 import Image from 'next/image'
 interface CardProps {
   title?: string
@@ -36,8 +36,8 @@ const Card = ({
     'Tamping',
     'IMG_0640'
   ],
-  width = '320px',
-  height = 'auto',
+  width = '195px',
+  height = '410px',
   rotation = 'rotate(0deg)',
   image = '/coffee.jpeg',
   showPlayButton = true,
@@ -56,7 +56,7 @@ const Card = ({
         background: '#FFFFFF',
         borderRadius: '10px',
         border: '1px solid #003FE0',
-        padding: '8px',
+        padding: '7.5px',
         position: 'relative'
       }}
     >
@@ -80,18 +80,17 @@ const Card = ({
         <Box
           sx={{
             display: 'flex',
-            alignItems: 'center',
-            mb: 0.5
+            alignItems: 'center'
           }}
         >
-          <Image src='/Badge.svg' alt='Badge' height={20} width={20} />
+          <Image src='/Badge.svg' alt='Badge' height={24} width={24} />
           <Typography
             sx={{
               color: '#202E5B',
               // fontSize: '14px',
               // fontWeight: 600,
               flex: 1,
-              ml: '11px',
+              ml: '5.5px',
               fontFamily: 'Inter',
               fontSize: '24px',
               fontWeight: 700,
@@ -102,15 +101,16 @@ const Card = ({
           >
             {title}
           </Typography>
-          <KeyboardArrowDownIcon sx={{ color: '#666', fontSize: '16px' }} />
+          <KeyboardDoubleArrowDownIcon sx={{ color: '#666', fontSize: '16px' }} />
         </Box>
 
         <Typography
           sx={{
             color: '#202E5B',
-            fontSize: '10px',
+            fontFamily: 'Inter',
+            fontSize: '9px',
             mb: 1,
-            lineHeight: 1.2
+            lineHeight: '12px'
           }}
         >
           {description}
@@ -185,7 +185,8 @@ const Card = ({
             sx={{
               color: '#000E40',
               fontSize: '10px',
-              fontWeight: 500,
+              fontFamily: 'Inter',
+              fontWeight: 400,
               mb: 0.25
             }}
           >
@@ -197,6 +198,8 @@ const Card = ({
               sx={{
                 color: '#000E40',
                 fontSize: '9px',
+                fontFamily: 'Inter',
+                fontWeight: 400,
                 pl: 1,
                 lineHeight: 1.2
               }}
@@ -212,7 +215,8 @@ const Card = ({
               sx={{
                 color: '#000E40',
                 fontSize: '10px',
-                fontWeight: 500,
+                fontFamily: 'Inter',
+                fontWeight: 400,
                 mb: 0.25
               }}
             >
@@ -222,6 +226,7 @@ const Card = ({
               sx={{
                 color: '#000E40',
                 fontSize: '9px',
+                fontFamily: 'Inter',
                 pl: 1
               }}
             >
@@ -236,7 +241,8 @@ const Card = ({
               sx={{
                 color: '#000E40',
                 fontSize: '10px',
-                fontWeight: 500,
+                fontWeight: 400,
+                fontFamily: 'Inter',
                 mb: 0.25
               }}
             >
@@ -248,6 +254,7 @@ const Card = ({
                 sx={{
                   color: '#000E40',
                   fontSize: '9px',
+                  fontFamily: 'Inter',
                   pl: 1,
                   lineHeight: 1.2
                 }}

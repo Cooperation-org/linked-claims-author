@@ -6,6 +6,7 @@ import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { FormData } from '../../../../credentialForm/form/types/Types'
 import { SVGFolder, SVGSinfo } from '../../../../Assets/SVGs'
 import { signIn, useSession } from 'next-auth/react'
+import { getCookie } from '../../../../utils/cookie'
 
 interface Step1Props {
   watch: UseFormWatch<FormData>
@@ -14,16 +15,16 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({ handleNext }) => {
-  const { data: session } = useSession()
+  const accessToken = getCookie('accessToken')
 
   useEffect(() => {
-    if (session?.accessToken) {
+    if (accessToken) {
       handleNext()
     }
-  }, [session, handleNext])
+  }, [accessToken, handleNext])
 
   const connectToGoogleDrive = async () => {
-    if (session?.accessToken) {
+    if (accessToken) {
       handleNext()
       return
     }
@@ -38,12 +39,12 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
   }
 
   // Determine tooltip text based on authentication status
-  const tooltipTitle = session?.accessToken
+  const tooltipTitle = accessToken
     ? 'You are connected to Google Drive. This is where your recommendation will be saved.'
     : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
 
   // Determine main text based on authentication status
-  const mainText = session?.accessToken
+  const mainText = accessToken
     ? 'You are already logged in. Proceeding to the next step...'
     : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
 
@@ -81,7 +82,7 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
         {mainText}
       </Typography>
 
-      {!session?.accessToken && (
+      {!accessToken && (
         <Button
           variant='contained'
           color='primary'
@@ -107,7 +108,7 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
         </Button>
       )}
 
-      {!session?.accessToken && (
+      {!accessToken && (
         <Button
           variant='text'
           color='primary'

@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
+import { setCookie } from '../../../utils/cookie'
 
 declare module 'next-auth' {
   interface Session {
@@ -45,6 +46,11 @@ const handler = NextAuth({
     async jwt({ token, account, user }) {
       // Initial sign-in
       if (account && user) {
+        const accessToken = account.access_token
+        const refreshToken = account.refresh_token
+
+        setCookie('accessToken', accessToken as string, { expires: 60 * 60 * 24 * 30 }) // Expire in 30 days
+        setCookie('refreshToken', refreshToken as string, { expires: 60 * 60 * 24 * 30 })
         return {
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
