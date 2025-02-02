@@ -121,7 +121,7 @@ const ClaimsPage: React.FC = () => {
     e?.stopPropagation()
     const url = `${window.location.origin}/view/${claim[0].id}`
     const subject = encodeURIComponent(
-      claim[0].data.credentialSubject.achievement[0].name
+      JSON.parse(claim[0]?.data.body).credentialSubject.achievement[0].name
     )
     const body = encodeURIComponent(url)
     const mailtoLink = `mailto:?subject=${subject}&body=${body}`
@@ -176,14 +176,13 @@ const ClaimsPage: React.FC = () => {
   }
 
   const isValidClaim = (claim: any) => {
-    return (
-      claim[0]?.data?.credentialSubject?.achievement[0]?.name &&
-      claim[0]?.data?.credentialSubject?.name
-    )
+    const body = JSON.parse(claim[0]?.data.body)
+    return body.credentialSubject?.achievement[0]?.name && body.credentialSubject?.name
   }
 
   const getAllClaims = useCallback(async (): Promise<any> => {
     const claimsData = await storage?.getAllFilesByType('VCs')
+    console.log('🚀 ~ getAllClaims ~ claimsData:', claimsData)
     if (!claimsData?.length) return []
     return claimsData
   }, [storage])
@@ -196,6 +195,7 @@ const ClaimsPage: React.FC = () => {
         const vcs = claimsData.map((file: any[]) =>
           file.filter((f: { name: string }) => f.name !== 'RELATIONS')
         )
+        console.log('🚀 ~ fetchClaims ~ vcs:', vcs)
         setClaims(vcs)
       } catch (error) {
         console.error('Error fetching claims:', error)
@@ -320,7 +320,10 @@ const ClaimsPage: React.FC = () => {
                             textDecoration: 'underline'
                           }}
                         >
-                          {claim[0].data.credentialSubject.achievement[0].name}
+                          {
+                            JSON.parse(claim[0]?.data.body).credentialSubject
+                              .achievement[0].name
+                          }
                         </Typography>
                       </Box>
                     ) : (
@@ -335,7 +338,11 @@ const ClaimsPage: React.FC = () => {
                               fontSize: '1.25rem'
                             }}
                           >
-                            {claim[0].data.credentialSubject.achievement[0].name} -
+                            {
+                              JSON.parse(claim[0]?.data.body).credentialSubject
+                                .achievement[0].name
+                            }{' '}
+                            -
                           </Typography>
                           <Typography
                             sx={{
@@ -344,12 +351,14 @@ const ClaimsPage: React.FC = () => {
                               fontSize: '1.25rem'
                             }}
                           >
-                            {getTimeAgo(claim[0].data.issuanceDate)}
+                            {getTimeAgo(JSON.parse(claim[0]?.data.body).issuanceDate)}
                           </Typography>
                         </Box>
                         <Typography sx={{ color: 'text.secondary' }}>
-                          {claim[0].data.credentialSubject.name} -{' '}
-                          {getTimeDifference(claim[0].data.issuanceDate)}
+                          {JSON.parse(claim[0]?.data.body).credentialSubject.name} -{' '}
+                          {getTimeDifference(
+                            JSON.parse(claim[0]?.data.body).issuanceDate
+                          )}
                         </Typography>
                       </Box>
                     )}
