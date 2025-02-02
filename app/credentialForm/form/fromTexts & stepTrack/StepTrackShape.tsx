@@ -4,12 +4,13 @@ import React, { useState } from 'react'
 import { Box, Tooltip, Snackbar, Alert, Button } from '@mui/material'
 import { useStepContext } from '../StepContext'
 import { SVGBack, SVGCompleteStep } from '../../../Assets/SVGs'
-import { getCookie } from '../../../utils/cookie'
+import { useSession } from 'next-auth/react'
 
 export function StepTrackShape() {
   const { activeStep, setActiveStep, handleBack, handleNext } = useStepContext()
   const [openSnackbar, setOpenSnackbar] = useState(false)
-  const accessToken = getCookie('accessToken')
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
 
   const pathname = typeof window !== 'undefined' ? window.location.pathname : ''
   const TOTAL_STEPS = pathname.includes('/recommendations') ? 7 : 4

@@ -8,11 +8,8 @@ import {
   Typography,
   CircularProgress
 } from '@mui/material'
-import { useRouter } from 'next/navigation'
 import { useSession, signIn } from 'next-auth/react'
 import { importCredential } from '../utils/importCred'
-import { makeGoogleDriveLink } from '../utils/googleDrive'
-import { getCookie } from '../utils/cookie'
 
 const formLabelStyles = {
   fontFamily: 'Lato',
@@ -77,8 +74,8 @@ function StatusMessage({ fileResult }: { fileResult: FileResult | null }) {
 function SimpleCredentialForm() {
   const [fileResult, setFileResult] = useState<FileResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-
-  const accessToken = getCookie('accessToken')
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()

@@ -6,7 +6,6 @@ import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { FormData } from '../../../../credentialForm/form/types/Types'
 import { SVGFolder, SVGSinfo } from '../../../../Assets/SVGs'
 import { signIn, useSession } from 'next-auth/react'
-import { getCookie } from '../../../../utils/cookie'
 
 interface Step1Props {
   watch: UseFormWatch<FormData>
@@ -15,7 +14,8 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({ handleNext }) => {
-  const accessToken = getCookie('accessToken')
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
 
   useEffect(() => {
     if (accessToken) {

@@ -12,7 +12,6 @@ import {
 } from '../../../components/Styles/appStyles'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
 import { useSession } from 'next-auth/react'
-import { getCookie } from '../../../utils/cookie'
 
 interface FetchedDataProps {
   setFullName: (name: string) => void
@@ -28,7 +27,8 @@ const FetchedData: React.FC<FetchedDataProps> = ({
   const [driveData, setDriveData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const params = useParams()
-  const accessToken = getCookie('accessToken')
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
 
   const { getContent, fetchFileMetadata, fileMetadata, ownerEmail } = useGoogleDrive()
 

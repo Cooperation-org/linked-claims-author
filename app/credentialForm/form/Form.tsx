@@ -21,7 +21,6 @@ import SuccessPage from './Steps/SuccessPage'
 import FileUploadAndList from './Steps/Step3_uploadEvidence'
 import { Step1 } from './Steps/Step1_userName'
 import { Step2 } from './Steps/Step2_descreptionFields'
-import { getCookie } from '../../utils/cookie'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep, loading } = useStepContext()
@@ -38,7 +37,7 @@ const Form = ({ onStepChange }: any) => {
 
   const characterLimit = 294
   const { data: session } = useSession()
-  const accessToken = getCookie('accessToken')
+  const accessToken = session?.accessToken
 
   const storage = new GoogleDriveStorage(accessToken as string)
 
@@ -164,6 +163,7 @@ const Form = ({ onStepChange }: any) => {
         },
         type: 'DID'
       })
+      console.log('🚀 ~ sign ~ saveResponse:', saveResponse)
 
       console.log('access token', accessToken)
 

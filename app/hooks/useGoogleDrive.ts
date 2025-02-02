@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
-import { getCookie } from '../utils/cookie'
 
 interface ClaimDetail {
   data: {
@@ -29,7 +28,8 @@ const useGoogleDrive = () => {
   const [fileMetadata, setFileMetadata] = useState<any | null>(null)
   const [ownerEmail, setOwnerEmail] = useState<string | null>(null)
   const [storage, setStorage] = useState<GoogleDriveStorage | null>(null)
-  const accessToken = getCookie('accessToken')
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
 
   useEffect(() => {
     if (accessToken) {

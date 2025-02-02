@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { Box } from '@mui/material'
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
 import { useSession } from 'next-auth/react'
-import { getCookie } from '../../utils/cookie'
 
 // Set up PDF.js worker
 GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
@@ -34,7 +33,8 @@ const EvidencePreview: React.FC<EvidencePreviewProps> = ({
   const [thumbnailUrl, setThumbnailUrl] = useState<string>(url)
   const [loading, setLoading] = useState(true)
   const [shouldTryPDF, setShouldTryPDF] = useState(isPDF(url))
-  const accessToken = getCookie('accessToken')
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
 
   useEffect(() => {
     const generatePDFThumbnail = async () => {
