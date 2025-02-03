@@ -177,6 +177,7 @@ const ClaimsPage: React.FC = () => {
 
   const isValidClaim = (claim: any) => {
     const body = JSON.parse(claim[0]?.data.body)
+    console.log('🚀 ~ isValidClaim ~ body:', body)
     return body.credentialSubject?.achievement[0]?.name && body.credentialSubject?.name
   }
 
@@ -193,7 +194,9 @@ const ClaimsPage: React.FC = () => {
         setLoading(true)
         const claimsData = await getAllClaims()
         const vcs = claimsData.map((file: any[]) =>
-          file.filter((f: { name: string }) => f.name !== 'RELATIONS')
+          file.filter(
+            (f: { data: { fileName: string } }) => f.data.fileName !== 'RELATIONS'
+          )
         )
         console.log('🚀 ~ fetchClaims ~ vcs:', vcs)
         setClaims(vcs)
