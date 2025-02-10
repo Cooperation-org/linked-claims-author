@@ -1,5 +1,6 @@
-import { CredentialEngine } from '@cooperation/vc-storage'
+import { CredentialEngine, GoogleDriveStorage } from '@cooperation/vc-storage'
 import { FormData } from '../credentialForm/form/types/Types'
+import { timeStamp } from 'console'
 
 interface FormDataI {
   expirationDate: string
@@ -24,11 +25,8 @@ interface RecommendationI {
   portfolio: { googleId?: string; name: string; url: string }[]
 }
 
-function getCredentialEngine(accessToken: string): CredentialEngine {
-  if (!accessToken) {
-    throw new Error('Access token is required to instantiate CredentialEngine.')
-  }
-  return new CredentialEngine(accessToken)
+function getCredentialEngine(storage: GoogleDriveStorage): CredentialEngine {
+  return new CredentialEngine(storage)
 }
 
 /**
@@ -39,9 +37,9 @@ function getCredentialEngine(accessToken: string): CredentialEngine {
  */
 export async function createDIDWithMetaMask(
   metaMaskAddress: string,
-  accessToken: string
+  storage: GoogleDriveStorage
 ) {
-  const credentialEngine = getCredentialEngine(accessToken)
+  const credentialEngine = getCredentialEngine(storage)
   const { didDocument, keyPair } = await credentialEngine.createWalletDID(metaMaskAddress)
   return { didDocument, keyPair, issuerId: didDocument.id }
 }
@@ -51,8 +49,8 @@ export async function createDIDWithMetaMask(
  * @param accessToken - The access token for authentication
  * @returns DID Document, Key Pair, and Issuer ID
  */
-export const createDID = async (accessToken: string) => {
-  const credentialEngine = getCredentialEngine(accessToken)
+export const createDID = async (storage: GoogleDriveStorage) => {
+  const credentialEngine = getCredentialEngine(storage)
   const { didDocument, keyPair } = await credentialEngine.createDID()
   console.log('DID:', didDocument)
   return { didDocument, keyPair, issuerId: didDocument.id }
@@ -60,7 +58,6 @@ export const createDID = async (accessToken: string) => {
 
 /**
  * Sign a Verifiable Credential
- * @param accessToken - The access token for authentication
  * @param data - The data to include in the credential
  * @param issuerDid - The issuer's DID
  * @param keyPair - The key pair used for signing
@@ -68,19 +65,25 @@ export const createDID = async (accessToken: string) => {
  * @returns The signed Verifiable Credential
  */
 const signCred = async (
-  accessToken: string,
   data: any,
   issuerDid: string,
   keyPair: string,
-  type: 'RECOMMENDATION' | 'VC'
+  type: 'RECOMMENDATION' | 'VC',
+  storage: GoogleDriveStorage
 ) => {
-  if (!accessToken) {
-    throw new Error('Access token is not provided')
-  }
+  console.log('CACHE: ', storage.folderCache)
+  console.log(
+    'CACHE: ',
+    storage.folderCache,
+    'AT: (hour - min - sec)',
+    new Date().getHours(),
+    new Date().getMinutes(),
+    new Date().getSeconds()
+  )
   let formData: FormDataI | RecommendationI
   let signedVC
   try {
-    const credentialEngine = getCredentialEngine(accessToken)
+    const credentialEngine = getCredentialEngine(storage)
     if (type === 'RECOMMENDATION') {
       formData = generateRecommendationData(data)
       signedVC = await credentialEngine.signVC({

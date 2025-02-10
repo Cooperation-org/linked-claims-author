@@ -4,7 +4,6 @@ import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { Box, Typography, styled, Card } from '@mui/material'
 
 import FileListDisplay from '../../../components/FileList'
-import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-storage'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
 import { useStepContext } from '../StepContext'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
@@ -116,42 +115,76 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
   const handleUpload = useCallback(async () => {
     try {
       if (selectedFiles.length === 0) return
+
+      console.log('🚀 ~ handleUpload ~ selectedFiles:', selectedFiles)
+
       const filesToUpload = selectedFiles.filter(
         fileItem => !fileItem.uploaded && fileItem.file && fileItem.name
       )
-      if (filesToUpload.length === 0) return
+
+      if (filesToUpload.length === 0) {
+        console.log('No files to upload.')
+        return
+      }
+
+      if (!storage?.uploadBinaryFile) {
+        console.error('❌ storage.uploadBinaryFile is not defined!')
+        return
+      }
+
+      console.log('📂 Uploading files:', filesToUpload)
+
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (fileItem, index) => {
+          console.log(`📌 Preparing file for upload: ${fileItem.name}`)
+
+          // ✅ Ensure file object is valid
           const newFile = new File([fileItem.file], fileItem.name, {
             type: fileItem.file.type
           })
-          const uploadedFile = await uploadImageToGoogleDrive(
-            storage as GoogleDriveStorage,
-            newFile
-          )
-          const fileId = (uploadedFile as { id: string }).id
+
+          console.log('📂 File object created:', newFile)
+
+          // ✅ Upload file to Google Drive
+          const uploadedFile = await storage.uploadBinaryFile({
+            file: newFile
+          })
+
+          console.log('📤 Uploaded file response:', uploadedFile)
+
+          if (!uploadedFile || !uploadedFile.id) {
+            console.error(`❌ Upload failed for file: ${fileItem.name}`)
+            return fileItem
+          }
+
           return {
             ...fileItem,
-            googleId: fileId,
+            googleId: uploadedFile.id,
             uploaded: true,
             isFeatured: index === 0 && !watch<string>('evidenceLink')
           }
         })
       )
-      const featuredFile = uploadedFiles.find(file => file.isFeatured)
+
+      console.log('✅ All uploaded files:', uploadedFiles)
+
+      const featuredFile = uploadedFiles.find(file => file?.isFeatured)
       if (featuredFile?.googleId) {
         setValue(
           'evidenceLink',
           `https://drive.google.com/uc?export=view&id=${featuredFile.googleId}`
         )
       }
+
       const currentPortfolio = watch<PortfolioItem[]>('portfolio') || []
       const newPortfolioEntries: PortfolioItem[] = uploadedFiles.map(file => ({
         name: file.name,
         url: `https://drive.google.com/uc?export=view&id=${file.googleId}`,
         googleId: file.googleId
       }))
+
       setValue('portfolio', [...currentPortfolio, ...newPortfolioEntries])
+
       setSelectedFiles(prevFiles =>
         prevFiles.map(file => {
           const uploadedFile = uploadedFiles.find(f => f.name === file.name)
@@ -161,9 +194,10 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
         })
       )
     } catch (error) {
-      console.error('Error uploading files:', error)
+      console.error('❌ Error uploading files:', error)
     }
   }, [selectedFiles, setValue, setSelectedFiles, storage, watch])
+
   const handleAddLink = useCallback(() => {
     setLinks(prev => [...prev, { id: crypto.randomUUID(), name: '', url: '' }])
   }, [])
