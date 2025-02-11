@@ -68,7 +68,7 @@ const HamburgerMenu = () => {
                     color: '#000'
                   }}
                 >
-                  OpenCreds
+                  LinkedCreds
                 </Typography>
               </Box>
             </Link>
@@ -239,10 +239,10 @@ const HamburgerMenu = () => {
               <>
                 {/* Login description and features */}
                 <Typography variant='h6' sx={{ fontWeight: 400, fontSize: '16px' }}>
-                  Login to access your OpenCreds
+                  Login to access your LinkedCreds
                 </Typography>
                 <Typography sx={{ fontSize: '13px', fontWeight: 400 }}>
-                  With OpenCreds, you can:
+                  With LinkedCreds, you can:
                 </Typography>
                 {features.map(feature => (
                   <Box key={feature.id} sx={{ display: 'flex', alignItems: 'center' }}>
@@ -294,12 +294,12 @@ const HamburgerMenu = () => {
                 }}
               >
                 <Typography sx={{ fontWeight: 400, fontSize: '16px', height: '22px' }}>
-                  About OpenCreds
+                  About LinkedCreds
                 </Typography>
                 <ArrowForwardIosIcon fontSize='small' />
               </Box>
             </Link>
-            <Link href='mailto:support@opencreds.net' passHref>
+            <Link href='mailto:support@LinkedCreds.net' passHref>
               <Box
                 sx={{
                   display: 'flex',

@@ -105,7 +105,7 @@ const STEPS = [
   }
 ]
 
-const OPENCREDS_FEATURES = [
+const LinkedCreds_FEATURES = [
   { id: 'verifiable', text: 'Verifiable' },
   { id: 'shareable', text: 'Shareable' },
   { id: 'tamper-proof', text: 'Tamper proof' },
@@ -179,12 +179,12 @@ const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCard
           }}
         >
           {isMobile ? (
-            'Whether it’s caring for your family, volunteering, a side hustle, or on-the-job learning, OpenCreds helps you document, verify, and share your unique experiences.'
+            'Whether it’s caring for your family, volunteering, a side hustle, or on-the-job learning, LinkedCreds helps you document, verify, and share your unique experiences.'
           ) : (
             <>
               Whether it&apos;s caring for your family, volunteering, a side hustle,
               <br />
-              or on-the-job learning, OpenCreds helps you document, verify,
+              or on-the-job learning, LinkedCreds helps you document, verify,
               <br />
               and share your unique experiences.
             </>
@@ -234,7 +234,7 @@ const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCard
   )
 }
 
-const MobileOpenCredsSection: React.FC<SectionProps> = ({ theme }) => (
+const MobileLinkedCredsSection: React.FC<SectionProps> = ({ theme }) => (
   <Box
     sx={{
       background: 'linear-gradient(180deg, #F1F5FC, #FFFFFF)',
@@ -254,7 +254,7 @@ const MobileOpenCredsSection: React.FC<SectionProps> = ({ theme }) => (
         fontWeight: '700'
       }}
     >
-      What are OpenCreds?
+      What are LinkedCreds?
     </Typography>
     <Box
       sx={{
@@ -277,10 +277,10 @@ const MobileOpenCredsSection: React.FC<SectionProps> = ({ theme }) => (
             fontWeight: 700
           }}
         >
-          OpenCreds are verifiable skills that you create to showcase your experiences.
+          LinkedCreds are verifiable skills that you create to showcase your experiences.
           <br />
           <br />
-          OpenCreds are:
+          LinkedCreds are:
         </Typography>
         <Box
           component='ul'
@@ -292,7 +292,7 @@ const MobileOpenCredsSection: React.FC<SectionProps> = ({ theme }) => (
             fontWeight: 400
           }}
         >
-          {OPENCREDS_FEATURES.map(feature => (
+          {LinkedCreds_FEATURES.map(feature => (
             <Typography key={feature.id} component='li' variant='body2'>
               {feature.text}
             </Typography>
@@ -445,7 +445,7 @@ const Page = () => {
       }}
     >
       <HeroSection showCards={!isMobile} theme={theme} />
-      {isMobile && <MobileOpenCredsSection theme={theme} />}
+      {isMobile && <MobileLinkedCredsSection theme={theme} />}
       <StepsSection theme={theme} />
     </Box>
   )

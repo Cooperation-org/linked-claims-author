@@ -5,19 +5,19 @@ import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
-  title: 'OpenCreds',
+  title: 'LinkedCreds',
   description:
-    'OpenCreds offers the ultimate solution for managing your professional credentials. Capture, store, and share your achievements securely to unlock new opportunities.',
+    'LinkedCreds offers the ultimate solution for managing your professional credentials. Capture, store, and share your achievements securely to unlock new opportunities.',
   keywords:
-    'Credential Management, Professional Credentials, Secure Storage, Share Achievements, OpenCreds',
+    'Credential Management, Professional Credentials, Secure Storage, Share Achievements, LinkedCreds',
   authors: [{ name: 'Linked Trust' }],
-  metadataBase: new URL('https://opencreds.net'),
+  metadataBase: new URL('https://linkedcreds.allskillscount.org'),
   openGraph: {
-    title: 'OpenCreds',
+    title: 'LinkedCreds',
     description:
-      'Manage your professional credentials securely and efficiently with OpenCreds. Capture, store, and share your achievements to unlock new opportunities.',
-    url: 'https://opencreds.net',
-    siteName: 'OpenCreds',
+      'Manage your professional credentials securely and efficiently with LinkedCreds. Capture, store, and share your achievements to unlock new opportunities.',
+    url: 'https://linkedcreds.allskillscount.org',
+    siteName: 'LinkedCreds',
     images: [
       {
         url: '/images/og-image.png',
@@ -29,12 +29,12 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'OpenCreds',
+    title: 'LinkedCreds',
     description:
-      'Securely manage and share your professional credentials with OpenCreds. Enhance your career opportunities with our comprehensive credential management solution.',
+      'Securely manage and share your professional credentials with LinkedCreds. Enhance your career opportunities with our comprehensive credential management solution.',
     images: ['/images/og-image.png']
   },
-  applicationName: 'OpenCreds',
+  applicationName: 'LinkedCreds',
   formatDetection: {
     telephone: false
   },
@@ -49,12 +49,12 @@ export const metadata: Metadata = {
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'OpenCreds',
-  url: 'https://opencreds.net',
+  name: 'LinkedCreds',
+  url: 'https://linkedcreds.allskillscount.org',
   applicationCategory: 'CredentialManagement',
   operatingSystem: 'Web-based',
   description:
-    'OpenCreds is a secure and efficient credential management platform. Easily capture, store, and share your professional credentials to unlock new opportunities.',
+    'LinkedCreds is a secure and efficient credential management platform. Easily capture, store, and share your professional credentials to unlock new opportunities.',
   featureList: [
     'Credential Capture',
     'Secure Storage',
@@ -68,9 +68,9 @@ const structuredData = {
   ],
   publisher: {
     '@type': 'Organization',
-    name: 'OpenCreds',
-    url: 'https://opencreds.net',
-    logo: 'https://opencreds.net/images/logo.png'
+    name: 'LinkedCreds',
+    url: 'https://linkedcreds.allskillscount.org',
+    logo: 'https://linkedcreds.allskillscount.org/images/logo.png'
   },
   applicationSubCategory: 'Credential Management'
 }
