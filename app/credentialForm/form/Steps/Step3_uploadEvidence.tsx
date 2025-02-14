@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { Box, Typography, styled, Card } from '@mui/material'
 
 import FileListDisplay from '../../../components/FileList'
-import { GoogleDriveStorage, uploadImageToGoogleDrive } from '@cooperation/vc-storage'
+import { GoogleDriveStorage, uploadToGoogleDrive } from '@cooperation/vc-storage'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
 import { useStepContext } from '../StepContext'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
@@ -125,7 +125,7 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
           const newFile = new File([fileItem.file], fileItem.name, {
             type: fileItem.file.type
           })
-          const uploadedFile = await uploadImageToGoogleDrive(
+          const uploadedFile = await uploadToGoogleDrive(
             storage as GoogleDriveStorage,
             newFile
           )
