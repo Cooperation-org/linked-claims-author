@@ -1,4 +1,4 @@
-import { CredentialEngine } from '@cooperation/vc-storage'
+import { CredentialEngine, GoogleDriveStorage } from '@cooperation/vc-storage'
 import { FormData } from '../credentialForm/form/types/Types'
 
 interface FormDataI {
@@ -28,7 +28,8 @@ function getCredentialEngine(accessToken: string): CredentialEngine {
   if (!accessToken) {
     throw new Error('Access token is required to instantiate CredentialEngine.')
   }
-  return new CredentialEngine(accessToken)
+  const storage = new GoogleDriveStorage(accessToken)
+  return new CredentialEngine(storage)
 }
 
 /**

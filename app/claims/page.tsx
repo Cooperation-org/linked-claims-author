@@ -182,7 +182,7 @@ const ClaimsPage: React.FC = () => {
   }
 
   const getAllClaims = useCallback(async (): Promise<any> => {
-    const claimsData = await storage?.getAllFilesByType('VCs')
+    const claimsData = await storage?.getAllFilesData()
     console.log('🚀 ~ getAllClaims ~ claimsData:', claimsData)
     if (!claimsData?.length) return []
     return claimsData
