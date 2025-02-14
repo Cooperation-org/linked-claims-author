@@ -65,6 +65,6 @@ export const uploadImages = async (
       })
     )
   } catch (error) {
-    console.error('Error uploading files:', error)
+    console.error('Errror uploading files:', error)
   }
 }
