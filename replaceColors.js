@@ -123,5 +123,5 @@
 //   })
 // }
 
-// const directoryPath = 'E:\\linkedClaims playground\\app'
+// const directoryPath = 'E:\\LinkedCreds playground\\app'
 // scanDirectory(directoryPath)
