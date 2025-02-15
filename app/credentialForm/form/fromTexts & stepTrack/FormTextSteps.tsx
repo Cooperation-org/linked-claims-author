@@ -5,7 +5,7 @@ import { Box, Typography } from '@mui/material'
 
 export const textGuid = [
   <>
-    Hi, I’m Tessa! <br /> Where do you want to save your LinkedClaims?
+    Hi, I’m Tessa! <br /> Where do you want to save your LinkedCreds?
   </>,
   'Let’s get started with your name and address.',
   <>

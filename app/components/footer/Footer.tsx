@@ -73,7 +73,7 @@ const Footer = () => {
               fontWeight: 400
             }}
           >
-            Copyright, LinkedClaims, 2024
+            Copyright, LinkedCreds, 2024
           </Typography>
           <Link href={'/privacy'}>
             <Typography
