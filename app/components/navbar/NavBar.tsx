@@ -39,12 +39,12 @@ const NavBar = () => {
           pl: { xs: '15px', md: '9.6vw' }
         }}
       >
-        <Link href='/' aria-label='OpenCreds Home'>
+        <Link href='/' aria-label='LinkedCreds Home'>
           <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '0px' }}>
             <Logo />
           </Box>
         </Link>
-        <Link href='/' aria-label='OpenCreds Home'>
+        <Link href='/' aria-label='LinkedCreds Home'>
           <Typography
             sx={{
               fontWeight: '700',
@@ -53,7 +53,7 @@ const NavBar = () => {
               fontFamily: 'inter'
             }}
           >
-            OpenCreds
+            LinkedCreds
           </Typography>
         </Link>
       </Box>
@@ -174,7 +174,7 @@ const NavBar = () => {
                     cursor: 'pointer'
                   }}
                 >
-                  About OpenCreds
+                  About LinkedCreds
                 </Typography>
                 {isActive('/about') && (
                   <Box sx={{ height: '2px', width: '100%', mt: '5px', backgroundColor: '#003FE0' }} />
