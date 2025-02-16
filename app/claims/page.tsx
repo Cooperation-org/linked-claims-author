@@ -107,6 +107,7 @@ const ClaimsPage: React.FC = () => {
   const { data: session } = useSession()
   console.log(':  session', session)
   const { storage, getContent } = useGoogleDrive()
+  const { storage, getContent } = useGoogleDrive()
   const router = useRouter()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -120,6 +121,8 @@ const ClaimsPage: React.FC = () => {
 
   const handleEmailShare = (claim: any, e?: React.MouseEvent) => {
     e?.stopPropagation()
+    const url = `${window.location.origin}/view/${claim.id}`
+    const subject = encodeURIComponent(claim?.credentialSubject.achievement[0].name)
     const url = `${window.location.origin}/view/${claim.id}`
     const subject = encodeURIComponent(claim?.credentialSubject.achievement[0].name)
     const body = encodeURIComponent(url)
@@ -175,10 +178,12 @@ const ClaimsPage: React.FC = () => {
       setIsDeleting(true)
       setShowOverlappingCards(true)
       const fileId = selectedClaim.id
+      const fileId = selectedClaim.id
 
       await storage.delete(fileId)
 
       // Immediately update the UI by filtering out the deleted claim
+      setClaims(prevClaims => prevClaims.filter(claim => claim?.id !== fileId))
       setClaims(prevClaims => prevClaims.filter(claim => claim?.id !== fileId))
 
       // Reset all states
@@ -201,10 +206,7 @@ const ClaimsPage: React.FC = () => {
     for (const file of claimsData) {
       const content = (await getContent(file)).data
       if (content['@context']) {
-        vcs.push({
-          ...content,
-          id: file
-        })
+        vcs.push(content)
       }
     }
     return vcs
@@ -215,6 +217,8 @@ const ClaimsPage: React.FC = () => {
       try {
         setLoading(true)
         const claimsData = await getAllClaims()
+        console.log('🚀 ~ fetchClaims ~ claimsData:', claimsData)
+        setClaims(claimsData)
         console.log('🚀 ~ fetchClaims ~ claimsData:', claimsData)
         setClaims(claimsData)
       } catch (error) {
@@ -371,7 +375,137 @@ const ClaimsPage: React.FC = () => {
                     </Typography>
                   </Box>
                 )}
+          {claims.map(claim => (
+            <Paper
+              key={claim.id}
+              onClick={() => handleCardClick(claim.id)}
+              elevation={0}
+              sx={{
+                p: 2,
+                borderRadius: 2,
+                cursor: isMobile ? 'pointer' : 'default',
+                border: '3px solid',
+                borderColor: isMobile ? getRandomBorderColor() : 'transparent',
+                bgcolor: 'background.paper',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                {isMobile ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <BlueBadge />
+                    <Typography
+                      variant='subtitle1'
+                      sx={{
+                        fontWeight: 600,
+                        textDecoration: 'underline'
+                      }}
+                    >
+                      {claim.credentialSubject.achievement[0].name}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box sx={{ mt: '5px' }}>
+                        <BlueBadge />
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontWeight: 'bold',
+                          fontSize: '1.25rem'
+                        }}
+                      >
+                        {claim.credentialSubject.achievement[0].name} -
+                      </Typography>
+                      <Typography
+                        sx={{
+                          color: 'text.secondary',
+                          fontWeight: 'bold',
+                          fontSize: '1.25rem'
+                        }}
+                      >
+                        {getTimeAgo(claim.issuanceDate)}
+                      </Typography>
+                    </Box>
+                    <Typography sx={{ color: 'text.secondary' }}>
+                      {claim.credentialSubject.name} -{' '}
+                      {getTimeDifference(claim.issuanceDate)}
+                    </Typography>
+                  </Box>
+                )}
 
+                {isMobile ? (
+                  <IconButton
+                    size='small'
+                    onClick={e => {
+                      e.stopPropagation()
+                      handleCardClick(claim.id)
+                    }}
+                  >
+                    <KeyboardArrowDownIcon
+                      sx={{
+                        transform: expandedCard === claim.id ? 'rotate(180deg)' : 'none',
+                        transition: 'transform 0.3s'
+                      }}
+                    />
+                  </IconButton>
+                ) : (
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        border: '1px solid',
+                        borderColor: 'primary.main',
+                        borderRadius: '100px',
+                        overflow: 'hidden',
+                        bgcolor: 'primary.50'
+                      }}
+                    >
+                      <Button
+                        startIcon={<PeopleAltIcon />}
+                        sx={{
+                          bgcolor: '#eff6ff',
+                          borderColor: '#eff6ff',
+                          '&:hover': { bgcolor: 'primary.100' },
+                          p: '2px 20px',
+                          backgroundColor: '#f0f6ff',
+                          fontSize: '12px',
+                          fontWeight: 'medium',
+                          color: '#003fe0'
+                        }}
+                      >
+                        Share
+                      </Button>
+                      <Divider orientation='vertical' flexItem color='#003fe0' />
+                      <Button
+                        startIcon={<ContentCopyIcon />}
+                        onClick={e => handleCopyUrl(claim.id, e)}
+                        sx={{
+                          bgcolor: '#eff6ff',
+                          '&:hover': { bgcolor: 'primary.100' },
+                          p: '2px 20px',
+                          backgroundColor: '#f0f6ff',
+                          fontSize: '12px',
+                          fontWeight: 'medium',
+                          color: '#003fe0'
+                        }}
+                      >
+                        Copy URL
+                      </Button>
+                    </Box>
+                    <IconButton onClick={e => handleDesktopMenuOpen(e, claim)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </Box>
+                )}
+              </Box>
                 {isMobile ? (
                   <IconButton
                     size='small'
@@ -470,7 +604,6 @@ const ClaimsPage: React.FC = () => {
                         color: 'primary.main',
                         '&:hover': { bgcolor: 'primary.50' }
                       }}
-                      onClick={() => handleLinkedInShare(claim)}
                     >
                       Share to LinkedIn
                     </Button>
