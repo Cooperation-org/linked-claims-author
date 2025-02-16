@@ -106,7 +106,7 @@ const ClaimsPage: React.FC = () => {
 
   const { data: session } = useSession()
   console.log(':  session', session)
-  const { storage } = useGoogleDrive()
+  const { storage, getContent } = useGoogleDrive()
   const router = useRouter()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -119,10 +119,8 @@ const ClaimsPage: React.FC = () => {
 
   const handleEmailShare = (claim: any, e?: React.MouseEvent) => {
     e?.stopPropagation()
-    const url = `${window.location.origin}/view/${claim[0].id}`
-    const subject = encodeURIComponent(
-      JSON.parse(claim[0]?.data.body).credentialSubject.achievement[0].name
-    )
+    const url = `${window.location.origin}/view/${claim.id}`
+    const subject = encodeURIComponent(claim?.credentialSubject.achievement[0].name)
     const body = encodeURIComponent(url)
     const mailtoLink = `mailto:?subject=${subject}&body=${body}`
     window.open(mailtoLink)
@@ -155,12 +153,12 @@ const ClaimsPage: React.FC = () => {
     try {
       setIsDeleting(true)
       setShowOverlappingCards(true)
-      const fileId = selectedClaim[0].id
+      const fileId = selectedClaim.id
 
       await storage.delete(fileId)
 
       // Immediately update the UI by filtering out the deleted claim
-      setClaims(prevClaims => prevClaims.filter(claim => claim[0]?.id !== fileId))
+      setClaims(prevClaims => prevClaims.filter(claim => claim?.id !== fileId))
 
       // Reset all states
       setOpenDeleteDialog(false)
@@ -175,31 +173,27 @@ const ClaimsPage: React.FC = () => {
     }
   }
 
-  const isValidClaim = (claim: any) => {
-    const body = JSON.parse(claim[0]?.data.body)
-    console.log('🚀 ~ isValidClaim ~ body:', body)
-    return body.credentialSubject?.achievement[0]?.name && body.credentialSubject?.name
-  }
-
   const getAllClaims = useCallback(async (): Promise<any> => {
     const claimsData = await storage?.getAllFilesData()
     console.log('🚀 ~ getAllClaims ~ claimsData:', claimsData)
     if (!claimsData?.length) return []
-    return claimsData
-  }, [storage])
+    const vcs = []
+    for (const file of claimsData) {
+      const content = (await getContent(file)).data
+      if (content['@context']) {
+        vcs.push(content)
+      }
+    }
+    return vcs
+  }, [storage, getContent])
 
   useEffect(() => {
     const fetchClaims = async () => {
       try {
         setLoading(true)
         const claimsData = await getAllClaims()
-        const vcs = claimsData.map((file: any[]) =>
-          file.filter(
-            (f: { data: { fileName: string } }) => f.data.fileName !== 'RELATIONS'
-          )
-        )
-        console.log('🚀 ~ fetchClaims ~ vcs:', vcs)
-        setClaims(vcs)
+        console.log('🚀 ~ fetchClaims ~ claimsData:', claimsData)
+        setClaims(claimsData)
       } catch (error) {
         console.error('Error fetching claims:', error)
       } finally {
@@ -289,232 +283,219 @@ const ClaimsPage: React.FC = () => {
         </Box>
       ) : (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {claims.map(
-            claim =>
-              isValidClaim(claim) && (
-                <Paper
-                  key={claim[0].id}
-                  onClick={() => handleCardClick(claim[0].id)}
-                  elevation={0}
-                  sx={{
-                    p: 2,
-                    borderRadius: 2,
-                    cursor: isMobile ? 'pointer' : 'default',
-                    border: '3px solid',
-                    borderColor: isMobile ? getRandomBorderColor() : 'transparent',
-                    bgcolor: 'background.paper',
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
+          {claims.map(claim => (
+            <Paper
+              key={claim.id}
+              onClick={() => handleCardClick(claim.id)}
+              elevation={0}
+              sx={{
+                p: 2,
+                borderRadius: 2,
+                cursor: isMobile ? 'pointer' : 'default',
+                border: '3px solid',
+                borderColor: isMobile ? getRandomBorderColor() : 'transparent',
+                bgcolor: 'background.paper',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                {isMobile ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <BlueBadge />
+                    <Typography
+                      variant='subtitle1'
+                      sx={{
+                        fontWeight: 600,
+                        textDecoration: 'underline'
+                      }}
+                    >
+                      {claim.credentialSubject.achievement[0].name}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box sx={{ mt: '5px' }}>
+                        <BlueBadge />
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontWeight: 'bold',
+                          fontSize: '1.25rem'
+                        }}
+                      >
+                        {claim.credentialSubject.achievement[0].name} -
+                      </Typography>
+                      <Typography
+                        sx={{
+                          color: 'text.secondary',
+                          fontWeight: 'bold',
+                          fontSize: '1.25rem'
+                        }}
+                      >
+                        {getTimeAgo(claim.issuanceDate)}
+                      </Typography>
+                    </Box>
+                    <Typography sx={{ color: 'text.secondary' }}>
+                      {claim.credentialSubject.name} -{' '}
+                      {getTimeDifference(claim.issuanceDate)}
+                    </Typography>
+                  </Box>
+                )}
+
+                {isMobile ? (
+                  <IconButton
+                    size='small'
+                    onClick={e => {
+                      e.stopPropagation()
+                      handleCardClick(claim.id)
                     }}
                   >
-                    {isMobile ? (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <BlueBadge />
-                        <Typography
-                          variant='subtitle1'
-                          sx={{
-                            fontWeight: 600,
-                            textDecoration: 'underline'
-                          }}
-                        >
-                          {
-                            JSON.parse(claim[0]?.data.body).credentialSubject
-                              .achievement[0].name
-                          }
-                        </Typography>
-                      </Box>
-                    ) : (
-                      <Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Box sx={{ mt: '5px' }}>
-                            <BlueBadge />
-                          </Box>
-                          <Typography
-                            sx={{
-                              fontWeight: 'bold',
-                              fontSize: '1.25rem'
-                            }}
-                          >
-                            {
-                              JSON.parse(claim[0]?.data.body).credentialSubject
-                                .achievement[0].name
-                            }{' '}
-                            -
-                          </Typography>
-                          <Typography
-                            sx={{
-                              color: 'text.secondary',
-                              fontWeight: 'bold',
-                              fontSize: '1.25rem'
-                            }}
-                          >
-                            {getTimeAgo(JSON.parse(claim[0]?.data.body).issuanceDate)}
-                          </Typography>
-                        </Box>
-                        <Typography sx={{ color: 'text.secondary' }}>
-                          {JSON.parse(claim[0]?.data.body).credentialSubject.name} -{' '}
-                          {getTimeDifference(
-                            JSON.parse(claim[0]?.data.body).issuanceDate
-                          )}
-                        </Typography>
-                      </Box>
-                    )}
-
-                    {isMobile ? (
-                      <IconButton
-                        size='small'
-                        onClick={e => {
-                          e.stopPropagation()
-                          handleCardClick(claim[0].id)
-                        }}
-                      >
-                        <KeyboardArrowDownIcon
-                          sx={{
-                            transform:
-                              expandedCard === claim[0].id ? 'rotate(180deg)' : 'none',
-                            transition: 'transform 0.3s'
-                          }}
-                        />
-                      </IconButton>
-                    ) : (
-                      <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            border: '1px solid',
-                            borderColor: 'primary.main',
-                            borderRadius: '100px',
-                            overflow: 'hidden',
-                            bgcolor: 'primary.50'
-                          }}
-                        >
-                          <Button
-                            startIcon={<PeopleAltIcon />}
-                            sx={{
-                              bgcolor: '#eff6ff',
-                              borderColor: '#eff6ff',
-                              '&:hover': { bgcolor: 'primary.100' },
-                              p: '2px 20px',
-                              backgroundColor: '#f0f6ff',
-                              fontSize: '12px',
-                              fontWeight: 'medium',
-                              color: '#003fe0'
-                            }}
-                          >
-                            Share
-                          </Button>
-                          <Divider orientation='vertical' flexItem color='#003fe0' />
-                          <Button
-                            startIcon={<ContentCopyIcon />}
-                            onClick={e => handleCopyUrl(claim[0].id, e)}
-                            sx={{
-                              bgcolor: '#eff6ff',
-                              '&:hover': { bgcolor: 'primary.100' },
-                              p: '2px 20px',
-                              backgroundColor: '#f0f6ff',
-                              fontSize: '12px',
-                              fontWeight: 'medium',
-                              color: '#003fe0'
-                            }}
-                          >
-                            Copy URL
-                          </Button>
-                        </Box>
-                        <IconButton onClick={e => handleDesktopMenuOpen(e, claim)}>
-                          <MoreVertIcon />
-                        </IconButton>
-                      </Box>
-                    )}
-                  </Box>
-
-                  {isMobile && (
-                    <Collapse in={expandedCard === claim[0].id}>
-                      <Box
+                    <KeyboardArrowDownIcon
+                      sx={{
+                        transform: expandedCard === claim.id ? 'rotate(180deg)' : 'none',
+                        transition: 'transform 0.3s'
+                      }}
+                    />
+                  </IconButton>
+                ) : (
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        border: '1px solid',
+                        borderColor: 'primary.main',
+                        borderRadius: '100px',
+                        overflow: 'hidden',
+                        bgcolor: 'primary.50'
+                      }}
+                    >
+                      <Button
+                        startIcon={<PeopleAltIcon />}
                         sx={{
-                          mt: 2,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: 1
+                          bgcolor: '#eff6ff',
+                          borderColor: '#eff6ff',
+                          '&:hover': { bgcolor: 'primary.100' },
+                          p: '2px 20px',
+                          backgroundColor: '#f0f6ff',
+                          fontSize: '12px',
+                          fontWeight: 'medium',
+                          color: '#003fe0'
                         }}
                       >
-                        <Button
-                          startIcon={<SVGHeart />}
-                          endIcon={<SVGExport />}
-                          onClick={e => handleRecommendationClick(claim[0].id, e)}
-                          fullWidth
-                          sx={{
-                            justifyContent: 'flex-start',
-                            color: 'primary.main',
-                            '&:hover': { bgcolor: 'primary.50' }
-                          }}
-                        >
-                          Ask for a recommendation
-                        </Button>
-                        <Button
-                          startIcon={<SVGLinkedIn />}
-                          endIcon={<SVGExport />}
-                          fullWidth
-                          sx={{
-                            justifyContent: 'flex-start',
-                            color: 'primary.main',
-                            '&:hover': { bgcolor: 'primary.50' }
-                          }}
-                        >
-                          Share to LinkedIn
-                        </Button>
-                        <Button
-                          startIcon={<SVGEmail />}
-                          endIcon={<SVGExport />}
-                          onClick={e => handleEmailShare(claim, e)}
-                          fullWidth
-                          sx={{
-                            justifyContent: 'flex-start',
-                            color: 'primary.main',
-                            '&:hover': { bgcolor: 'primary.50' }
-                          }}
-                        >
-                          Share via Email
-                        </Button>
-                        <Button
-                          startIcon={<SVGCopy />}
-                          onClick={e => handleCopyUrl(claim[0].id, e)}
-                          fullWidth
-                          sx={{
-                            justifyContent: 'flex-start',
-                            color: 'primary.main',
-                            '&:hover': { bgcolor: 'primary.50' }
-                          }}
-                        >
-                          Copy URL
-                        </Button>
-                        <Button
-                          startIcon={<DeleteIcon />}
-                          onClick={e => {
-                            e.stopPropagation()
-                            setSelectedClaim(claim)
-                            setOpenDeleteDialog(true)
-                          }}
-                          fullWidth
-                          sx={{
-                            justifyContent: 'flex-start',
-                            color: 'primary.main',
-                            '&:hover': { bgcolor: 'primary.50' }
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </Box>
-                    </Collapse>
-                  )}
-                </Paper>
-              )
-          )}
+                        Share
+                      </Button>
+                      <Divider orientation='vertical' flexItem color='#003fe0' />
+                      <Button
+                        startIcon={<ContentCopyIcon />}
+                        onClick={e => handleCopyUrl(claim.id, e)}
+                        sx={{
+                          bgcolor: '#eff6ff',
+                          '&:hover': { bgcolor: 'primary.100' },
+                          p: '2px 20px',
+                          backgroundColor: '#f0f6ff',
+                          fontSize: '12px',
+                          fontWeight: 'medium',
+                          color: '#003fe0'
+                        }}
+                      >
+                        Copy URL
+                      </Button>
+                    </Box>
+                    <IconButton onClick={e => handleDesktopMenuOpen(e, claim)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </Box>
+                )}
+              </Box>
+
+              {isMobile && (
+                <Collapse in={expandedCard === claim.id}>
+                  <Box
+                    sx={{
+                      mt: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1
+                    }}
+                  >
+                    <Button
+                      startIcon={<SVGHeart />}
+                      endIcon={<SVGExport />}
+                      onClick={e => handleRecommendationClick(claim.id, e)}
+                      fullWidth
+                      sx={{
+                        justifyContent: 'flex-start',
+                        color: 'primary.main',
+                        '&:hover': { bgcolor: 'primary.50' }
+                      }}
+                    >
+                      Ask for a recommendation
+                    </Button>
+                    <Button
+                      startIcon={<SVGLinkedIn />}
+                      endIcon={<SVGExport />}
+                      fullWidth
+                      sx={{
+                        justifyContent: 'flex-start',
+                        color: 'primary.main',
+                        '&:hover': { bgcolor: 'primary.50' }
+                      }}
+                    >
+                      Share to LinkedIn
+                    </Button>
+                    <Button
+                      startIcon={<SVGEmail />}
+                      endIcon={<SVGExport />}
+                      onClick={e => handleEmailShare(claim, e)}
+                      fullWidth
+                      sx={{
+                        justifyContent: 'flex-start',
+                        color: 'primary.main',
+                        '&:hover': { bgcolor: 'primary.50' }
+                      }}
+                    >
+                      Share via Email
+                    </Button>
+                    <Button
+                      startIcon={<SVGCopy />}
+                      onClick={e => handleCopyUrl(claim.id, e)}
+                      fullWidth
+                      sx={{
+                        justifyContent: 'flex-start',
+                        color: 'primary.main',
+                        '&:hover': { bgcolor: 'primary.50' }
+                      }}
+                    >
+                      Copy URL
+                    </Button>
+                    <Button
+                      startIcon={<DeleteIcon />}
+                      onClick={e => {
+                        e.stopPropagation()
+                        setSelectedClaim(claim)
+                        setOpenDeleteDialog(true)
+                      }}
+                      fullWidth
+                      sx={{
+                        justifyContent: 'flex-start',
+                        color: 'primary.main',
+                        '&:hover': { bgcolor: 'primary.50' }
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </Box>
+                </Collapse>
+              )}
+            </Paper>
+          ))}
         </Box>
       )}
 
