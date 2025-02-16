@@ -68,7 +68,7 @@ export default function AskForRecommendation() {
   }, [fileID, getContent])
 
   const generateMessage = (skillName: string, id: string) => {
-    return `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${skillName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!\n\nthis is the link https://opencreds.net/recommendations/${id}`
+    return `Hey there! I hope you're doing well. I am writing to ask if you would consider supporting me by providing validation of my expertise as a ${skillName}. If you're comfortable, could you please take a moment to write a brief reference highlighting your observations of my skills and how they have contributed to the work we have done together? It would mean a lot to me!\n\nthis is the link https://linkedcreds.allskillscount.org/recommendations/${id}`
   }
   const handleAchievementLoad = (name: string) => {
     if (name && name !== achievementName) {

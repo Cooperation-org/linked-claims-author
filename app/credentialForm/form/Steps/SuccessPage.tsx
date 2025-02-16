@@ -100,13 +100,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
       issueMonth: '8',
       expirationYear: '2025',
       expirationMonth: '8',
-      certUrl: `https://opencreds.net/view/${fileId}`
+      certUrl: `https://linkedcreds.allskillscount.org/view/${fileId}`
     })
     return `${baseLinkedInUrl}?${params.toString()}`
   }
 
   const handleShareOption = (option: 'LinkedIn' | 'Email' | 'CopyURL' | 'View') => {
-    const credentialLink = `https://opencreds.net/view/${fileId}`
+    const credentialLink = `https://linkedcreds.allskillscount.org/view/${fileId}`
     if (option === 'LinkedIn') {
       const linkedInUrl = generateLinkedInUrl()
       window.open(linkedInUrl, '_blank', 'noopener noreferrer')
