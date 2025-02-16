@@ -206,7 +206,10 @@ const ClaimsPage: React.FC = () => {
     for (const file of claimsData) {
       const content = (await getContent(file)).data
       if (content['@context']) {
-        vcs.push(content)
+        vcs.push({
+          ...content,
+          id: file
+        })
       }
     }
     return vcs
@@ -604,6 +607,7 @@ const ClaimsPage: React.FC = () => {
                         color: 'primary.main',
                         '&:hover': { bgcolor: 'primary.50' }
                       }}
+                      onClick={() => handleLinkedInShare(claim)}
                     >
                       Share to LinkedIn
                     </Button>
