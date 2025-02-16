@@ -131,6 +131,26 @@ const ClaimsPage: React.FC = () => {
     setSelectedClaim(claim)
   }
 
+  const generateLinkedInUrl = (claim: any) => {
+    const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
+    const params = new URLSearchParams({
+      startTask: 'CERTIFICATION_NAME',
+      name: claim?.credentialName ?? 'Certification Name',
+      organizationName: 'LinkedTrust',
+      issueYear: '2024',
+      issueMonth: '8',
+      expirationYear: '2025',
+      expirationMonth: '8',
+      certUrl: `https://linkedcreds.allskillscount.com/view/${claim.id}`
+    })
+    return `${baseLinkedInUrl}?${params.toString()}`
+  }
+
+  const handleLinkedInShare = (claim: any) => {
+    const linkedInUrl = generateLinkedInUrl(claim)
+    window.open(linkedInUrl, '_blank')
+  }
+
   const handleDesktopMenuClose = () => {
     setDesktopMenuAnchorEl(null)
   }
@@ -175,13 +195,15 @@ const ClaimsPage: React.FC = () => {
 
   const getAllClaims = useCallback(async (): Promise<any> => {
     const claimsData = await storage?.getAllFilesData()
-    console.log('🚀 ~ getAllClaims ~ claimsData:', claimsData)
     if (!claimsData?.length) return []
     const vcs = []
     for (const file of claimsData) {
       const content = (await getContent(file)).data
       if (content['@context']) {
-        vcs.push(content)
+        vcs.push({
+          ...content,
+          id: file
+        })
       }
     }
     return vcs
@@ -447,6 +469,7 @@ const ClaimsPage: React.FC = () => {
                         color: 'primary.main',
                         '&:hover': { bgcolor: 'primary.50' }
                       }}
+                      onClick={() => handleLinkedInShare(claim)}
                     >
                       Share to LinkedIn
                     </Button>
@@ -525,7 +548,13 @@ const ClaimsPage: React.FC = () => {
             </Typography>
             <SVGExport />
           </MenuItem>
-          <MenuItem onClick={handleDesktopMenuClose} sx={{ py: 1.5, gap: 2 }}>
+          <MenuItem
+            onClick={e => {
+              handleLinkedInShare(selectedClaim)
+              handleDesktopMenuClose()
+            }}
+            sx={{ py: 1.5, gap: 2 }}
+          >
             <SVGLinkedIn />
             <Typography sx={{ textDecoration: 'underline', color: '#003fe0' }}>
               Share to LinkedIn
