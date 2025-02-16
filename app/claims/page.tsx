@@ -113,8 +113,9 @@ const ClaimsPage: React.FC = () => {
 
   const handleRecommendationClick = async (claimId: string, e?: React.MouseEvent) => {
     e?.stopPropagation()
-    const url = `${window.location.origin}/recommendations/${claimId}`
+    const url = `${window.location.origin}/askforrecommendation/${claimId}`
     await navigator.clipboard.writeText(url)
+    router.push(`/askforrecommendation/${claimId}`)
   }
 
   const handleEmailShare = (claim: any, e?: React.MouseEvent) => {
@@ -537,7 +538,7 @@ const ClaimsPage: React.FC = () => {
         >
           <MenuItem
             onClick={e => {
-              handleRecommendationClick(selectedClaim?.[0].id, e)
+              handleRecommendationClick(selectedClaim.id, e)
               handleDesktopMenuClose()
             }}
             sx={{ py: 1.5, gap: 2 }}
