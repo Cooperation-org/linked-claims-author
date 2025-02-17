@@ -112,6 +112,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   ) => {
     const credentialLink = `https://linkedcreds.allskillscount.org/view/${fileId}`
     const credentialData = res
+    console.log('🚀 ~ handleShareOption ~ credentialData:', {
+      ...credentialData,
+      id: fileId
+    })
 
     if (option === 'LinkedTrust') {
       fetch('https://dev.linkedtrust.us/api/credential', {
