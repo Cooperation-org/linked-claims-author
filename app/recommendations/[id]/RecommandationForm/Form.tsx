@@ -16,7 +16,7 @@ import { useStepContext } from '../../../credentialForm/form/StepContext'
 import { GoogleDriveStorage, saveToGoogleDrive } from '@cooperation/vc-storage'
 import { createDID } from '../../../utils/signCred'
 import { signCred } from '../../../utils/credential'
-import { useSession } from 'next-auth/react'
+import { useSession, signIn } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import { Logo } from '../../../Assets/SVGs'
 interface FormProps {
@@ -39,6 +39,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
   })
   const [submittedFullName, setSubmittedFullName] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [hasSignedIn, setHasSignedIn] = useState(false)
   const [tooltipText, setTooltipText] = useState('saving your recommendation')
   const [recId, setRecId] = useState<string | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<any[]>([])
@@ -74,6 +75,22 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
   }, [activeStep])
 
   const storage = new GoogleDriveStorage(accessToken as string)
+
+  const costumedHandleNextStep = async () => {
+    if (
+      activeStep === 0 &&
+      watch('storageOption') === 'Google Drive' &&
+      !accessToken &&
+      !hasSignedIn
+    ) {
+      const signInSuccess = await signIn('google')
+      if (!signInSuccess || !accessToken) return
+      setHasSignedIn(true)
+      handleNext()
+    } else {
+      handleNext()
+    }
+  }
 
   const saveAndAddComment = async () => {
     try {
@@ -303,7 +320,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
         <Buttons
           activeStep={activeStep}
           maxSteps={textGuid(fullName).length}
-          handleNext={handleNext}
+          handleNext={activeStep === 0 ? costumedHandleNextStep : () => handleNext()}
           handleSign={handleFormSubmit}
           handleBack={handleBack}
           isValid={isValid}
