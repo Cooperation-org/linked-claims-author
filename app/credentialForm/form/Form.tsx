@@ -35,6 +35,7 @@ const Form = ({ onStepChange }: any) => {
   const [fileId, setFileId] = useState('')
   const [image, setImage] = useState('')
   const [selectedFiles, setSelectedFiles] = useState<any[]>([])
+  const [res, setRes] = useState<any>(null)
 
   const characterLimit = 294
   const { data: session } = useSession()
@@ -192,6 +193,7 @@ const Form = ({ onStepChange }: any) => {
       setFileId(`${file.id}`)
 
       console.log('🚀 ~ handleFormSubmit ~ res:', res)
+      setRes(res)
       return res
     } catch (error: any) {
       console.error('Error during signing process:', error)
@@ -314,6 +316,7 @@ const Form = ({ onStepChange }: any) => {
                     fileId={fileId}
                     storageOption={watch('storageOption')}
                     selectedImage={image}
+                    res={res}
                   />
                 </Box>
               </Slide>
