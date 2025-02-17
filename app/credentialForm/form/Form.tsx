@@ -21,6 +21,7 @@ import SuccessPage from './Steps/SuccessPage'
 import FileUploadAndList from './Steps/Step3_uploadEvidence'
 import { Step1 } from './Steps/Step1_userName'
 import { Step2 } from './Steps/Step2_descreptionFields'
+import useGoogleDrive from '../../hooks/useGoogleDrive'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep, loading } = useStepContext()
@@ -39,7 +40,7 @@ const Form = ({ onStepChange }: any) => {
   const { data: session } = useSession()
   const accessToken = session?.accessToken
 
-  const storage = new GoogleDriveStorage(accessToken as string)
+  const { storage } = useGoogleDrive()
 
   const {
     register,
@@ -74,7 +75,7 @@ const Form = ({ onStepChange }: any) => {
   const handleFetchinguserSessions = async () => {
     try {
       if (!accessToken) return
-      const sessionFiles = await storage.getAllFilesByType('SESSIONs')
+      const sessionFiles = await storage?.getAllFilesByType('SESSIONs')
       if (!sessionFiles || sessionFiles.length === 0) return
       console.log('userSessions', sessionFiles)
       if (sessionFiles.length > 0) {
@@ -153,10 +154,12 @@ const Form = ({ onStepChange }: any) => {
         return
       }
 
-      const { didDocument, keyPair, issuerId } = await createDID(accessToken)
+      const { didDocument, keyPair, issuerId } = await createDID(
+        storage as GoogleDriveStorage
+      )
 
       const saveResponse = await saveToGoogleDrive({
-        storage,
+        storage: storage as GoogleDriveStorage,
         data: {
           didDocument,
           keyPair
@@ -167,9 +170,15 @@ const Form = ({ onStepChange }: any) => {
 
       console.log('access token', accessToken)
 
-      const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
+      const res = await signCred(
+        data,
+        issuerId,
+        keyPair,
+        'VC',
+        storage as GoogleDriveStorage
+      )
       const file = (await saveToGoogleDrive({
-        storage,
+        storage: storage as GoogleDriveStorage,
         data: res,
         type: 'VC'
       })) as any
@@ -187,6 +196,13 @@ const Form = ({ onStepChange }: any) => {
     } catch (error: any) {
       console.error('Error during signing process:', error)
       throw error
+    } finally {
+      console.log(
+        'AT: (hour - min - sec)',
+        new Date().getHours(),
+        new Date().getMinutes(),
+        new Date().getSeconds()
+      )
     }
   }
 

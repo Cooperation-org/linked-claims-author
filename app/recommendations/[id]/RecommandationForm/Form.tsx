@@ -19,6 +19,7 @@ import { signCred } from '../../../utils/credential'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import { Logo } from '../../../Assets/SVGs'
+import useGoogleDrive from '../../../hooks/useGoogleDrive'
 interface FormProps {
   fullName: string
   email: string
@@ -73,7 +74,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
     console.log('Active Step:', activeStep)
   }, [activeStep])
 
-  const storage = new GoogleDriveStorage(accessToken as string)
+  const { storage } = useGoogleDrive()
 
   const saveAndAddComment = async () => {
     try {
@@ -81,12 +82,12 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
         throw new Error('No access token provided.')
       }
       // Step 1: Create DID
-      const newDid = await createDID(accessToken)
+      const newDid = await createDID(storage as GoogleDriveStorage)
       const { didDocument, keyPair, issuerId } = newDid
 
       // Save the DID document and keyPair to Google Drive
       await saveToGoogleDrive({
-        storage,
+        storage: storage as GoogleDriveStorage,
         data: {
           didDocument,
           keyPair
@@ -101,12 +102,13 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
         issuerId,
         keyPair,
         'RECOMMENDATION',
-        VSFileId
+        VSFileId,
+        storage as GoogleDriveStorage
       )
 
       // Step 4: Save the signed recommendation to Google Drive
       const savedRecommendation = await saveToGoogleDrive({
-        storage,
+        storage: storage as GoogleDriveStorage,
         data: signedCred,
         type: 'RECOMMENDATION'
       })
