@@ -119,7 +119,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(credentialData)
+        body: JSON.stringify({
+          ...credentialData,
+          id: fileId
+        })
       })
         .then(response => {
           if (!response.ok) {
