@@ -19,7 +19,9 @@ import {
   DialogTitle,
   Menu,
   MenuItem,
-  Divider
+  Divider,
+  Snackbar,
+  Alert
 } from '@mui/material'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -46,6 +48,12 @@ interface Claim {
   [x: string]: any
   id: string
   achievementName: string
+}
+
+interface SnackbarState {
+  open: boolean
+  message: string
+  severity: 'success' | 'error'
 }
 
 const borderColors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f97316', '#22c55e', '#6366f1']
@@ -103,6 +111,11 @@ const ClaimsPage: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [showOverlappingCards, setShowOverlappingCards] = useState(false)
   const [desktopMenuAnchorEl, setDesktopMenuAnchorEl] = useState<null | HTMLElement>(null)
+  const [snackbar, setSnackbar] = useState<SnackbarState>({
+    open: false,
+    message: '',
+    severity: 'success'
+  })
 
   const { data: session } = useSession()
   console.log(':  session', session)
@@ -116,6 +129,40 @@ const ClaimsPage: React.FC = () => {
     const url = `${window.location.origin}/askforrecommendation/${claimId}`
     await navigator.clipboard.writeText(url)
     router.push(`/askforrecommendation/${claimId}`)
+  }
+
+  const showNotification = (message: string, severity: 'success' | 'error') => {
+    setSnackbar({
+      open: true,
+      message,
+      severity
+    })
+  }
+
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, open: false }))
+  }
+
+  const handleLinkedTrustShare = (claim: any) => {
+    console.log('🚀 ~ handleLinkedTrustShare ~ claim:', claim)
+    fetch('https://dev.linkedtrust.us/api/credential', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(claim)
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+        console.log('🚀 ~ handleShareOption ~ response:', response)
+        showNotification('Successfully shared with LinkedTrust', 'success')
+      })
+      .catch(error => {
+        console.error('Error sharing with LinkedTrust:', error)
+        showNotification('Failed to share with LinkedTrust', 'error')
+      })
   }
 
   const handleEmailShare = (claim: any, e?: React.MouseEvent) => {
@@ -197,16 +244,27 @@ const ClaimsPage: React.FC = () => {
   const getAllClaims = useCallback(async (): Promise<any> => {
     const claimsData = await storage?.getAllFilesData()
     if (!claimsData?.length) return []
+
     const vcs = []
     for (const file of claimsData) {
-      const content = (await getContent(file)).data
-      if (content['@context']) {
-        vcs.push({
-          ...content,
-          id: file
-        })
+      try {
+        const contentResponse = await getContent(file)
+        const content = contentResponse?.data
+
+        // Check if content exists and has @context property
+        if (content && '@context' in content) {
+          vcs.push({
+            ...content,
+            id: file
+          })
+        }
+      } catch (error) {
+        console.error(`Error processing file ${file}:`, error)
+        // Continue with the next file even if one fails
+        continue
       }
     }
+
     return vcs
   }, [storage, getContent])
 
@@ -400,6 +458,7 @@ const ClaimsPage: React.FC = () => {
                       }}
                     >
                       <Button
+                        onClick={() => handleLinkedTrustShare(claim)}
                         startIcon={<PeopleAltIcon />}
                         sx={{
                           bgcolor: '#eff6ff',
@@ -412,7 +471,7 @@ const ClaimsPage: React.FC = () => {
                           color: '#003fe0'
                         }}
                       >
-                        Share
+                        Share with LinkedTrust
                       </Button>
                       <Divider orientation='vertical' flexItem color='#003fe0' />
                       <Button
@@ -473,6 +532,19 @@ const ClaimsPage: React.FC = () => {
                       onClick={() => handleLinkedInShare(claim)}
                     >
                       Share to LinkedIn
+                    </Button>
+                    <Button
+                      startIcon={<PeopleAltIcon />}
+                      endIcon={<SVGExport />}
+                      fullWidth
+                      sx={{
+                        justifyContent: 'flex-start',
+                        color: 'primary.main',
+                        '&:hover': { bgcolor: 'primary.50' }
+                      }}
+                      onClick={() => handleLinkedTrustShare(claim)}
+                    >
+                      Share to LinkedTrust
                     </Button>
                     <Button
                       startIcon={<SVGEmail />}
@@ -655,7 +727,16 @@ const ClaimsPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       <LoadingOverlay text='Deleting...' open={showOverlappingCards} />
     </Box>
   )
