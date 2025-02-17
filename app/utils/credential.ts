@@ -1,4 +1,3 @@
-import { storage } from 'googleapis/build/src/apis/storage'
 import { CredentialEngine, GoogleDriveStorage } from '@cooperation/vc-storage'
 import { FormData } from '../credentialForm/form/types/Types'
 

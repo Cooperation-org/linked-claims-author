@@ -73,7 +73,7 @@ const Footer = () => {
               fontWeight: 400
             }}
           >
-            Copyright, LinkedClaims, 2024
+            Copyright, LinkedCreds, 2024
           </Typography>
           <Link href={'/privacy'}>
             <Typography
@@ -90,7 +90,7 @@ const Footer = () => {
               Data & Privacy Policy
             </Typography>
           </Link>
-          {/* <Link href={'mailto:support@opencreds.net'}>
+          {/* <Link href={'mailto:support@linkedcreds.allskillscount.org'}>
             <Typography
               sx={{
                 color: theme.palette.t3LightGray,
@@ -102,7 +102,7 @@ const Footer = () => {
                 cursor: 'pointer'
               }}
             >
-              support@opencreds.net
+              support@linkedcreds.allskillscount.org
             </Typography>
           </Link> */}
         </Box>

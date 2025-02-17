@@ -17,19 +17,19 @@ const TermsOfService = () => {
       }}
     >
       <Typography variant='h4' sx={{ fontWeight: 700, mb: 2 }}>
-        OpenCreds Terms of Service
+        LinkedCreds Terms of Service
       </Typography>
 
       <Typography sx={{ fontWeight: 600 }}>Acceptance of Terms</Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        By accessing or using the OpenCreds platform, you agree to comply with and be
+        By accessing or using the LinkedCreds platform, you agree to comply with and be
         bound by these Terms of Service. If you do not agree with these terms, you should
         not use our services.
       </Typography>
 
       <Typography sx={{ fontWeight: 600 }}>Use of Services</Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        OpenCreds provides a platform for creating, sharing, and verifying credentials.
+        LinkedCreds provides a platform for creating, sharing, and verifying credentials.
         Users are responsible for ensuring that their use of the platform is in compliance
         with all applicable laws and regulations.
       </Typography>
@@ -44,14 +44,14 @@ const TermsOfService = () => {
 
       <Typography sx={{ fontWeight: 600 }}>Intellectual Property</Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        All content, trademarks, and data provided on the OpenCreds platform are the
-        property of OpenCreds or its licensors. Users may not reproduce, distribute, or
+        All content, trademarks, and data provided on the LinkedCreds platform are the
+        property of LinkedCreds or its licensors. Users may not reproduce, distribute, or
         create derivative works without prior written consent.
       </Typography>
 
       <Typography sx={{ fontWeight: 600 }}>Limitation of Liability</Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        OpenCreds is not liable for any indirect, incidental, or consequential damages
+        LinkedCreds is not liable for any indirect, incidental, or consequential damages
         resulting from the use of or inability to use the platform. This includes, but is
         not limited to, loss of data, profits, or business opportunities.
       </Typography>
@@ -72,8 +72,8 @@ const TermsOfService = () => {
 
       <Typography sx={{ fontWeight: 600 }}>Changes to Terms</Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
-        OpenCreds reserves the right to modify these Terms of Service at any time. We will
-        notify users of significant changes by posting the new terms on our website.
+        LinkedCreds reserves the right to modify these Terms of Service at any time. We
+        will notify users of significant changes by posting the new terms on our website.
         Continued use of the platform after changes are posted constitutes acceptance of
         the updated terms.
       </Typography>
@@ -81,7 +81,7 @@ const TermsOfService = () => {
       <Typography sx={{ fontWeight: 600 }}>Contact Information</Typography>
       <Typography sx={{ fontSize: '16px', lineHeight: '1.6' }}>
         If you have any questions or concerns about these Terms of Service, please contact
-        us at <Link href='mailto:support@opencreds.com'>support@opencreds.com</Link>.
+        us at <Link href='mailto:support@LinkedCreds.com'>support@LinkedCreds.com</Link>.
       </Typography>
 
       <Typography

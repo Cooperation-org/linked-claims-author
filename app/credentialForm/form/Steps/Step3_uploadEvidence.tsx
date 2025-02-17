@@ -156,7 +156,6 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
             console.error(`❌ Upload failed for file: ${fileItem.name}`)
             return fileItem
           }
-
           return {
             ...fileItem,
             googleId: uploadedFile.id,
