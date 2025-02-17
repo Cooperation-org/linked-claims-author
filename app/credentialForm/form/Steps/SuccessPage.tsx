@@ -37,6 +37,7 @@ interface SuccessPageProps {
   storageOption: string
   fileId: string
   selectedImage: string
+  res: any
 }
 
 interface SnackbarState {
@@ -50,7 +51,8 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   reset,
   setLink,
   setFileId,
-  fileId
+  fileId,
+  res
 }) => {
   const { setActiveStep } = useStepContext()
   const [snackbar, setSnackbar] = useState<SnackbarState>({
@@ -105,8 +107,34 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     return `${baseLinkedInUrl}?${params.toString()}`
   }
 
-  const handleShareOption = (option: 'LinkedIn' | 'Email' | 'CopyURL' | 'View') => {
+  const handleShareOption = (
+    option: 'LinkedIn' | 'Email' | 'CopyURL' | 'View' | 'LinkedTrust'
+  ) => {
     const credentialLink = `https://linkedcreds.allskillscount.org/view/${fileId}`
+    const credentialData = res
+
+    if (option === 'LinkedTrust') {
+      fetch('https://dev.linkedtrust.us/api/credential', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentialData)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok')
+          }
+          console.log('🚀 ~ handleShareOption ~ response:', response)
+          showNotification('Successfully shared with LinkedTrust', 'success')
+        })
+        .catch(error => {
+          console.error('Error sharing with LinkedTrust:', error)
+          showNotification('Failed to share with LinkedTrust', 'error')
+        })
+      return
+    }
+
     if (option === 'LinkedIn') {
       const linkedInUrl = generateLinkedInUrl()
       window.open(linkedInUrl, '_blank', 'noopener noreferrer')
@@ -353,14 +381,13 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           <NewLinkedin />
           Share to LinkedIn
         </Button>
-        {/* <Button
+        <Button
           disabled={!fileId}
-          onClick={() => handleShareOption('Email')}
+          onClick={() => handleShareOption('LinkedTrust')}
           sx={buttonStyles}
         >
-          <NewEmail />
-          Share via Email
-        </Button> */}
+          Share with Linked Trust
+        </Button>
       </Box>
 
       <Stack
