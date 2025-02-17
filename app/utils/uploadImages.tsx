@@ -1,9 +1,9 @@
-import { GoogleDriveStorage, uploadToGoogleDrive } from '@cooperation/vc-storage'
+import { GoogleDriveStorage } from '@cooperation/vc-storage'
 
 export const uploadImages = async (
   selectedFiles: any[],
   watch: any,
-  storage: any,
+  storage: GoogleDriveStorage,
   setValue: any,
   setSelectedFiles: any
 ) => {
@@ -22,10 +22,7 @@ export const uploadImages = async (
           type: fileItem.file.type
         })
 
-        const uploadedFile = await uploadToGoogleDrive(
-          storage as GoogleDriveStorage,
-          newFile
-        )
+        const uploadedFile = await storage.uploadBinaryFile({ file: newFile })
         const fileId = (uploadedFile as { id: string }).id
 
         return {
