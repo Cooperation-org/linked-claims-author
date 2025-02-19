@@ -69,9 +69,6 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
       setStoreNewValue(formData)
     }
   }, [formData, storedValue, setStoreNewValue])
-  useEffect(() => {
-    console.log('Active Step:', activeStep)
-  }, [activeStep])
 
   const storage = new GoogleDriveStorage(accessToken as string)
 
@@ -120,7 +117,6 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
 
   const handleFormSubmit = handleSubmit(async (data: FormData) => {
     try {
-      console.log('Form Data:', data)
       setIsLoading(true)
       setTooltipText('saving your recommendation')
       setTimeout(() => {

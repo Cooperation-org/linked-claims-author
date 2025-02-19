@@ -22,6 +22,7 @@ const CredentialData = () => {
   const idArray = Array.isArray(params?.id) ? params.id[0] : undefined
   const id = typeof params?.id === 'string' ? params.id : idArray
 
+  const { storage } = useGoogleDrive()
   useEffect(() => {
     const fetchData = async () => {
       if (!id) {
@@ -31,8 +32,7 @@ const CredentialData = () => {
       }
 
       try {
-        const content = await getContent(id)
-        // console.log('Fetched Content:', content)
+        const content = await storage?.retrieve(id)
         const credentialSubject = content?.data?.credentialSubject
         if (credentialSubject?.name) {
           setFullName(credentialSubject.name)
@@ -55,7 +55,7 @@ const CredentialData = () => {
     }
 
     fetchData()
-  }, [id, getContent, fetchFileMetadata, ownerEmail])
+  }, [id, getContent, fetchFileMetadata, ownerEmail, storage])
 
   if (loading) {
     return (
