@@ -11,7 +11,7 @@ import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { styled } from '@mui/material/styles'
-import { Button } from '@mui/material'
+import { Button, CircularProgress } from '@mui/material'
 
 const Page = () => {
   const { storage } = useGoogleDrive()
@@ -22,6 +22,7 @@ const Page = () => {
     qualifications: string
     portfolio: any
   } | null>()
+  const [loading, setLoading] = useState(true)
 
   const SectionTitle = styled(Typography)(({ theme }) => ({
     fontSize: '0.875rem',
@@ -56,13 +57,24 @@ const Page = () => {
 
   useEffect(() => {
     const fetchRecommendation = async () => {
-      if (!recId || !storage) {
-        console.log('No recommendation file recId')
-        return
+      setLoading(true)
+      try {
+        if (!recId) {
+          console.log('No recommendation file recId')
+          return
+        }
+        const recommendation = await storage?.retrieve(recId as string)
+        if (!recommendation) {
+          console.log('No recommendation file')
+          return
+        }
+        const recBody = JSON.parse(recommendation?.data?.body)
+        setRecommendation(recBody.credentialSubject)
+      } catch (error) {
+        console.error('Error fetching recommendation:', error)
+      } finally {
+        setLoading(false)
       }
-      const recommendation = await storage.retrieve(recId as string)
-      setRecommendation(recommendation?.data.credentialSubject)
-      console.log('Recommendation file recId:', recommendation)
     }
     fetchRecommendation()
   }, [recId, storage])
@@ -77,21 +89,41 @@ const Page = () => {
         vcId: vcId as string,
         storage
       })
-      console.log('🚀 ~ handleApprove ~ master:', master)
       await storage.updateRelationsFile({
         relationsFileId: master.relationsFileId,
         recommendationFileId: recId as string
       })
+      console.log('Successfully approving recommendation!')
     } catch (error) {
       console.error('Error approving recommendation:', error)
     }
-    console.log('Approve recommendation')
   }
-
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh'
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
   return (
     <Box sx={{ p: 3 }}>
-      <h1>Review the recommendation</h1>
-      {recommendation ? (
+      <Typography
+        variant='h4'
+        sx={{
+          textAlign: 'center',
+          marginBottom: '20px'
+        }}
+      >
+        Review the recommendation
+      </Typography>
+      {recommendation && (
         <Card
           sx={{
             maxWidth: 672,
@@ -221,8 +253,6 @@ const Page = () => {
             </Button>
           </Box>
         </Card>
-      ) : (
-        <Box>the recommendation not available</Box>
       )}
     </Box>
   )
