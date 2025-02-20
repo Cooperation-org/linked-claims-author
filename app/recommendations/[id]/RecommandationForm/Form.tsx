@@ -19,6 +19,7 @@ import { signCred } from '../../../utils/credential'
 import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import { Logo } from '../../../Assets/SVGs'
+import useGoogleDrive from '../../../hooks/useGoogleDrive'
 interface FormProps {
   fullName: string
   email: string
@@ -28,6 +29,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const { data: session } = useSession()
   const accessToken = session?.accessToken
+  console.log('🚀 ~ accessToken:', accessToken)
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
     fullName: '',
@@ -70,7 +72,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
     }
   }, [formData, storedValue, setStoreNewValue])
 
-  const storage = new GoogleDriveStorage(accessToken as string)
+  const { storage } = useGoogleDrive()
 
   const saveAndAddComment = async () => {
     try {
@@ -83,7 +85,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
 
       // Save the DID document and keyPair to Google Drive
       await saveToGoogleDrive({
-        storage,
+        storage: storage as GoogleDriveStorage,
         data: {
           didDocument,
           keyPair
@@ -103,7 +105,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
 
       // Step 4: Save the signed recommendation to Google Drive
       const savedRecommendation = await saveToGoogleDrive({
-        storage,
+        storage: storage as GoogleDriveStorage,
         data: signedCred,
         type: 'RECOMMENDATION'
       })
