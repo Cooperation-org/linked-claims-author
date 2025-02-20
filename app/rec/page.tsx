@@ -63,12 +63,20 @@ const Page = () => {
           console.log('No recommendation file recId')
           return
         }
-        const recommendation = await storage?.retrieve(recId as string)
+        // const recommendation = await storage?.retrieve(recId as string)
+        const recommendation = await fetch('/api/drive/' + recId)
         if (!recommendation) {
           console.log('No recommendation file')
           return
         }
-        const recBody = JSON.parse(recommendation?.data?.body)
+        const recData = await recommendation.json()
+        console.log('🚀 ~ fetchRecommendation ~ recData:', recData)
+
+        if (!recommendation) {
+          console.log('No recommendation file')
+          return
+        }
+        const recBody = recData?.body ? JSON.parse(recData?.body) : recData
         setRecommendation(recBody.credentialSubject)
       } catch (error) {
         console.error('Error fetching recommendation:', error)
