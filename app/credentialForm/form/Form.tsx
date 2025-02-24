@@ -21,6 +21,7 @@ import SuccessPage from './Steps/SuccessPage'
 import FileUploadAndList from './Steps/Step3_uploadEvidence'
 import { Step1 } from './Steps/Step1_userName'
 import { Step2 } from './Steps/Step2_descreptionFields'
+import { storeFileTokens } from '../../firebase/storage'
 
 const Form = ({ onStepChange }: any) => {
   const { activeStep, handleNext, handleBack, setActiveStep, loading } = useStepContext()
@@ -39,6 +40,7 @@ const Form = ({ onStepChange }: any) => {
   const characterLimit = 294
   const { data: session } = useSession()
   const accessToken = session?.accessToken
+  const refreshToken = session?.refreshToken
 
   const storage = new GoogleDriveStorage(accessToken as string)
 
@@ -174,6 +176,19 @@ const Form = ({ onStepChange }: any) => {
         data: res,
         type: 'VC'
       })) as any
+      try {
+        await storeFileTokens({
+          googleFileId: file.id,
+          tokens: {
+            accessToken: accessToken,
+            refreshToken: refreshToken as string,
+            expiresAt: Date.now() + 3600 * 3000 // 50 minutes
+          }
+        })
+      } catch (error) {
+        console.error('Error storing file tokens:', error)
+        throw error
+      }
 
       const folderIds = await storage?.getFileParents(file.id)
       const relationFile = await storage?.createRelationsFile({
