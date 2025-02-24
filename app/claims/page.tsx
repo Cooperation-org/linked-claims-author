@@ -42,6 +42,7 @@ import {
   BlueBadge,
   SVGExport
 } from '../Assets/SVGs'
+import { getAccessToken } from '../firebase/storage'
 
 // Types
 interface Claim {
@@ -118,7 +119,7 @@ const ClaimsPage: React.FC = () => {
   })
 
   const { data: session } = useSession()
-  console.log(':  session', session)
+
   const { storage, getContent } = useGoogleDrive()
   const { storage, getContent } = useGoogleDrive()
   const router = useRouter()
@@ -245,16 +246,39 @@ const ClaimsPage: React.FC = () => {
       setExpandedCard(null)
     }
   }
-
+  const getFileViaFirebase = async (fileId: string) => {
+    try {
+      // 1- getAccessToken   2- fetch file
+      const accessToken = await getAccessToken(fileId)
+      const fileContent = await fetch(
+        `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      )
+      const fileData = await fileContent.json()
+      console.log('🚀 ~ getFileViaFirebase ~ fileContent:', fileId, fileData)
+      return fileContent
+    } catch (error) {
+      console.error(`Error retrieving file ${fileId} from Firebase:`, error)
+      return null
+    }
+  }
   const getAllClaims = useCallback(async (): Promise<any> => {
-    const claimsData = await storage?.getAllFilesData()
+    const claimsData = await storage?.getAllFilesByType('VCs')
+    console.log('🚀 ~ getAllClaims ~ claimsData:', claimsData)
+
     if (!claimsData?.length) return []
 
     const vcs = []
     for (const file of claimsData) {
       try {
-        const contentResponse = await getContent(file)
-        const content = contentResponse?.data
+        const contentResponse = await getFileViaFirebase(file.id as string)
+        const content = JSON.parse(file?.data?.body)
+        console.log('🚀 ~ getAllClaims ~ content:', content)
 
         // Check if content exists and has @context property
         if (content && '@context' in content) {
@@ -271,7 +295,7 @@ const ClaimsPage: React.FC = () => {
     }
 
     return vcs
-  }, [storage, getContent])
+  }, [storage])
 
   useEffect(() => {
     const fetchClaims = async () => {
@@ -403,7 +427,7 @@ const ClaimsPage: React.FC = () => {
                         textDecoration: 'underline'
                       }}
                     >
-                      {claim.credentialSubject.achievement[0].name}
+                      {/* {claim.credentialSubject.achievement[0].name} */}
                     </Typography>
                   </Box>
                 ) : (
@@ -418,7 +442,7 @@ const ClaimsPage: React.FC = () => {
                           fontSize: '1.25rem'
                         }}
                       >
-                        {claim.credentialSubject.achievement[0].name} -
+                        {/* {claim.credentialSubject.achievement[0].name} - */}
                       </Typography>
                       <Typography
                         sx={{
