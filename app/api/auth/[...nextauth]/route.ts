@@ -1,6 +1,8 @@
 import NextAuth from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { setCookie } from '../../../utils/cookie'
+import { storeFileTokens } from '../../../firebase/storage'
+import { refreshAccessToken } from '../../../utils/refreshToken'
 
 declare module 'next-auth' {
   interface Session {
@@ -52,6 +54,7 @@ const handler = NextAuth({
 
         setCookie('accessToken', accessToken as string, { expires: 60 * 60 * 24 * 30 }) // Expire in 30 days
         setCookie('refreshToken', refreshToken as string, { expires: 60 * 60 * 24 * 30 })
+
         return {
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
@@ -98,50 +101,9 @@ const handler = NextAuth({
   },
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60 * 24 * 2, // 2 days
+    maxAge: 60 * 60 * 24 * 7, // 2 days
     updateAge: 60 * 60 * 24 // 1 day
   }
 })
-
-async function refreshAccessToken(token: any) {
-  try {
-    const url = 'https://oauth2.googleapis.com/token'
-
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      method: 'POST',
-      body: new URLSearchParams({
-        client_id: process.env.GOOGLE_CLIENT_ID ?? '',
-        client_secret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-        grant_type: 'refresh_token',
-        refresh_token: token.refreshToken
-      })
-    })
-
-    const refreshedTokens = await response.json()
-    console.log(':  refreshAccessToken  refreshedTokens', refreshedTokens)
-
-    if (!response.ok) {
-      throw refreshedTokens
-    }
-
-    return {
-      ...token,
-      accessToken: refreshedTokens.access_token,
-      expires: Date.now() + refreshedTokens.expires_in * 1000,
-      // If no new refresh token is returned, keep the old one
-      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken
-    }
-  } catch (error) {
-    console.error('Error refreshing access token', error)
-
-    return {
-      ...token,
-      error: 'RefreshAccessTokenError'
-    }
-  }
-}
 
 export { handler as GET, handler as POST }
