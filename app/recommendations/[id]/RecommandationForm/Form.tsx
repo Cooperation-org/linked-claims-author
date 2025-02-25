@@ -20,6 +20,7 @@ import { useSession } from 'next-auth/react'
 import ComprehensiveClaimDetails from '../../../view/[id]/ComprehensiveClaimDetails'
 import { Logo } from '../../../Assets/SVGs'
 import useGoogleDrive from '../../../hooks/useGoogleDrive'
+import { storeFileTokens } from '../../../firebase/storage'
 interface FormProps {
   fullName: string
   email: string
@@ -29,7 +30,8 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
   const { activeStep, handleNext, handleBack, setActiveStep } = useStepContext()
   const { data: session } = useSession()
   const accessToken = session?.accessToken
-  console.log('🚀 ~ accessToken:', accessToken)
+  const refreshToken = session?.refreshToken
+
   const [storedValue, setStoreNewValue, clearValue] = useLocalStorage('formData', {
     storageOption: 'Google Drive',
     fullName: '',
@@ -84,7 +86,7 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
       const { didDocument, keyPair, issuerId } = newDid
 
       // Save the DID document and keyPair to Google Drive
-      await saveToGoogleDrive({
+      const file = await saveToGoogleDrive({
         storage: storage as GoogleDriveStorage,
         data: {
           didDocument,
@@ -109,8 +111,15 @@ const Form: React.FC<FormProps> = ({ fullName, email }) => {
         data: signedCred,
         type: 'RECOMMENDATION'
       })
+      await storeFileTokens({
+        googleFileId: savedRecommendation.id,
+        tokens: {
+          accessToken,
+          refreshToken: refreshToken as string
+        }
+      })
       setRecId(savedRecommendation.id)
-      return signedCred // Return the signed credential as a result
+      return signedCred
     } catch (error: any) {
       console.error('Error during signing process:', error.message)
       throw error

@@ -2,7 +2,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import {
-  Alert,
   Box,
   CircularProgress,
   Typography,
@@ -23,10 +22,10 @@ import { usePathname, useParams } from 'next/navigation'
 import { SVGDate, SVGBadge, CheckMarkSVG, LineSVG } from '../../Assets/SVGs'
 import { useSession } from 'next-auth/react'
 import useGoogleDrive from '../../hooks/useGoogleDrive'
-import Image from 'next/image'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
-import { getVCWithRecommendations } from '@cooperation/vc-storage'
+import { GoogleDriveStorage } from '@cooperation/vc-storage'
 import EvidencePreview from './EvidencePreview'
+import { getAccessToken, getFileViaFirebase } from '../../firebase/storage'
 // Define types
 interface Portfolio {
   name: string
@@ -51,14 +50,12 @@ interface CredentialSubject {
   explainAnswer?: string
 }
 interface ClaimDetail {
-  data: {
-    '@context': string[]
-    id: string
-    type: string[]
-    issuanceDate: string
-    expirationDate: string
-    credentialSubject: CredentialSubject
-  }
+  '@context': string[]
+  id: string
+  type: string[]
+  issuanceDate: string
+  expirationDate: string
+  credentialSubject: CredentialSubject
 }
 interface ComprehensiveClaimDetailsProps {
   onAchievementLoad?: (achievementName: string) => void
@@ -90,8 +87,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   const accessToken = session?.accessToken
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
   const isView = pathname?.includes('/view')
-  const { getContent, fetchFileMetadata, storage } = useGoogleDrive()
-  // State to manage expanded comments
+  const {} = useGoogleDrive()
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
   useEffect(() => {
     if (!fileID) {
@@ -113,27 +109,33 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     }
     const fetchDriveData = async () => {
       try {
-        const content = await getContent(fileID)
-        if (content) {
-          setClaimDetail(content as unknown as ClaimDetail)
-          const achievementName = content?.data?.credentialSubject?.achievement?.[0]?.name
-          if (achievementName && onAchievementLoad) {
-            onAchievementLoad(achievementName)
-          }
+        const accessToken1 = await getAccessToken(fileID)
+        const uncachedStorage = new GoogleDriveStorage(accessToken1)
+        let vcData = await getFileViaFirebase(fileID)
+        vcData = JSON.parse(vcData.body)
+
+        if (vcData) {
+          setClaimDetail(vcData as unknown as ClaimDetail)
         }
-        await fetchFileMetadata(fileID, '')
-        //todo get recommendations from RELATIONS file recommendation array
-        if (!storage || !fileID) {
-          console.warn('Storage instance is not available.')
-          return
-        }
+
         const type = window.location.pathname.includes('view')
         if (type) {
-          const { recommendations } = await getVCWithRecommendations({
-            vcId: fileID,
-            storage
-          })
-          console.log('🚀 ~ fetchDriveData ~ recommendations:', recommendations)
+          const vcFolderId = await uncachedStorage.getFileParents(fileID)
+          const files = await uncachedStorage.findFilesUnderFolder(vcFolderId)
+          const relationsFile = files.find((f: any) => f.name === 'RELATIONS')
+
+          const relationsContent = await uncachedStorage.retrieve(relationsFile.id)
+          const relationsData = relationsContent?.data.body
+            ? JSON.parse(relationsContent?.data.body)
+            : relationsContent?.data
+
+          const recommendationIds = relationsData.recommendations || []
+          const recommendations = await Promise.all(
+            recommendationIds.map(async (rec: string) => {
+              const recFile = await getFileViaFirebase(rec)
+              return JSON.parse(recFile.body)
+            })
+          )
           if (recommendations) {
             setComments(recommendations as any)
           }
@@ -147,7 +149,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     }
 
     fetchDriveData()
-  }, [accessToken, fileID, getContent])
+  }, [accessToken, fileID, status])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -179,7 +181,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       )
     }
   }, 2000)
-  const credentialSubject = claimDetail?.data?.credentialSubject
+  const credentialSubject = claimDetail?.credentialSubject
   const achievement = credentialSubject?.achievement && credentialSubject.achievement[0]
   const hasValidEvidence =
     credentialSubject?.portfolio && credentialSubject?.portfolio.length > 0
@@ -444,11 +446,11 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                       <IconButton
                         edge='end'
                         onClick={() =>
-                          handleToggleComment(comment.data.id || index.toString())
+                          handleToggleComment(comment.id || index.toString())
                         }
                         aria-label='expand'
                       >
-                        {expandedComments[comment.data.id || index.toString()] ? (
+                        {expandedComments[comment.id || index.toString()] ? (
                           <ExpandLess />
                         ) : (
                           <ExpandMore />
@@ -462,7 +464,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                           <SVGBadge />
                           <Box>
                             <Typography variant='h6' component='div'>
-                              {comment.data.credentialSubject?.name}
+                              {comment.credentialSubject?.name}
                             </Typography>
                             <Typography variant='body2' color='text.secondary'>
                               Vouched for {credentialSubject?.name}
@@ -473,13 +475,13 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                     />
                   </ListItem>
                   <Collapse
-                    in={expandedComments[comment.data.id || index.toString()]}
+                    in={expandedComments[comment.id || index.toString()]}
                     timeout='auto'
                     unmountOnExit
                   >
                     <Box sx={{ pl: 7, pr: 2, pb: 2 }}>
                       {/* How They Know Each Other */}
-                      {comment.data.credentialSubject?.howKnow && (
+                      {comment.credentialSubject?.howKnow && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             How They Know Each Other:
@@ -487,14 +489,14 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                           <Typography variant='body2'>
                             <span
                               dangerouslySetInnerHTML={{
-                                __html: cleanHTML(comment.data.credentialSubject.howKnow)
+                                __html: cleanHTML(comment.credentialSubject.howKnow)
                               }}
                             />
                           </Typography>
                         </Box>
                       )}
                       {/* Recommendation Text */}
-                      {comment.data.credentialSubject?.recommendationText && (
+                      {comment.credentialSubject?.recommendationText && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Recommendation:
@@ -503,7 +505,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: cleanHTML(
-                                  comment.data.credentialSubject.recommendationText
+                                  comment.credentialSubject.recommendationText
                                 )
                               }}
                             />
@@ -511,7 +513,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                         </Box>
                       )}
                       {/* Your Qualifications */}
-                      {comment.data.credentialSubject?.qualifications && (
+                      {comment.credentialSubject?.qualifications && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Your Qualifications:
@@ -520,7 +522,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: cleanHTML(
-                                  comment.data.credentialSubject.qualifications
+                                  comment.credentialSubject.qualifications
                                 )
                               }}
                             />
@@ -528,7 +530,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                         </Box>
                       )}
                       {/* Explain Your Answer */}
-                      {comment.data.credentialSubject?.explainAnswer && (
+                      {comment.credentialSubject?.explainAnswer && (
                         <Box sx={{ mt: 1 }}>
                           <Typography variant='subtitle2' color='text.secondary'>
                             Explain Your Answer:
@@ -536,22 +538,20 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                           <Typography variant='body2'>
                             <span
                               dangerouslySetInnerHTML={{
-                                __html: cleanHTML(
-                                  comment.data.credentialSubject.explainAnswer
-                                )
+                                __html: cleanHTML(comment.credentialSubject.explainAnswer)
                               }}
                             />
                           </Typography>
                         </Box>
                       )}
                       {/* Supporting Evidence */}
-                      {Array.isArray(comment.data.credentialSubject?.portfolio) &&
-                        comment.data.credentialSubject.portfolio.length > 0 && (
+                      {Array.isArray(comment.credentialSubject?.portfolio) &&
+                        comment.credentialSubject.portfolio.length > 0 && (
                           <Box sx={{ mt: 1 }}>
                             <Typography variant='subtitle2' color='text.secondary'>
                               Supporting Evidence:
                             </Typography>
-                            {comment.data.credentialSubject.portfolio.map((item, idx) => (
+                            {comment.credentialSubject.portfolio.map((item, idx) => (
                               <Box key={`comment-portfolio-${idx}`} sx={{ mt: 1 }}>
                                 {item.name && item.url ? (
                                   <MuiLink

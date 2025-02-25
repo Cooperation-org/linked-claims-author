@@ -124,10 +124,9 @@ const FileUploadAndList: React.FC<FileUploadAndListProps> = ({
           const newFile = new File([fileItem.file], fileItem.name, {
             type: fileItem.file.type
           })
-          const uploadedFile = await uploadToGoogleDrive(
-            storage as GoogleDriveStorage,
-            newFile
-          )
+          const uploadedFile = await storage?.uploadBinaryFile({
+            file: newFile
+          })
           const fileId = (uploadedFile as { id: string }).id
           return {
             ...fileItem,

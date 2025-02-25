@@ -4,7 +4,6 @@ import { db } from './config/firebase'
 interface FileTokens {
   accessToken: string
   refreshToken: string
-  expiresAt: number // Timestamp when the access token expires
 }
 
 interface UserTokens {
@@ -13,6 +12,26 @@ interface UserTokens {
   expiresAt: number
 }
 
+export const getFileViaFirebase = async (fileId: string) => {
+  try {
+    // 1- getAccessToken   2- fetch file
+    const accessToken = await getAccessToken(fileId)
+    const fileContent = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${'ya29.a0AeXRPp7cWg3-bgT2p_p9p3QZ8SDLqJ0_usW5DV9mzOFvXcmHiTmMeTkLt4mFy8Mro4okBKxrML0myhknW9sgVwUlOFIjdR6K2NAQ6FrzLAVAjn7T_LdrsibfrdLtKpOBHycFd5M7zYo3pMJ_q135CGcdfxnk9efKtNnQRG3gSQaCgYKASASARISFQHGX2MiUKfHrH1IL2VwVhDyjcwRjg0177'}`
+        }
+      }
+    )
+    const data = await fileContent.json()
+    return data
+  } catch (error) {
+    console.error(`Error retrieving file ${fileId} from Firebase:`, error)
+    return null
+  }
+}
 /**
  * Stores both access and refresh tokens in Firestore for a Google Drive file.
  */
@@ -24,13 +43,14 @@ export const storeFileTokens = async ({
   tokens: FileTokens
 }): Promise<void> => {
   try {
-    if (!tokens.accessToken || !tokens.refreshToken || !tokens.expiresAt) {
+    if (!tokens.accessToken || !tokens.refreshToken) {
       throw new Error('Invalid tokens object')
     }
     await setDoc(
       doc(db, 'files', googleFileId),
       {
         createdAt: Date.now(),
+        expiresAt: Date.now() + 3600 * 1000, // 1 hour from now,
         ...tokens
       },
       {
@@ -56,13 +76,14 @@ export const getAccessToken = async (fileId: string) => {
     }
 
     const data = docSnap.data()
+
     if (!data || !data.accessToken || !data.expiresAt) {
       console.error(`Invalid token data for file: ${fileId}`)
       return null
     }
 
-    const isExpired = data.expiresAt < Date.now()
-    if (isExpired) {
+    const isExpired = data.expiresAt > Date.now()
+    if (true) {
       console.log(`Access token for file ${fileId} is expired, refreshing...`)
       const refreshedToken = await refreshAccessToken({
         accessToken: data.accessToken,
@@ -70,6 +91,7 @@ export const getAccessToken = async (fileId: string) => {
         expiresAt: data.expiresAt,
         googleFileId: fileId
       })
+
       return refreshedToken.accessToken
     }
 
@@ -80,6 +102,8 @@ export const getAccessToken = async (fileId: string) => {
   }
 }
 
+const client_id = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''
+const client_secret = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET || ''
 const refreshAccessToken = async (tokens: any) => {
   try {
     const response = await fetch('https://oauth2.googleapis.com/token', {
@@ -88,32 +112,23 @@ const refreshAccessToken = async (tokens: any) => {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: new URLSearchParams({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-        client_secret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET || '',
+        client_id,
+        client_secret,
         refresh_token: tokens.refreshToken,
         grant_type: 'refresh_token'
       })
     })
 
-    if (!response.ok) {
-      throw new Error('Failed to refresh access token')
-    }
-
     const data = await response.json()
     const newAccessToken = data.access_token
-    console.log('🚀 ~ refreshAccessToken ~ newAccessToken:', newAccessToken)
-    const expiresIn = data.expires_in // Token expiry time in seconds
-    const expiresAt = Date.now() + expiresIn * 1000
 
     // Update the access token in Firestore
     await updateFileAccessToken({
       googleFileId: tokens.googleFileId,
-      accessToken: newAccessToken,
-      expiresAt
+      accessToken: newAccessToken
     })
 
-    console.log(`Access token refreshed successfully for file: ${tokens.googleFileId}`)
-    return { ...tokens, accessToken: newAccessToken, expiresAt }
+    return { ...tokens, accessToken: newAccessToken, expiresAt: Date.now() + 3600 * 1000 }
   } catch (error) {
     console.error('Error refreshing access token:', error)
     throw error
@@ -125,17 +140,20 @@ const refreshAccessToken = async (tokens: any) => {
  */
 export const updateFileAccessToken = async ({
   googleFileId,
-  accessToken,
-  expiresAt
+  accessToken
 }: {
   googleFileId: string
   accessToken: string
-  expiresAt: number
 }): Promise<void> => {
+  console.log(
+    '🚀 ~ googleFileId: string accessToken, expiresAt',
+    googleFileId,
+    accessToken
+  )
   try {
     await setDoc(
       doc(db, 'files', googleFileId),
-      { accessToken, expiresAt },
+      { accessToken, expiresAt: Date.now() + 3600 * 1000 },
       { merge: true }
     )
 
@@ -149,17 +167,13 @@ export const updateFileAccessToken = async ({
 /**
  * Retrieves tokens for a specific Google Drive file from Firestore.
  */
-export const getFileTokens = async ({
-  googleFileId
-}: {
-  googleFileId: string
-}): Promise<FileTokens | null> => {
+export const getFileTokens = async ({ googleFileId }: { googleFileId: string }) => {
   try {
     const docRef = doc(db, 'files', googleFileId)
     const docSnap = await getDoc(docRef)
 
     if (docSnap.exists()) {
-      return docSnap.data() as FileTokens
+      return docSnap.data()
     }
     return null
   } catch (error) {
@@ -219,8 +233,8 @@ export const getAccessTokenForFile = async ({
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: new URLSearchParams({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-        client_secret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET || '',
+        client_id: process.env.GOOGLE_CLIENT_ID || '',
+        client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
         refresh_token: tokens.refreshToken,
         grant_type: 'refresh_token'
       })
@@ -231,15 +245,11 @@ export const getAccessTokenForFile = async ({
     }
 
     const data = await response.json()
-    const newAccessToken = data.access_token
-    const expiresIn = data.expires_in // Token expiry time in seconds
-    const expiresAt = Date.now() + expiresIn * 1000
-
+    const newAccessToken = data.accessToken
     // Update the access token in Firestore
     await updateFileAccessToken({
       googleFileId,
-      accessToken: newAccessToken,
-      expiresAt
+      accessToken: newAccessToken
     })
 
     console.log(`Access token refreshed successfully for file: ${googleFileId}`)

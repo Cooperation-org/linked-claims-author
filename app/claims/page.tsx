@@ -42,7 +42,7 @@ import {
   BlueBadge,
   SVGExport
 } from '../Assets/SVGs'
-import { getAccessToken } from '../firebase/storage'
+import { getAccessToken, getFileViaFirebase } from '../firebase/storage'
 
 // Types
 interface Claim {
@@ -119,8 +119,11 @@ const ClaimsPage: React.FC = () => {
   })
 
   const { data: session } = useSession()
-
-  const { storage, getContent } = useGoogleDrive()
+  const accessToken = session?.accessToken
+  // if (!accessToken) {
+  //   return <Typography variant='h6'>Please sign in to view your skills</Typography>
+  // }
+  const { storage } = useGoogleDrive()
   const router = useRouter()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -145,7 +148,6 @@ const ClaimsPage: React.FC = () => {
   }
 
   const handleLinkedTrustShare = (claim: any) => {
-    console.log('🚀 ~ handleLinkedTrustShare ~ claim:', claim)
     fetch('https://dev.linkedtrust.us/api/credential', {
       method: 'POST',
       headers: {
@@ -157,7 +159,6 @@ const ClaimsPage: React.FC = () => {
         if (!response.ok) {
           throw new Error('Network response was not ok')
         }
-        console.log('🚀 ~ handleShareOption ~ response:', response)
         showNotification('Successfully shared with LinkedTrust', 'success')
       })
       .catch(error => {
@@ -190,7 +191,7 @@ const ClaimsPage: React.FC = () => {
       issueMonth: '8',
       expirationYear: '2025',
       expirationMonth: '8',
-      certUrl: `https://linkedcreds.allskillscount.com/view/${claim.id}`
+      certUrl: `https://linkedcreds.allskillscount.com/view/${claim.id.id}`
     })
     return `${baseLinkedInUrl}?${params.toString()}`
   }
@@ -222,12 +223,12 @@ const ClaimsPage: React.FC = () => {
     try {
       setIsDeleting(true)
       setShowOverlappingCards(true)
-      const fileId = selectedClaim.id
+      const fileId = selectedClaim.id.id
 
       await storage.delete(fileId)
 
       // Immediately update the UI by filtering out the deleted claim
-      setClaims(prevClaims => prevClaims.filter(claim => claim?.id !== fileId))
+      setClaims(prevClaims => prevClaims.filter(claim => claim?.id !== selectedClaim.id))
 
       // Reset all states
       setOpenDeleteDialog(false)
@@ -241,39 +242,21 @@ const ClaimsPage: React.FC = () => {
       setExpandedCard(null)
     }
   }
-  const getFileViaFirebase = async (fileId: string) => {
-    try {
-      // 1- getAccessToken   2- fetch file
-      const accessToken = await getAccessToken(fileId)
-      const fileContent = await fetch(
-        `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
-      )
-      const fileData = await fileContent.json()
-      console.log('🚀 ~ getFileViaFirebase ~ fileContent:', fileId, fileData)
-      return fileContent
-    } catch (error) {
-      console.error(`Error retrieving file ${fileId} from Firebase:`, error)
-      return null
+  useEffect(() => {
+    const fetch = async () => {
+      const accessToken = await getAccessToken('18CPIdk8NTyNDhRHa6QcjTWLHFzuCtze6')
     }
-  }
+    fetch()
+  }, [])
+
   const getAllClaims = useCallback(async (): Promise<any> => {
     const claimsData = await storage?.getAllFilesByType('VCs')
-    console.log('🚀 ~ getAllClaims ~ claimsData:', claimsData)
-
     if (!claimsData?.length) return []
 
     const vcs = []
     for (const file of claimsData) {
       try {
-        const contentResponse = await getFileViaFirebase(file.id as string)
         const content = JSON.parse(file?.data?.body)
-        console.log('🚀 ~ getAllClaims ~ content:', content)
 
         // Check if content exists and has @context property
         if (content && '@context' in content) {
@@ -297,7 +280,7 @@ const ClaimsPage: React.FC = () => {
       try {
         setLoading(true)
         const claimsData = await getAllClaims()
-        console.log('🚀 ~ fetchClaims ~ claimsData:', claimsData)
+
         setClaims(claimsData)
       } catch (error) {
         console.error('Error fetching claims:', error)
@@ -420,7 +403,7 @@ const ClaimsPage: React.FC = () => {
                         textDecoration: 'underline'
                       }}
                     >
-                      {/* {claim.credentialSubject.achievement[0].name} */}
+                      {claim.credentialSubject.achievement[0].name}
                     </Typography>
                   </Box>
                 ) : (
@@ -435,7 +418,7 @@ const ClaimsPage: React.FC = () => {
                           fontSize: '1.25rem'
                         }}
                       >
-                        {/* {claim.credentialSubject.achievement[0].name} - */}
+                        {claim.credentialSubject.achievement[0].name} -
                       </Typography>
                       <Typography
                         sx={{
@@ -500,7 +483,7 @@ const ClaimsPage: React.FC = () => {
                       <Divider orientation='vertical' flexItem color='#003fe0' />
                       <Button
                         startIcon={<ContentCopyIcon />}
-                        onClick={e => handleCopyUrl(claim.id, e)}
+                        onClick={e => handleCopyUrl(claim.id.id, e)}
                         sx={{
                           bgcolor: '#eff6ff',
                           '&:hover': { bgcolor: 'primary.100' },
@@ -534,7 +517,7 @@ const ClaimsPage: React.FC = () => {
                     <Button
                       startIcon={<SVGHeart />}
                       endIcon={<SVGExport />}
-                      onClick={e => handleRecommendationClick(claim.id, e)}
+                      onClick={e => handleRecommendationClick(claim.id.id, e)}
                       fullWidth
                       sx={{
                         justifyContent: 'flex-start',
@@ -634,7 +617,7 @@ const ClaimsPage: React.FC = () => {
         >
           <MenuItem
             onClick={e => {
-              handleRecommendationClick(selectedClaim.id, e)
+              handleRecommendationClick(selectedClaim.id.id, e)
               handleDesktopMenuClose()
             }}
             sx={{ py: 1.5, gap: 2 }}
@@ -673,7 +656,7 @@ const ClaimsPage: React.FC = () => {
           </MenuItem>
           <MenuItem
             onClick={e => {
-              handleCopyUrl(selectedClaim?.[0].id, e)
+              handleCopyUrl(selectedClaim?.id, e)
               handleDesktopMenuClose()
             }}
             sx={{ py: 1.5, gap: 2 }}
