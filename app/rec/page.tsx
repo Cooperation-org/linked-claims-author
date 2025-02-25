@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import useGoogleDrive from '../hooks/useGoogleDrive'
-import { getVCWithRecommendations } from '@cooperation/vc-storage'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -12,6 +11,7 @@ import Link from '@mui/material/Link'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { styled } from '@mui/material/styles'
 import { Button, CircularProgress } from '@mui/material'
+import { getFileViaFirebase } from '../firebase/storage'
 
 const Page = () => {
   const { storage } = useGoogleDrive()
@@ -64,19 +64,20 @@ const Page = () => {
           return
         }
         // const recommendation = await storage?.retrieve(recId as string)
-        const recommendation = await fetch('/api/drive/' + recId)
+        const recommendation = await getFileViaFirebase(recId as string)
+
         if (!recommendation) {
           console.log('No recommendation file')
           return
         }
-        const recData = await recommendation.json()
-        console.log('🚀 ~ fetchRecommendation ~ recData:', recData)
+        const recData = recommendation
 
         if (!recommendation) {
           console.log('No recommendation file')
           return
         }
         const recBody = recData?.body ? JSON.parse(recData?.body) : recData
+
         setRecommendation(recBody.credentialSubject)
       } catch (error) {
         console.error('Error fetching recommendation:', error)
@@ -93,12 +94,12 @@ const Page = () => {
         console.log('No recommendation file id')
         return
       }
-      const master = await getVCWithRecommendations({
-        vcId: vcId as string,
-        storage
-      })
+      const vcFolderId = await storage.getFileParents(vcId)
+      const files = await storage.findFilesUnderFolder(vcFolderId)
+      const relationsFile = files.find((f: any) => f.name === 'RELATIONS')
+
       await storage.updateRelationsFile({
-        relationsFileId: master.relationsFileId,
+        relationsFileId: relationsFile.id,
         recommendationFileId: recId as string
       })
       console.log('Successfully approving recommendation!')
