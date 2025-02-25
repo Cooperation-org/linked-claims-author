@@ -168,8 +168,6 @@ const Form = ({ onStepChange }: any) => {
       })
       console.log('🚀 ~ sign ~ saveResponse:', saveResponse)
 
-      console.log('access token', accessToken)
-
       const res = await signCred(accessToken, data, issuerId, keyPair, 'VC')
       const file = (await saveToGoogleDrive({
         storage,
@@ -181,8 +179,7 @@ const Form = ({ onStepChange }: any) => {
           googleFileId: file.id,
           tokens: {
             accessToken: accessToken,
-            refreshToken: refreshToken as string,
-            expiresAt: Date.now() + 3600 * 3000 // 50 minutes
+            refreshToken: refreshToken as string
           }
         })
       } catch (error) {
@@ -194,7 +191,6 @@ const Form = ({ onStepChange }: any) => {
       const relationFile = await storage?.createRelationsFile({
         vcFolderId: folderIds[0]
       })
-      console.log('🚀 ~ sign ~ relationFile:', relationFile)
       setLink(`https://drive.google.com/file/d/${file.id}/view`)
       setFileId(`${file.id}`)
 

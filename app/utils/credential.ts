@@ -55,7 +55,7 @@ export async function createDIDWithMetaMask(
 export const createDID = async (accessToken: string) => {
   const credentialEngine = getCredentialEngine(accessToken)
   const { didDocument, keyPair } = await credentialEngine.createDID()
-  console.log('DID:', didDocument)
+
   return { didDocument, keyPair, issuerId: didDocument.id }
 }
 
@@ -94,7 +94,6 @@ const signCred = async (
       })
     } else {
       formData = generateCredentialData(data)
-      console.log('🚀 ~ formData:', formData)
       signedVC = await credentialEngine.signVC({
         data: formData,
         type: 'VC',
