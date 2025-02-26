@@ -21,7 +21,7 @@ export const getFileViaFirebase = async (fileId: string) => {
       {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${'ya29.a0AeXRPp7cWg3-bgT2p_p9p3QZ8SDLqJ0_usW5DV9mzOFvXcmHiTmMeTkLt4mFy8Mro4okBKxrML0myhknW9sgVwUlOFIjdR6K2NAQ6FrzLAVAjn7T_LdrsibfrdLtKpOBHycFd5M7zYo3pMJ_q135CGcdfxnk9efKtNnQRG3gSQaCgYKASASARISFQHGX2MiUKfHrH1IL2VwVhDyjcwRjg0177'}`
+          Authorization: `Bearer ${accessToken}`
         }
       }
     )
