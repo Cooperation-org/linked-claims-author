@@ -750,3 +750,4 @@ const ClaimsPage: React.FC = () => {
 }
 
 export default ClaimsPage
+
