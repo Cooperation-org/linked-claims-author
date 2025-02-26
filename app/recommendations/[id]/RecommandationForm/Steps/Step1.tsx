@@ -43,11 +43,6 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
     ? 'You are connected to Google Drive. This is where your recommendation will be saved.'
     : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
 
-  // Determine main text based on authentication status
-  const mainText = accessToken
-    ? 'You are already logged in. Proceeding to the next step...'
-    : 'You must have a Google Drive account and be able to login. This is where your recommendation will be saved.'
-
   return (
     <Box
       sx={{
@@ -73,14 +68,6 @@ const Step1: React.FC<Step1Props> = ({ handleNext }) => {
       >
         <SVGFolder />
       </Box>
-
-      <Typography
-        sx={{
-          fontSize: 24
-        }}
-      >
-        {mainText}
-      </Typography>
 
       {!accessToken && (
         <Button
