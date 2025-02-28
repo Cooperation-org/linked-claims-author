@@ -175,13 +175,15 @@ const Form = ({ onStepChange }: any) => {
         type: 'VC'
       })) as any
       try {
-        await storeFileTokens({
+        const savedFile = await storeFileTokens({
           googleFileId: file.id,
           tokens: {
             accessToken: accessToken,
             refreshToken: refreshToken as string
           }
         })
+
+        localStorage.removeItem('vcs')
       } catch (error) {
         console.error('Error storing file tokens:', error)
         throw error
