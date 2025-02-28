@@ -250,6 +250,22 @@ const ClaimsPage: React.FC = () => {
   }, [])
 
   const getAllClaims = useCallback(async (): Promise<any> => {
+    // Check if we have cached VCs in localStorage
+    const cachedVCs = localStorage.getItem('vcs')
+    if (cachedVCs) {
+      try {
+        const parsedVCs = JSON.parse(cachedVCs)
+        console.log('🚀 ~ getAllClaims ~ parsedVCs:', parsedVCs)
+        if (Array.isArray(parsedVCs) && parsedVCs.length > 0) {
+          console.log('Returning cached VCs from localStorage')
+          return parsedVCs
+        }
+      } catch (error) {
+        console.error('Error parsing cached VCs from localStorage:', error)
+      }
+    }
+
+    // If no cache, fetch from storage
     const claimsData = await storage?.getAllFilesByType('VCs')
     if (!claimsData?.length) return []
 
@@ -267,10 +283,12 @@ const ClaimsPage: React.FC = () => {
         }
       } catch (error) {
         console.error(`Error processing file ${file}:`, error)
-        // Continue with the next file even if one fails
         continue
       }
     }
+
+    // Cache the fetched VCs in localStorage for future use
+    localStorage.setItem('vcs', JSON.stringify(vcs))
 
     return vcs
   }, [storage])
