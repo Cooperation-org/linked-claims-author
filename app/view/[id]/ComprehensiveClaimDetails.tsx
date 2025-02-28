@@ -25,7 +25,7 @@ import useGoogleDrive from '../../hooks/useGoogleDrive'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { GoogleDriveStorage } from '@cooperation/vc-storage'
 import EvidencePreview from './EvidencePreview'
-import { getAccessToken, getFileViaFirebase } from '../../firebase/storage'
+import axios from 'axios'
 // Define types
 interface Portfolio {
   name: string
@@ -57,6 +57,14 @@ interface ClaimDetail {
   expirationDate: string
   credentialSubject: CredentialSubject
 }
+
+interface DriveFile {
+  id: string
+  name: string
+  webViewLink: string
+  mimeType: string
+}
+
 interface ComprehensiveClaimDetailsProps {
   onAchievementLoad?: (achievementName: string) => void
 }
@@ -80,6 +88,8 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   const [comments, setComments] = useState<ClaimDetail[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [publicFiles, setPublicFiles] = useState<DriveFile[]>([])
+  const [error, setError] = useState<string | null>(null)
   const theme = useTheme()
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('sm'))
   const pathname = usePathname()
@@ -87,8 +97,37 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   const accessToken = session?.accessToken
   const isAskForRecommendation = pathname?.includes('/askforrecommendation')
   const isView = pathname?.includes('/view')
-  const {} = useGoogleDrive()
+  const { getContent } = useGoogleDrive()
   const [expandedComments, setExpandedComments] = useState<{ [key: string]: boolean }>({})
+
+  const getPublicFile = async (id: string) => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      // Direct access to public files without authentication
+      const response = await axios.get(`https://drive.google.com/uc?export=view&id=${id}`)
+
+      // This will only work if the file is publicly accessible
+      // For files with "Anyone with the link" sharing settings
+      const fileData: DriveFile = {
+        id,
+        name: `File ID: ${id}`,
+        webViewLink: `https://drive.google.com/file/d/${id}/view`,
+        mimeType: response.headers['content-type']
+      }
+
+      setPublicFiles(prev => [...prev, fileData])
+      return response.data
+    } catch (err) {
+      setError('Unable to access this file. It may not be public or may not exist.')
+      console.error('Error fetching public file:', err)
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (!fileID) {
       setErrorMessage('Invalid claim ID.')
@@ -98,58 +137,75 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     if (status === 'loading') {
       return
     }
-    if (status === 'unauthenticated') {
+
+    // const fetchDriveData = async () => {
+    //   try {
+    //     // Get the main file using the public method
+    //     const vcData = await getPublicFile(fileID)
+    //     console.log('cvdata', vcData)
+    //     if (vcData) {
+    //       // Parse the data if it's in string format
+    //       const parsedData = typeof vcData === 'string' ? JSON.parse(vcData) : vcData
+    //       setClaimDetail(parsedData as ClaimDetail)
+    //     }
+
+    //     // If we're in view mode, get recommendations
+    //     const type = window.location.pathname.includes('view')
+    //     if (type) {
+    //       try {
+    //         // For demo purposes, we might need to modify this approach
+    //         // since we're now using direct public links
+    //         const dummyRelationsId = `${fileID}_relations`
+    //         const relationsData = await getPublicFile(dummyRelationsId)
+
+    //         const parsedRelations =
+    //           typeof relationsData === 'string'
+    //             ? JSON.parse(relationsData)
+    //             : relationsData
+
+    //         const recommendationIds = parsedRelations?.recommendations || []
+
+    //         // Fetch each recommendation
+    //         const recommendations = await Promise.all(
+    //           recommendationIds.map(async (rec: string) => {
+    //             try {
+    //               const recData = await getPublicFile(rec)
+    //               return typeof recData === 'string' ? JSON.parse(recData) : recData
+    //             } catch (recError) {
+    //               console.error('Error fetching recommendation:', recError)
+    //               return null
+    //             }
+    //           })
+    //         )
+
+    //         // Filter out any failed fetches
+    //         const validRecommendations = recommendations.filter(rec => rec !== null)
+    //         console.log('validRecommendations', validRecommendations)
+    //         if (validRecommendations.length > 0) {
+    //           setComments(validRecommendations as ClaimDetail[])
+    //         }
+    //       } catch (relationsError) {
+    //         console.error('Error fetching relations:', relationsError)
+    //         // Continue without recommendations if this fails
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.error('Error fetching claim details:', error)
+    //     setErrorMessage('Failed to fetch claim details.')
+    //   } finally {
+    //     setLoading(false)
+    //   }
+    // }
+
+    // fetchDriveData()
+
+    const fetching = async () => {
+      const content = await getContent(fileID)
+      setClaimDetail(content.data)
       setLoading(false)
-      return
     }
-    if (!accessToken) {
-      setErrorMessage('You need to log in to view this content.')
-      setLoading(false)
-      return
-    }
-    const fetchDriveData = async () => {
-      try {
-        const accessToken1 = await getAccessToken(fileID)
-        const uncachedStorage = new GoogleDriveStorage(accessToken1)
-        let vcData = await getFileViaFirebase(fileID)
-        vcData = JSON.parse(vcData.body)
-
-        if (vcData) {
-          setClaimDetail(vcData as unknown as ClaimDetail)
-        }
-
-        const type = window.location.pathname.includes('view')
-        if (type) {
-          const vcFolderId = await uncachedStorage.getFileParents(fileID)
-          const files = await uncachedStorage.findFilesUnderFolder(vcFolderId)
-          const relationsFile = files.find((f: any) => f.name === 'RELATIONS')
-
-          const relationsContent = await uncachedStorage.retrieve(relationsFile.id)
-          const relationsData = relationsContent?.data.body
-            ? JSON.parse(relationsContent?.data.body)
-            : relationsContent?.data
-
-          const recommendationIds = relationsData.recommendations || []
-          const recommendations = await Promise.all(
-            recommendationIds.map(async (rec: string) => {
-              const recFile = await getFileViaFirebase(rec)
-              return JSON.parse(recFile.body)
-            })
-          )
-          if (recommendations) {
-            setComments(recommendations as any)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching claim details:', error)
-        setErrorMessage('Failed to fetch claim details.')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchDriveData()
-  }, [accessToken, fileID, status])
+    fetching()
+  }, [fileID, status])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -157,6 +213,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       [commentId]: !prevState[commentId]
     }))
   }
+
   if (status === 'loading' || loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -172,6 +229,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       </Typography>
     )
   }
+
   setTimeout(() => {
     if (!claimDetail) {
       return (
@@ -181,10 +239,12 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
       )
     }
   }, 2000)
+
   const credentialSubject = claimDetail?.credentialSubject
   const achievement = credentialSubject?.achievement && credentialSubject.achievement[0]
   const hasValidEvidence =
     credentialSubject?.portfolio && credentialSubject?.portfolio.length > 0
+
   return (
     <Container sx={{ maxWidth: '800px' }}>
       {claimDetail && (
