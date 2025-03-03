@@ -156,9 +156,7 @@ const Page = () => {
                 }}
               />
             }
-            title={
-              <Typography variant='h6'>{recommendation?.name} Taylor vouch </Typography>
-            }
+            title={<Typography variant='h6'>{recommendation?.name} vouch </Typography>}
           />
 
           <CardContent sx={{ py: 3 }}>

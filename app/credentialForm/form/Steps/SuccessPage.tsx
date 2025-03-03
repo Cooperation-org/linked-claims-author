@@ -26,6 +26,7 @@ import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
 import { FormData } from '../../../credentialForm/form/types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useStepContext } from '../StepContext'
+import { useRouter } from 'next/navigation'
 
 interface SuccessPageProps {
   setActiveStep: (step: number) => void //NOSONAR
@@ -54,6 +55,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
   fileId,
   res
 }) => {
+  const router = useRouter()
   const { setActiveStep } = useStepContext()
   const [snackbar, setSnackbar] = useState<SnackbarState>({
     open: false,
@@ -420,10 +422,11 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         </Button>
         <Button
           onClick={() => {
-            setActiveStep(0)
+            setActiveStep(1)
             setLink('')
             setFileId('')
             reset()
+            router.push('/credentialForm#step1')
           }}
           variant='contained'
           sx={{
