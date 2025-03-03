@@ -272,7 +272,7 @@ const ClaimsPage: React.FC = () => {
     const vcs = []
     for (const file of claimsData) {
       try {
-        const content = JSON.parse(file?.data?.body)
+        const content = JSON.parse(file?.content)
 
         // Check if content exists and has @context property
         if (content && '@context' in content) {

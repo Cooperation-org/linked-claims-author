@@ -9,6 +9,14 @@ const nextConfig = {
         pathname: '/download/**'
       }
     ]
+  },
+  webpack: (config, { isServer }) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      'rdf-canonize-native': false
+    }
+
+    return config
   }
 }
 

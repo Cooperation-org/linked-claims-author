@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write 'app/**/*.{js,ts,tsx,jsx,json}'"
+    "format": "prettier --write 'app/**/*.{js,ts,tsx,jsx,json}'",
+    "postinstall": "next telemetry disable"
   },
   "dependencies": {
     "@cooperation/vc-storage": "https://github.com/Cooperation-org/linked-claims-storage#main",
@@ -38,6 +39,7 @@
     "sharp": "^0.33.5"
   },
   "devDependencies": {
+    "@next/swc-win32-x64-msvc": "14.2.15",
     "@types/dompurify": "^3.0.5",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.15",

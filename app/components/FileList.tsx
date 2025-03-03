@@ -92,12 +92,13 @@ const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
             <CardContent sx={{ p: 4, width: '100%' }}>
               <Box sx={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
                 {isImage(file.name) ? (
-                  <img
+                  <Image
                     src={file.url}
                     alt={file.name.split('.')[0]}
-                    width='100%'
-                    height='100%'
+                    width={80}
+                    height={80}
                     style={{ borderRadius: '8px' }}
+                    unoptimized={file.url.startsWith('data:')}
                   />
                 ) : isPDF(file.name) ? (
                   <Image
@@ -106,6 +107,7 @@ const FileListDisplay = ({ files, onDelete, onReorder }: FileListProps) => {
                     width={80}
                     height={80}
                     style={{ borderRadius: '8px' }}
+                    unoptimized={pdfThumbnails[file.id]?.startsWith('data:')}
                   />
                 ) : (
                   <Box
