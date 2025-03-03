@@ -383,10 +383,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         </Button>
         <Button
           disabled={!fileId}
-          onClick={() => handleShareOption('LinkedTrust')}
+          onClick={() => handleShareOption('Email')}
           sx={buttonStyles}
         >
-          Share with Linked Trust
+          Share via Mail
         </Button>
       </Box>
 

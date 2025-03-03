@@ -186,7 +186,7 @@ const ClaimsPage: React.FC = () => {
     const params = new URLSearchParams({
       startTask: 'CERTIFICATION_NAME',
       name: claim?.credentialName ?? 'Certification Name',
-      organizationName: 'LinkedTrust',
+      organizationName: 'Self-Issued',
       issueYear: '2024',
       issueMonth: '8',
       expirationYear: '2025',
@@ -483,8 +483,12 @@ const ClaimsPage: React.FC = () => {
                       }}
                     >
                       <Button
-                        onClick={() => handleLinkedTrustShare(claim)}
-                        startIcon={<PeopleAltIcon />}
+                        onClick={e => handleRecommendationClick(claim.id.id, e)}
+                        startIcon={
+                          <Box sx={{ pt: 1 }}>
+                            <SVGHeart />
+                          </Box>
+                        }
                         sx={{
                           bgcolor: '#eff6ff',
                           borderColor: '#eff6ff',
@@ -496,7 +500,7 @@ const ClaimsPage: React.FC = () => {
                           color: '#003fe0'
                         }}
                       >
-                        Share with LinkedTrust
+                        Ask for a recommendation
                       </Button>
                       <Divider orientation='vertical' flexItem color='#003fe0' />
                       <Button
@@ -559,7 +563,7 @@ const ClaimsPage: React.FC = () => {
                       Share to LinkedIn
                     </Button>
                     <Button
-                      startIcon={<PeopleAltIcon />}
+                      startIcon={<SVGHeart />}
                       endIcon={<SVGExport />}
                       fullWidth
                       sx={{
@@ -567,9 +571,9 @@ const ClaimsPage: React.FC = () => {
                         color: 'primary.main',
                         '&:hover': { bgcolor: 'primary.50' }
                       }}
-                      onClick={() => handleLinkedTrustShare(claim)}
+                      onClick={e => handleRecommendationClick(selectedClaim.id.id, e)}
                     >
-                      Share to LinkedTrust
+                      Ask for a recommendation
                     </Button>
                     <Button
                       startIcon={<SVGEmail />}
@@ -633,19 +637,6 @@ const ClaimsPage: React.FC = () => {
             }
           }}
         >
-          <MenuItem
-            onClick={e => {
-              handleRecommendationClick(selectedClaim.id.id, e)
-              handleDesktopMenuClose()
-            }}
-            sx={{ py: 1.5, gap: 2 }}
-          >
-            <SVGHeart />
-            <Typography sx={{ textDecoration: 'underline', color: '#003fe0' }}>
-              Ask for a recommendation
-            </Typography>
-            <SVGExport />
-          </MenuItem>
           <MenuItem
             onClick={e => {
               handleLinkedInShare(selectedClaim)
