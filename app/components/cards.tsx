@@ -83,7 +83,7 @@ const Card = ({
             alignItems: 'center'
           }}
         >
-          <Image src='/Badge.svg' alt='Badge' height={24} width={24} />
+          <Image src='/Badge.svg' alt='Badge' height={24} width={20} />
           <Typography
             sx={{
               color: '#202E5B',
@@ -92,7 +92,7 @@ const Card = ({
               flex: 1,
               ml: '5.5px',
               fontFamily: 'Inter',
-              fontSize: '12px',
+              fontSize: '14px',
               fontWeight: 700,
               // lineHeight: normal,
               letterSpacing: '0.12px',
