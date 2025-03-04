@@ -92,7 +92,7 @@ const Card = ({
               flex: 1,
               ml: '5.5px',
               fontFamily: 'Inter',
-              fontSize: '24px',
+              fontSize: '12px',
               fontWeight: 700,
               // lineHeight: normal,
               letterSpacing: '0.12px',

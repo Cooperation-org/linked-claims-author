@@ -9,7 +9,7 @@ interface SectionProps {
 const EXAMPLE_CARDS = [
   {
     id: 'caretaker',
-    title: 'Example',
+    title: 'Elder Medical Carer',
     description:
       'I am able to attend to the care of an older adult with complex medical needs. This includes day-to-day care as well as basic medical care.',
     criteria: [
@@ -29,7 +29,7 @@ const EXAMPLE_CARDS = [
   },
   {
     id: 'barista',
-    title: 'Example',
+    title: 'Barrista',
     description:
       'I am able to demonstrate advanced skills in coffee preparation, customer service, and knowledge of coffee origins and brewing techniques.',
     criteria: [
@@ -56,7 +56,7 @@ const EXAMPLE_CARDS = [
   },
   {
     id: 'landscaper',
-    title: 'Example',
+    title: 'Landscaper',
     description:
       'I am able to demonstrate advanced skills in landscaping, including hedge art, gardening, and outdoor hardscaping.',
     criteria: [
