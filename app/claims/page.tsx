@@ -242,12 +242,6 @@ const ClaimsPage: React.FC = () => {
       setExpandedCard(null)
     }
   }
-  useEffect(() => {
-    const fetch = async () => {
-      const accessToken = await getAccessToken('18CPIdk8NTyNDhRHa6QcjTWLHFzuCtze6')
-    }
-    fetch()
-  }, [])
 
   const getAllClaims = useCallback(async (): Promise<any> => {
     // Check if we have cached VCs in localStorage
@@ -586,7 +580,7 @@ const ClaimsPage: React.FC = () => {
                     </Button>
                     <Button
                       startIcon={<SVGCopy />}
-                      onClick={e => handleCopyUrl(claim.id, e)}
+                      onClick={e => handleCopyUrl(claim.id.id, e)}
                       fullWidth
                       sx={{
                         justifyContent: 'flex-start',
@@ -674,7 +668,7 @@ const ClaimsPage: React.FC = () => {
           </MenuItem>
           <MenuItem
             onClick={e => {
-              handleCopyUrl(selectedClaim?.id, e)
+              handleCopyUrl(selectedClaim?.id.id, e)
               handleDesktopMenuClose()
             }}
             sx={{ py: 1.5, gap: 2 }}
