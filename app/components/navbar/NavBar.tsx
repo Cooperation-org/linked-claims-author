@@ -215,7 +215,10 @@ const NavBar = () => {
               justifyContent: 'center'
             }}
             variant='actionButton'
-            onClick={() => signOut()}
+            onClick={() => {
+              signOut()
+              localStorage.clear()
+            }}
           >
             Sign Out
           </Button>

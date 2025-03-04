@@ -377,6 +377,20 @@ const ClaimsPage: React.FC = () => {
         </Box>
       )}
 
+      {claims.length === 0 && !loading && !accessToken && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+          <Typography variant='h6'>
+            Please Sign in to be able to see your skills.
+          </Typography>
+        </Box>
+      )}
+
+      {claims.length === 0 && !loading && accessToken && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+          <Typography variant='h6'>You dont have any skills yet.</Typography>
+        </Box>
+      )}
+
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
           <CircularProgress />
