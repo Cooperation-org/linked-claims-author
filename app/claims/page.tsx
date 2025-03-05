@@ -109,6 +109,13 @@ const getTimeDifference = (isoDateString: string): string => {
   return `${diffInSeconds} ${diffInSeconds === 1 ? 'second' : 'seconds'}`
 }
 
+const ViewClaimDialogContent: React.FC<ViewClaimDialogContentProps> = ({ fileID }) => {
+  return (
+    <Box sx={{ py: 2 }}>
+      <ComprehensiveClaimDetails fileID={fileID} />
+    </Box>
+  )
+}
 const ClaimsPage: React.FC = () => {
   const [claims, setClaims] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -260,13 +267,7 @@ const ClaimsPage: React.FC = () => {
       setExpandedCard(null)
     }
   }
-  const ViewClaimDialogContent: React.FC<ViewClaimDialogContentProps> = ({ fileID }) => {
-    return (
-      <Box sx={{ py: 2 }}>
-        <ComprehensiveClaimDetails fileID={fileID} />
-      </Box>
-    )
-  }
+
   const getAllClaims = useCallback(async (): Promise<any> => {
     // Check if we have cached VCs in localStorage
     const cachedVCs = localStorage.getItem('vcs')
