@@ -39,7 +39,7 @@ const Credential: React.FC<CredentialProps> = ({ setactivStep, fullName, email }
     )
   }
   const handleClick = () => {
-    setactivStep(1)
+    setactivStep(2)
   }
 
   const handleDeclineRequest = () => {
