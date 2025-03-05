@@ -115,28 +115,6 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
     const credentialLink = `https://linkedcreds.allskillscount.org/view/${fileId}`
     const credentialData = res
 
-    if (option === 'LinkedTrust') {
-      fetch('https://dev.linkedtrust.us/api/credential', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentialData)
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok')
-          }
-          console.log('🚀 ~ handleShareOption ~ response:', response)
-          showNotification('Successfully shared with LinkedTrust', 'success')
-        })
-        .catch(error => {
-          console.error('Error sharing with LinkedTrust:', error)
-          showNotification('Failed to share with LinkedTrust', 'error')
-        })
-      return
-    }
-
     if (option === 'LinkedIn') {
       const linkedInUrl = generateLinkedInUrl()
       window.open(linkedInUrl, '_blank', 'noopener noreferrer')
@@ -385,10 +363,10 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
         </Button>
         <Button
           disabled={!fileId}
-          onClick={() => handleShareOption('LinkedTrust')}
+          onClick={() => handleShareOption('Email')}
           sx={buttonStyles}
         >
-          Share with Linked Trust
+          Share Via Mail
         </Button>
       </Box>
 

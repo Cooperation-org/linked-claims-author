@@ -182,26 +182,6 @@ const ClaimsPageClient: React.FC = () => {
     setSnackbar(prev => ({ ...prev, open: false }))
   }
 
-  const handleLinkedTrustShare = (claim: any) => {
-    fetch('https://dev.linkedtrust.us/api/credential', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(claim)
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-        showNotification('Successfully shared with LinkedTrust', 'success')
-      })
-      .catch(error => {
-        console.error('Error sharing with LinkedTrust:', error)
-        showNotification('Failed to share with LinkedTrust', 'error')
-      })
-  }
-
   const handleEmailShare = (claim: any, e?: React.MouseEvent) => {
     e?.stopPropagation()
     const url = `${window.location.origin}/view/${claim.id}`
@@ -526,8 +506,8 @@ const ClaimsPageClient: React.FC = () => {
                       }}
                     >
                       <Button
-                        onClick={() => handleLinkedTrustShare(claim)}
-                        startIcon={<PeopleAltIcon />}
+                        onClick={e => handleRecommendationClick(claim.id.id, e)}
+                        startIcon={<SVGHeart />}
                         sx={{
                           bgcolor: '#eff6ff',
                           borderColor: '#eff6ff',
@@ -539,7 +519,7 @@ const ClaimsPageClient: React.FC = () => {
                           color: '#003fe0'
                         }}
                       >
-                        Share with LinkedTrust
+                        Ask for a recommendation
                       </Button>
                       <Divider orientation='vertical' flexItem color='#003fe0' />
                       <Button
@@ -615,19 +595,6 @@ const ClaimsPageClient: React.FC = () => {
                       Share to LinkedIn
                     </Button>
                     <Button
-                      startIcon={<PeopleAltIcon />}
-                      endIcon={<SVGExport />}
-                      fullWidth
-                      sx={{
-                        justifyContent: 'flex-start',
-                        color: 'primary.main',
-                        '&:hover': { bgcolor: 'primary.50' }
-                      }}
-                      onClick={() => handleLinkedTrustShare(claim)}
-                    >
-                      Share to LinkedTrust
-                    </Button>
-                    <Button
                       startIcon={<SVGEmail />}
                       endIcon={<SVGExport />}
                       onClick={e => handleEmailShare(claim, e)}
@@ -689,19 +656,6 @@ const ClaimsPageClient: React.FC = () => {
             }
           }}
         >
-          <MenuItem
-            onClick={e => {
-              handleRecommendationClick(selectedClaim.id.id, e)
-              handleDesktopMenuClose()
-            }}
-            sx={{ py: 1.5, gap: 2 }}
-          >
-            <SVGHeart />
-            <Typography sx={{ textDecoration: 'underline', color: '#003fe0' }}>
-              Ask for a recommendation
-            </Typography>
-            <SVGExport />
-          </MenuItem>
           <MenuItem
             onClick={e => {
               handleViewClaimClick(selectedClaim.id.id, e)
