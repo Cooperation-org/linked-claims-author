@@ -84,6 +84,22 @@ export default function RootLayout({
     <html lang='en' className={inter.className}>
       <head>
         <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (!Promise.withResolvers) {
+                Promise.withResolvers = function () {
+                  let resolve, reject;
+                  const promise = new Promise((res, rej) => {
+                    resolve = res;
+                    reject = rej;
+                  });
+                  return { promise, resolve, reject };
+                };
+              }
+            `
+          }}
+        />
+        <script
           type='application/ld+json'
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
