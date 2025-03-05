@@ -1,3 +1,4 @@
+import './utils/promise-polyfill.ts'
 import { Metadata } from 'next'
 import ClientLayout from './ClientLayout'
 import { Inter } from 'next/font/google'
