@@ -30,8 +30,22 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DeleteIcon from '@mui/icons-material/Delete'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 import useGoogleDrive from '../hooks/useGoogleDrive'
 import LoadingOverlay from '../components/Loading/LoadingOverlay'
+import ComprehensiveClaimDetails from '../view/[id]/ComprehensiveClaimDetails'
+
+interface ViewClaimDialogContentProps {
+  fileID: string
+}
+
+const ViewClaimDialogContent: React.FC<ViewClaimDialogContentProps> = ({ fileID }) => {
+  return (
+    <Box sx={{ py: 2 }}>
+      <ComprehensiveClaimDetails fileID={fileID} />
+    </Box>
+  )
+}
 
 import {
   SVGHeart,
@@ -117,6 +131,8 @@ const ClaimsPage: React.FC = () => {
     message: '',
     severity: 'success'
   })
+  const [viewClaimDialogOpen, setViewClaimDialogOpen] = useState(false)
+  const [viewClaimId, setViewClaimId] = useState<string | null>(null)
 
   const { data: session } = useSession()
   const accessToken = session?.accessToken
@@ -133,6 +149,16 @@ const ClaimsPage: React.FC = () => {
     const url = `${window.location.origin}/askforrecommendation/${claimId}`
     await navigator.clipboard.writeText(url)
     router.push(`/askforrecommendation/${claimId}`)
+  }
+
+  const handleViewClaimClick = (claimId: string, e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setViewClaimId(claimId)
+    setViewClaimDialogOpen(true)
+  }
+
+  const handleCloseViewClaimDialog = () => {
+    setViewClaimDialogOpen(false)
   }
 
   const showNotification = (message: string, severity: 'success' | 'error') => {
@@ -554,6 +580,19 @@ const ClaimsPage: React.FC = () => {
                       Ask for a recommendation
                     </Button>
                     <Button
+                      startIcon={<VisibilityIcon sx={{ color: 'primary.main' }} />}
+                      endIcon={<SVGExport />}
+                      onClick={e => handleViewClaimClick(claim.id.id, e)}
+                      fullWidth
+                      sx={{
+                        justifyContent: 'flex-start',
+                        color: 'primary.main',
+                        '&:hover': { bgcolor: 'primary.50' }
+                      }}
+                    >
+                      View Claim
+                    </Button>
+                    <Button
                       startIcon={<SVGLinkedIn />}
                       endIcon={<SVGExport />}
                       fullWidth
@@ -656,6 +695,19 @@ const ClaimsPage: React.FC = () => {
           </MenuItem>
           <MenuItem
             onClick={e => {
+              handleViewClaimClick(selectedClaim.id.id, e)
+              handleDesktopMenuClose()
+            }}
+            sx={{ py: 1.5, gap: 2 }}
+          >
+            <VisibilityIcon sx={{ color: '#003fe0' }} />
+            <Typography sx={{ textDecoration: 'underline', color: '#003fe0' }}>
+              View Claim
+            </Typography>
+            <SVGExport />
+          </MenuItem>
+          <MenuItem
+            onClick={e => {
               handleLinkedInShare(selectedClaim)
               handleDesktopMenuClose()
             }}
@@ -706,6 +758,47 @@ const ClaimsPage: React.FC = () => {
           </MenuItem>
         </Menu>
       )}
+      <Dialog
+        open={viewClaimDialogOpen}
+        onClose={handleCloseViewClaimDialog}
+        maxWidth='md'
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            maxHeight: '90vh'
+          }
+        }}
+      >
+        <DialogTitle
+          sx={{
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
+        >
+          <Typography variant='h6' sx={{ fontWeight: 'bold', fontFamily: 'Lato' }}>
+            Claim Details
+          </Typography>
+          <Button
+            onClick={handleCloseViewClaimDialog}
+            color='primary'
+            sx={{
+              color: 'primary.main',
+              '&:hover': { bgcolor: 'primary.50' },
+              fontWeight: 'bold',
+              fontFamily: 'Lato'
+            }}
+          >
+            Close
+          </Button>
+        </DialogTitle>
+        <DialogContent sx={{ p: 0 }}>
+          {viewClaimId && <ViewClaimDialogContent fileID={viewClaimId} />}
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         open={openDeleteDialog}

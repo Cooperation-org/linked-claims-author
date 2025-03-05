@@ -59,6 +59,7 @@ interface ClaimDetail {
 }
 interface ComprehensiveClaimDetailsProps {
   onAchievementLoad?: (achievementName: string) => void
+  fileID?: string
 }
 const cleanHTML = (htmlContent: any): string => {
   if (typeof htmlContent !== 'string') {
@@ -72,10 +73,12 @@ const cleanHTML = (htmlContent: any): string => {
     .replace(/style="[^"]*"/g, '')
 }
 const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
-  onAchievementLoad
+  onAchievementLoad,
+  fileID: propFileID
 }) => {
   const params = useParams()
-  const fileID = params?.id as string
+  const fileID = propFileID || (params?.id as string)
+
   const [claimDetail, setClaimDetail] = useState<ClaimDetail | null>(null)
   const [comments, setComments] = useState<ClaimDetail[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -118,26 +121,28 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
           setClaimDetail(vcData as unknown as ClaimDetail)
         }
 
-        const type = window.location.pathname.includes('view')
-        if (type) {
+        const shouldFetchRecommendations = isView || !!propFileID
+        if (shouldFetchRecommendations) {
           const vcFolderId = await uncachedStorage.getFileParents(fileID)
           const files = await uncachedStorage.findFilesUnderFolder(vcFolderId)
           const relationsFile = files.find((f: any) => f.name === 'RELATIONS')
 
-          const relationsContent = await uncachedStorage.retrieve(relationsFile.id)
-          const relationsData = relationsContent?.data.body
-            ? JSON.parse(relationsContent?.data.body)
-            : relationsContent?.data
+          if (relationsFile) {
+            const relationsContent = await uncachedStorage.retrieve(relationsFile.id)
+            const relationsData = relationsContent?.data.body
+              ? JSON.parse(relationsContent?.data.body)
+              : relationsContent?.data
 
-          const recommendationIds = relationsData.recommendations || []
-          const recommendations = await Promise.all(
-            recommendationIds.map(async (rec: string) => {
-              const recFile = await getFileViaFirebase(rec)
-              return JSON.parse(recFile.body)
-            })
-          )
-          if (recommendations) {
-            setComments(recommendations as any)
+            const recommendationIds = relationsData.recommendations || []
+            const recommendations = await Promise.all(
+              recommendationIds.map(async (rec: string) => {
+                const recFile = await getFileViaFirebase(rec)
+                return JSON.parse(recFile.body)
+              })
+            )
+            if (recommendations) {
+              setComments(recommendations as any)
+            }
           }
         }
       } catch (error) {
@@ -149,7 +154,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
     }
 
     fetchDriveData()
-  }, [accessToken, fileID, status])
+  }, [accessToken, fileID, status, isView, propFileID])
 
   const handleToggleComment = (commentId: string) => {
     setExpandedComments(prevState => ({
@@ -159,7 +164,9 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
   }
   if (status === 'loading' || loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 4 }}
+      >
         <CircularProgress />
       </Box>
     )
@@ -358,7 +365,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                 )}
               </>
             )}
-            {pathname?.includes('/claims') && (
+            {/* {pathname?.includes('/claims') && (
               <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
                 <Link href={`/view/${fileID}`}>
                   <Button
@@ -385,8 +392,8 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
                   </Button>
                 </Link>
               </Box>
-            )}
-            {pathname?.includes('/view') && claimDetail && (
+            )} */}
+            {(pathname?.includes('/view') || !!propFileID) && claimDetail && (
               <Box
                 sx={{ display: 'flex', flexDirection: 'column', gap: '4px', mt: '20px' }}
               >
@@ -419,7 +426,7 @@ const ComprehensiveClaimDetails: React.FC<ComprehensiveClaimDetailsProps> = ({
         </Box>
       )}
       {/* Comments Section */}
-      {isView && claimDetail && (
+      {(isView || !!propFileID) && claimDetail && (
         <Box>
           {loading ? (
             <Box display='flex' justifyContent='center' my={2}>
