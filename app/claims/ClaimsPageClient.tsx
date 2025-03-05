@@ -197,15 +197,18 @@ const ClaimsPageClient: React.FC = () => {
   }
 
   const generateLinkedInUrl = (claim: any) => {
+    const issuanceDate = new Date(claim.issuanceDate)
+    const expirationDate = new Date(claim.expirationDate)
+
     const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
     const params = new URLSearchParams({
       startTask: 'CERTIFICATION_NAME',
-      name: claim?.credentialName ?? 'Certification Name',
-      organizationName: 'LinkedTrust',
-      issueYear: '2024',
-      issueMonth: '8',
-      expirationYear: '2025',
-      expirationMonth: '8',
+      name: claim.credentialSubject.achievement[0].name || 'Certification Name',
+      organizationName: 'Self-Issued',
+      issueYear: issuanceDate.getFullYear().toString(),
+      issueMonth: (issuanceDate.getMonth() + 1).toString(),
+      expirationYear: expirationDate.getFullYear().toString(),
+      expirationMonth: (expirationDate.getMonth() + 1).toString(),
       certUrl: `https://linkedcreds.allskillscount.com/view/${claim.id.id}`
     })
     return `${baseLinkedInUrl}?${params.toString()}`
