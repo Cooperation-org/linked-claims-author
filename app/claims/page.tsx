@@ -413,7 +413,7 @@ const ClaimsPage: React.FC = () => {
 
       {claims.length === 0 && !loading && accessToken && (
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-          <Typography variant='h6'>You dont have any skills yet.</Typography>
+          <Typography variant='h6'>You don&apos;t have any skills yet.</Typography>
         </Box>
       )}
 
