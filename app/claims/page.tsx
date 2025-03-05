@@ -35,18 +35,6 @@ import useGoogleDrive from '../hooks/useGoogleDrive'
 import LoadingOverlay from '../components/Loading/LoadingOverlay'
 import ComprehensiveClaimDetails from '../view/[id]/ComprehensiveClaimDetails'
 
-interface ViewClaimDialogContentProps {
-  fileID: string
-}
-
-const ViewClaimDialogContent: React.FC<ViewClaimDialogContentProps> = ({ fileID }) => {
-  return (
-    <Box sx={{ py: 2 }}>
-      <ComprehensiveClaimDetails fileID={fileID} />
-    </Box>
-  )
-}
-
 import {
   SVGHeart,
   SVGLinkedIn,
@@ -59,6 +47,10 @@ import {
 import { getAccessToken, getFileViaFirebase } from '../firebase/storage'
 
 // Types
+interface ViewClaimDialogContentProps {
+  fileID: string
+}
+
 interface Claim {
   [x: string]: any
   id: string
@@ -268,7 +260,13 @@ const ClaimsPage: React.FC = () => {
       setExpandedCard(null)
     }
   }
-
+  const ViewClaimDialogContent: React.FC<ViewClaimDialogContentProps> = ({ fileID }) => {
+    return (
+      <Box sx={{ py: 2 }}>
+        <ComprehensiveClaimDetails fileID={fileID} />
+      </Box>
+    )
+  }
   const getAllClaims = useCallback(async (): Promise<any> => {
     // Check if we have cached VCs in localStorage
     const cachedVCs = localStorage.getItem('vcs')
