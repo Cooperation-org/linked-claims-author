@@ -224,7 +224,8 @@ export default function NewCredentialPage() {
           alignItems: 'center',
           width: '100%',
           gap: { xs: 4, md: 5 },
-          mt: { xs: 4, md: '18vh' }
+          mt: { xs: 4, md: '15vh' },
+          mb: { xs: 4, md: '15vh' }
         }}
       >
         <Box

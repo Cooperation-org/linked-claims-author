@@ -114,6 +114,7 @@ const Footer: React.FC = () => {
               alignItems: 'flex-start',
               gap: 2,
               width: '100%',
+              py: 2,
               // height: '224px'
               height: 'auto'
             }}
