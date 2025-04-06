@@ -179,7 +179,7 @@ export default function NewCredentialPage() {
         pt: { xs: '43px', md: '75px' },
         px: { xs: '20px', md: '0px' },
         position: 'relative',
-        minHeight: 'calc(100vh - 315px)' // Subtract footer height
+        minHeight: 'calc(100vh - 315px)'
       }}
     >
       <Box
@@ -306,22 +306,19 @@ export default function NewCredentialPage() {
         </Box>
       </Box>
 
-      {/* Continue Button - Repositioned */}
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-end',
           width: '100vw',
-          mt: 'auto', // Push to bottom of container
+          mt: 'auto',
           mb: '-76px',
           padding: '20px',
           borderTop: '1px solid #E5E7EB',
           backgroundColor: '#fff',
           boxShadow: '4px -4px 10px 2px rgba(20, 86, 255, 0.25)',
           position: 'relative'
-          // left: '50%',
-          // transform: 'translateX(-50%)'
         }}
       >
         <Button
