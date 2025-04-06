@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Box, Typography, Button, Snackbar, Alert } from '@mui/material'
 import { SVGBadge } from '../../../../Assets/SVGs'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import { FormData } from '../../../../credentialForm/form/types/Types'
+import { FormData } from '../../../../skillform/form/types/Types'
 import ComprehensiveClaimDetails from '../../../../view/[id]/ComprehensiveClaimDetails'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
@@ -273,7 +273,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
 
       <Button
         component={Link}
-        href='/credentialForm'
+        href='/newcredential'
         sx={{
           textTransform: 'capitalize',
           fontFamily: 'Roboto',

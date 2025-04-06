@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Typography, Button, Drawer, IconButton, Divider } from '@mui/material'
+import { Box, Typography, Button, Drawer, IconButton } from '@mui/material'
 import { SVGCheckMarks, HamburgerMenuSVG, CloseIcon } from '../../Assets/SVGs'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import Link from 'next/link'
@@ -100,7 +100,7 @@ const HamburgerMenu = () => {
             {session ? (
               <>
                 {/* Links with underline effect */}
-                <Link href='/credentialForm' passHref style={{ width: '100%' }}>
+                <Link href='/newcredential' passHref style={{ width: '100%' }}>
                   <Box
                     sx={{
                       display: 'flex',
@@ -120,16 +120,16 @@ const HamburgerMenu = () => {
                       <Typography
                         sx={{
                           fontSize: '16px',
-                          fontWeight: isActive('/credentialForm') ? '600' : '400',
-                          color: isActive('/credentialForm') ? '#003FE0' : 'inherit',
+                          fontWeight: isActive('/skillform') ? '600' : '400',
+                          color: isActive('/skillform') ? '#003FE0' : 'inherit',
                           cursor: 'pointer',
                           display: 'inline-block',
                           position: 'relative',
                           height: '22px'
                         }}
                       >
-                        Add a New Skill
-                        {isActive('/credentialForm') && (
+                        Add a New Credential
+                        {isActive('/skillform') && (
                           <Box
                             sx={{
                               height: '2px',

@@ -9,7 +9,7 @@ import {
   Controller
 } from 'react-hook-form'
 import TextEditor from '../TextEditor/Texteditor'
-import { FormData } from '../../../../credentialForm/form/types/Types'
+import { FormData } from '../../../../skillform/form/types/Types'
 import {
   formLabelStyles,
   inputPropsStyles,

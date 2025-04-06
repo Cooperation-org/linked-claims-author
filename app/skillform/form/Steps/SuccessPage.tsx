@@ -23,7 +23,7 @@ import {
   SVGEmail
 } from '../../../Assets/SVGs'
 import LoadingOverlay from '../../../components/Loading/LoadingOverlay'
-import { FormData } from '../../../credentialForm/form/types/Types'
+import { FormData } from '../../../skillform/form/types/Types'
 import { copyFormValuesToClipboard } from '../../../utils/formUtils'
 import { useStepContext } from '../StepContext'
 import { useRouter } from 'next/navigation'
@@ -32,12 +32,12 @@ interface SuccessPageProps {
   setActiveStep: (step: number) => void //NOSONAR
   formData: FormData | null
   reset: () => void
-  link: string
+  link: string //NOSONAR
   setLink: (link: string) => void
   setFileId: (fileId: string) => void
-  storageOption: string
+  storageOption: string //NOSONAR
   fileId: string
-  selectedImage: string
+  selectedImage: string //NOSONAR
   res: any
 }
 
@@ -368,7 +368,7 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
             setLink('')
             setFileId('')
             reset()
-            router.push('/credentialForm#step1')
+            router.push('/newcredential')
           }}
           variant='contained'
           sx={{

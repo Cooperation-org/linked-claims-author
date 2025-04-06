@@ -73,7 +73,7 @@ const NavBar = () => {
       >
         {session && (
           <>
-            <Link href='/credentialForm' passHref>
+            <Link href='/newcredential' passHref>
               <Box
                 sx={{
                   display: 'flex',
@@ -84,16 +84,16 @@ const NavBar = () => {
                 <Typography
                   sx={{
                     fontSize: '16px',
-                    fontWeight: isActive('/credentialForm') ? '600' : '400',
-                    color: isActive('/credentialForm')
+                    fontWeight: isActive('/skillform') ? '600' : '400',
+                    color: isActive('/skillform')
                       ? '#003FE0'
                       : theme.palette.t3DarkSlateBlue,
                     cursor: 'pointer'
                   }}
                 >
-                  Add a New Skill
+                  Add a New Credential
                 </Typography>
-                {isActive('/credentialForm') && (
+                {isActive('/skillform') && (
                   <Box
                     sx={{
                       height: '2px',

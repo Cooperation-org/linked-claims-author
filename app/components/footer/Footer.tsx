@@ -6,8 +6,8 @@ import Link from 'next/link'
 const CCHeartIcon = () => (
   <Box
     sx={{
-      width: '20px',
-      height: '16px',
+      width: '44px',
+      height: '35.75px',
       backgroundImage: 'url(/icons/footer/ccheart_black.svg)',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
@@ -20,8 +20,8 @@ const CCHeartIcon = () => (
 const ApachePoweredByIcon = () => (
   <Box
     sx={{
-      width: '20px',
-      height: '20px',
+      width: '44px',
+      height: '44px',
       backgroundImage: 'url(/icons/footer/Apache_PoweredBy.svg)',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
@@ -34,8 +34,8 @@ const ApachePoweredByIcon = () => (
 const GitHubIcon = () => (
   <Box
     sx={{
-      width: '20px',
-      height: '20px',
+      width: '44px',
+      height: '44px',
       backgroundImage: 'url(/icons/footer/github.svg)',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
@@ -48,8 +48,8 @@ const GitHubIcon = () => (
 const PrivacyPolicyIcon = () => (
   <Box
     sx={{
-      width: '20px',
-      height: '20px',
+      width: '44px',
+      height: '44px',
       backgroundImage: 'url(/icons/footer/privacy.svg)',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
@@ -62,8 +62,8 @@ const PrivacyPolicyIcon = () => (
 const EmailIcon = () => (
   <Box
     sx={{
-      width: '20px',
-      height: '15px',
+      width: '44px',
+      height: '35.75px',
       backgroundImage: 'url(/icons/footer/email.svg)',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
@@ -80,10 +80,10 @@ const Footer: React.FC = () => {
 
   const textStyle = {
     color: '#ffffff',
-    fontFamily: 'Nunito Sans, sans-serif',
-    fontSize: '14px',
+    fontFamily: 'Nunito Sans',
+    fontSize: '16px',
     fontWeight: 500,
-    lineHeight: '24px',
+    lineHeight: '40px',
     letterSpacing: '-0.14px',
     display: 'flex',
     alignItems: 'center'
@@ -114,7 +114,8 @@ const Footer: React.FC = () => {
               alignItems: 'flex-start',
               gap: 2,
               width: '100%',
-              height: '224px'
+              // height: '224px'
+              height: 'auto'
             }}
           >
             <FooterItem
@@ -209,7 +210,7 @@ const Footer: React.FC = () => {
               alignItems: 'center',
               gap: { md: 3, lg: 4 },
               width: '100%',
-              height: '114px',
+              height: '104px',
               justifyContent: { md: 'flex-start', lg: 'space-between' }
             }}
           >
@@ -255,10 +256,10 @@ interface FooterItemProps {
 const FooterItem: React.FC<FooterItemProps> = ({ icon, text, href, isSourceCode }) => {
   const textStyle = {
     color: '#ffffff',
-    fontFamily: 'Nunito Sans, sans-serif',
-    fontSize: '14px',
+    fontFamily: 'Nunito Sans',
+    fontSize: '16px',
     fontWeight: 500,
-    lineHeight: '24px',
+    lineHeight: '40px',
     letterSpacing: '-0.14px',
     ml: 1.5
   }
