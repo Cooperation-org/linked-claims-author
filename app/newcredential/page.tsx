@@ -82,10 +82,12 @@ const CredentialCard = ({
       <Box sx={{ mb: '12px' }}>{icon}</Box>
       <Typography
         sx={{
-          color: '#6B7280',
+          color: '#2E2E48',
           fontFamily: 'Nunito Sans',
-          fontSize: '14px',
-          fontWeight: 400,
+          fontSize: '16px',
+          fontWeight: 500,
+          letterSpacing: '-0.16px',
+          lineHeight: '24px',
           textAlign: 'center'
         }}
       >
