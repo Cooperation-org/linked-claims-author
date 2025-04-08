@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import { Box, Typography, Button, Tooltip } from '@mui/material'
 import { UseFormWatch, UseFormSetValue } from 'react-hook-form'
-import { FormData } from '../../../../credentialForm/form/types/Types'
+import { FormData } from '../../../../skillform/form/types/Types'
 import { SVGFolder, SVGSinfo } from '../../../../Assets/SVGs'
 import { signIn, useSession } from 'next-auth/react'
 

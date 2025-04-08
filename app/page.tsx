@@ -191,7 +191,7 @@ const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCard
           )}
         </Typography>
 
-        <Link href='/credentialForm' passHref>
+        <Link href='/newcredential' passHref>
           <Button
             variant='contained'
             sx={{
@@ -400,7 +400,7 @@ const StepsSection: React.FC<SectionProps> = ({ theme }) => (
         </Box>
       ))}
     </Box>
-    <Link href='/credentialForm' passHref>
+    <Link href='/newcredential' passHref>
       <Button
         variant='contained'
         sx={{

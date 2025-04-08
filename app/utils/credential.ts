@@ -1,5 +1,5 @@
 import { CredentialEngine, GoogleDriveStorage } from '@cooperation/vc-storage'
-import { FormData } from '../credentialForm/form/types/Types'
+import { FormData } from '../skillform/form/types/Types'
 
 interface FormDataI {
   expirationDate: string

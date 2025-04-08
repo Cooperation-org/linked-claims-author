@@ -348,9 +348,9 @@ const ClaimsPageClient: React.FC = () => {
           <Button
             fullWidth
             variant='nextButton'
-            onClick={() => router.push('/credentialForm')}
+            onClick={() => router.push('/newcredential')}
           >
-            Add a new skill
+            Add a New Credential
           </Button>
 
           <Typography
@@ -377,9 +377,9 @@ const ClaimsPageClient: React.FC = () => {
           <Button
             variant='nextButton'
             sx={{ textTransform: 'none' }}
-            onClick={() => router.push('/credentialForm')}
+            onClick={() => router.push('/newcredential')}
           >
-            Add a new skill
+            Add a New Credential
           </Button>
         </Box>
       )}

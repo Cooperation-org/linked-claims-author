@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { Box, styled, Card, CardContent, IconButton } from '@mui/material'
 import Image from 'next/image'
-import { FileItem } from '../credentialForm/form/types/Types'
+import { FileItem } from '../skillform/form/types/Types'
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
 import DeleteIcon from '@mui/icons-material/Delete'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'

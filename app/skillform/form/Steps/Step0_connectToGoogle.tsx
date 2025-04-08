@@ -20,7 +20,7 @@ export function Step0() {
     try {
       // Initiate Google sign-in
       await signIn('google', {
-        callbackUrl: `${window.location.origin}/credentialForm#step1`
+        callbackUrl: `${window.location.origin}/skillform#step1`
       })
 
       setLoading(true)
