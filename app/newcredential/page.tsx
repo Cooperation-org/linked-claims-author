@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { Box, Typography, useMediaQuery, useTheme, Button, Tooltip } from '@mui/material'
+import { Box, Typography, useMediaQuery, Button, Tooltip, useTheme } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import {
   BriefcaseIcon,
@@ -17,6 +17,14 @@ type CredentialType =
   | 'skill'
   | 'identityVerification'
   | null
+
+interface CredentialOption {
+  type: CredentialType
+  title: string
+  icon: React.ReactNode
+  description: string
+  secondaryLabel?: string
+}
 
 const CredentialCard = ({
   title,
@@ -49,8 +57,9 @@ const CredentialCard = ({
         flexShrink: 0,
         gap: '12px',
         position: 'relative',
-        width: isMobile ? '100%' : '440px',
-        height: 'auto',
+        width: '100%',
+        height: '100%',
+        maxWidth: '440px',
         padding: '30px 20px',
         background: '#ffffff',
         border: isSelected ? '2px solid #2563eb' : '1px solid #2563EB',
@@ -139,7 +148,6 @@ const CredentialCard = ({
 }
 
 export default function NewCredentialPage() {
-  // remove cards from this array to enable them once we create the pages/forms
   const [disabledCredentials] = useState<CredentialType[]>([
     'employment',
     'volunteering',
@@ -149,6 +157,9 @@ export default function NewCredentialPage() {
 
   const [selectedCredential, setSelectedCredential] = useState<CredentialType>(null)
   const router = useRouter()
+  const isXsOnly = useMediaQuery('(max-width:599px)')
+  const isSmToMd = useMediaQuery('(min-width:600px) and (max-width:959px)')
+  const isLgUp = useMediaQuery('(min-width:960px)')
 
   const handleSelectCredential = (credentialType: CredentialType) => {
     if (disabledCredentials.includes(credentialType)) return
@@ -167,6 +178,161 @@ export default function NewCredentialPage() {
     }
 
     router.push(routes[selectedCredential])
+  }
+
+  const credentialOptions: CredentialOption[] = [
+    {
+      type: 'employment',
+      title: 'Employment',
+      icon: <BriefcaseIcon />,
+      description: 'Claim employment'
+    },
+    {
+      type: 'volunteering',
+      title: 'Volunteering',
+      icon: <VolunteerOrganizationIcon />,
+      description: 'Supported file types'
+    },
+    {
+      type: 'performanceReview',
+      title: 'Performance Review',
+      icon: <ClipboardIcon />,
+      description: 'Document a performance review'
+    },
+    {
+      type: 'skill',
+      title: 'Skill',
+      icon: <TeamSkillIcon />,
+      description: 'Document a skill'
+    },
+    {
+      type: 'identityVerification',
+      title: 'Identity Verification',
+      icon: (
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Box
+            component='img'
+            src={IdCardsIconsImg.src}
+            alt='Identity verification'
+            sx={{
+              width: 'auto',
+              height: '80px'
+            }}
+          />
+        </Box>
+      ),
+      description: 'Verify your government issued ID'
+    }
+  ]
+
+  const renderMobileLayout = () => {
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%' }}>
+        {credentialOptions.map(option => (
+          <Box key={option.type} sx={{ width: '100%', maxWidth: '440px', mx: 'auto' }}>
+            <CredentialCard
+              title={option.title}
+              icon={option.icon}
+              description={option.description}
+              secondaryLabel={option.secondaryLabel}
+              isSelected={selectedCredential === option.type}
+              isDisabled={disabledCredentials.includes(option.type)}
+              onClick={() => handleSelectCredential(option.type)}
+            />
+          </Box>
+        ))}
+      </Box>
+    )
+  }
+
+  const renderTabletLayout = () => {
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '30px' }}>
+          {credentialOptions.slice(0, 4).map(option => (
+            <Box
+              key={option.type}
+              sx={{ width: '100%', maxWidth: '440px', justifySelf: 'center' }}
+            >
+              <CredentialCard
+                title={option.title}
+                icon={option.icon}
+                description={option.description}
+                secondaryLabel={option.secondaryLabel}
+                isSelected={selectedCredential === option.type}
+                isDisabled={disabledCredentials.includes(option.type)}
+                onClick={() => handleSelectCredential(option.type)}
+              />
+            </Box>
+          ))}
+        </Box>
+
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ width: '100%', maxWidth: '440px' }}>
+            <CredentialCard
+              title={credentialOptions[4].title}
+              icon={credentialOptions[4].icon}
+              description={credentialOptions[4].description}
+              secondaryLabel={credentialOptions[4].secondaryLabel}
+              isSelected={selectedCredential === credentialOptions[4].type}
+              isDisabled={disabledCredentials.includes(credentialOptions[4].type)}
+              onClick={() => handleSelectCredential(credentialOptions[4].type)}
+            />
+          </Box>
+        </Box>
+      </Box>
+    )
+  }
+
+  const renderDesktopLayout = () => {
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '30px' }}>
+          {credentialOptions.slice(0, 3).map(option => (
+            <Box
+              key={option.type}
+              sx={{
+                width: '100%',
+                maxWidth: '440px',
+                justifySelf: 'center'
+              }}
+            >
+              <CredentialCard
+                title={option.title}
+                icon={option.icon}
+                description={option.description}
+                secondaryLabel={option.secondaryLabel}
+                isSelected={selectedCredential === option.type}
+                isDisabled={disabledCredentials.includes(option.type)}
+                onClick={() => handleSelectCredential(option.type)}
+              />
+            </Box>
+          ))}
+        </Box>
+
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: '30px' }}>
+          {credentialOptions.slice(3, 5).map(option => (
+            <Box
+              key={option.type}
+              sx={{
+                width: '100%',
+                maxWidth: '440px'
+              }}
+            >
+              <CredentialCard
+                title={option.title}
+                icon={option.icon}
+                description={option.description}
+                secondaryLabel={option.secondaryLabel}
+                isSelected={selectedCredential === option.type}
+                isDisabled={disabledCredentials.includes(option.type)}
+                onClick={() => handleSelectCredential(option.type)}
+              />
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    )
   }
 
   return (
@@ -221,92 +387,14 @@ export default function NewCredentialPage() {
 
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
           width: '100%',
-          gap: { xs: 4, md: 5 },
           mt: { xs: 4, md: '15vh' },
           mb: { xs: 4, md: '15vh' }
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            justifyContent: 'center',
-            flexWrap: { xs: 'nowrap', sm: 'wrap' },
-            gap: 3,
-            width: '100%'
-          }}
-        >
-          <CredentialCard
-            title='Employment'
-            icon={<BriefcaseIcon />}
-            description='Claim employment'
-            isSelected={selectedCredential === 'employment'}
-            isDisabled={disabledCredentials.includes('employment')}
-            onClick={() => handleSelectCredential('employment')}
-          />
-          <CredentialCard
-            title='Volunteering'
-            icon={<VolunteerOrganizationIcon />}
-            description='Supported file types'
-            isSelected={selectedCredential === 'volunteering'}
-            isDisabled={disabledCredentials.includes('volunteering')}
-            onClick={() => handleSelectCredential('volunteering')}
-          />
-          <CredentialCard
-            title='Performance Review'
-            icon={<ClipboardIcon />}
-            description='Document a performance review'
-            isSelected={selectedCredential === 'performanceReview'}
-            isDisabled={disabledCredentials.includes('performanceReview')}
-            onClick={() => handleSelectCredential('performanceReview')}
-          />
-        </Box>
-
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            justifyContent: 'center',
-            gap: 3,
-            width: '100%',
-            maxWidth: { sm: '650px' }
-          }}
-        >
-          <CredentialCard
-            title='Skill'
-            icon={<TeamSkillIcon />}
-            description='Document a skill'
-            isSelected={selectedCredential === 'skill'}
-            isDisabled={disabledCredentials.includes('skill')}
-            onClick={() => handleSelectCredential('skill')}
-          />
-          <CredentialCard
-            title='Identity Verification'
-            icon={
-              <Box
-                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              >
-                <Box
-                  component='img'
-                  src={IdCardsIconsImg.src}
-                  alt='Identity verification'
-                  sx={{
-                    width: 'auto',
-                    height: '80px'
-                  }}
-                />
-              </Box>
-            }
-            description='Verify your government issued ID'
-            isSelected={selectedCredential === 'identityVerification'}
-            isDisabled={disabledCredentials.includes('identityVerification')}
-            onClick={() => handleSelectCredential('identityVerification')}
-          />
-        </Box>
+        {isXsOnly && renderMobileLayout()}
+        {isSmToMd && renderTabletLayout()}
+        {isLgUp && renderDesktopLayout()}
       </Box>
 
       <Box
