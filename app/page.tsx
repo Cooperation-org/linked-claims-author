@@ -112,7 +112,7 @@ const LinkedCreds_FEATURES = [
   { id: 'beautiful', text: 'Presented beautifully' },
   { id: 'ownership', text: 'Owned by you' },
   { id: 'control', text: 'You control access' },
-  { id: 'no-degree', text: "Don't require a degree" }
+  { id: 'no-degree', text: 'For everyone!' }
 ]
 
 const HeroSection: React.FC<SectionProps & { showCards: boolean }> = ({ showCards }) => {
